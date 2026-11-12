@@ -1,0 +1,146 @@
+/* =========================================================
+   "Սամվելի մկրտությունը" blue hydrangea baptism invitation —
+   ported from the supplied HTML demo. Every selector is scoped
+   under .bpb so this stylesheet can never leak into the rest
+   of the site, and vice versa.
+   ========================================================= */
+.bpb{
+  --blue:#7f98c2; --blue-d:#5c77a6; --blue-l:#cfdcf0; --ink:#2b3445; --mute:#5d6a82; --gold:#b79245; --gold-l:#e1c780; --curve:#bdae8c;
+  --serif:"Noto Serif Armenian","Cormorant Garamond","Sylfaen","Times New Roman",serif; --sans:"Noto Sans Armenian","Segoe UI",Arial,sans-serif; --num:"Cormorant Garamond","Times New Roman",serif;
+  --pad:clamp(30px,9vw,64px);
+  position:relative; min-height:100vh; overflow-x:hidden;
+  font-family:var(--sans); font-weight:400; color:var(--ink); text-align:center; line-height:1.75;
+  background:radial-gradient(70% 50% at 50% 0,#9ab0d2,transparent 70%),radial-gradient(60% 40% at 100% 100%,#6a85b0,transparent 70%),#7c93b8;
+}
+.bpb *{box-sizing:border-box; margin:0; padding:0}
+.bpb svg{display:block; max-width:100%}
+.bpb :focus-visible{outline:2px solid var(--blue-d); outline-offset:3px}
+.bpb::before{content:""; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.5; mix-blend-mode:multiply; background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.05 .07' numOctaves='5' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .2 0 0 0 0 .4 0 0 0 .8 -.1'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+.bpb .card{position:relative; z-index:2; width:min(100%,600px); margin:0 auto; background:#fff; overflow:hidden; padding:clamp(150px,36vw,220px) var(--pad) clamp(160px,38vw,230px)}
+@media(min-width:700px){.bpb .card{margin:34px auto; box-shadow:0 30px 70px rgba(30,50,100,.38)}}
+.bpb .card::before{content:""; position:absolute; inset:0; pointer-events:none; opacity:.5; mix-blend-mode:multiply; background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.6' numOctaves='4' seed='9'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .55 0 0 0 0 .65 0 0 0 .12 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E")}
+.bpb .in{position:relative; z-index:3}
+.bpb .wash{position:absolute; border-radius:50%; pointer-events:none; filter:blur(22px); opacity:0; transition:opacity 4s 1s; background:radial-gradient(closest-side,rgba(150,180,225,.5),rgba(190,210,240,.22) 60%,transparent)}
+.bpb.go .wash{opacity:1}
+.bpb .w1{left:-18%; top:-4%; width:70%; aspect-ratio:1.2}
+.bpb .w2{right:-24%; bottom:-6%; width:80%; aspect-ratio:1.2}
+.bpb .w3{left:-30%; top:46%; width:60%; aspect-ratio:1; opacity:.5}
+
+/* motion primitives */
+.bpb .seq{opacity:0}
+.bpb.go .seq{animation:bpb-soft 2s cubic-bezier(.2,.7,.2,1) both; animation-delay:calc(var(--i,0)*.32s + 1.3s)}
+@keyframes bpb-soft{from{opacity:0; transform:translateY(14px); filter:blur(7px)}to{opacity:1; transform:none; filter:none}}
+.bpb .rv{opacity:0; transform:translateY(16px); filter:blur(6px); transition:opacity 1.8s,transform 1.8s cubic-bezier(.2,.7,.2,1),filter 1.8s; transition-delay:var(--dl,0s)}
+.bpb .rv.on{opacity:1; transform:none; filter:none}
+.bpb .ln{fill:none; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:1; stroke-dashoffset:1}
+.bpb .on .ln{animation:bpb-draw 3.2s calc(var(--d,0)*1s + .3s) cubic-bezier(.6,0,.3,1) forwards}
+@keyframes bpb-draw{to{stroke-dashoffset:0}}
+
+/* veil */
+.bpb .bpb-veil{position:fixed; inset:0; z-index:100; display:grid; place-items:center; background:radial-gradient(50% 50% at 50% 46%,#fff,#dfe8f6 85%); cursor:pointer; transition:opacity 2s ease .1s}
+.bpb .bpb-veil.gone{opacity:0; pointer-events:none}
+.bpb .vc{text-align:center; position:relative}
+.bpb .vc svg{width:clamp(110px,26vw,150px); margin:0 auto; overflow:visible}
+.bpb .vc .fl{transform-origin:0 0; animation:bpb-open 3s cubic-bezier(.2,.8,.2,1) both}
+@keyframes bpb-open{from{opacity:0; transform:scale(.2) rotate(-60deg)}to{opacity:1; transform:none}}
+.bpb .vc .ring{position:absolute; left:50%; top:44%; width:190px; aspect-ratio:1; margin:-95px 0 0 -95px; border-radius:50%; border:1px solid var(--blue); opacity:0; animation:bpb-ring 3.4s ease-out infinite}
+.bpb .vc .ring+.ring{animation-delay:1.7s}
+@keyframes bpb-ring{0%{opacity:.7; transform:scale(.4)}100%{opacity:0; transform:scale(1.5)}}
+.bpb .vc p{font:400 12.5px var(--sans); letter-spacing:.4em; text-transform:uppercase; color:var(--blue-d); margin-top:34px; animation:bpb-soft 2.4s .9s both}
+
+/* botanicals */
+.bpb .cl{position:absolute; z-index:1; width:min(78%,440px); pointer-events:none; translate:calc(var(--mx,0)*var(--px,6)*1px) calc(var(--sy,0)*var(--py,10)*1px)}
+.bpb .cl svg{width:100%; height:auto; overflow:visible; transform-origin:100% 0; animation:bpb-sway 10s ease-in-out infinite alternate}
+.bpb .cl.tr{top:-2%; right:-6%}
+.bpb .cl.bl{bottom:-2%; left:-6%; transform:rotate(180deg)}
+.bpb .cl.bl svg{animation-delay:-5s}
+@keyframes bpb-sway{from{transform:rotate(-1.2deg)}to{transform:rotate(1.4deg)}}
+.bpb .fb,.bpb .lv{opacity:0; transform:scale(.3); transform-box:fill-box; transform-origin:center}
+.bpb.go .fb{animation:bpb-bl 2s calc(.9s + var(--i)*.024s) cubic-bezier(.2,.8,.2,1) forwards}
+.bpb.go .lv{animation:bpb-bl 2.2s calc(.5s + var(--i)*.05s) cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes bpb-bl{to{opacity:1; transform:none}}
+.bpb .crv{position:absolute; z-index:1; pointer-events:none; fill:none; stroke:var(--curve); stroke-width:1.3}
+.bpb .crv path{stroke-dasharray:1; stroke-dashoffset:1}
+.bpb.go .crv path{animation:bpb-draw 5s 1.6s cubic-bezier(.6,0,.3,1) forwards}
+.bpb .c1{left:-4%; top:2%; width:46%}
+.bpb .c2{right:-4%; bottom:2%; width:46%; transform:rotate(180deg)}
+
+/* cross */
+.bpb .cross{width:clamp(34px,8vw,46px); margin:0 auto; filter:drop-shadow(0 6px 8px rgba(120,90,20,.25))}
+.bpb .cross .gl{animation:bpb-glint 6s ease-in-out 3.5s infinite}
+@keyframes bpb-glint{0%{transform:translateX(-80px)}40%,100%{transform:translateX(90px)}}
+
+/* typography */
+.bpb .pr{max-width:300px; margin:clamp(40px,8vw,60px) auto 0; font:400 clamp(11px,2.7vw,12.5px)/1.8 var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink)}
+.bpb .ttl{font:200 60px/1.12 var(--serif); color:var(--ink); transform:skewX(-7deg); margin-top:clamp(40px,7vw,20px); letter-spacing:.01em}
+.bpb .ttl .ch{display:inline-block; opacity:0; transform:translateY(.3em); filter:blur(8px)}
+.bpb.go .ttl .ch{animation:bpb-ltr 2s cubic-bezier(.2,.7,.2,1) both; animation-delay:calc(2.2s + var(--i)*.1s)}
+@keyframes bpb-ltr{to{opacity:1; transform:none; filter:none}}
+.bpb .nm{font:300 clamp(34px,10vw,58px)/1.2 var(--serif); letter-spacing:.14em; text-transform:uppercase; color:var(--blue); margin-top:6px; padding-left:.14em; background:linear-gradient(100deg,var(--blue-d) 0,var(--blue) 35%,#b4c6e6 50%,var(--blue) 65%,var(--blue-d)); background-size:240% 100%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent}
+.bpb .lb{font:600 clamp(10.5px,2.4vw,12px)/1.9 var(--sans); letter-spacing:.2em; text-transform:uppercase; color:var(--ink); margin-top:24px}
+.bpb .pp{font:300 clamp(14px,3.2vw,16px)/1.7 var(--sans); color:var(--ink)}
+.bpb .gr{margin-top:clamp(34px,6vw,50px); font:300 clamp(18px,4.4vw,22px)/1.4 var(--serif); color:var(--blue-d)}
+.bpb .gr-wrap + div .ms{margin-top:14px}
+.bpb .ms{max-width:380px; margin:clamp(34px,6vw,50px) auto 0; font:300 clamp(13.5px,3.1vw,15.5px)/1.9 var(--sans); color:var(--ink)}
+
+/* date */
+.bpb .dt{display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:0 clamp(8px,3vw,18px); margin:clamp(40px,7vw,60px) -10px 0}
+.bpb .dt .mo{grid-column:1/-1; font:400 clamp(13px,3vw,15px) var(--sans); letter-spacing:.4em; text-transform:uppercase; color:var(--ink); padding-left:.4em}
+.bpb .dt .sd{position:relative; font:400 clamp(11px,2.6vw,13px) var(--sans); letter-spacing:.3em; text-transform:uppercase; padding:0 0 0 .3em}
+.bpb .dt .sd::before{content:""; position:absolute; top:50%; height:1px; background:var(--ink); opacity:.6; width:0; transition:width 2s cubic-bezier(.2,.7,.2,1) .4s}
+.bpb .dt .sd.a::before{right:0; left:auto}
+.bpb .dt .sd.b::before{left:0}
+.bpb .dt .sd.a{padding-right:0; text-align:left}
+.bpb .dt .sd.b{text-align:right}
+.bpb .dt .sd span{position:relative; background:#fff; padding:0 10px}
+.bpb .dt .sd.a span{float:left}
+.bpb .dt .sd.b span{float:right}
+.bpb .dt.on .sd::before{width:100%}
+.bpb .dt .nu{font:300 clamp(76px,22vw,120px)/.9 var(--num); color:var(--blue); font-variant-numeric:lining-nums; padding:0 4px}
+.bpb .dt input.nu{font:400 15px var(--sans); color:var(--ink); max-width:190px}
+
+/* info */
+.bpb .inf{margin-top:clamp(40px,7vw,60px)}
+.bpb .inf svg.ic{width:clamp(40px,9vw,50px); margin:0 auto 10px; overflow:visible}
+.bpb .inf .tm{font:400 clamp(13px,3vw,15px) var(--sans); letter-spacing:.14em; text-transform:uppercase}
+.bpb .inf .ev{font:700 clamp(12px,2.8vw,14px) var(--sans); letter-spacing:.18em; text-transform:uppercase; color:var(--ink)}
+.bpb .inf .pl{font:400 clamp(14px,3.2vw,16px) var(--sans); letter-spacing:.06em}
+.bpb .inf .pl.note{max-width:300px; margin:4px auto 0; font-size:clamp(13px,3vw,15px); letter-spacing:.02em}
+.bpb .inf .lc{font:italic 300 clamp(14px,3.2vw,16px) var(--num); color:var(--mute)}
+.bpb .inf.dress{margin-top:clamp(40px,7vw,56px)}
+.bpb .bt{position:relative; display:inline-block; margin-top:16px; min-width:min(78%,260px); padding:11px 30px; font:600 clamp(11px,2.6vw,12.5px) var(--sans); letter-spacing:.2em; text-transform:uppercase; text-decoration:none; color:#fff; border:0; cursor:pointer;
+  background:linear-gradient(100deg,#8aa3cb,#7792c0); box-shadow:3px 4px 0 rgba(95,119,166,.45); border-radius:3px; overflow:hidden; transition:transform .35s,box-shadow .35s}
+.bpb .bt::after{content:""; position:absolute; top:0; bottom:0; width:36%; left:-60%; transform:skewX(-20deg); background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent); transition:left .8s}
+.bpb .bt:hover{transform:translate(-1px,-2px); box-shadow:5px 7px 0 rgba(95,119,166,.4)}
+.bpb .bt:hover::after{left:130%}
+.bpb .bt i{position:absolute; right:9px; top:50%; width:10px; height:10px; margin-top:-5px; border-radius:50%; border:1.5px solid rgba(255,255,255,.9); animation:bpb-tap 2.8s ease-out infinite}
+@keyframes bpb-tap{0%{transform:scale(.4); opacity:.9}70%,100%{transform:scale(2.4); opacity:0}}
+.bpb .bt.b2{margin-top:10px}
+.bpb .call-edit{display:inline-flex; flex-direction:column; align-items:center; gap:4px}
+.bpb .call-edit .phone{font-size:13px; color:var(--mute); letter-spacing:.04em}
+.bpb .sep{width:min(50%,180px); height:1px; margin:clamp(40px,7vw,56px) auto 0; background:linear-gradient(90deg,transparent,var(--blue),transparent); transform:scaleX(0); transition:transform 2.4s cubic-bezier(.2,.7,.2,1)}
+.bpb .sep.on{transform:none}
+.bpb .sil{width:clamp(70px,16vw,92px); margin:10px auto 6px; overflow:visible}
+.bpb .closing-line{margin-top:clamp(44px,8vw,64px); letter-spacing:.14em; text-transform:uppercase; font:400 clamp(11.5px,2.7vw,13px) var(--sans)}
+.bpb .thx{font:200 60px/1.2 var(--serif); transform:skewX(-7deg); margin-top:18px; color:var(--ink)}
+
+/* drifting florets */
+.bpb .dr{position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:2}
+.bpb .dr svg{position:absolute; top:-30px; width:var(--w); opacity:0; animation:bpb-fall var(--du) linear var(--dl) infinite}
+@keyframes bpb-fall{0%{opacity:0; transform:translate(0,0) rotate(0)}10%{opacity:.75}50%{transform:translate(calc(var(--dx)*-.5),50vh) rotate(160deg)}100%{opacity:0; transform:translate(var(--dx),105vh) rotate(340deg)}}
+
+/* editable-field styling (shared system, see ../shared/Editable.jsx) */
+.bpb .wdb-editable{outline:1px dashed transparent; border-radius:4px; transition:outline-color .15s}
+.bpb .wdb-editable:hover,.bpb .wdb-editable:focus{outline-color:var(--blue-d)}
+.bpb .wdb-edit-input{font:inherit; color:inherit; background:#fff; border:1.5px dashed var(--blue-d); border-radius:8px; padding:2px 6px}
+
+@media (prefers-reduced-motion:reduce){
+  .bpb *,.bpb *::before,.bpb *::after{animation:none!important; transition:none!important}
+  .bpb .seq,.bpb .rv,.bpb .ttl .ch,.bpb .fb,.bpb .lv{opacity:1; transform:none; filter:none}
+  .bpb .ln,.bpb .crv path{stroke-dashoffset:0}
+  .bpb .sep{transform:none}
+  .bpb .dt .sd::before{width:100%}
+  .bpb .wash{opacity:1}
+  .bpb .dr{display:none}
+}

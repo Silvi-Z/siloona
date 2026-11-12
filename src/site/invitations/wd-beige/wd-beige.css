@@ -1,0 +1,244 @@
+/* =========================================================
+   "Միքայել & Տաթև" wedding invitation — ported 1:1 from the
+   approved HTML demo. Every selector is scoped under .wdb so
+   this stylesheet (loaded only on the preview route) can never
+   leak into the rest of the site, and vice versa.
+   ========================================================= */
+.wdb{
+  --paper:#f2f0ea; --paper2:#ebe8e1; --band:#e2dfd8; --ink:#2b2927; --mute:#6e6b66; --taupe:#a08d79; --beige:#dccfbf; --grey:#6d6c6b; --emb:#ece9e2;
+  --serif:"Noto Serif Armenian","Cormorant Garamond","Sylfaen","Times New Roman",serif; --sans:"Noto Sans Armenian","Segoe UI",Arial,sans-serif; --num:"Cormorant Garamond","Times New Roman",serif; --scr:"Pinyon Script","Snell Roundhand",cursive;
+  --pad:clamp(26px,8vw,52px); --gap:clamp(64px,12vw,96px);
+  position:relative; font-family:var(--sans); font-weight:300; color:var(--ink); text-align:center; line-height:1.85;
+  overflow-x:hidden; min-height:100vh; background:#b9b09f;
+}
+.wdb *{box-sizing:border-box; margin:0; padding:0}
+.wdb svg{display:block; max-width:100%}
+.wdb :focus-visible{outline:1px solid var(--ink); outline-offset:4px}
+
+/* silk backdrop */
+.wdb .bg{position:fixed; inset:0; z-index:0; overflow:hidden; background:linear-gradient(135deg,#cfc7b8,#b3aa98 55%,#c6bdad)}
+.wdb .bg i{position:absolute; width:140%; height:34%; left:-20%; border-radius:50%; filter:blur(36px); background:linear-gradient(90deg,transparent,rgba(255,255,255,.34),transparent); transform:rotate(-14deg); animation:wdbSilk 22s ease-in-out infinite alternate}
+.wdb .bg i:nth-child(1){top:6%}
+.wdb .bg i:nth-child(2){top:40%; animation-delay:-8s; opacity:.7}
+.wdb .bg i:nth-child(3){top:72%; animation-delay:-15s; opacity:.55}
+@keyframes wdbSilk{from{transform:rotate(-14deg) translateX(-8%)}to{transform:rotate(-10deg) translateX(8%)}}
+
+.wdb .sheet{position:relative; z-index:2; width:min(100%,540px); margin:0 auto; background:var(--paper); overflow:hidden}
+@media(min-width:700px){.wdb .sheet{margin:36px auto; box-shadow:0 30px 80px rgba(60,50,35,.3)}}
+.wdb .sheet::before{content:""; position:absolute; inset:0; pointer-events:none; z-index:1; opacity:.7; mix-blend-mode:multiply; background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.6' numOctaves='4' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .48 0 0 0 0 .44 0 0 0 .13 0'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)'/%3E%3C/svg%3E")}
+.wdb section{position:relative; z-index:2; padding:var(--gap) var(--pad)}
+.wdb .band{background:var(--band)}
+.wdb .lab{font:300 clamp(12px,2.9vw,14px)/1.7 var(--sans); letter-spacing:.3em; text-transform:uppercase; color:var(--ink)}
+.wdb .sub{font:200 clamp(26px,7vw,36px)/1.2 var(--serif); color:var(--ink); transform:skewX(-8deg); letter-spacing:.02em; margin-top:2px}
+.wdb h2.h{font:300 clamp(17px,4.4vw,22px)/1.5 var(--sans); letter-spacing:.3em; text-transform:uppercase; padding-left:.3em}
+.wdb p.t{max-width:370px; margin:18px auto 0; font:300 clamp(12.5px,3vw,14px)/1.95 var(--sans); letter-spacing:.04em; color:var(--ink)}
+.wdb .w{display:inline-block; overflow:hidden; vertical-align:top; padding-bottom:.18em; margin-bottom:-.18em}
+.wdb .w>i{display:inline-block; font-style:normal; transform:translateY(112%); transition:transform 1.3s cubic-bezier(.2,.8,.2,1); transition-delay:calc(var(--k)*.09s)}
+.wdb .on .w>i{transform:none}
+.wdb .rv{opacity:0; transform:translateY(20px); filter:blur(5px); transition:opacity 1.6s,transform 1.6s cubic-bezier(.2,.7,.2,1),filter 1.6s; transition-delay:var(--dl,0s)}
+.wdb .rv.on{opacity:1; transform:none; filter:none}
+.wdb .seq{opacity:0}
+.wdb.go .seq{animation:wdbSoft 2s cubic-bezier(.2,.7,.2,1) both; animation-delay:calc(var(--i,0)*.3s + 1.2s)}
+@keyframes wdbSoft{from{opacity:0; transform:translateY(16px); filter:blur(7px)}to{opacity:1; transform:none; filter:none}}
+.wdb .ln{fill:none; stroke-dasharray:1; stroke-dashoffset:1}
+.wdb.go .ln{animation:wdbDraw 3.4s calc(var(--d,0)*1s + .8s) cubic-bezier(.6,0,.3,1) forwards}
+@keyframes wdbDraw{to{stroke-dashoffset:0}}
+
+/* gate — envelope with a wax seal. Order of the opening (see Gate.jsx):
+   seal breaks 0–.9s · flap folds back .3–1.3s · letter rises 1.1–2.4s ·
+   gate fades from 2.8s. The title fades first so nothing overlaps it. */
+.wdb-gate{position:fixed; inset:0; z-index:100; display:grid; place-items:center; padding:16px; background:linear-gradient(135deg,#cfc7b8,#b3aa98 55%,#c6bdad); transition:opacity 1.4s; overflow:hidden}
+.wdb-gate.fade{opacity:0; pointer-events:none}
+.wdb-gate .gc{position:relative; width:min(100%,350px); padding:clamp(28px,7vw,40px) clamp(20px,6vw,28px) clamp(22px,5.5vw,30px); background:var(--paper); box-shadow:0 30px 70px rgba(60,50,35,.35); animation:wdbSoft 1.8s .3s both; transition:transform 1.5s cubic-bezier(.4,0,.2,1)}
+.wdb-gate.gate-open .gc{animation:none}
+.wdb-gate.fade .gc{transform:scale(1.06)}
+.wdb-gate .gc::before{content:""; position:absolute; inset:0; opacity:.7; mix-blend-mode:multiply; pointer-events:none; background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.6' numOctaves='4' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .48 0 0 0 0 .44 0 0 0 .13 0'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)'/%3E%3C/svg%3E")}
+.wdb-gate .gt,.wdb-gate .gc small{transition:opacity .7s,transform .9s cubic-bezier(.4,0,.2,1)}
+.wdb-gate.gate-open .gt{opacity:0; transform:translateY(-10px)}
+.wdb-gate.gate-open .gc small{opacity:0}
+.wdb-gate .gsub{font-size:clamp(18px,5vw,22px)}
+.wdb-gate .nm{font:200 clamp(30px,8.6vw,40px)/1.1 var(--serif); transform:skewX(-8deg); margin:12px 0 clamp(26px,7vw,34px)}
+.wdb-gate .nm span{display:block}
+.wdb-gate .nm b{display:block; font:400 1.2em/.75 var(--scr); color:var(--taupe); transform:skewX(8deg); margin:.08em 0 .02em}
+
+.wdb-gate .env{position:relative; width:100%; aspect-ratio:3/2; perspective:1000px; cursor:pointer; isolation:isolate; -webkit-tap-highlight-color:transparent; animation:wdbEnvb 4s ease-in-out infinite}
+@keyframes wdbEnvb{50%{transform:translateY(-5px)}}
+.wdb-gate.gate-open .env{animation:none; cursor:default}
+.wdb-gate .env>*{position:absolute}
+.wdb-gate .env .back{inset:0; z-index:0; border-radius:3px; background:linear-gradient(#d9c3b8,#e6d3ca 60%); box-shadow:0 14px 28px -8px rgba(90,60,50,.35),0 2px 4px rgba(90,60,50,.12)}
+.wdb-gate .env .letter{left:6%; right:6%; top:5%; height:88%; z-index:2; display:flex; flex-direction:column; align-items:center; gap:4px; padding-top:7%; background:#fbfaf6; box-shadow:0 1px 3px rgba(80,60,40,.15); transition:transform 1.3s cubic-bezier(.3,0,.2,1) 1.1s}
+.wdb-gate.gate-open .letter{transform:translateY(-58%)}
+.wdb-gate .letter .l-lab{font:300 8.5px/1 var(--sans); letter-spacing:.32em; text-transform:uppercase; color:var(--mute); padding-left:.32em}
+.wdb-gate .letter .l-nm{font:200 clamp(19px,5.4vw,23px)/1.3 var(--serif); transform:skewX(-8deg); color:var(--ink); white-space:nowrap}
+.wdb-gate .letter .l-nm b{font:400 1.25em/1 var(--scr); color:var(--taupe); transform:skewX(8deg); display:inline-block; margin:0 .08em}
+.wdb-gate .letter .l-dt{font:400 13px/1 var(--num); letter-spacing:.24em; color:var(--ink); font-variant-numeric:lining-nums}
+.wdb-gate .env .pocket{inset:0; z-index:3; width:100%; height:100%; overflow:visible; filter:drop-shadow(0 -1px 1px rgba(90,60,50,.08))}
+.wdb-gate .pocket .ps{fill:#f1e4dd}
+.wdb-gate .pocket .pb{fill:#eddcd4}
+.wdb-gate .pocket .pe{fill:none; stroke:rgba(150,115,95,.28); stroke-width:1; vector-effect:non-scaling-stroke}
+.wdb-gate .env .flap{left:0; right:0; top:0; height:59%; z-index:4; transform-origin:50% 0; filter:drop-shadow(0 3px 3px rgba(90,60,50,.16)); transition:transform 1s cubic-bezier(.5,0,.3,1) .3s,z-index 0s .8s}
+.wdb-gate .env .flap svg{display:block; width:100%; height:100%}
+.wdb-gate.gate-open .flap{transform:rotateX(180deg); z-index:1}
+
+/* the wax seal sits on the flap's point; each half carries the whole
+   face, clipped along a crack, so it breaks into two real pieces */
+.wdb-gate .seal{left:50%; top:59%; width:clamp(58px,17vw,72px); aspect-ratio:1; translate:-50% -50%; z-index:5; filter:drop-shadow(0 4px 5px rgba(80,60,40,.32))}
+.wdb-gate .seal .half{position:absolute; inset:0; display:block; transition:transform 1s cubic-bezier(.4,0,.2,1),opacity .7s .25s}
+.wdb-gate .seal .a{clip-path:polygon(0 0,54% 0,44% 30%,56% 56%,46% 100%,0 100%)}
+.wdb-gate .seal .b{clip-path:polygon(54% 0,100% 0,100% 100%,46% 100%,56% 56%,44% 30%)}
+.wdb-gate .seal .face{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; gap:1px; border-radius:52% 48% 51% 49%/49% 52% 48% 51%; background:radial-gradient(circle at 35% 28%,#fffdf9,#efe8dc 45%,#d6ccbb); box-shadow:inset 0 -3px 5px rgba(120,100,70,.28),inset 0 2px 3px #fff; font:300 clamp(17px,5vw,21px)/1 var(--serif); color:#b3a389; text-shadow:1px 1px 0 #fff,-.5px -.5px 0 rgba(90,70,50,.25)}
+.wdb-gate .seal .face::after{content:""; position:absolute; inset:13%; border-radius:50%; border:1px solid rgba(150,130,100,.42); box-shadow:inset 0 1px 1px rgba(255,255,255,.9),0 1px 1px rgba(255,255,255,.7)}
+.wdb-gate .seal .face em{font:400 1.05em/1 var(--scr); font-style:normal; margin:0 -.02em; translate:0 .08em}
+.wdb-gate .seal .ring{position:absolute; inset:-2px; border-radius:50%; border:1px solid rgba(255,255,255,.85); animation:wdbRing 2.6s ease-out infinite}
+@keyframes wdbRing{from{transform:scale(.95); opacity:.9}to{transform:scale(1.55); opacity:0}}
+.wdb-gate.gate-open .seal .ring{display:none}
+.wdb-gate.gate-open .seal .a{transform:translate(-26px,14px) rotate(-18deg); opacity:0}
+.wdb-gate.gate-open .seal .b{transform:translate(26px,16px) rotate(16deg); opacity:0}
+.wdb-gate .gc small{display:block; font:300 11.5px/1.7 var(--sans); letter-spacing:.3em; text-transform:uppercase; color:var(--mute); margin-top:22px}
+.wdb-gate .gc small b{display:block; font-weight:400; color:var(--ink)}
+@media(max-height:680px){
+  .wdb-gate .gc{width:min(100%,320px); padding-top:22px; padding-bottom:18px}
+  .wdb-gate .nm{font-size:clamp(26px,7.4vw,34px); margin:8px 0 20px}
+  .wdb-gate .gc small{margin-top:14px}
+}
+.wdb-spark{position:fixed; z-index:101; width:7px; aspect-ratio:1; border-radius:50%; pointer-events:none; background:radial-gradient(circle,#fff,rgba(255,255,255,0) 70%); animation:wdbGs 1.8s ease-out forwards}
+@keyframes wdbGs{to{opacity:0; transform:translate(var(--tx),var(--ty)) scale(2.4)}}
+
+/* hero */
+.wdb .hero{padding-top:calc(var(--gap)*1.1)}
+.wdb .mono{width:min(46%,200px); margin:0 auto; filter:drop-shadow(1.2px 1.2px 0 #fff) drop-shadow(-1px -1px .5px rgba(0,0,0,.13))}
+.wdb .mono svg{width:100%; height:auto; overflow:visible}
+.wdb .mono .ln{stroke:var(--emb); stroke-width:3.2}
+.wdb .mono text{fill:var(--emb); opacity:0}
+.wdb.go .mono text{animation:wdbFin 2.4s 2.4s forwards}
+@keyframes wdbFin{to{opacity:1}}
+.wdb .names{font:200 clamp(46px,13.4vw,72px)/1.12 var(--serif); transform:skewX(-8deg); margin-top:clamp(40px,8vw,64px)}
+.wdb .names .ch{display:inline-block; opacity:0; transform:translateY(.3em); filter:blur(8px)}
+.wdb.go .names .ch{animation:wdbLtr 2s cubic-bezier(.2,.7,.2,1) both; animation-delay:calc(2.6s + var(--i)*.12s)}
+@keyframes wdbLtr{to{opacity:1; transform:none; filter:none}}
+.wdb .names .am{display:block; font:400 1.4em/.9 var(--scr); color:var(--taupe); transform:skewX(8deg); margin:.04em 0}
+.wdb .dt{margin-top:clamp(36px,7vw,56px)}
+.wdb .lc{position:relative; width:min(100%,330px); aspect-ratio:3/4.4; margin:clamp(40px,8vw,64px) auto 0; background:var(--paper2); box-shadow:inset 0 0 0 1px rgba(0,0,0,.04)}
+.wdb .lc.sq{aspect-ratio:1/1.12}
+.wdb .lc svg.lace{position:absolute; inset:0; width:100%; height:100%; overflow:visible; filter:drop-shadow(0 1px 1px rgba(0,0,0,.1)); transition:transform 1s}
+.wdb .lc:hover svg.lace{transform:scale(1.012)}
+.wdb .lc use{opacity:0; transition:opacity 1.6s calc(var(--k)*.035s + .3s)}
+.wdb .lc.on use{opacity:1}
+.wdb .ph{position:absolute; inset:15%; overflow:hidden; background:#777; clip-path:inset(50% 50% 50% 50%); transition:clip-path 2.2s cubic-bezier(.6,0,.3,1) .6s}
+.wdb .lc.on .ph{clip-path:inset(0)}
+.wdb .ph svg{position:absolute; left:0; top:-6%; width:100%; height:112%; transform:translateY(var(--o,0px)) scale(1.12); transition:transform 2.6s cubic-bezier(.2,.7,.2,1) .6s}
+.wdb .lc.on .ph svg{transform:translateY(var(--o,0px)) scale(1)}
+.wdb .ph::after{content:""; position:absolute; inset:0; pointer-events:none; mix-blend-mode:overlay; opacity:.55; background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='3' seed='6'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 1 -.1'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),radial-gradient(circle,transparent 55%,rgba(0,0,0,.45))}
+.wdb .ph img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:grayscale(1)}
+.wdb .big{font:300 clamp(24px,6vw,30px) var(--num); letter-spacing:.14em; margin-top:30px; font-variant-numeric:lining-nums}
+.wdb .pill{display:inline-block; margin-top:24px; font:300 11.5px var(--sans); letter-spacing:.26em; text-transform:uppercase; text-decoration:none; color:var(--ink); border:1px solid var(--ink); border-radius:999px; padding:9px 30px; background:transparent; cursor:pointer; position:relative; overflow:hidden; transition:color .5s}
+.wdb .pill::before{content:""; position:absolute; inset:0; background:var(--ink); transform:translateY(101%); transition:transform .5s cubic-bezier(.2,.7,.2,1); z-index:-1}
+.wdb .pill{z-index:0; isolation:isolate}
+.wdb .pill:hover{color:var(--paper)}
+.wdb .pill:hover::before{transform:none}
+.wdb .cnt{display:flex; justify-content:center; align-items:flex-start; gap:clamp(8px,2.6vw,14px); margin-top:14px}
+.wdb .cnt div{text-align:center; min-width:clamp(52px,14vw,70px)}
+.wdb .cnt b{display:block; font:400 clamp(30px,8vw,42px)/1.1 var(--num); font-variant-numeric:lining-nums tabular-nums}
+.wdb .cnt span{font:300 10.5px var(--sans); letter-spacing:.16em; text-transform:uppercase; color:var(--mute)}
+.wdb .cnt em{font:300 clamp(28px,7vw,38px)/1.2 var(--num); font-style:normal; color:var(--taupe)}
+
+/* timeline */
+.wdb .tl{position:relative; display:grid; grid-template-columns:auto 22px 1fr; gap:0 18px; max-width:380px; margin:46px auto 0; text-align:left; align-items:center}
+.wdb .tl::before{content:""; position:absolute; left:calc(var(--tw,58px) + 18px + 10px); top:10px; bottom:10px; width:2px; background:var(--ink); transform:scaleY(var(--p,0)); transform-origin:top}
+.wdb .tl time{font:300 clamp(17px,4.4vw,20px) var(--num); letter-spacing:.08em; padding:20px 0; text-align:right; font-variant-numeric:lining-nums}
+.wdb .tl i{width:9px; height:9px; border-radius:50%; background:var(--ink); justify-self:center; position:relative; z-index:1; transform:scale(0); transition:transform .8s cubic-bezier(.3,1.7,.5,1)}
+.wdb .tl i.on{transform:scale(1)}
+.wdb .tl span{font:300 clamp(12.5px,3vw,14px)/1.5 var(--sans); letter-spacing:.04em; opacity:.35; transition:opacity 1s,transform .8s}
+.wdb .tl span.on{opacity:1}
+.wdb .tl span:hover{transform:translateX(5px)}
+
+/* dress */
+.wdb .sw{display:flex; justify-content:center; gap:16px; margin-top:22px}
+.wdb .sw i{width:26px; height:26px; border-radius:50%; background:var(--c); box-shadow:inset 0 1px 2px rgba(255,255,255,.6),0 2px 5px rgba(0,0,0,.15); transition:transform .5s cubic-bezier(.3,1.6,.5,1)}
+.wdb .sw i:hover{transform:translateY(-4px) scale(1.15)}
+.wdb .lc .in{position:absolute; inset:15%; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 4%}
+.wdb .lc .in p.t{margin-top:12px; font-size:clamp(11px,2.7vw,12.5px); line-height:1.8}
+.wdb .lc .in .sub{font-size:clamp(24px,7vw,32px)}
+.wdb .lc .in h2.h{font-size:clamp(14px,3.8vw,18px)}
+
+/* form */
+.wdb .panel{display:grid; grid-template-rows:0fr; transition:grid-template-rows .9s cubic-bezier(.2,.7,.2,1)}
+.wdb .panel.open{grid-template-rows:1fr}
+.wdb .panel>div{overflow:hidden}
+.wdb form{margin:34px auto 0; max-width:400px; display:grid; gap:22px; text-align:left}
+.wdb .f{display:grid; gap:2px; font:300 11px var(--sans); letter-spacing:.24em; text-transform:uppercase; color:var(--mute)}
+.wdb input[type=text],.wdb select{font:300 15px var(--sans); color:var(--ink); background:transparent; border:0; border-bottom:1px solid var(--ink); padding:10px 2px; width:100%; border-radius:0; transition:box-shadow .3s}
+.wdb select{appearance:none; background:linear-gradient(45deg,transparent 50%,var(--ink) 50%) right 8px center/5px 5px no-repeat}
+.wdb input[type=text]:focus,.wdb select:focus{outline:0; box-shadow:0 1px 0 var(--ink)}
+.wdb .bad input[type=text]{border-color:#9d2b22}
+.wdb .msgx{display:none; font:300 12.5px var(--sans); letter-spacing:0; text-transform:none; color:#9d2b22}
+.wdb .bad .msgx{display:block}
+.wdb .opts{display:grid; gap:8px; margin-top:6px}
+.wdb .opts label{position:relative; cursor:pointer; border:1px solid var(--ink); padding:11px 16px; font:300 13.5px var(--sans); letter-spacing:.04em; text-transform:none; color:var(--ink); text-align:center; transition:all .4s}
+.wdb .opts input{position:absolute; opacity:0}
+.wdb .opts label:hover{background:rgba(0,0,0,.05)}
+.wdb .opts label:has(input:checked){background:var(--ink); color:var(--paper)}
+.wdb .opts label:has(input:focus-visible){outline:1px solid var(--ink); outline-offset:3px}
+.wdb .send{border:0; padding:15px; font:300 12px var(--sans); letter-spacing:.3em; text-transform:uppercase; color:var(--paper); background:var(--ink); cursor:pointer; transition:letter-spacing .5s}
+.wdb .send:hover{letter-spacing:.4em}
+.wdb .thanks{display:none; text-align:center; padding:14px 0}
+.wdb .thanks h4{font:200 clamp(26px,7vw,36px)/1.3 var(--serif); transform:skewX(-8deg)}
+.wdb .thanks p{margin-top:8px}
+.wdb form.sent>*:not(.thanks){display:none}
+.wdb form.sent .thanks{display:block; animation:wdbSoft 1.2s both}
+.wdb .sig{font:400 clamp(40px,11vw,60px)/1 var(--scr); color:var(--taupe); margin-top:34px}
+.wdb .nmz{font:300 clamp(14px,3.6vw,17px) var(--sans); letter-spacing:.3em; text-transform:uppercase; margin-top:18px; padding-left:.3em}
+
+/* calendar link under the big date */
+.wdb .cal{display:inline-block; margin-top:14px; font:300 11px/1.6 var(--sans); letter-spacing:.24em; text-transform:uppercase; color:var(--mute); text-decoration:none; border-bottom:1px solid rgba(43,41,39,.3); padding:2px 0 3px .24em; transition:color .4s,border-color .4s}
+.wdb .cal:hover{color:var(--ink); border-color:var(--ink)}
+
+/* our story */
+.wdb .st{list-style:none; max-width:380px; margin:44px auto 0}
+.wdb .st li{position:relative}
+.wdb .st li+li{margin-top:22px; padding-top:58px}
+.wdb .st li+li::before{content:""; position:absolute; left:50%; top:0; width:1px; height:40px; background:linear-gradient(transparent,var(--taupe))}
+.wdb .st-y{display:block; font:300 clamp(30px,8vw,40px)/1 var(--num); letter-spacing:.12em; color:var(--taupe); font-variant-numeric:lining-nums; padding-left:.12em}
+.wdb .st-t{font:200 clamp(21px,5.6vw,26px)/1.3 var(--serif); transform:skewX(-8deg); margin-top:10px}
+.wdb .st p.t{margin-top:8px}
+
+/* places: ceremony + celebration */
+.wdb .places{padding-top:calc(var(--gap)*.6)}
+.wdb .pl{margin-top:30px}
+.wdb .pl-tm{font:300 clamp(30px,8vw,38px)/1.1 var(--num); letter-spacing:.08em; margin-top:6px; font-variant-numeric:lining-nums}
+.wdb .pl p.t{margin-top:10px}
+.wdb .pl-ad{color:var(--mute)}
+.wdb .pl .pill{margin-top:18px}
+.wdb .pl-sep{display:block; width:min(46%,180px); height:9px; margin:46px auto 4px; background:radial-gradient(circle,var(--taupe) 0 2.5px,transparent 3px) center/9px 9px no-repeat,linear-gradient(var(--taupe),var(--taupe)) center/100% 1px no-repeat; opacity:.75}
+
+/* rsvp deadline */
+.wdb p.dl{max-width:340px; margin:14px auto 0; font:300 clamp(14px,3.7vw,16px)/1.6 var(--serif); letter-spacing:.02em; color:#8a7764}
+
+@media(prefers-reduced-motion:reduce){
+  .wdb *,.wdb *::before,.wdb *::after{animation:none!important; transition:none!important}
+  .wdb .rv,.wdb .seq,.wdb .names .ch,.wdb .w>i,.wdb .mono text{opacity:1; transform:none; filter:none}
+  .wdb .ln{stroke-dashoffset:0}
+  .wdb .lc use{opacity:1}
+  .wdb .ph{clip-path:inset(0)}
+  .wdb .ph svg{transform:none}
+  .wdb .tl::before{transform:none}
+  .wdb .tl i{transform:scale(1)}
+  .wdb .tl span{opacity:1}
+  .wdb-gate{display:none}
+}
+
+/* ---------- Live content editing ---------- */
+.wdb .wdb-editable{
+  cursor:text; border-radius:3px; outline:1px dashed transparent; outline-offset:3px;
+  transition:outline-color .2s ease, background-color .2s ease;
+}
+.wdb .wdb-editable:hover{outline-color:rgba(160,141,121,.6)}
+.wdb .wdb-editable:focus{outline:1px dashed var(--taupe); background:rgba(160,141,121,.08)}
+.wdb input.wdb-edit-input{
+  font:inherit; color:var(--ink); background:var(--paper2); border:1px solid var(--taupe); border-radius:3px;
+  padding:6px 10px;
+}
+.wdb .wdb-color-edit{
+  width:26px; height:26px; padding:0; border:2px solid #fff; border-radius:50%; cursor:pointer;
+  box-shadow:0 2px 5px rgba(0,0,0,.15);
+}

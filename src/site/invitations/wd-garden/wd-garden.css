@@ -1,0 +1,148 @@
+/* =========================================================
+   "Նարե և Արամ" blossom-garden wedding invitation — ported
+   from the supplied HTML demo (wd_garden.html). Every selector
+   is scoped under .wgd so this stylesheet can never leak into
+   the rest of the site, and vice versa. The source's body /
+   :root rules live on .wgd itself; its `isolation` keeps the
+   fixed backdrop (z-index −2/−1) above the root's background.
+   ========================================================= */
+.wgd{
+  --cream:#f7f1df;--blush:#dfc6b6;--ink:#2a2023;--leaf:#3f5a35;--gold:#b5934f;--mute:rgba(42,32,35,.7);
+  --disp:"Playfair Display","Noto Serif Armenian","Mshtakan","Sylfaen",Georgia,serif;
+  --body:"Montserrat","Noto Sans Armenian","Sylfaen",system-ui,sans-serif;
+  --ease:cubic-bezier(.2,.8,.2,1);--W:600px;
+  --heart:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 22'><path d='M12 21C5 15 1 11.500 1 7a5.500 5.500 0 0 1 11-1.500A5.500 5.500 0 0 1 23 7c0 4.500-4 8-11 14Z'/></svg>");
+  --grain:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  position:relative;isolation:isolate;min-height:100vh;
+  background:#8d9072;color:var(--ink);font:300 .98rem/1.9 var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden;text-align:left;
+}
+.wgd,.wgd *{box-sizing:border-box;margin:0}
+.wgd :focus-visible{outline:1px solid var(--ink);outline-offset:4px}
+.wgd .heart{display:inline-block;width:1em;height:.92em;background:currentColor;-webkit-mask:var(--heart) center/contain no-repeat;mask:var(--heart) center/contain no-repeat}
+
+/* ---------- fixed garden backdrop ---------- */
+.wgd .bg{position:fixed;inset:-6%;z-index:-2;background:
+  radial-gradient(60% 40% at 20% 30%,rgba(235,214,176,.75),transparent 70%),
+  radial-gradient(50% 40% at 80% 70%,rgba(163,177,125,.8),transparent 70%),
+  radial-gradient(40% 30% at 70% 15%,rgba(190,205,200,.7),transparent 70%),#8d9072;filter:blur(18px)}
+.wgd .bg::after{content:"";position:absolute;left:8%;right:8%;top:6%;bottom:-10%;border:2px solid rgba(247,241,223,.28);border-radius:50% 50% 0 0/22% 22% 0 0}
+.wgd .bf{position:fixed;left:0;top:0;z-index:-1;width:34px;opacity:.85;animation:wgd-drift var(--t,26s) linear var(--dl,0s) infinite;pointer-events:none}
+.wgd .bf g{transform-box:fill-box;transform-origin:center;animation:wgd-flap .5s ease-in-out infinite alternate}
+@keyframes wgd-flap{to{transform:scaleX(.3)}}
+@keyframes wgd-drift{0%{transform:translate(-8vw,70vh) rotate(25deg)}25%{transform:translate(22vw,40vh) rotate(-10deg)}50%{transform:translate(52vw,58vh) rotate(18deg)}75%{transform:translate(78vw,22vh) rotate(-14deg)}100%{transform:translate(110vw,36vh) rotate(20deg)}}
+
+/* ---------- reveal ---------- */
+.wgd .rv{opacity:0;transform:translateY(26px);transition:opacity 1.1s var(--ease),transform 1.1s var(--ease);transition-delay:calc(var(--i,0)*110ms)}
+.wgd .rv.in{opacity:1;transform:none}
+.wgd .mask{overflow:hidden;padding:.1em 0 .2em}.wgd .mask>span{display:block;transform:translateY(115%);transition:transform 1.2s var(--ease)}.wgd .mask.in>span{transform:none}
+.wgd .fw{transform-box:fill-box;transform-origin:center;transform:scale(0);transition:transform 1.3s cubic-bezier(.3,1.5,.4,1) var(--d,0s)}
+.wgd .in .fw,.wgd .in.fw{transform:scale(1)}
+.wgd .tw{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 2.2s var(--ease)}
+.wgd .in .tw{stroke-dashoffset:0}
+.wgd .band{display:block;width:100%;height:auto;animation:wgd-sway 9s ease-in-out infinite alternate;transform-origin:50% 0;pointer-events:none}
+.wgd .band.flip{transform-origin:50% 100%}
+@keyframes wgd-sway{to{transform:rotate(.7deg)}}
+
+/* ---------- gate (entrance) ---------- */
+.wgd .gate{position:fixed;inset:0;z-index:100;background:var(--cream);display:grid;place-items:center;cursor:pointer;transition:opacity 1.4s .1s,transform 1.8s cubic-bezier(.6,0,.2,1),visibility 0s 1.6s}
+.wgd .gate .band{position:absolute;left:50%;width:max(100%,700px);transform:translateX(-50%)}
+.wgd .gate .t{top:0}.wgd .gate .b{bottom:0}
+.wgd .gate.go{opacity:0;transform:scale(1.25);visibility:hidden;pointer-events:none}
+.wgd .gate small{position:absolute;bottom:max(2rem,env(safe-area-inset-bottom));left:0;right:0;text-align:center;font-size:.78rem;letter-spacing:.14em;color:var(--mute);animation:wgd-pl 3s ease-in-out infinite;z-index:2}
+@keyframes wgd-pl{50%{opacity:.4}}
+
+/* ---------- cartouche ---------- */
+.wgd .cart{position:relative;z-index:3;text-align:center;background:var(--cream);padding:1.6rem 2.6rem;font:400 clamp(1.3rem,5.4vw,1.8rem)/1.35 var(--disp);letter-spacing:.1em;text-transform:uppercase;
+  -webkit-mask:radial-gradient(circle 15px at 0 0,#0000 97%,#000) top left/51% 51% no-repeat,radial-gradient(circle 15px at 100% 0,#0000 97%,#000) top right/51% 51% no-repeat,radial-gradient(circle 15px at 0 100%,#0000 97%,#000) bottom left/51% 51% no-repeat,radial-gradient(circle 15px at 100% 100%,#0000 97%,#000) bottom right/51% 51% no-repeat;
+  mask:radial-gradient(circle 15px at 0 0,#0000 97%,#000) top left/51% 51% no-repeat,radial-gradient(circle 15px at 100% 0,#0000 97%,#000) top right/51% 51% no-repeat,radial-gradient(circle 15px at 0 100%,#0000 97%,#000) bottom left/51% 51% no-repeat,radial-gradient(circle 15px at 100% 100%,#0000 97%,#000) bottom right/51% 51% no-repeat}
+.wgd .cart::before{content:"";position:absolute;inset:7px;border:1px solid rgba(63,90,53,.55);pointer-events:none}
+.wgd .cart i{display:block;font-style:normal;font-size:.7em;color:var(--gold);line-height:1.1;margin:.1em 0}
+.wgd .cart>span{display:block;opacity:0;transform:translateY(12px);animation:wgd-up 1s var(--ease) forwards;animation-delay:var(--a,.6s)}
+@keyframes wgd-up{to{opacity:1;transform:none}}
+
+/* ---------- ribbon ---------- */
+.wgd .ribbon{width:min(100%,var(--W));margin:0 auto;background:var(--cream);position:relative;box-shadow:0 30px 80px -30px rgba(30,25,15,.6)}
+.wgd .hero{position:relative;height:min(100svh,920px);min-height:620px;overflow:hidden;display:grid;place-items:center;background:#c9b78e;isolation:isolate}
+.wgd .hero svg.sc{position:absolute;inset:-3% 0;width:100%;height:106%;z-index:-1}
+.wgd .hero .band{position:absolute;left:0;z-index:1}
+.wgd .hero .bt{top:-2px}.wgd .hero .bb{bottom:-2px}
+.wgd .hero .lab{position:absolute;top:24%;left:0;right:0;text-align:center;z-index:2;color:var(--cream);font-size:.78rem;letter-spacing:.3em;text-shadow:0 1px 8px rgba(0,0,0,.4)}
+.wgd .hero .cart{margin-top:6vh}
+.wgd .hero .cart>span{--a:1.6s}.wgd .hero .cart>span:nth-child(2){--a:1.75s}.wgd .hero .cart>span:nth-child(3){--a:1.9s}
+.wgd .scrollcue{position:absolute;bottom:1.4rem;left:50%;width:1px;height:3rem;background:rgba(247,241,223,.4);overflow:hidden;z-index:3}
+.wgd .scrollcue::after{content:"";position:absolute;inset:-100% 0 auto;height:100%;background:var(--cream);animation:wgd-cue 2.2s var(--ease) infinite}
+@keyframes wgd-cue{to{top:100%}}
+
+.wgd .sec{padding:clamp(4rem,12vw,6rem) clamp(1.6rem,8vw,3.5rem);text-align:center;position:relative}
+.wgd .h{font:400 clamp(1.8rem,7vw,2.4rem)/1.35 var(--disp);letter-spacing:.1em;text-transform:uppercase;margin-bottom:1.4rem}
+.wgd .sec p{max-width:27rem;margin-inline:auto;color:var(--mute)}
+.wgd .lead{font:300 1.12rem/1.9 var(--disp);color:var(--ink)!important}
+.wgd .date{font:400 clamp(2.3rem,9vw,3.2rem)/1.2 var(--disp);letter-spacing:.06em;text-shadow:0 1px 0 #fff,0 -1px 1px rgba(0,0,0,.18);margin-bottom:.6rem}
+.wgd .cd{font-size:.92rem;color:var(--mute);letter-spacing:.05em}.wgd .cd b{font:400 1.3rem var(--disp);color:var(--ink);margin:0 .2rem}
+.wgd .cal{max-width:21rem;margin:2.2rem auto 0}
+.wgd .cal h3{font:400 .8rem var(--body);letter-spacing:.14em;color:var(--mute);margin-bottom:.8rem}
+.wgd .grid{display:grid;grid-template-columns:repeat(7,1fr);row-gap:.3rem;font-size:.86rem}
+.wgd .grid b{font-weight:400;font-size:.74rem;color:var(--mute)}
+.wgd .grid span{position:relative;opacity:0;transition:opacity .7s;transition-delay:calc(var(--i)*16ms)}.wgd .in .grid span{opacity:1}
+.wgd .grid .on{color:var(--cream);z-index:0}
+.wgd .grid .on::before{content:"";position:absolute;left:50%;top:50%;width:2.1rem;height:1.9rem;margin:-.95rem 0 0 -1.05rem;background:var(--ink);-webkit-mask:var(--heart) center/contain no-repeat;mask:var(--heart) center/contain no-repeat;z-index:-1;animation:wgd-beat 2.4s ease-in-out infinite}
+@keyframes wgd-beat{50%{transform:scale(1.14)}}
+.wgd .venue b{display:block;font:400 1.35rem/1.5 var(--disp);letter-spacing:.04em}
+.wgd .btn{font:400 .85rem var(--body);letter-spacing:.1em;text-transform:uppercase;display:inline-block;margin-top:1.8rem;padding:.9rem 2rem;border:1px solid var(--ink);border-radius:999px;color:var(--ink);text-decoration:none;position:relative;overflow:hidden;z-index:0;background:none;cursor:pointer;transition:color .5s}
+.wgd .btn::before{content:"";position:absolute;inset:0;background:var(--ink);transform:translateY(101%);transition:transform .55s var(--ease);z-index:-1;border-radius:inherit}
+.wgd .btn:hover,.wgd .btn:focus-visible{color:var(--cream)}.wgd .btn:hover::before,.wgd .btn:focus-visible::before{transform:none}
+.wgd .btn:active{transform:scale(.98)}
+
+/* timeline arch */
+.wgd .archwrap{position:relative;margin-top:2rem}
+.wgd .archwrap>.band{position:relative;z-index:2}
+.wgd .archwrap>.band.bt{margin-bottom:-4.5rem}.wgd .archwrap>.band.bb{margin-top:-4.5rem}
+.wgd .arch{position:relative;background:var(--blush);border-radius:50%/5%;padding:6rem 1.5rem 5.5rem;text-align:center;overflow:hidden}
+.wgd .arch::after{content:"";position:absolute;inset:0;background:var(--grain);opacity:.12;mix-blend-mode:multiply;pointer-events:none}
+.wgd .tl{position:relative;max-width:26rem;margin:2.4rem auto 0;padding:2rem 0}
+.wgd .ln{position:absolute;left:50%;top:1rem;bottom:1rem;width:2px;margin-left:-1px;background:var(--ink);transform:scaleY(0);transform-origin:top;transition:transform 2.4s .2s cubic-bezier(.6,0,.2,1)}
+.wgd .in .ln{transform:none}
+.wgd .tl .hh{position:absolute;left:50%;width:1.7rem;margin-left:-.85rem;color:var(--ink);transform:scale(0);transition:transform .8s cubic-bezier(.3,1.5,.4,1)}
+.wgd .tl .h1{top:-.4rem}.wgd .tl .h2{bottom:-.4rem;transition-delay:2.4s}.wgd .in .hh{transform:scale(1)}
+.wgd .it{position:relative;display:grid;grid-template-columns:1fr 1fr;min-height:6.2rem;align-items:center}
+.wgd .it div{padding:0 1.6rem}.wgd .it.l div{grid-column:1;text-align:right}.wgd .it.r div{grid-column:2;text-align:left}
+.wgd .it time{display:block;font:400 1.5rem/1.2 var(--disp);letter-spacing:.04em}
+.wgd .it div>span{font-size:.82rem;color:var(--ink);opacity:.8;line-height:1.5;display:block}
+.wgd .it div{opacity:0;transition:opacity 1s,transform 1s var(--ease);transform:translateX(var(--x));transition-delay:calc(var(--i)*.7s + .5s)}
+.wgd .it.l{--x:-14px}.wgd .it.r{--x:14px}.wgd .in .it div{opacity:1;transform:none}
+.wgd .it .m{position:absolute;top:50%;width:.7rem;color:var(--ink);animation:wgd-fl 4s ease-in-out infinite alternate}
+.wgd .it.l .m{left:76%}.wgd .it.r .m{left:22%}
+@keyframes wgd-fl{to{transform:translateY(-9px)}}
+
+/* rsvp */
+.wgd .f{max-width:23rem;margin:2.2rem auto 0;display:flex;flex-direction:column;gap:1.6rem;text-align:left}
+.wgd .f input[type=text]{width:100%;font:400 .85rem var(--body);letter-spacing:.12em;text-transform:uppercase;text-align:center;color:var(--ink);background:none;border:1px solid var(--ink);border-radius:999px;padding:.95rem 1rem;transition:background .4s,box-shadow .4s}
+.wgd .f input[type=text]::placeholder{color:rgba(42,32,35,.7)}
+.wgd .f input[type=text]:focus{outline:0;background:#fff8;box-shadow:0 0 0 4px rgba(181,147,79,.25)}
+.wgd .f legend{font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.6rem;color:var(--ink)}
+.wgd .f fieldset{border:0;padding:0 0 0 .8rem;display:flex;flex-direction:column;gap:.4rem}
+.wgd .f label{display:flex;align-items:center;gap:.7rem;font-size:.86rem;cursor:pointer;width:max-content;transition:transform .3s}
+.wgd .f label:hover{transform:translateX(4px)}
+.wgd .f input[type=radio]{appearance:none;-webkit-appearance:none;width:1.05rem;height:1.05rem;border:1px solid var(--ink);border-radius:50%;margin:0;display:grid;place-items:center;cursor:pointer}
+.wgd .f input[type=radio]::after{content:"";width:.5rem;height:.5rem;border-radius:50%;background:var(--ink);transform:scale(0);transition:transform .35s cubic-bezier(.3,1.6,.4,1)}
+.wgd .f input[type=radio]:checked::after{transform:scale(1)}
+.wgd .f .go{margin:.4rem 0 0;width:100%;background:var(--ink);color:var(--cream);padding:1rem;font-size:.85rem}
+.wgd .f .go::before{background:var(--leaf)}.wgd .f .go:hover{color:var(--cream)}
+.wgd .note{min-height:1.6em;text-align:center;color:var(--leaf);font-size:.9rem}
+.wgd .sent .go{background:var(--leaf);border-color:var(--leaf)}
+
+/* footer */
+.wgd .foot{position:relative;height:min(78svh,560px);overflow:hidden;display:grid;place-items:end center;text-align:center;color:var(--cream);isolation:isolate;margin-top:-2.4rem}
+.wgd .foot svg.sc{position:absolute;inset:-4% 0;width:100%;height:108%;z-index:-1}
+.wgd .foot::before{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(180deg,rgba(247,241,223,0) 55%,rgba(40,35,20,.55))}
+.wgd .foot .t2{position:relative;z-index:2;padding:0 1.5rem 3.2rem;font:400 clamp(1.4rem,6vw,1.9rem)/1.5 var(--disp);letter-spacing:.12em;text-transform:uppercase;text-shadow:0 2px 12px rgba(0,0,0,.4)}
+.wgd .foot .t2 i{display:block;font-style:normal;font-size:.7em;color:#f1d9a6}
+.wgd .foot .t2 small{display:block;margin-top:.8rem;font:300 .8rem var(--body);letter-spacing:.14em;text-transform:none;opacity:.9}
+
+@media(prefers-reduced-motion:reduce){.wgd *,.wgd *::before,.wgd *::after{animation-duration:.01s!important;animation-delay:0s!important;transition-duration:.01s!important;transition-delay:0s!important}.wgd .bf{display:none}.wgd .rv,.wgd .mask>span{opacity:1;transform:none}}
+
+/* edit mode (not in the source) */
+.wgd .wdb-editable{outline:1px dashed transparent;border-radius:4px;transition:outline-color .15s}
+.wgd .wdb-editable:hover,.wgd .wdb-editable:focus{outline-color:var(--gold)}
+.wgd .wdb-edit-input{font:inherit;color:var(--ink);background:#fff;border:1.5px dashed var(--gold);border-radius:8px;padding:2px 6px;max-width:100%}
+.wgd .date .wdb-edit-input{font-size:.5em;text-shadow:none}

@@ -1,0 +1,127 @@
+/* =========================================================
+   "bd-balloons" — storybook friends floating on blue balloons
+   over a pale sky that warms to cream. Characters are sprites
+   cut from the supplied illustration (assets/*.webp), placed in
+   cqw of the page so none is ever cropped. Scoped under .bbl.
+   ========================================================= */
+.bbl{
+  --ink:#3d4a63;--soft:#7a8499;--sky:#b8d0ec;--sky-d:#5f7898;--honey:#f3d27a;--honey-d:#b98d2c;--pink:#f2bccb;--pink-d:#b9788b;
+  --sans:"Noto Sans Armenian","Sylfaen",system-ui,sans-serif;
+  --num:"Cormorant Garamond","Noto Serif Armenian",Georgia,serif;
+  --ease:cubic-bezier(.22,.8,.24,1);
+  --sketch:255px 15px 225px 15px/15px 225px 15px 255px;
+  min-height:100vh;color:var(--ink);font:400 1rem/1.8 var(--sans);text-align:center;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+  background:linear-gradient(180deg,#e4eef9 0,#eff4fa 22%,#f8f7f2 55%,#fbf8f1 100%);
+}
+.bbl,.bbl *{box-sizing:border-box;margin:0;padding:0}
+.bbl :focus-visible{outline:2px dashed var(--sky-d);outline-offset:4px}
+.bbl .page{position:relative;width:min(100%,500px);margin:0 auto;container-type:inline-size}
+.bbl .sec{position:relative;padding:3.4rem 1.6rem}
+
+/* soft watercolour clouds behind the hero */
+.bbl .hero::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(28cqw 10cqw at 22% 64%,rgba(255,255,255,.9),transparent 70%),radial-gradient(34cqw 11cqw at 80% 46%,rgba(255,255,255,.85),transparent 70%),radial-gradient(30cqw 9cqw at 55% 18%,rgba(255,255,255,.7),transparent 70%)}
+
+/* ---------- reveal ---------- */
+.bbl .r{opacity:0;transform:translateY(14px);transition:opacity 1s var(--ease),transform 1s var(--ease);transition-delay:calc(var(--i,0)*140ms + .05s)}
+.bbl .sec.in .r{opacity:1;transform:none}
+
+/* ---------- type ---------- */
+.bbl .hd{display:flex;flex-direction:column;align-items:center;margin-bottom:1.2rem}
+.bbl h2{font:600 1.4rem/1.4 var(--sans)}
+.bbl .squig{width:110px;height:12px;margin-top:.2rem;fill:none;stroke:var(--honey-d);stroke-width:2;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.4s var(--ease) .4s}
+.bbl .sec.in .squig{stroke-dashoffset:0}
+.bbl .body{max-width:24rem;margin:0 auto}
+
+/* ---------- characters ---------- */
+.bbl .buddy{position:absolute;z-index:1;cursor:pointer;-webkit-tap-highlight-color:transparent;transform-origin:50% 0;animation:bbl-float var(--t,6s) ease-in-out var(--d,0s) infinite alternate}
+.bbl .buddy img{display:block;width:100%;height:auto;transform-origin:50% 0;user-select:none;-webkit-user-select:none}
+.bbl .buddy img.boing{animation:bbl-boing .9s var(--ease)}
+@keyframes bbl-float{from{transform:translateY(0) rotate(-1.2deg)}to{transform:translateY(-8px) rotate(1.2deg)}}
+@keyframes bbl-sway{from{transform:rotate(-3deg)}to{transform:rotate(3deg)}}
+@keyframes bbl-boing{20%{transform:rotate(7deg) scale(1.05)}45%{transform:rotate(-6deg)}70%{transform:rotate(3deg)}}
+/* Pooh's balloon and Piglet's string run off the top of the source
+   drawing, so both hang from the page's top edge (slightly above it, so
+   the sway never opens a gap) and sway instead of bobbing. */
+.bbl .pooh{left:2cqw;top:-1.5cqw;width:37cqw;animation-name:bbl-sway-s;--t:6.5s}
+.bbl .piglet{left:40.5cqw;top:-1cqw;width:20cqw;animation-name:bbl-sway;--t:4.5s}
+@keyframes bbl-sway-s{from{transform:rotate(-1deg)}to{transform:rotate(1deg)}}
+.bbl .eeyore{right:2cqw;top:6cqw;width:32cqw;--t:7.5s;--d:-2s}
+.bbl .tigger{position:relative;width:28cqw;margin:0 auto 1.4rem;--t:5.5s}
+
+/* ---------- balloons (age, countdown, thanks) ---------- */
+.bbl .balloon{position:relative;display:inline-block;width:4.4rem;aspect-ratio:100/150}
+.bbl .balloon svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.bbl .balloon .body{fill:var(--sky);stroke:var(--sky-d);stroke-width:1.6;filter:url(#bbl-wobble)}
+.bbl .balloon .knot{fill:var(--sky);stroke:var(--sky-d);stroke-width:1.2}
+.bbl .balloon .str{fill:none;stroke:var(--soft);stroke-width:1.2;stroke-linecap:round}
+.bbl .balloon .shine{fill:#fff;opacity:.55}
+.bbl .balloon.honey .body,.bbl .balloon.honey .knot{fill:var(--honey);stroke:var(--honey-d)}
+.bbl .balloon.pink .body,.bbl .balloon.pink .knot{fill:var(--pink);stroke:var(--pink-d)}
+.bbl .balloon>span{position:absolute;left:0;right:0;top:4%;height:66%;display:grid;place-items:center;font:italic 600 1.7rem/1 var(--num);color:var(--ink)}
+
+/* ---------- hero ---------- */
+.bbl .hero{min-height:max(640px,100svh);padding-top:calc(94cqw + .5rem);padding-bottom:2.2rem;display:flex;flex-direction:column;justify-content:center}
+.bbl .htxt{position:relative;z-index:2}
+.bbl .kicker{font:500 .74rem/1.6 var(--sans);letter-spacing:.26em;text-transform:uppercase;color:var(--soft)}
+.bbl .title{font:600 clamp(1.6rem,7.6vw,2.2rem)/1.3 var(--sans);margin-top:.3rem}
+.bbl .balloon.age{width:clamp(96px,27vw,120px);margin-top:.6rem;animation:bbl-float 5s ease-in-out infinite alternate;transform-origin:50% 100%}
+.bbl .balloon.age>span{font-size:clamp(3.4rem,15vw,4.3rem);padding-bottom:.05em}
+.bbl .when{font:500 1.02rem/1.6 var(--sans);margin-top:.5rem}
+.bbl .hint{font-size:.78rem;color:var(--soft);margin-top:.3rem}
+
+/* ---------- countdown ---------- */
+.bbl .cd{display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;max-width:22rem;margin:0 auto}
+.bbl .cd>div{display:flex;flex-direction:column;align-items:center}
+.bbl .cd .balloon{animation:bbl-float 4s ease-in-out calc(var(--k) * -1s) infinite alternate;transform-origin:50% 100%}
+.bbl .cd small{font-size:.76rem;color:var(--soft);margin-top:-.2rem}
+
+/* ---------- program ---------- */
+.bbl .prog ol{list-style:none;max-width:20rem;margin:0 auto;display:flex;flex-direction:column;gap:.7rem}
+.bbl .prog li{display:grid;grid-template-columns:4.6rem 1fr;align-items:center;gap:.8rem;text-align:left;padding:.55rem .9rem;background:rgba(255,255,255,.6);border:1.5px solid rgba(95,120,152,.45);border-radius:var(--sketch)}
+.bbl .prog li:nth-child(even){border-radius:15px 225px 15px 255px/255px 15px 225px 15px}
+.bbl .prog time{font:italic 600 1.4rem/1 var(--num);color:var(--sky-d)}
+.bbl .prog li>span{line-height:1.45}
+
+/* ---------- venue ---------- */
+.bbl .venue h3{font:600 1.15rem/1.5 var(--sans)}
+.bbl .addr{color:var(--soft)}
+.bbl .btn{display:inline-flex;align-items:center;justify-content:center;min-height:3rem;margin-top:1.1rem;padding:.55rem 1.6rem;font:500 .95rem var(--sans);color:var(--ink);text-decoration:none;background:#fff;border:2px solid var(--ink);border-radius:var(--sketch);cursor:pointer;box-shadow:3px 3px 0 rgba(61,74,99,.15);transition:transform .25s var(--ease),background .25s}
+.bbl .btn:hover{transform:translate(-1px,-2px) rotate(-1deg);background:#eef4fb}
+.bbl .btn:active{transform:translate(1px,1px)}
+
+/* ---------- rsvp ---------- */
+.bbl .form{max-width:20rem;margin:1.5rem auto 0;display:flex;flex-direction:column;gap:1.3rem;text-align:left}
+.bbl .field{display:flex;flex-direction:column;gap:.15rem;font-size:.85rem;color:var(--soft)}
+.bbl .field input,.bbl .field select{font:400 1.05rem var(--sans);color:var(--ink);background:transparent;border:0;border-bottom:2px solid var(--ink);border-radius:0 0 40px 6px/0 0 4px 3px;padding:.4rem .1rem;width:100%}
+.bbl .field select{appearance:none;-webkit-appearance:none;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' fill='none' stroke='%233d4a63' stroke-width='1.5'/></svg>") right .3rem center no-repeat}
+.bbl .field input:focus,.bbl .field select:focus{outline:0;border-color:var(--sky-d)}
+.bbl .field input[aria-invalid]{border-color:var(--pink-d)}
+.bbl .err{color:#a8475e;font-size:.82rem}
+.bbl .choice{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.bbl .choice label{position:relative;display:flex;align-items:center;justify-content:center;min-height:3rem;padding:.4rem .5rem;font-size:.92rem;line-height:1.35;text-align:center;background:#fff;border:2px solid var(--ink);border-radius:var(--sketch);cursor:pointer;transition:background .3s,transform .25s}
+.bbl .choice label:nth-child(2){border-radius:15px 225px 15px 255px/255px 15px 225px 15px}
+.bbl .choice label.on{background:var(--sky);transform:rotate(-1deg)}
+.bbl .choice input{position:absolute;opacity:0;pointer-events:none}
+.bbl .choice label:has(:focus-visible){outline:2px dashed var(--sky-d);outline-offset:3px}
+.bbl .send{width:100%;margin-top:.3rem;background:var(--honey)}
+.bbl .send:hover{background:#f6db93}
+.bbl .thanks{position:relative;max-width:20rem;margin:2.6rem auto 0;padding:1.6rem 1.2rem;font:500 1.1rem/1.6 var(--sans);background:#fff;border:2px solid var(--ink);border-radius:var(--sketch);animation:bbl-pop .7s var(--ease)}
+.bbl .thanks .balloon{position:absolute;width:2.2rem;animation:bbl-rise 1.6s var(--ease) both}
+.bbl .thanks .b1{left:-.8rem;top:-2.6rem}.bbl .thanks .b2{right:-.4rem;top:-2.2rem;animation-delay:.15s}.bbl .thanks .b3{right:2rem;top:-3rem;width:1.8rem;animation-delay:.3s}
+@keyframes bbl-pop{from{opacity:0;transform:scale(.7) rotate(-6deg)}}
+@keyframes bbl-rise{from{opacity:0;transform:translateY(40px) scale(.6)}}
+
+/* ---------- closing ---------- */
+.bbl .closing{padding-bottom:4.5rem}
+.bbl .line{font-size:1.02rem}
+.bbl .sig{font:600 1.35rem/1.5 var(--sans);margin-top:.2rem}
+
+/* ---------- edit mode ---------- */
+.bbl .wdb-editable{outline:1.5px dashed transparent;border-radius:4px;transition:outline-color .15s}
+.bbl .wdb-editable:hover,.bbl .wdb-editable:focus{outline-color:var(--sky-d)}
+.bbl .wdb-edit-input{font:400 1rem var(--sans);color:var(--ink);background:#fff;border:1.5px dashed var(--sky-d);border-radius:6px;padding:2px 6px;max-width:100%}
+
+@media (prefers-reduced-motion:reduce){
+  .bbl *,.bbl *::before,.bbl *::after{animation:none!important;transition-duration:.01s!important;transition-delay:0s!important}
+}

@@ -1,0 +1,105 @@
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import { getByPath, setByPath, deepMerge } from './pathUtils'
+import { loadOverride, saveOverride, clearOverride } from './storage'
+
+const Ctx = createContext(null)
+
+// The live-editing core every invitation design's components use via
+// useInvitationContent(). It knows nothing about *where* edits are kept or
+// how edit mode is toggled — the host decides that through props:
+//   defaultData  the design's base content
+//   saved        previously saved edits, merged on top of defaultData
+//   onSave(next) called with the full edited content after every change
+//   onReset()    called when the user discards their edits
+//   editing / setEditing  controlled edit-mode flag
+// Hosts today: InvitationEditProvider below (public /invitations preview:
+// ?edit query param + localStorage) and the dashboard's InvitationStudio
+// (local state + the event's own record in the database).
+//
+// This is the "all invitations will have this functionality" piece: any
+// new design just needs to register a slug + defaultData and build its
+// text with <Editable path="..."/> — it gets edit mode, persistence and
+// reset for free, with no invitation-specific editing code of its own.
+//   guestName    the guest this copy is for (personal link) — designs show
+//                their personalized greeting with it (see GuestGreeting.jsx)
+//   onRsvp       called with {name, status, plus, note} when a guest
+//                submits the design's RSVP form, if the host records RSVPs
+//   skipIntro    open straight to the content (no envelope/curtain)
+//   live         keep following `defaultData` when the host replaces it
+//                (the dashboard preview while settings change)
+export function InvitationContentProvider({ defaultData, saved, onSave, onReset, editing, setEditing, guestName = null, onRsvp, skipIntro = false, live = false, children }) {
+  const [data, setData] = useState(() => deepMerge(defaultData, saved))
+  const [dirty, setDirty] = useState(() => saved != null)
+  // Latest content, read synchronously so onSave (which may update the
+  // host's own state) runs outside any setState updater.
+  const dataRef = useRef(data)
+
+  useEffect(() => {
+    if (!live) return
+    const next = deepMerge(defaultData, saved)
+    dataRef.current = next
+    setData(next)
+  }, [live, defaultData]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  function setField(path, value) {
+    const prev = dataRef.current
+    if (getByPath(prev, path) === value) return
+    const next = setByPath(prev, path, value)
+    dataRef.current = next
+    setData(next)
+    setDirty(true)
+    onSave?.(next)
+  }
+
+  function reset() {
+    dataRef.current = defaultData
+    setData(defaultData)
+    setDirty(false)
+    onReset?.()
+  }
+
+  const value = useMemo(
+    () => ({ data, editing, setEditing, setField, reset, dirty, guestName, onRsvp, skipIntro }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [data, editing, dirty, guestName, onRsvp, skipIntro],
+  )
+
+  return <Ctx.Provider value={value}>{children}</Ctx.Provider>
+}
+
+// Public /invitations/preview/:slug host — edit mode lives in the `?edit`
+// query param, edits persist in this browser's localStorage per slug.
+export function InvitationEditProvider({ slug, defaultData, children }) {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [saved] = useState(() => loadOverride(slug))
+  const editing = searchParams.has('edit')
+
+  function setEditing(next) {
+    setSearchParams((prev) => {
+      const p = new URLSearchParams(prev)
+      if (next) p.set('edit', '1')
+      else p.delete('edit')
+      return p
+    }, { replace: true })
+  }
+
+  return (
+    <InvitationContentProvider
+      defaultData={defaultData}
+      saved={saved}
+      onSave={(next) => saveOverride(slug, next)}
+      onReset={() => clearOverride(slug)}
+      editing={editing}
+      setEditing={setEditing}
+    >
+      {children}
+    </InvitationContentProvider>
+  )
+}
+
+export function useInvitationContent() {
+  const ctx = useContext(Ctx)
+  if (!ctx) throw new Error('useInvitationContent must be used within an InvitationContentProvider')
+  return ctx
+}

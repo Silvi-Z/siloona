@@ -1,0 +1,160 @@
+/* =========================================================
+   "Նարե և Արամ" sage & olive garden wedding invitation —
+   ported from the supplied HTML demo (wd_green.html). Every
+   selector is scoped under .wgr so this stylesheet can never
+   leak into the rest of the site, and vice versa. The source's
+   body / :root rules live on .wgr itself.
+   ========================================================= */
+.wgr{
+  --sage:#bcbfa8;--ivory:#fdf8ec;--olive:#8d9a6e;--moss:#4a5236;--cocoa:#3e2c24;--taupe:#7a6a60;--line:rgba(62,44,36,.28);
+  --serif:"Cormorant Garamond","Noto Serif Armenian","Mshtakan","Sylfaen",Georgia,serif;
+  --ease:cubic-bezier(.2,.8,.2,1);
+  --grain:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  --heart:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 22'><path d='M12 21C5 15 1 11.500 1 7a5.500 5.500 0 0 1 11-1.500A5.500 5.500 0 0 1 23 7c0 4.500-4 8-11 14Z'/></svg>");
+  min-height:100vh;
+  background:var(--sage);color:var(--cocoa);font:300 1.1rem/1.85 var(--serif);-webkit-font-smoothing:antialiased;overflow-x:hidden;text-align:left;
+}
+.wgr,.wgr *{box-sizing:border-box;margin:0}
+.wgr .grain{position:relative}.wgr .grain::after{content:"";position:absolute;inset:0;background:var(--grain);opacity:.16;mix-blend-mode:multiply;pointer-events:none}
+.wgr a{color:inherit}
+.wgr :focus-visible{outline:1px solid var(--cocoa);outline-offset:4px}
+
+/* ---------- reveal primitives ---------- */
+.wgr .rv{opacity:0;transform:translateY(28px);transition:opacity 1.1s var(--ease),transform 1.1s var(--ease);transition-delay:calc(var(--i,0)*120ms)}
+.wgr .rv.in{opacity:1;transform:none}
+.wgr .mask{overflow:hidden;padding:.12em 0 .22em}
+.wgr .mask>span{display:block;transform:translateY(115%);transition:transform 1.2s var(--ease);transition-delay:calc(var(--i,0)*120ms)}
+.wgr .mask.in>span{transform:none}
+.wgr .draw path,.wgr .draw circle{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 2s var(--ease)}
+.wgr .draw.in path,.wgr .draw.in circle{stroke-dashoffset:0}
+
+/* ---------- opening curtain ---------- */
+.wgr .curtain{position:fixed;inset:0;z-index:100;display:grid;place-items:center;text-align:center;cursor:pointer}
+.wgr .half{position:absolute;top:0;bottom:0;width:50.2%;background:var(--ivory);transition:transform 1.6s .25s cubic-bezier(.77,0,.18,1)}
+.wgr .half.l{left:0}.wgr .half.r{right:0}
+.wgr.opened .half.l{transform:translateX(-101%)}.wgr.opened .half.r{transform:translateX(101%)}
+.wgr.opened .curtain{pointer-events:none;visibility:hidden;transition:visibility 0s 2s}
+.wgr .cin{position:relative;z-index:2;transition:opacity .8s,transform 1.2s var(--ease)}
+.wgr.opened .cin{opacity:0;transform:scale(1.08)}
+.wgr .mono{width:min(54vw,230px);height:auto;display:block;margin:0 auto 1.6rem;color:var(--cocoa)}
+.wgr .mono path,.wgr .mono circle{stroke-dashoffset:1;animation:wgr-dr 2.4s .3s var(--ease) forwards}
+@keyframes wgr-dr{to{stroke-dashoffset:0}}
+.wgr .mono text{font:300 38px var(--serif);fill:currentColor;opacity:0;animation:wgr-fi 1.4s 1.3s forwards}
+@keyframes wgr-fi{to{opacity:1}}
+.wgr .cn{font-size:clamp(1.5rem,5vw,2.1rem);letter-spacing:.04em;font-weight:300}
+.wgr .cn span{display:inline-block;opacity:0;transform:translateY(14px);animation:wgr-up .9s var(--ease) forwards;animation-delay:calc(1.4s + var(--k)*45ms)}
+@keyframes wgr-up{to{opacity:1;transform:none}}
+.wgr .ctap{margin-top:1.4rem;font-size:.85rem;letter-spacing:.06em;color:var(--taupe);opacity:0;animation:wgr-fi 1s 2.6s forwards}
+
+/* ---------- hero ---------- */
+.wgr .hero{position:relative;min-height:100svh;overflow:hidden;background:#2f3622;color:var(--ivory);display:grid;place-items:center;text-align:center;isolation:isolate}
+.wgr .art{position:absolute;inset:-4% 0;z-index:-2}
+.wgr .art svg{position:absolute;inset:0;width:100%;height:100%}
+.wgr .hero::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(28,32,18,.35),rgba(28,32,18,.1) 40%,rgba(28,32,18,.6))}
+.wgr .bokeh i{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,244,214,.75),rgba(255,244,214,0) 70%);animation:wgr-fl 9s ease-in-out infinite alternate}
+@keyframes wgr-fl{to{transform:translate(14px,-18px);opacity:.5}}
+.wgr .veil{animation:wgr-vl 11s ease-in-out infinite alternate;transform-origin:30% 60%}
+@keyframes wgr-vl{to{transform:translate(-18px,-8px) skewX(-3deg)}}
+.wgr .htxt{padding:6rem 1.5rem 7rem;max-width:760px}
+.wgr .std{font-size:clamp(1rem,2.4vw,1.25rem);letter-spacing:.1em;opacity:.9}
+.wgr .hn{font-weight:300;font-size:clamp(3.4rem,13vw,8rem);line-height:1.12;margin:.6rem 0 .4rem}
+.wgr .hn em{display:block;font-style:normal;font-size:.32em;opacity:.85;margin:.1em 0}
+.wgr .hd{display:inline-flex;align-items:center;gap:1.2rem;font-size:clamp(1.1rem,3vw,1.5rem);letter-spacing:.18em}
+.wgr .hd::before,.wgr .hd::after{content:"";width:clamp(1.8rem,8vw,4rem);height:1px;background:currentColor;opacity:.6}
+.wgr .cue{position:absolute;bottom:1.6rem;left:50%;width:1px;height:3.4rem;background:rgba(253,248,236,.35);overflow:hidden}
+.wgr .cue::after{content:"";position:absolute;left:0;top:-100%;width:1px;height:100%;background:var(--ivory);animation:wgr-cue 2.2s var(--ease) infinite}
+@keyframes wgr-cue{to{top:100%}}
+.wgr .hero .rv{transition-delay:calc(var(--i,0)*180ms + .9s)}
+
+/* ---------- sheet ---------- */
+.wgr .sheet{max-width:780px;margin:0 auto;background:var(--ivory);box-shadow:0 0 0 1px rgba(62,44,36,.05)}
+.wgr .sec{padding:clamp(4.5rem,11vw,7.5rem) clamp(1.4rem,7vw,4rem);text-align:center;position:relative}
+.wgr .h{font-weight:300;font-size:clamp(2.1rem,6vw,3.2rem);line-height:1.3;color:var(--cocoa)}
+.wgr .orn{display:block;width:min(70%,260px);height:auto;margin:.9rem auto 1.6rem;color:var(--taupe)}
+.wgr .orn path{fill:none;stroke:currentColor;stroke-width:1;stroke-linecap:round}
+.wgr .sec p{max-width:34rem;margin-inline:auto}
+.wgr .story{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:3.2rem;padding-top:2rem;border-top:1px solid var(--line)}
+.wgr .story b{display:block;font-weight:300;font-size:2rem;color:var(--olive);line-height:1.2}
+.wgr .story span{font-size:.95rem;color:var(--taupe)}
+
+/* calendar + countdown */
+.wgr .cal{max-width:23rem;margin:2.4rem auto 0;position:relative;padding:1rem 1.2rem}
+.wgr .cal .co{position:absolute;width:3rem;height:3rem;color:var(--cocoa);opacity:.85}
+.wgr .cal .tl{top:-.8rem;left:-.8rem;transform:scaleX(-1)}.wgr .cal .br{bottom:-.8rem;right:-.8rem;transform:scaleY(-1)}
+.wgr .cal h3{font-weight:300;font-size:2.1rem;margin-bottom:.8rem}
+.wgr .grid{display:grid;grid-template-columns:repeat(7,1fr);row-gap:.35rem;font-size:1.05rem}
+.wgr .grid b{font-weight:400;color:var(--taupe);font-size:.9rem}
+.wgr .grid span{position:relative;z-index:0;opacity:0;transition:opacity .8s;transition-delay:calc(var(--i)*18ms)}
+.wgr .in .grid span{opacity:1}
+.wgr .grid .on{color:var(--ivory)}
+.wgr .grid .on::before{content:"";position:absolute;inset:-.2rem -.1rem;margin:auto;width:2.1rem;height:2rem;z-index:-1;background:var(--olive);-webkit-mask:var(--heart) center/contain no-repeat;mask:var(--heart) center/contain no-repeat;animation:wgr-beat 2.4s ease-in-out infinite}
+@keyframes wgr-beat{50%{transform:scale(1.12)}}
+.wgr .cd{display:flex;justify-content:center;gap:clamp(.8rem,4vw,2rem);margin-top:3.4rem}
+.wgr .cd div{min-width:3.6rem}
+.wgr .cd b{display:block;font-weight:300;font-size:clamp(2.2rem,8vw,3.2rem);line-height:1.1;font-variant-numeric:tabular-nums}
+.wgr .cd span{font-size:.85rem;color:var(--taupe);letter-spacing:.04em}
+
+/* program */
+.wgr .prog{padding-top:clamp(3rem,8vw,5rem)}
+.wgr .clipwrap{position:relative;max-width:26rem;margin:2.6rem auto 0;transform:rotate(-.8deg)}
+.wgr .clip{position:absolute;left:50%;top:-2.1rem;width:4.6rem;transform:translateX(-50%) translateY(-30px) rotate(-6deg);opacity:0;transition:transform 1.2s .5s cubic-bezier(.3,1.4,.4,1),opacity .6s .5s;z-index:2;filter:drop-shadow(0 4px 4px rgba(40,25,15,.35))}
+.wgr .in .clip{opacity:1;transform:translateX(-50%) rotate(0)}
+.wgr .paper{background:var(--olive);color:var(--ivory);padding:3.2rem 1.5rem 2.4rem;box-shadow:0 18px 30px -18px rgba(40,25,15,.5)}
+.wgr .paper li{list-style:none;padding:.8rem 0;position:relative}
+.wgr .paper li+li::before{content:"";position:absolute;left:50%;top:-.2rem;width:1px;height:.7rem;background:rgba(253,248,236,.45)}
+.wgr .paper time{display:block;font-size:1.7rem;line-height:1.2;font-weight:300}
+.wgr .paper span{font-size:1.05rem;opacity:.92}
+
+/* dress */
+.wgr .ics{display:flex;justify-content:center;gap:1.6rem;margin:2.2rem 0 2rem}
+.wgr .ic{width:5.6rem;height:5.6rem;color:var(--cocoa);transition:transform .6s var(--ease)}
+.wgr .ic:hover{transform:translateY(-5px) rotate(-3deg)}
+.wgr .pal{display:flex;gap:.7rem;justify-content:center;margin-top:.5rem}
+.wgr .pal i{display:block;width:clamp(3.4rem,15vw,5.2rem);height:1.5rem;background:var(--c);position:relative;transform-origin:left;transform:scaleX(0);transition:transform 1.1s var(--ease);transition-delay:calc(var(--i)*140ms + .3s)}
+.wgr .in .pal i,.wgr .pal.in i{transform:none}
+.wgr .pal i:hover{transform:translateY(-4px)}
+.wgr .pal i::after{content:attr(title);position:absolute;top:-2rem;left:50%;transform:translateX(-50%);font:300 .8rem var(--serif);white-space:nowrap;color:var(--taupe);opacity:0;transition:opacity .3s}
+.wgr .pal i:hover::after{opacity:1}
+
+/* details */
+.wgr .btn{font:inherit;font-size:1rem;letter-spacing:.03em;position:relative;overflow:hidden;padding:.95rem 2.2rem;border:1px solid var(--cocoa);background:transparent;color:var(--cocoa);cursor:pointer;margin-top:2rem;transition:color .5s;z-index:0}
+.wgr .btn::before{content:"";position:absolute;inset:0;background:var(--cocoa);transform:scaleY(0);transform-origin:bottom;transition:transform .5s var(--ease);z-index:-1}
+.wgr .btn:hover,.wgr .btn:focus-visible{color:var(--ivory)}.wgr .btn:hover::before,.wgr .btn:focus-visible::before{transform:none}
+.wgr .btn:active{transform:scale(.98)}
+
+/* venue */
+.wgr .venue{position:relative;overflow:hidden;color:var(--ivory);padding:clamp(5rem,12vw,8rem) 1.5rem;text-align:center;background:#3a4328;isolation:isolate}
+.wgr .venue .art2{position:absolute;inset:-8% 0;z-index:-2}
+.wgr .venue::before{content:"";position:absolute;inset:0;z-index:-1;background:rgba(32,38,20,.5)}
+.wgr .venue .h{color:var(--ivory)}.wgr .venue .orn{color:var(--sage)}
+.wgr .venue p{margin-inline:auto;max-width:28rem}
+.wgr .pill{display:inline-block;margin-top:2rem;padding:.9rem 2.2rem;border-radius:999px;background:rgba(253,248,236,.18);border:1px solid rgba(253,248,236,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);text-decoration:none;transition:background .4s,color .4s,transform .4s var(--ease)}
+.wgr .pill:hover{background:var(--ivory);color:var(--cocoa);transform:translateY(-3px)}
+.wgr .pill span{display:inline-block;transition:transform .4s var(--ease)}.wgr .pill:hover span{transform:translateX(6px)}
+.wgr .sign{padding:4rem 1.5rem 5rem;text-align:center}
+.wgr .sign p{font-size:1.5rem;color:var(--cocoa)}
+
+/* dialog */
+.wgr dialog{border:1px solid var(--cocoa);background:var(--ivory);color:var(--cocoa);padding:2rem;width:min(92vw,420px);font:inherit;margin:auto}
+.wgr dialog::backdrop{background:rgba(36,28,22,.6);backdrop-filter:blur(3px)}
+.wgr dialog form{display:flex;flex-direction:column;gap:1.1rem;position:relative}
+.wgr dialog h2{font-weight:300;font-size:1.9rem;line-height:1.3}
+.wgr dialog label{display:flex;flex-direction:column;gap:.3rem;font-size:.92rem;color:var(--taupe)}
+.wgr dialog input[type=text],.wgr dialog select{font:inherit;font-size:1.05rem;color:var(--cocoa);background:none;border:0;border-bottom:1px solid var(--taupe);padding:.4rem 0;border-radius:0}
+.wgr dialog fieldset{border:0;padding:0;display:flex;flex-direction:column;gap:.4rem}
+.wgr dialog fieldset label{flex-direction:row;align-items:center;gap:.6rem;color:var(--cocoa)}
+.wgr dialog input[type=radio]{accent-color:var(--moss)}
+.wgr dialog .btn{margin-top:.4rem}
+.wgr .x{position:absolute;right:-.6rem;top:-1.2rem;background:none;border:0;font-size:1.8rem;cursor:pointer;color:var(--cocoa)}
+.wgr .note{min-height:1.6em;color:var(--moss)}
+
+/* edit mode (not in the source) */
+.wgr .wdb-editable{outline:1px dashed transparent;border-radius:4px;transition:outline-color .15s}
+.wgr .wdb-editable:hover,.wgr .wdb-editable:focus{outline-color:var(--olive)}
+.wgr .wdb-edit-input{font:inherit;color:inherit;background:#fff;border:1.5px dashed var(--olive);border-radius:8px;padding:2px 6px}
+.wgr .hero .wdb-edit-input{color:var(--cocoa)}
+.wgr .pal-edit{display:flex;flex-direction:column;align-items:center;gap:.3rem;font-size:.8rem;color:var(--taupe)}
+.wgr .color-edit{display:block;width:clamp(3.4rem,15vw,5.2rem);height:1.5rem;border:1.5px dashed var(--olive);padding:2px;background:#fff;cursor:pointer}
+
+@media(max-width:560px){.wgr .story{grid-template-columns:1fr;gap:1.4rem}.wgr .cd div{min-width:3rem}}
+@media(prefers-reduced-motion:reduce){.wgr *,.wgr *::before,.wgr *::after{animation-duration:.01s!important;animation-delay:0s!important;transition-duration:.01s!important;transition-delay:0s!important}.wgr .rv,.wgr .mask>span{opacity:1;transform:none}}

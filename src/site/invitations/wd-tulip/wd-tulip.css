@@ -1,0 +1,167 @@
+/* =========================================================
+   "wd-tulip" — burgundy tulip on linen. Stacked linen cards
+   with a white paper edge, one painted tulip (assets/tulip.webp,
+   transparent) posed differently on each, gold-foil caps.
+   Everything is scoped under .wtl.
+   ========================================================= */
+.wtl{
+  --paper:#f8f6f1;--linen:#e9e5dd;--ink:#4b4641;--grey:#5d5853;--mute:#86807a;
+  --wine:#6b1626;--gold:#a8873f;--gold-hi:#d4b877;--line:rgba(168,135,63,.45);
+  --serif:"Cormorant Garamond","Noto Serif Armenian","Sylfaen",Georgia,serif;
+  --arm:"Noto Serif Armenian","Cormorant Garamond","Sylfaen",Georgia,serif;
+  --ease:cubic-bezier(.22,.8,.24,1);
+  min-height:100vh;background:var(--paper);color:var(--ink);
+  font:300 1rem/1.9 var(--arm);-webkit-font-smoothing:antialiased;text-align:center;overflow-x:hidden;
+}
+.wtl,.wtl *{box-sizing:border-box;margin:0;padding:0}
+.wtl :focus-visible{outline:1px solid var(--gold);outline-offset:4px}
+
+.wtl .card{position:relative}
+
+/* One continuous linen sheet (no gaps between the cards). Tulips may
+   cross from one card into the next; each is placed so the whole
+   painting stays on the sheet — never cropped.
+   linen: fine warp + weft lines and long woven fibres over a warm grey */
+.wtl .stack{
+  width:min(100%,540px);margin:0 auto;display:flex;flex-direction:column;
+  position:relative;container-type:inline-size;overflow:hidden;
+  background-color:var(--linen);
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'><filter id='h'><feTurbulence type='fractalNoise' baseFrequency='.0125 .9' numOctaves='2' seed='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45 0 0 0 0 .41 0 0 0 0 .36 0 0 0 .55 -.18'/></filter><rect width='100%' height='100%' filter='url(%23h)'/></svg>"),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'><filter id='v'><feTurbulence type='fractalNoise' baseFrequency='.9 .0125' numOctaves='2' seed='8' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .5 -.2'/></filter><rect width='100%' height='100%' filter='url(%23v)'/></svg>"),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.16) 0 1px,transparent 1px 3px),
+    repeating-linear-gradient(90deg,rgba(110,100,85,.06) 0 1px,transparent 1px 3px);
+}
+.wtl .in-pad{position:relative;z-index:1;padding:4rem 2rem}
+
+/* ---------- type ---------- */
+.wtl .gold{
+  font:400 .78rem/1.8 var(--arm);letter-spacing:.34em;text-transform:uppercase;padding-left:.34em;
+  background:linear-gradient(100deg,var(--gold) 0%,var(--gold) 38%,var(--gold-hi) 50%,var(--gold) 62%,var(--gold) 100%) 0 0/250% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:wtl-foil 7s ease-in-out infinite;
+}
+@keyframes wtl-foil{0%,100%{background-position:100% 0}50%{background-position:0 0}}
+.wtl h2.gold{font-size:.82rem}
+.wtl .names{font:400 clamp(1.05rem,5.2vw,1.45rem)/1.5 var(--arm);letter-spacing:.3em;padding-left:.3em;text-transform:uppercase;color:var(--grey)}
+.wtl .names i{font:italic 300 1.15em var(--serif);letter-spacing:0;color:var(--gold);padding:0 .15em}
+.wtl .caps{font:400 .7rem/1.8 var(--arm);letter-spacing:.24em;text-transform:uppercase;color:var(--mute)}
+.wtl .body{max-width:24rem;margin:0 auto;font-size:1rem;color:var(--ink)}
+.wtl .rule{display:block;width:44px;height:1px;margin:1.1rem auto 1.6rem;background:var(--line)}
+
+/* ---------- reveal ---------- */
+.wtl .r{opacity:0;transform:translateY(16px);transition:opacity 1.2s var(--ease),transform 1.2s var(--ease);transition-delay:calc(var(--i,0)*130ms + .1s)}
+.wtl .card.in .r{opacity:1;transform:none}
+
+/* ---------- the tulip ----------
+   Placed by its flower head (52% 27% of the image): --x / --w in % of
+   the sheet width, --y a length from the card's top (cqw, or % of the
+   card height). Positions are chosen so the rotated painting fits
+   inside the sheet. */
+.wtl .tulip{
+  position:absolute;z-index:0;pointer-events:none;
+  width:calc(var(--w)*1cqw);aspect-ratio:768/1376;
+  left:calc(var(--x)*1cqw - var(--w)*.52cqw);top:calc(var(--y) - var(--w)*.484cqw);
+  transform-origin:52% 27%;transform:rotate(var(--rot)) scaleX(var(--fx));
+}
+.wtl .tulip img{
+  display:block;width:100%;height:100%;
+  transform-origin:52% 27%;opacity:0;transform:rotate(-7deg) scale(.94);
+  transition:opacity 1.6s var(--ease),transform 2.2s var(--ease);
+  filter:drop-shadow(0 6px 10px rgba(70,20,25,.12));
+  /* the painting stops at its right and bottom edges (leaf, stem): fade them */
+  -webkit-mask:linear-gradient(to left,transparent,#000 12%),linear-gradient(to top,transparent,#000 8%);
+  -webkit-mask-composite:source-in;
+  mask:linear-gradient(to left,transparent,#000 12%),linear-gradient(to top,transparent,#000 8%);
+  mask-composite:intersect;
+}
+.wtl .card.in .tulip img{opacity:1;transform:none;animation:wtl-sway 8s ease-in-out 2.2s infinite alternate}
+@keyframes wtl-sway{from{rotate:0deg}to{rotate:1.6deg}}
+
+/* ---------- cover ---------- */
+.wtl .hero{min-height:max(640px,100svh);padding-top:calc(122cqw + 1.5rem);display:flex;flex-direction:column;justify-content:flex-end}
+.wtl .hero .t-main img{transform:translate(-14%,4%) rotate(-12deg) scale(.96);transition-duration:1.8s,2.6s}
+.wtl .hero .t-pair img{transition-delay:.5s}
+.wtl .mono{
+  position:absolute;z-index:2;left:62cqw;top:60cqw;translate:-50% -50%;
+  display:grid;grid-template-columns:auto auto;grid-template-rows:auto auto;column-gap:.06em;
+  font:200 clamp(2.4rem,13cqw,3.6rem)/1 var(--arm);color:#f6efe4;text-shadow:0 1px 6px rgba(60,10,20,.35);
+  opacity:0;transition:opacity 1.6s var(--ease) 1.4s;
+}
+.wtl .mono span:first-child{grid-area:1/1}
+.wtl .mono span:last-child{grid-area:2/2;margin-top:-.08em}
+.wtl .mono i{grid-area:1/1/3/3;place-self:center;font:italic 300 .78em var(--serif);translate:.08em .1em}
+.wtl .hero.in .mono{opacity:1}
+.wtl .htxt{position:relative;z-index:1;padding:0 1.4rem max(14svh,5.5rem);display:flex;flex-direction:column;gap:clamp(2.2rem,8svh,4.5rem)}
+.wtl .hero .r{transition-delay:calc(var(--i,0)*220ms + 1.1s)}
+
+/* ---------- welcome ---------- */
+.wtl .welcome .in-pad{padding-bottom:calc(36cqw + 4rem)}
+
+/* ---------- date ---------- */
+.wtl .datec{padding:0 14px}
+.wtl .frame{position:relative;padding:3.6rem 1.4rem 3.4rem;border:1px solid var(--line);outline:1px solid var(--line);outline-offset:-6px}
+.wtl .big{font:300 clamp(2.3rem,12cqw,3.3rem)/1.2 var(--serif);letter-spacing:.06em;color:var(--grey);margin:1.2rem 0 .3rem}
+.wtl .cd{display:grid;grid-template-columns:repeat(4,1fr);max-width:20rem;margin:2.2rem auto 0;border-top:1px solid var(--line);padding-top:1.4rem}
+.wtl .cd div+div{border-left:1px solid rgba(168,135,63,.22)}
+.wtl .cd b{display:block;font:300 1.9rem/1.1 var(--serif);color:var(--wine)}
+.wtl .cd span{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
+
+/* ---------- program ---------- */
+.wtl .prog .in-pad{text-align:left;padding-right:44%;padding-bottom:5rem}
+.wtl .prog .rule{margin-left:0}
+.wtl .prog h2.gold{padding-left:0}
+.wtl .prog ol{list-style:none;display:flex;flex-direction:column;gap:1.5rem}
+.wtl .prog li{display:flex;flex-direction:column}
+.wtl .prog time{font:300 1.9rem/1.1 var(--serif);color:var(--wine);letter-spacing:.03em}
+.wtl .prog li>span{font-size:.92rem;line-height:1.5;color:var(--ink)}
+
+/* ---------- venue ---------- */
+.wtl .place+.place{margin-top:2.4rem;padding-top:2.4rem;border-top:1px solid rgba(168,135,63,.25)}
+.wtl .place h3{font:400 1.25rem/1.45 var(--arm);color:var(--grey);margin:.35rem 0 .1rem}
+.wtl .place .addr{color:var(--mute);font-size:.92rem}
+.wtl .map{display:inline-flex;gap:.5em;align-items:center;margin-top:.9rem;padding:.35rem 0;font:400 .72rem var(--arm);letter-spacing:.22em;text-transform:uppercase;color:var(--wine);text-decoration:none;border-bottom:1px solid var(--line);transition:gap .3s var(--ease),border-color .3s}
+.wtl .map:hover{gap:.9em;border-color:var(--wine)}
+
+/* ---------- dress code ---------- */
+.wtl .pal{list-style:none;display:flex;justify-content:center;gap:clamp(.9rem,5cqw,1.6rem);margin-top:2rem;flex-wrap:wrap}
+.wtl .pal li{display:flex;flex-direction:column;align-items:center;gap:.5rem;font-size:.72rem;color:var(--mute);letter-spacing:.06em}
+.wtl .pal li>i{width:2.9rem;height:2.9rem;border-radius:50%;background:var(--c);box-shadow:0 0 0 4px var(--linen),0 0 0 5px var(--line)}
+.wtl .color-edit{width:2.9rem;height:2.9rem;border:1.5px dashed var(--gold);border-radius:50%;padding:2px;background:#fff;cursor:pointer}
+
+/* ---------- rsvp ---------- */
+.wtl .form{max-width:21rem;margin:2rem auto 0;display:flex;flex-direction:column;gap:1.6rem;text-align:left}
+.wtl .field{display:flex;flex-direction:column;gap:.2rem}
+.wtl .field input,.wtl .field select{font:400 1.05rem var(--arm);color:var(--ink);background:transparent;border:0;border-bottom:1px solid rgba(75,70,65,.35);border-radius:0;padding:.45rem 0;width:100%;transition:border-color .3s}
+.wtl .field select{appearance:none;-webkit-appearance:none;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' fill='none' stroke='%23a8873f'/></svg>") right .3rem center no-repeat}
+.wtl .field input:focus,.wtl .field select:focus{outline:0;border-color:var(--gold)}
+.wtl .field input[aria-invalid]{border-color:var(--wine)}
+.wtl .err{font-size:.8rem;color:var(--wine)}
+.wtl .choice{display:grid;grid-template-columns:1fr 1fr;border:1px solid rgba(75,70,65,.3)}
+.wtl .choice label{position:relative;display:flex;align-items:center;justify-content:center;min-height:3rem;padding:.4rem .6rem;font-size:.86rem;line-height:1.35;text-align:center;cursor:pointer;transition:background .35s,color .35s}
+.wtl .choice label+label{border-left:1px solid rgba(75,70,65,.3)}
+.wtl .choice input{position:absolute;opacity:0;pointer-events:none}
+.wtl .choice label.on{background:var(--wine);color:#f6efe4}
+.wtl .choice label:has(:focus-visible){outline:1px solid var(--gold);outline-offset:3px}
+.wtl .send{margin-top:.4rem;min-height:3.2rem;font:400 .78rem var(--arm);letter-spacing:.3em;text-transform:uppercase;color:#f6efe4;background:var(--wine);border:0;cursor:pointer;transition:background .3s,transform .2s}
+.wtl .send:hover{background:#561020}.wtl .send:active{transform:scale(.98)}
+.wtl .thanks{margin:2.2rem auto 0;max-width:20rem;font:300 1.2rem/1.7 var(--arm);color:var(--wine);animation:wtl-fade 1s var(--ease)}
+@keyframes wtl-fade{from{opacity:0;transform:translateY(10px)}}
+
+/* ---------- closing ---------- */
+.wtl .closing .in-pad{padding-bottom:calc(100cqw + 2rem)}
+.wtl .closing .names{margin-top:.8rem}
+
+/* ---------- edit mode ---------- */
+.wtl.editing .gold{background:none;color:var(--gold);animation:none}
+.wtl .wdb-editable{outline:1px dashed transparent;border-radius:3px;transition:outline-color .15s}
+.wtl .wdb-editable:hover,.wtl .wdb-editable:focus{outline-color:var(--gold)}
+.wtl .wdb-edit-input{font:400 1rem var(--arm);color:var(--ink);background:#fff;border:1.5px dashed var(--gold);border-radius:6px;padding:2px 6px;max-width:100%}
+
+@media (min-width:700px){
+  .wtl{background:#efebe4}
+  .wtl .stack{margin:24px auto;box-shadow:0 1px 2px rgba(60,50,40,.06),0 18px 50px -24px rgba(60,50,40,.3)}
+}
+@media (prefers-reduced-motion:reduce){
+  .wtl *,.wtl *::before,.wtl *::after{animation:none!important;transition-duration:.01s!important;transition-delay:0s!important}
+}

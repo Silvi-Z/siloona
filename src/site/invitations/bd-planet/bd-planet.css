@@ -1,0 +1,124 @@
+/* =========================================================
+   "bd-planet" — hand-drawn storybook birthday on cream paper:
+   pencil ink, star-gold, fox orange. The paper colour matches
+   the illustration's own (#f6f1e6) so the picture melts into
+   the page. Everything is scoped under .bpl.
+   ========================================================= */
+.bpl{
+  --paper:#f6f1e6;--ink:#3b3632;--pencil:#8c857c;--gold:#f1c552;--gold-d:#c9962c;--fox:#d9682c;--leaf:#8fa36e;--rose:#d4555b;
+  --serif:"Noto Serif Armenian","Sylfaen",Georgia,serif;
+  --num:"Cormorant Garamond","Noto Serif Armenian",Georgia,serif;
+  --ease:cubic-bezier(.22,.8,.24,1);
+  --sketch:255px 15px 225px 15px/15px 225px 15px 255px;
+  min-height:100vh;color:var(--ink);font:400 1rem/1.85 var(--serif);text-align:center;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+  background:var(--paper);
+}
+/* paper grain over everything, the picture included, so it reads as one sheet */
+.bpl::before{
+  content:"";position:fixed;inset:0;z-index:20;pointer-events:none;mix-blend-mode:multiply;opacity:.55;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35 0 0 0 0 .3 0 0 0 0 .25 0 0 0 .5 -.2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+.bpl,.bpl *{box-sizing:border-box;margin:0;padding:0}
+.bpl :focus-visible{outline:2px dashed var(--gold-d);outline-offset:4px}
+.bpl .page{width:min(100%,500px);margin:0 auto}
+.bpl .sec{position:relative;padding:3.6rem 1.6rem}
+
+/* ---------- reveal ---------- */
+.bpl .r{opacity:0;transform:translateY(14px);transition:opacity 1s var(--ease),transform 1s var(--ease);transition-delay:calc(var(--i,0)*140ms + .05s)}
+.bpl .sec.in .r{opacity:1;transform:none}
+
+/* ---------- type ---------- */
+.bpl .hd{display:flex;flex-direction:column;align-items:center;margin-bottom:1.3rem}
+.bpl h2{font:500 1.45rem/1.4 var(--serif);color:var(--ink)}
+.bpl .squig{width:110px;height:12px;margin-top:.25rem;fill:none;stroke:var(--gold-d);stroke-width:2;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.4s var(--ease) .4s}
+.bpl .sec.in .squig{stroke-dashoffset:0}
+.bpl .body{max-width:24rem;margin:0 auto;color:var(--ink)}
+.bpl .star{display:inline-block;width:1.3rem;height:1.3rem;overflow:visible}
+
+/* ---------- hero ---------- */
+.bpl .hero{padding-top:2.6rem;padding-bottom:2.4rem}
+.bpl .kicker{font:500 .74rem/1.6 var(--serif);letter-spacing:.28em;text-transform:uppercase;color:var(--pencil)}
+.bpl .title{font:500 clamp(1.7rem,8vw,2.3rem)/1.3 var(--serif);margin-top:.5rem}
+.bpl .planet{position:relative;width:clamp(150px,44vw,190px);aspect-ratio:1;margin:-.2rem auto -1.4rem;z-index:2}
+.bpl .planet svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;animation:bpl-bob 5s ease-in-out infinite alternate}
+.bpl .age{position:absolute;inset:0;display:grid;place-items:center;font:italic 600 clamp(4rem,19vw,5.3rem)/1 var(--num);color:var(--ink);padding-bottom:.08em;animation:bpl-bob 5s ease-in-out infinite alternate}
+@keyframes bpl-bob{to{transform:translateY(-5px) rotate(-1.5deg)}}
+.bpl .pic{position:relative;margin:0 -1.6rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.bpl .pic img{display:block;width:100%;height:auto;
+  /* fade all four edges into the paper */
+  -webkit-mask:linear-gradient(transparent,#000 12%,#000 88%,transparent),linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);-webkit-mask-composite:source-in;
+  mask:linear-gradient(transparent,#000 12%,#000 88%,transparent),linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);mask-composite:intersect}
+.bpl .glint{position:absolute;width:16px;height:16px;margin:-8px 0 0 -8px;pointer-events:none;
+  background:radial-gradient(circle,#fff8dc 0 18%,transparent 20%),conic-gradient(from 45deg,transparent 0 10%,#ffe9a6 12% 13%,transparent 15% 35%,#ffe9a6 37% 38%,transparent 40% 60%,#ffe9a6 62% 63%,transparent 65% 85%,#ffe9a6 87% 88%,transparent 90%);
+  border-radius:50%;opacity:0;animation:bpl-tw 4.2s ease-in-out var(--d) infinite}
+@keyframes bpl-tw{0%,70%,100%{opacity:0;transform:scale(.3) rotate(0)}82%{opacity:1;transform:scale(1.25) rotate(45deg)}}
+.bpl .shoot{position:absolute;width:90px;height:2px;border-radius:2px;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(241,197,82,.85) 70%,#fff6d6);transform-origin:right center;
+  animation:bpl-shoot 1.5s cubic-bezier(.3,.1,.4,1) forwards}
+.bpl .shoot::after{content:"";position:absolute;right:-3px;top:-3px;width:8px;height:8px;border-radius:50%;background:#fff3c4;box-shadow:0 0 8px 3px rgba(241,197,82,.8)}
+@keyframes bpl-shoot{0%{opacity:0;transform:translate(0,0) rotate(18deg) scaleX(.3)}15%{opacity:1}100%{opacity:0;transform:translate(230px,75px) rotate(18deg) scaleX(1)}}
+.bpl .when{font:500 1.02rem/1.6 var(--serif);margin-top:.6rem}
+.bpl .hint{font-size:.78rem;color:var(--pencil);margin-top:.4rem}
+
+/* ---------- welcome ---------- */
+.bpl .welcome .star{position:absolute}
+.bpl .welcome .s1{left:12%;top:2.4rem;width:1.1rem;height:1.1rem;transform:rotate(-12deg)}
+.bpl .welcome .s2{right:13%;top:4.6rem;width:.9rem;height:.9rem;transform:rotate(14deg)}
+
+/* ---------- countdown ---------- */
+.bpl .cd{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;max-width:22rem;margin:0 auto}
+.bpl .cd div{display:flex;flex-direction:column;align-items:center}
+.bpl .cd b{display:grid;place-items:center;width:3.9rem;height:3.9rem;font:italic 600 1.7rem/1 var(--num);border:1.6px solid var(--ink);border-radius:var(--sketch);background:rgba(241,197,82,.18);rotate:calc((var(--k) - 1.5) * 2deg)}
+.bpl .cd span{font-size:.74rem;color:var(--pencil);margin-top:.35rem}
+
+/* ---------- program ---------- */
+.bpl .orbit{list-style:none;position:relative;max-width:19rem;margin:0 auto;text-align:left;padding-left:2.2rem}
+.bpl .orbit::before{content:"";position:absolute;left:.62rem;top:.6rem;bottom:.6rem;border-left:2px dotted var(--pencil)}
+.bpl .orbit li{position:relative;display:flex;flex-direction:column;padding:.55rem 0}
+.bpl .orbit .dot{position:absolute;left:-2.2rem;top:.85rem;width:1.3rem;height:1.3rem}
+.bpl .orbit time{font:italic 600 1.45rem/1.1 var(--num);color:var(--fox)}
+.bpl .orbit li>span{font-size:.98rem;line-height:1.5}
+
+/* ---------- venue ---------- */
+.bpl .venue h3{font:500 1.2rem/1.5 var(--serif)}
+.bpl .addr{color:var(--pencil)}
+.bpl .btn{display:inline-flex;align-items:center;justify-content:center;min-height:3rem;margin-top:1.2rem;padding:.55rem 1.6rem;font:500 .95rem var(--serif);color:var(--ink);text-decoration:none;background:transparent;border:2px solid var(--ink);border-radius:var(--sketch);cursor:pointer;transition:transform .25s var(--ease),background .25s,box-shadow .25s;box-shadow:3px 3px 0 rgba(59,54,50,.18)}
+.bpl .btn:hover{transform:translate(-1px,-2px) rotate(-1deg);background:rgba(241,197,82,.25)}
+.bpl .btn:active{transform:translate(1px,1px);box-shadow:1px 1px 0 rgba(59,54,50,.18)}
+
+/* ---------- rsvp ---------- */
+.bpl .form{max-width:20rem;margin:1.6rem auto 0;display:flex;flex-direction:column;gap:1.3rem;text-align:left}
+.bpl .field{display:flex;flex-direction:column;gap:.15rem;font-size:.85rem;color:var(--pencil)}
+.bpl .field input,.bpl .field select{font:400 1.05rem var(--serif);color:var(--ink);background:transparent;border:0;border-bottom:2px solid var(--ink);border-radius:0 0 40px 6px/0 0 4px 3px;padding:.4rem .1rem;width:100%}
+.bpl .field select{appearance:none;-webkit-appearance:none;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' fill='none' stroke='%233b3632' stroke-width='1.5'/></svg>") right .3rem center no-repeat}
+.bpl .field input:focus,.bpl .field select:focus{outline:0;border-color:var(--gold-d)}
+.bpl .field input[aria-invalid]{border-color:var(--rose)}
+.bpl .err{color:var(--rose);font-size:.82rem}
+.bpl .choice{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.bpl .choice label{position:relative;display:flex;align-items:center;justify-content:center;min-height:3rem;padding:.4rem .5rem;font-size:.92rem;text-align:center;line-height:1.35;border:2px solid var(--ink);border-radius:var(--sketch);cursor:pointer;transition:background .3s,transform .25s}
+.bpl .choice label:nth-child(2){border-radius:15px 225px 15px 255px/255px 15px 225px 15px}
+.bpl .choice label.on{background:var(--gold);transform:rotate(-1deg)}
+.bpl .choice input{position:absolute;opacity:0;pointer-events:none}
+.bpl .choice label:has(:focus-visible){outline:2px dashed var(--gold-d);outline-offset:3px}
+.bpl .send{width:100%;margin-top:.3rem;background:var(--gold)}
+.bpl .send:hover{background:#f5d06c}
+.bpl .thanks{position:relative;max-width:20rem;margin:1.8rem auto 0;padding:1.6rem 1.2rem;font:500 1.12rem/1.6 var(--serif);border:2px solid var(--ink);border-radius:var(--sketch);background:rgba(241,197,82,.2);animation:bpl-pop .7s var(--ease)}
+.bpl .thanks .star{position:absolute;animation:bpl-pop .9s var(--ease) both}
+.bpl .thanks .t1{left:-.6rem;top:-.7rem}.bpl .thanks .t2{right:-.5rem;top:30%;width:1rem;height:1rem;animation-delay:.15s}.bpl .thanks .t3{left:30%;bottom:-.8rem;width:1.1rem;height:1.1rem;animation-delay:.3s}
+@keyframes bpl-pop{from{opacity:0;transform:scale(.6) rotate(-8deg)}}
+
+/* ---------- closing ---------- */
+.bpl .closing{padding-bottom:5rem}
+.bpl .moon{width:3.2rem;height:3.2rem;margin:0 auto .8rem;display:block;overflow:visible;animation:bpl-bob 6s ease-in-out infinite alternate}
+.bpl .line{font-size:1.02rem}
+.bpl .sig{font:500 1.4rem/1.5 var(--serif);margin-top:.3rem}
+
+/* ---------- edit mode ---------- */
+.bpl .wdb-editable{outline:1.5px dashed transparent;border-radius:4px;transition:outline-color .15s}
+.bpl .wdb-editable:hover,.bpl .wdb-editable:focus{outline-color:var(--gold-d)}
+.bpl .wdb-edit-input{font:400 1rem var(--serif);color:var(--ink);background:#fff;border:1.5px dashed var(--gold-d);border-radius:6px;padding:2px 6px;max-width:100%}
+.bpl.editing .pic{cursor:default}
+
+@media (prefers-reduced-motion:reduce){
+  .bpl *,.bpl *::before,.bpl *::after{animation:none!important;transition-duration:.01s!important;transition-delay:0s!important}
+}

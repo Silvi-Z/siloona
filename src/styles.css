@@ -1,0 +1,360 @@
+/* =========================================================
+   SILOONA — Marketing site design system
+   Premium editorial aesthetic: soft gradient wash, serif
+   headlines (Armenian-first), generous whitespace.
+   ========================================================= */
+/* This stylesheet only loads on the marketing-site route chunk (see
+   src/App.jsx / src/main.jsx), so a scoped reset here cannot leak into
+   the dashboard's separate CSS chunk. */
+body{margin:0}
+
+.siloona-site{
+  --cream:#FBF7F0; --cream-2:#F6F0E6; --ink:#211C28; --ink-2:#4B4256; --muted:#8A8094;
+  --line:rgba(33,28,40,.1); --line-2:rgba(33,28,40,.16);
+  --violet:#6B1D2C; --violet-2:#83303F; --rose:#C2639B; --gold:#B0893F;
+  --wash: linear-gradient(135deg,#FBF3E8 0%,#F5E4E3 45%,#F6ECE9 100%);
+  --serif:"Noto Serif Armenian","Cormorant Garamond",Georgia,serif;
+  --sans:"Noto Sans Armenian",-apple-system,"Segoe UI",Roboto,sans-serif;
+  --latin:"Cormorant Garamond",Georgia,serif;
+  --shadow:0 1px 2px rgba(33,20,40,.04),0 24px 48px -24px rgba(33,20,40,.22);
+
+  background:var(--cream); color:var(--ink); font-family:var(--sans);
+  min-height:100vh; line-height:1.6; -webkit-font-smoothing:antialiased;
+}
+.siloona-site *{box-sizing:border-box}
+.siloona-site a{color:inherit; text-decoration:none}
+.siloona-site button{font:inherit; color:inherit; cursor:pointer}
+.siloona-site img{max-width:100%; display:block}
+.siloona-site ::selection{background:#EADCF4}
+
+.siloona-site .serif{font-family:var(--serif)}
+.siloona-site .eyebrow{
+  font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:var(--violet);
+  font-weight:600; margin:0 0 14px;
+}
+.siloona-site .wrap{max-width:1180px; margin:0 auto; padding:0 28px}
+
+/* ---------- Reveal-on-scroll ---------- */
+.siloona-site .reveal{opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s ease}
+.siloona-site .reveal.in{opacity:1; transform:none}
+@media (prefers-reduced-motion:reduce){
+  .siloona-site .reveal{opacity:1; transform:none; transition:none}
+}
+
+/* ---------- Header ---------- */
+.siloona-site .site-header{
+  position:sticky; top:0; z-index:40;
+}
+/* backdrop-filter lives on this inner bar (not on .site-header) so that
+   .mobile-nav, a sibling fixed-position element, keeps the real viewport
+   as its containing block — filter/backdrop-filter on an ancestor would
+   otherwise hijack position:fixed sizing. */
+.siloona-site .header-bar{
+  padding:20px 0;
+  background:rgba(251,247,240,.72); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid transparent; transition:border-color .3s ease, background .3s ease;
+}
+.siloona-site .site-header.scrolled .header-bar{border-color:var(--line); background:rgba(251,247,240,.92)}
+.siloona-site .header-bar .wrap{display:flex; align-items:center; justify-content:space-between; gap:24px}
+.siloona-site .wordmark{font-family:var(--latin); font-size:26px; font-weight:600; color:var(--violet); letter-spacing:.015em}
+.siloona-site .site-nav{display:flex; align-items:center; gap:36px}
+.siloona-site .site-nav a{
+  font-size:14.5px; color:var(--ink-2); position:relative; padding:4px 0;
+}
+.siloona-site .site-nav a::after{
+  content:""; position:absolute; left:0; right:100%; bottom:0; height:1px; background:var(--violet);
+  transition:right .25s ease;
+}
+.siloona-site .site-nav a:hover::after,
+.siloona-site .site-nav a.active::after{right:0}
+.siloona-site .site-nav a.active{color:var(--ink)}
+.siloona-site .nav-cta{
+  border:1px solid var(--ink); border-radius:999px; padding:9px 22px !important; font-size:13.5px !important;
+}
+.siloona-site .nav-cta::after{display:none}
+.siloona-site .nav-cta:hover{background:var(--ink); color:var(--cream) !important}
+
+.siloona-site .menu-btn{display:none; border:none; background:none; width:30px; height:24px; position:relative}
+.siloona-site .menu-btn span, .siloona-site .menu-btn span::before, .siloona-site .menu-btn span::after{
+  content:""; position:absolute; left:0; right:0; height:1.5px; background:var(--ink); transition:transform .25s ease, opacity .25s ease;
+}
+.siloona-site .menu-btn span{top:11px}
+.siloona-site .menu-btn span::before{top:-8px}
+.siloona-site .menu-btn span::after{top:8px}
+.siloona-site .menu-btn.open span{background:transparent}
+.siloona-site .menu-btn.open span::before{transform:translateY(8px) rotate(45deg)}
+.siloona-site .menu-btn.open span::after{transform:translateY(-8px) rotate(-45deg)}
+
+.siloona-site .mobile-nav{
+  display:none; position:fixed; inset:0; z-index:35; background:var(--cream);
+  padding:96px 32px 40px; flex-direction:column; gap:4px;
+}
+.siloona-site .mobile-nav.open{display:flex}
+.siloona-site .mobile-nav a{
+  font-family:var(--serif); font-size:28px; padding:16px 0; border-bottom:1px solid var(--line); color:var(--ink);
+}
+
+/* ---------- Hero ---------- */
+.siloona-site .hero{
+  position:relative; padding:88px 0 96px; background:var(--wash); overflow:hidden;
+}
+.siloona-site .hero::before{
+  content:""; position:absolute; inset:-30% -10% auto -10%; height:140%;
+  background:radial-gradient(60% 60% at 30% 20%, rgba(107,29,44,.13), transparent),
+             radial-gradient(50% 50% at 85% 10%, rgba(176,137,63,.14), transparent);
+  pointer-events:none;
+}
+.siloona-site .hero .inner{position:relative; max-width:1180px}
+.siloona-site .hero h1{
+  font-family:var(--serif); font-weight:500; font-size:clamp(2.4rem,5vw,4.2rem); line-height:1.12;
+  color:var(--ink); margin:0 0 24px;
+}
+.siloona-site .hero p.lede{font-size:18px; color:var(--ink-2); max-width:54ch; margin:0 0 36px}
+.siloona-site .cta-row{display:flex; gap:16px; flex-wrap:wrap}
+.siloona-site .btn{
+  display:inline-flex; align-items:center; gap:8px; padding:14px 30px; border-radius:999px;
+  font-size:14.5px; font-weight:600; letter-spacing:.01em; transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.siloona-site .btn-primary{background:var(--violet); color:#fff; box-shadow:0 14px 17px -10px rgba(107,29,44,.5)}
+.siloona-site .btn-primary:hover{transform:translateY(-2px); box-shadow:0 18px 34px -10px rgba(107,29,44,.55)}
+.siloona-site .btn-ghost{border:1px solid var(--line-2); color:var(--ink)}
+.siloona-site .btn-ghost:hover{border-color:var(--ink); background:rgba(33,28,40,.03)}
+
+/* ---------- Section scaffolding ---------- */
+.siloona-site section.block{padding:96px 0}
+.siloona-site section.block.tight{padding:64px 0}
+.siloona-site .section-head{display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-bottom:48px; flex-wrap:wrap}
+.siloona-site .section-head h2{font-family:var(--serif); font-weight:500; font-size:clamp(1.8rem,3vw,2.6rem); margin:0; max-width:18ch}
+.siloona-site .section-head p{color:var(--muted); max-width:38ch; margin:0}
+
+/* ---------- Categories (editorial list, not icon cards) ---------- */
+.siloona-site .cat-list{border-top:1px solid var(--line)}
+.siloona-site .cat-row{
+  display:grid; grid-template-columns:72px 1fr auto; align-items:center; gap:24px;
+  padding:28px 0; border-bottom:1px solid var(--line); transition:padding-left .3s ease;
+}
+.siloona-site .cat-row:hover{padding-left:10px}
+.siloona-site .cat-row .idx{font-family:var(--latin); font-size:14px; color:var(--muted)}
+.siloona-site .cat-row h3{font-family:var(--serif); font-weight:500; font-size:24px; margin:0 0 4px}
+.siloona-site .cat-row .desc{color:var(--muted); font-size:14px; margin:0}
+.siloona-site .cat-row .tag{
+  font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold);
+  border:1px solid rgba(176,137,63,.4); padding:5px 12px; border-radius:999px; white-space:nowrap;
+}
+.siloona-site .cat-row .tag.soon{color:var(--muted); border-color:var(--line-2)}
+
+/* ---------- Process steps ---------- */
+.siloona-site .steps{display:grid; grid-template-columns:repeat(4,1fr); gap:32px}
+.siloona-site .step .n{font-family:var(--latin); font-size:40px; color:var(--line-2); font-weight:600; margin-bottom:12px}
+.siloona-site .step h4{font-family:var(--serif); font-size:19px; font-weight:500; margin:0 0 8px}
+.siloona-site .step p{color:var(--muted); font-size:14px; margin:0}
+
+/* ---------- Personalization split ---------- */
+.siloona-site .split{display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center}
+.siloona-site .split .art{
+  aspect-ratio:4/5; border-radius:4px; background:var(--wash); position:relative; overflow:hidden;
+  box-shadow:var(--shadow);
+}
+.siloona-site .split .art::after{
+  content:"SILOONA"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-family:var(--latin); font-size:15px; letter-spacing:.3em; color:rgba(107,29,44,.35);
+}
+.siloona-site .pill-list{list-style:none; margin:28px 0 0; padding:0; display:flex; flex-direction:column; gap:14px}
+.siloona-site .pill-list li{display:flex; align-items:baseline; gap:12px; font-size:15px; color:var(--ink-2)}
+.siloona-site .pill-list li::before{content:"—"; color:var(--violet); font-weight:700}
+
+/* ---------- CTA band ---------- */
+.siloona-site .cta-band{
+  background:var(--ink); color:var(--cream); border-radius:4px; padding:72px 56px; text-align:center;
+}
+.siloona-site .cta-band h2{font-family:var(--serif); font-weight:500; font-size:clamp(1.8rem,3vw,2.6rem); margin:0 0 16px}
+.siloona-site .cta-band p{color:rgba(251,247,240,.7); margin:0 0 32px}
+.siloona-site .cta-band .btn-primary{background:var(--cream); color:var(--ink)}
+.siloona-site .cta-band .btn-primary:hover{box-shadow:0 18px 34px -10px rgba(0,0,0,.4)}
+
+/* ---------- Footer ---------- */
+.siloona-site .site-footer{border-top:1px solid var(--line); padding:56px 0 40px}
+.siloona-site .site-footer .wrap{display:flex; justify-content:space-between; gap:32px; flex-wrap:wrap}
+.siloona-site .site-footer .foot-col h5{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:0 0 14px}
+.siloona-site .site-footer .foot-col a, .siloona-site .site-footer .foot-col span{display:block; font-size:14px; color:var(--ink-2); margin-bottom:8px}
+.siloona-site .site-footer .foot-col a:hover{color:var(--violet)}
+.siloona-site .social-row{display:flex; gap:14px}
+.siloona-site .social-row a{
+  width:38px; height:38px; border:1px solid var(--line-2); border-radius:999px; display:flex; align-items:center;
+  justify-content:center; transition:border-color .2s ease, color .2s ease;
+}
+.siloona-site .social-row a:hover{border-color:var(--violet); color:var(--violet)}
+.siloona-site .foot-bottom{
+  max-width:1180px; margin:40px auto 0; padding:24px 28px 0; border-top:1px solid var(--line);
+  font-size:12.5px; color:var(--muted); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+}
+
+/* ---------- Page header (inner pages) ---------- */
+.siloona-site .page-hero{padding:72px 0 56px; border-bottom:1px solid var(--line)}
+.siloona-site .page-hero h1{font-family:var(--serif); font-weight:500; font-size:clamp(2.1rem,4vw,3.2rem); margin:0 0 18px}
+.siloona-site .page-hero p{color:var(--ink-2); max-width:56ch; font-size:16px}
+
+/* ---------- Catalog mode switcher + category tabs ---------- */
+.siloona-site .catalog-controls{
+  display:flex; flex-direction:column; align-items:center; gap:24px; margin-top:44px;
+}
+.siloona-site .mode-switch{
+  display:inline-flex; gap:6px; padding:7px;
+  background:var(--cream-2); border:1px solid var(--line); border-radius:999px;
+  box-shadow:var(--shadow);
+}
+.siloona-site .mode-switch button{
+  padding:15px 36px; border-radius:999px; border:none; background:none;
+  font-size:14.5px; font-weight:600; color:var(--ink-2); white-space:nowrap;
+  transition:background .25s ease, color .25s ease, box-shadow .25s ease;
+}
+.siloona-site .mode-switch button:hover{color:var(--ink)}
+.siloona-site .mode-switch button.active{
+  background:var(--violet); color:#fff; box-shadow:0 10px 22px -10px rgba(107,29,44,.55);
+}
+
+.siloona-site .category-tabs{display:flex; flex-wrap:wrap; justify-content:center; gap:30px}
+.siloona-site .category-tabs button{
+  position:relative; border:none; background:none; padding:4px 2px;
+  font-size:13px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted);
+  transition:color .25s ease;
+}
+.siloona-site .category-tabs button::after{
+  content:""; position:absolute; left:50%; right:50%; bottom:-7px; height:1px; background:var(--violet);
+  transition:left .25s ease, right .25s ease;
+}
+.siloona-site .category-tabs button:hover{color:var(--ink)}
+.siloona-site .category-tabs button.active{color:var(--violet); font-weight:600}
+.siloona-site .category-tabs button.active::after{left:0; right:0}
+
+.siloona-site .catalog-pane{animation:catalogIn .45s ease}
+@keyframes catalogIn{
+  from{opacity:0; transform:translateY(10px)}
+  to{opacity:1; transform:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .siloona-site .catalog-pane{animation:none}
+}
+
+/* ---------- Invitations catalog ---------- */
+/* Card layout, thumbnails and print-card art live in site/catalog.css
+   (shared with the dashboard's design picker). Only the site's own
+   action-button sizing stays here. */
+.siloona-site .catalog-card .card-actions .btn{padding:10px 20px; font-size:13px;    width: 45%;
+    justify-content: center;}
+.siloona-site .catalog-card .card-actions.single .btn{width:auto; padding:10px 28px}
+
+/* ---------- Catalog pricing options ---------- */
+.siloona-site .price-options{display:flex; flex-direction:column; gap:8px; margin-top:14px; text-align:left}
+.siloona-site .price-row{
+  display:flex; flex-direction:column; gap:2px; width:100%; text-align:left; cursor:pointer;
+  background:var(--cream-2); border:1px solid var(--line); border-radius:8px; padding:9px 13px;
+  transition:border-color .15s, background .15s;
+}
+.siloona-site .price-row:hover{border-color:var(--line-2)}
+.siloona-site .price-row.active{background:#fff; border-color:var(--violet)}
+.siloona-site .price-row-main{display:flex; align-items:baseline; justify-content:space-between; gap:10px}
+.siloona-site .price-row-label{font-size:12.5px; font-weight:600; color:var(--ink)}
+.siloona-site .price-row-amount{font-size:12.5px; color:var(--violet); white-space:nowrap}
+.siloona-site .price-row-note{font-size:11px; color:var(--muted); line-height:1.4}
+
+/* ---------- Order placeholder modal ---------- */
+.siloona-site .order-backdrop{
+  position:fixed; inset:0; z-index:60; background:rgba(33,28,40,.5); backdrop-filter:blur(4px);
+  display:flex; align-items:center; justify-content:center; padding:24px;
+}
+.siloona-site .order-modal{
+  position:relative; width:min(100%,460px); background:#fff; border-radius:4px; box-shadow:var(--shadow); padding:40px;
+}
+.siloona-site .order-modal h3{font-family:var(--serif); font-size:24px; font-weight:500; margin:0 0 14px}
+.siloona-site .order-modal p:not(.eyebrow){color:var(--ink-2); font-size:14.5px; margin:0 0 26px}
+.siloona-site .order-close{
+  position:absolute; top:16px; right:16px; border:none; background:none; font-size:16px; color:var(--muted); line-height:1;
+}
+.siloona-site .order-close:hover{color:var(--ink)}
+
+/* Sample invitation preview (ported from the original placeholder, kept as a real working demo) */
+.siloona-site .sample-stage{padding:48px; display:flex; justify-content:center}
+.siloona-site .sample-card{
+  width:min(100%,560px); background:rgba(255,255,255,.86); border:1px solid var(--line-2); border-radius:24px;
+  box-shadow:var(--shadow); padding:40px; backdrop-filter:blur(10px);
+}
+.siloona-site .sample-card h2{font-family:var(--serif); font-size:clamp(1.8rem,4vw,2.6rem); margin:0; color:var(--ink)}
+.siloona-site .sample-card .description{margin:16px 0 0; color:var(--ink-2); font-size:15px}
+.siloona-site .sample-card .event-details{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:16px; margin-top:26px; padding-top:22px;
+  border-top:1px solid var(--line);
+}
+.siloona-site .sample-card .label{display:block; margin-bottom:5px; color:var(--violet); font-weight:700; text-transform:uppercase; letter-spacing:.08em; font-size:10.5px}
+.siloona-site .sample-card .event-details strong{color:var(--ink); font-size:15px}
+.siloona-site .sample-card .guest-list{margin-top:26px}
+.siloona-site .sample-card .guest-list ul{list-style:none; padding:0; margin:12px 0 0; display:flex; flex-wrap:wrap; gap:9px}
+.siloona-site .sample-card .guest-list li{background:var(--cream-2); color:var(--violet); border:1px solid var(--line-2); border-radius:999px; padding:7px 13px; font-size:13.5px; font-weight:600}
+.siloona-site .sample-card .rsvp-btn{margin-top:26px}
+
+/* ---------- Invitation cards (physical) ---------- */
+.siloona-site .swatch-row{display:grid; grid-template-columns:repeat(4,1fr); gap:20px}
+.siloona-site .swatch{aspect-ratio:3/4; border-radius:3px; box-shadow:var(--shadow); display:flex; align-items:flex-end; padding:16px}
+.siloona-site .swatch span{font-size:12px; letter-spacing:.08em; color:rgba(0,0,0,.55)}
+.siloona-site .swatch.s1{background:#F3ECE1}
+.siloona-site .swatch.s2{background:#EFE3E6}
+.siloona-site .swatch.s3{background:#E6E9E3}
+.siloona-site .swatch.s4{background:#EDE6F2}
+
+/* ---------- About ---------- */
+.siloona-site .pull-quote{
+  font-family:var(--serif); font-size:clamp(1.6rem,3vw,2.2rem); line-height:1.45; color:var(--ink);
+  border-left:2px solid var(--violet); padding-left:28px; max-width:46ch; margin:0;
+}
+.siloona-site .values{display:grid; grid-template-columns:repeat(3,1fr); gap:40px; border-top:1px solid var(--line); padding-top:48px}
+.siloona-site .values h4{font-family:var(--serif); font-size:19px; font-weight:500; margin:0 0 8px}
+.siloona-site .values p{color:var(--muted); font-size:14px; margin:0}
+
+/* ---------- Login ---------- */
+.siloona-site .auth-wrap{min-height:calc(100vh - 88px); display:flex; align-items:center; justify-content:center; padding:48px 20px}
+.siloona-site .auth-card{width:min(100%,420px); background:#fff; border:1px solid var(--line); border-radius:4px; padding:44px 40px; box-shadow:var(--shadow)}
+.siloona-site .auth-card h1{font-family:var(--serif); font-size:28px; font-weight:500; margin:0 0 8px; text-align:center}
+.siloona-site .auth-card p.sub{color:var(--muted); font-size:14px; text-align:center; margin:0 0 32px}
+.siloona-site .field{display:flex; flex-direction:column; gap:7px; margin-bottom:18px}
+.siloona-site .field label{font-size:12.5px; color:var(--ink-2); font-weight:600}
+.siloona-site .field input{
+  height:46px; border:1px solid var(--line-2); border-radius:3px; padding:0 14px; font:inherit; outline:none;
+  transition:border-color .2s ease, box-shadow .2s ease;
+}
+.siloona-site .field input:focus{border-color:var(--violet); box-shadow:0 0 0 3px rgba(107,29,44,.12)}
+.siloona-site .auth-card .btn-primary{width:100%; justify-content:center; margin-top:6px}
+.siloona-site .auth-note{text-align:center; font-size:12.5px; color:var(--muted); margin-top:22px}
+.siloona-site .form-msg{
+  font-size:13px; color:var(--violet); background:var(--cream-2); border:1px solid var(--line); border-radius:3px;
+  padding:10px 14px; margin-bottom:18px; display:none;
+}
+.siloona-site .form-msg.show{display:block}
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+@media (max-width:980px){
+  .siloona-site .site-nav{display:none}
+  .siloona-site .menu-btn{display:block}
+  .siloona-site .split{grid-template-columns:1fr; gap:40px}
+  .siloona-site .steps{grid-template-columns:repeat(2,1fr)}
+  .siloona-site .values{grid-template-columns:1fr; gap:28px}
+  .siloona-site .swatch-row{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:680px){
+  .siloona-site .wrap{padding:0 20px}
+  .siloona-site .hero{padding:56px 0 64px}
+  .siloona-site .cta-row{flex-direction:column; align-items:stretch}
+  .siloona-site .btn{justify-content:center}
+  .siloona-site section.block{padding:64px 0}
+  .siloona-site .cat-row{grid-template-columns:40px 1fr; row-gap:10px}
+  .siloona-site .cat-row .tag{grid-column:2; justify-self:start}
+  .siloona-site .steps{grid-template-columns:1fr; gap:28px}
+  .siloona-site .cta-band{padding:48px 28px}
+  .siloona-site .site-footer .wrap{flex-direction:column; gap:28px}
+  .siloona-site .sample-card{padding:28px}
+  .siloona-site .catalog-controls{margin-top:32px; gap:18px}
+  .siloona-site .mode-switch{display:flex; width:100%}
+  .siloona-site .mode-switch button{flex:1; padding:12px 10px; font-size:13px}
+  .siloona-site .category-tabs{gap:18px 22px}
+}
