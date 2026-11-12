@@ -99,6 +99,39 @@ const PREFILL = {
       schedule: ev.schedule?.length ? [...ev.schedule].sort((a, b) => (a.time || '').localeCompare(b.time || '')).map(x => ({ time: x.time, label: x.title })) : undefined,
     };
   },
+  'bd-stitch': (ev) => {
+    const name = ev.celebrant?.first?.trim();
+    return {
+      child: { name, age: ev.celebrant?.age ? String(ev.celebrant.age) : undefined },
+      hero: { title: name ? `${withArticle(name)} դառնում է` : undefined },
+      eventDate: eventDateTime(ev),
+      venue: venue(ev),
+      closing: { signature: name ? `${genitive(name)} ընտանիք` : undefined },
+      schedule: ev.schedule?.length ? [...ev.schedule].sort((a, b) => (a.time || '').localeCompare(b.time || '')).map(x => ({ time: x.time, label: x.title })) : undefined,
+    };
+  },
+  'bd-cars': (ev) => {
+    const name = ev.celebrant?.first?.trim();
+    return {
+      child: { name, age: ev.celebrant?.age ? String(ev.celebrant.age) : undefined },
+      hero: { title: name ? `${withArticle(name)} դառնում է` : undefined },
+      eventDate: eventDateTime(ev),
+      venue: venue(ev),
+      closing: { signature: name ? `${genitive(name)} ընտանիք` : undefined },
+      schedule: ev.schedule?.length ? [...ev.schedule].sort((a, b) => (a.time || '').localeCompare(b.time || '')).map(x => ({ time: x.time, label: x.title })) : undefined,
+    };
+  },
+  'bd-build': (ev) => {
+    const name = ev.celebrant?.first?.trim();
+    return {
+      child: { name, age: ev.celebrant?.age ? String(ev.celebrant.age) : undefined },
+      hero: { title: name ? `${withArticle(name)} դառնում է` : undefined },
+      eventDate: eventDateTime(ev),
+      venue: venue(ev),
+      closing: { signature: name ? `${genitive(name)} ընտանիք` : undefined },
+      schedule: ev.schedule?.length ? [...ev.schedule].sort((a, b) => (a.time || '').localeCompare(b.time || '')).map(x => ({ time: x.time, label: x.title })) : undefined,
+    };
+  },
   'card-mouse': (ev) => ({
     child: { name: ev.celebrant?.first?.trim() },
     ageLine: ev.celebrant?.age ? `${ev.celebrant.age} տարեկան` : undefined,
@@ -147,6 +180,42 @@ const PREFILL = {
       schedule: ev.schedule?.length ? [...ev.schedule].sort((a, b) => (a.time || '').localeCompare(b.time || '')).map(x => ({ time: x.time, label: x.title })) : undefined,
     };
   },
+  'wd-line': (ev) => {
+    // Two places: [0] the ceremony, [1] the celebration.
+    const places = (ev.locations || []).slice(0, 2).map((l) => compact({ time: l.time, name: l.name, address: l.address }));
+    const defaults = INVITATION_DEFAULTS['wd-line'].places;
+    return {
+      // Groom first, as on the cover (person1 is the bride).
+      couple: { first: ev.person2?.first?.trim(), second: ev.person1?.first?.trim() },
+      eventDate: eventDateTime(ev),
+      places: places.length ? defaults.map((d, i) => ({ ...d, ...places[i] })) : undefined,
+      schedule: ev.schedule?.length ? [...ev.schedule].sort((a, b) => (a.time || '').localeCompare(b.time || '')).map(x => ({ time: x.time, label: x.title })) : undefined,
+    };
+  },
+  'wd-calla': (ev) => {
+    // Two places: [0] the ceremony, [1] the celebration.
+    const places = (ev.locations || []).slice(0, 2).map((l) => compact({ time: l.time, name: l.name, address: l.address }));
+    const defaults = INVITATION_DEFAULTS['wd-calla'].places;
+    return {
+      // Groom first, as on the cover (person1 is the bride).
+      couple: { first: ev.person2?.first?.trim(), second: ev.person1?.first?.trim() },
+      eventDate: eventDateTime(ev),
+      places: places.length ? defaults.map((d, i) => ({ ...d, ...places[i] })) : undefined,
+      schedule: ev.schedule?.length ? [...ev.schedule].sort((a, b) => (a.time || '').localeCompare(b.time || '')).map(x => ({ time: x.time, label: x.title })) : undefined,
+    };
+  },
+  'wd-meadow': (ev) => {
+    // Two places: [0] the ceremony, [1] the celebration.
+    const places = (ev.locations || []).slice(0, 2).map((l) => compact({ time: l.time, name: l.name, address: l.address }));
+    const defaults = INVITATION_DEFAULTS['wd-meadow'].places;
+    return {
+      // Groom first, as on the cover (person1 is the bride).
+      couple: { first: ev.person2?.first?.trim(), second: ev.person1?.first?.trim() },
+      eventDate: eventDateTime(ev),
+      places: places.length ? defaults.map((d, i) => ({ ...d, ...places[i] })) : undefined,
+      schedule: ev.schedule?.length ? [...ev.schedule].sort((a, b) => (a.time || '').localeCompare(b.time || '')).map(x => ({ time: x.time, label: x.title })) : undefined,
+    };
+  },
   'bp-blue': (ev) => {
     const name = ev.child?.first?.trim();
     // Two places: [0] the church service, [1] the celebration.
@@ -167,6 +236,28 @@ const PREFILL = {
       eventDate: eventDateTime(ev),
       venue: venue(ev),
       closing: { signature: a && b ? `${a} և ${b}` : undefined },
+      schedule: ev.schedule?.length ? [...ev.schedule].sort((x, y) => (x.time || '').localeCompare(y.time || '')).map(x => ({ time: x.time, label: x.title })) : undefined,
+    };
+  },
+  'gp-stork': (ev) => {
+    const a = ev.person1?.first?.trim();
+    const b = ev.person2?.first?.trim();
+    return {
+      parents: { first: a, second: b },
+      eventDate: eventDateTime(ev),
+      venue: venue(ev),
+      closing: { signature: a && b ? `${a} և ${b}` : undefined },
+      schedule: ev.schedule?.length ? [...ev.schedule].sort((x, y) => (x.time || '').localeCompare(y.time || '')).map(x => ({ time: x.time, label: x.title })) : undefined,
+    };
+  },
+  'ce-ornament': (ev) => {
+    const company = ev.company?.trim();
+    return {
+      company,
+      hero: { title: ev.title?.trim() },
+      eventDate: eventDateTime(ev),
+      venue: venue(ev),
+      closing: { signature: company },
       schedule: ev.schedule?.length ? [...ev.schedule].sort((x, y) => (x.time || '').localeCompare(y.time || '')).map(x => ({ time: x.time, label: x.title })) : undefined,
     };
   },

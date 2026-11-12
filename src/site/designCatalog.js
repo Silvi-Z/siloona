@@ -4,6 +4,8 @@ import { CardMouseArt } from './invitations/card-mouse/CardMouse'
 import wdBeigeThumb from './assets/wd-beige-catalog.png'
 import bdAnimalsThumb from './invitations/bd-animals/assets/lion.webp'
 import gpBalloonsThumb from './invitations/gp-balloons/assets/catalog-thumb.webp'
+import gpStorkThumb from './invitations/gp-stork/assets/catalog-thumb.webp'
+import ceOrnamentThumb from './invitations/ce-ornament/assets/catalog-thumb.webp'
 import bdDuckThumb from './invitations/bd-duck/assets/catalog-thumb.webp'
 import bpBlueThumb from './invitations/bp-blue/assets/catalog-thumb.webp'
 import wdGardenSoftThumb from './invitations/wd-garden-soft/assets/catalog-thumb.webp'
@@ -11,8 +13,14 @@ import wdGreenThumb from './invitations/wd-green/assets/catalog-thumb.webp'
 import wdGardenThumb from './invitations/wd-garden/assets/catalog-thumb.webp'
 import wdTulipThumb from './invitations/wd-tulip/assets/catalog-thumb.webp'
 import wdVelvetThumb from './invitations/wd-velvet/assets/catalog-thumb.webp'
+import wdLineThumb from './invitations/wd-line/assets/catalog-thumb.webp'
+import wdCallaThumb from './invitations/wd-calla/assets/catalog-thumb.webp'
+import wdMeadowThumb from './invitations/wd-meadow/assets/catalog-thumb.webp'
 import bdPlanetThumb from './invitations/bd-planet/assets/catalog-thumb.webp'
 import bdBalloonsThumb from './invitations/bd-balloons/assets/catalog-thumb.webp'
+import bdStitchThumb from './invitations/bd-stitch/assets/catalog-thumb.webp'
+import bdCarsThumb from './invitations/bd-cars/assets/catalog-thumb.webp'
+import bdBuildThumb from './invitations/bd-build/assets/catalog-thumb.webp'
 
 // Single source of truth for every invitation design Siloona offers —
 // read by the public /invitations catalog (WebCatalog / CardCatalog) and
@@ -30,20 +38,20 @@ import bdBalloonsThumb from './invitations/bd-balloons/assets/catalog-thumb.webp
 //               (see invitationRegistry.js) — web designs, and cards built
 //               as editable pages; only those can be edited.
 export const WEB_DESIGNS = [
-  {
-    id: 'wd-beige',
-    kind: 'web',
-    title: 'Միքայել & Տաթև',
-    code: 'WEB-WED-01',
-    type: 'Հարսանիք',
-    category: 'wedding',
-    eventTypes: ['wedding'],
-    available: true,
-    previewSlug: 'wd-beige',
-    previewRoute: '/invitations/preview/wd-beige',
-    image: wdBeigeThumb,
-    pricing: { diy: 15000, assisted: 20000 },
-  },
+  // {
+  //   id: 'wd-beige',
+  //   kind: 'web',
+  //   title: 'Միքայել & Տաթև',
+  //   code: 'WEB-WED-01',
+  //   type: 'Հարսանիք',
+  //   category: 'wedding',
+  //   eventTypes: ['wedding'],
+  //   available: true,
+  //   previewSlug: 'wd-beige',
+  //   previewRoute: '/invitations/preview/wd-beige',
+  //   image: wdBeigeThumb,
+  //   pricing: { diy: 15000, assisted: 20000 },
+  // },
   {
     id: 'wd-garden-soft',
     kind: 'web',
@@ -58,34 +66,34 @@ export const WEB_DESIGNS = [
     image: wdGardenSoftThumb,
     pricing: { diy: null, assisted: null },
   },
-  {
-    id: 'wd-green',
-    kind: 'web',
-    title: 'Նարե և Արամ',
-    code: 'WEB-WED-03',
-    type: 'Հարսանիք',
-    category: 'wedding',
-    eventTypes: ['wedding'],
-    available: true,
-    previewSlug: 'wd-green',
-    previewRoute: '/invitations/preview/wd-green',
-    image: wdGreenThumb,
-    pricing: { diy: null, assisted: null },
-  },
-  {
-    id: 'wd-garden',
-    kind: 'web',
-    title: 'Նարե և Արամ',
-    code: 'WEB-WED-04',
-    type: 'Հարսանիք',
-    category: 'wedding',
-    eventTypes: ['wedding'],
-    available: true,
-    previewSlug: 'wd-garden',
-    previewRoute: '/invitations/preview/wd-garden',
-    image: wdGardenThumb,
-    pricing: { diy: null, assisted: null },
-  },
+  // {
+  //   id: 'wd-green',
+  //   kind: 'web',
+  //   title: 'Նարե և Արամ',
+  //   code: 'WEB-WED-03',
+  //   type: 'Հարսանիք',
+  //   category: 'wedding',
+  //   eventTypes: ['wedding'],
+  //   available: true,
+  //   previewSlug: 'wd-green',
+  //   previewRoute: '/invitations/preview/wd-green',
+  //   image: wdGreenThumb,
+  //   pricing: { diy: null, assisted: null },
+  // },
+  // {
+  //   id: 'wd-garden',
+  //   kind: 'web',
+  //   title: 'Նարե և Արամ',
+  //   code: 'WEB-WED-04',
+  //   type: 'Հարսանիք',
+  //   category: 'wedding',
+  //   eventTypes: ['wedding'],
+  //   available: true,
+  //   previewSlug: 'wd-garden',
+  //   previewRoute: '/invitations/preview/wd-garden',
+  //   image: wdGardenThumb,
+  //   pricing: { diy: null, assisted: null },
+  // },
   {
     id: 'wd-tulip',
     kind: 'web',
@@ -112,6 +120,48 @@ export const WEB_DESIGNS = [
     previewSlug: 'wd-velvet',
     previewRoute: '/invitations/preview/wd-velvet',
     image: wdVelvetThumb,
+    pricing: { diy: null, assisted: null },
+  },
+  {
+    id: 'wd-line',
+    kind: 'web',
+    title: 'Էրիկ & Սոնա',
+    code: 'WEB-WED-07',
+    type: 'Հարսանիք',
+    category: 'wedding',
+    eventTypes: ['wedding'],
+    available: true,
+    previewSlug: 'wd-line',
+    previewRoute: '/invitations/preview/wd-line',
+    image: wdLineThumb,
+    pricing: { diy: null, assisted: null },
+  },
+  {
+    id: 'wd-calla',
+    kind: 'web',
+    title: 'Ռուբեն & Էլեն',
+    code: 'WEB-WED-08',
+    type: 'Հարսանիք',
+    category: 'wedding',
+    eventTypes: ['wedding'],
+    available: true,
+    previewSlug: 'wd-calla',
+    previewRoute: '/invitations/preview/wd-calla',
+    image: wdCallaThumb,
+    pricing: { diy: null, assisted: null },
+  },
+  {
+    id: 'wd-meadow',
+    kind: 'web',
+    title: 'Արեն & Նանե',
+    code: 'WEB-WED-09',
+    type: 'Հարսանիք',
+    category: 'wedding',
+    eventTypes: ['wedding'],
+    available: true,
+    previewSlug: 'wd-meadow',
+    previewRoute: '/invitations/preview/wd-meadow',
+    image: wdMeadowThumb,
     pricing: { diy: null, assisted: null },
   },
   {
@@ -171,6 +221,48 @@ export const WEB_DESIGNS = [
     pricing: { diy: null, assisted: null },
   },
   {
+    id: 'bd-stitch',
+    kind: 'web',
+    title: 'Սոֆիի 2 տարեկանը',
+    code: 'WEB-BDAY-05',
+    type: 'Ծննդյան տոն',
+    category: 'birthday',
+    eventTypes: ['birthday'],
+    available: true,
+    previewSlug: 'bd-stitch',
+    previewRoute: '/invitations/preview/bd-stitch',
+    image: bdStitchThumb,
+    pricing: { diy: null, assisted: null },
+  },
+  {
+    id: 'bd-cars',
+    kind: 'web',
+    title: 'Մարկի 4 տարեկանը',
+    code: 'WEB-BDAY-06',
+    type: 'Ծննդյան տոն',
+    category: 'birthday',
+    eventTypes: ['birthday'],
+    available: true,
+    previewSlug: 'bd-cars',
+    previewRoute: '/invitations/preview/bd-cars',
+    image: bdCarsThumb,
+    pricing: { diy: null, assisted: null },
+  },
+  {
+    id: 'bd-build',
+    kind: 'web',
+    title: 'Հայկի 2 տարեկանը',
+    code: 'WEB-BDAY-07',
+    type: 'Ծննդյան տոն',
+    category: 'birthday',
+    eventTypes: ['birthday'],
+    available: true,
+    previewSlug: 'bd-build',
+    previewRoute: '/invitations/preview/bd-build',
+    image: bdBuildThumb,
+    pricing: { diy: null, assisted: null },
+  },
+  {
     id: 'gp-balloons',
     kind: 'web',
     title: 'Տղա՞, թե՞ Աղջիկ',
@@ -183,6 +275,36 @@ export const WEB_DESIGNS = [
     previewSlug: 'gp-balloons',
     previewRoute: '/invitations/preview/gp-balloons',
     image: gpBalloonsThumb,
+    pricing: { diy: null, assisted: null },
+  },
+  {
+    id: 'gp-stork',
+    kind: 'web',
+    title: 'Տղա՞, թե՞ աղջի՞կ · արագիլ',
+    code: 'WEB-BAP-03',
+    type: 'Գենդերի բացահայտում',
+    // Same public tab as gp-balloons.
+    category: 'baptism',
+    eventTypes: ['genderReveal'],
+    available: true,
+    previewSlug: 'gp-stork',
+    previewRoute: '/invitations/preview/gp-stork',
+    image: gpStorkThumb,
+    pricing: { diy: null, assisted: null },
+  },
+  {
+    id: 'ce-ornament',
+    kind: 'web',
+    title: 'Ամանորյա երեկո',
+    code: 'WEB-CORP-01',
+    type: 'Կորպորատիվ միջոցառում',
+    // Each guest's personal link writes their name on the ornament.
+    category: 'corporate',
+    eventTypes: ['corporate'],
+    available: true,
+    previewSlug: 'ce-ornament',
+    previewRoute: '/invitations/preview/ce-ornament',
+    image: ceOrnamentThumb,
     pricing: { diy: null, assisted: null },
   },
   {

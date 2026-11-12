@@ -1,0 +1,174 @@
+/* =========================================================
+   "wd-meadow" — an impressionist oil painting of a flowering
+   meadow (assets/meadow.webp, the supplied artwork). Text sits in
+   cream "mist" laid over the painting, or on paper between misty
+   strips of it. One continuous sheet; sizes are cqw of the sheet so
+   the cover keeps the painting's proportions on every screen.
+   Everything is scoped under .wmd.
+   ========================================================= */
+.wmd{
+  --paper:#f7f2ea; --mist:247,242,234; --ink:#3b4637; --rose:#c26b74; --peach:#e2a685; --sage:#8fa38a;
+  --mute:#757a6c; --hair:rgba(59,70,55,.22);
+  --arm:"Noto Serif Armenian","Sylfaen",Georgia,serif;
+  --sans:"Noto Sans Armenian","Segoe UI",system-ui,sans-serif;
+  --lat:"Cormorant Garamond","Noto Serif Armenian",Georgia,serif;
+  --ease:cubic-bezier(.22,.8,.24,1);
+  min-height:100vh; color:var(--ink); text-align:center; overflow-x:hidden;
+  font:300 1rem/1.8 var(--sans); -webkit-font-smoothing:antialiased;
+  background:#e4e2d6;
+}
+.wmd,.wmd *{box-sizing:border-box; margin:0; padding:0}
+.wmd :focus-visible{outline:1px solid var(--rose); outline-offset:4px}
+
+.wmd .sheet{position:relative; width:min(100%,500px); margin:0 auto; overflow:hidden; container-type:inline-size; background:var(--paper)}
+@media (min-width:700px){.wmd .sheet{margin:40px auto; box-shadow:0 1px 3px rgba(50,60,45,.08),0 30px 80px -30px rgba(50,60,45,.4)}}
+
+.wmd .blk{position:relative; padding:13cqw 9cqw}
+
+/* ---------- type ---------- */
+.wmd .caps{font:400 max(10.5px,2.5cqw)/1.8 var(--sans); letter-spacing:.3em; text-transform:uppercase; padding-left:.3em; color:var(--rose)}
+.wmd .caps.small{font-size:max(10px,2.25cqw); letter-spacing:.22em; padding-left:.22em; color:var(--mute)}
+.wmd .title{font:300 max(23px,7cqw)/1.28 var(--arm); color:var(--ink); text-wrap:balance}
+.wmd .body{font:300 max(14px,3.7cqw)/1.95 var(--sans); color:var(--mute); max-width:32em; margin:5cqw auto 0}
+.wmd .amp{font-family:var(--lat); font-style:italic; font-weight:300; color:var(--rose)}
+
+/* three dabs of the painting's colours over each heading */
+.wmd .dabs{display:flex; justify-content:center; gap:1.4cqw; margin-bottom:4cqw}
+.wmd .dabs i{display:block; width:3.2cqw; height:2.2cqw; min-width:11px; min-height:7px; border-radius:60% 40% 55% 45%/50% 60% 40% 50%; opacity:.85}
+.wmd .dabs i:nth-child(1){background:var(--sage); rotate:-18deg}
+.wmd .dabs i:nth-child(2){background:var(--rose); rotate:8deg; translate:0 -1px}
+.wmd .dabs i:nth-child(3){background:var(--peach); rotate:24deg}
+
+/* reveal: .r children appear once their section is in view */
+.wmd .r{opacity:0; transform:translateY(14px); filter:blur(4px); transition:opacity 1.1s var(--ease),transform 1.1s var(--ease),filter 1.1s var(--ease); transition-delay:calc(var(--i,0)*.12s)}
+.wmd .in .r{opacity:1; transform:none; filter:none}
+@keyframes wmdBreathe{from{transform:scale(1.06)}}
+@keyframes wmdFade{from{opacity:0}}
+
+/* the painting, wherever it shows */
+.wmd .paint,.wmd .band,.wmd .rsvp::before,.wmd .closing::before{background-image:url("./assets/meadow.webp"); background-repeat:no-repeat}
+
+/* ---------- cover (painting 1152 × 2048) ---------- */
+.wmd .hero{--u:calc(100cqw/1152); height:calc(var(--u)*2048); padding:0}
+.wmd .paint{
+  position:absolute; inset:0; background-size:cover; background-position:center;
+  -webkit-mask:linear-gradient(#000 84%,transparent); mask:linear-gradient(#000 84%,transparent);
+  animation:wmdBreathe 4s var(--ease) both;
+}
+.wmd .mist{
+  position:absolute; inset:0;
+  background:radial-gradient(ellipse 60% 27% at 50% 45%,rgba(var(--mist),.95) 0,rgba(var(--mist),.9) 52%,rgba(var(--mist),.55) 78%,rgba(var(--mist),0) 100%);
+  animation:wmdFade 2.2s .3s both;
+}
+.wmd .htxt{position:absolute; left:14cqw; right:14cqw; top:calc(var(--u)*560); height:calc(var(--u)*720); display:flex; flex-direction:column; align-items:center; justify-content:center}
+.wmd .hero .r{transition-delay:calc(1s + var(--i,0)*.18s)}
+.wmd .htxt .names{font:200 11.2cqw/1.08 var(--arm); color:var(--ink); margin-top:4cqw}
+.wmd .htxt .names>span{display:block}
+.wmd .htxt .names .amp{display:block; font-size:.8em; line-height:1; margin:.6cqw 0 1.4cqw}
+.wmd .htxt .line{font:300 max(14px,3.9cqw)/1.5 var(--arm); color:var(--ink); margin-top:4cqw}
+.wmd .hdate{font:400 max(16px,5cqw)/1.2 var(--lat); letter-spacing:.14em; color:var(--rose); font-variant-numeric:lining-nums; margin-top:3cqw}
+
+/* ---------- misty strips of the painting ---------- */
+.wmd .band{
+  background-size:100% auto; background-position:50% var(--y,50%);
+  -webkit-mask:linear-gradient(transparent,#000 30%,#000 70%,transparent); mask:linear-gradient(transparent,#000 30%,#000 70%,transparent);
+}
+
+/* ---------- date: a mist circle on the painting ---------- */
+.wmd .date{padding:0 0 13cqw}
+.wmd .dpaint{position:relative; height:104cqw; display:grid; place-items:center}
+.wmd .dpaint .band{position:absolute; inset:0}
+.wmd .circle{
+  position:relative; width:66cqw; aspect-ratio:1; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:radial-gradient(circle,rgba(var(--mist),.96) 0,rgba(var(--mist),.93) 58%,rgba(var(--mist),0) 71%);
+}
+.wmd .circle .wd{font:300 max(14px,3.8cqw)/1.4 var(--arm); margin-top:2cqw}
+.wmd .circle .day{font:300 20cqw/1 var(--lat); color:var(--ink); font-variant-numeric:lining-nums}
+.wmd .circle .my{font:300 max(15px,4.2cqw)/1.35 var(--arm)}
+.wmd .circle .tm{font:400 max(13px,3.4cqw)/1.4 var(--sans); color:var(--mute); margin-top:1.4cqw}
+.wmd .cd{margin-top:4cqw; padding:0 9cqw}
+.wmd .cells{display:flex; justify-content:center; gap:6cqw; margin-top:2cqw}
+.wmd .cells span{display:flex; flex-direction:column; align-items:center; min-width:10cqw; font:400 max(10px,2.3cqw)/1.4 var(--sans); letter-spacing:.12em; color:var(--mute)}
+.wmd .cells b{font:300 max(26px,8.4cqw)/1.15 var(--lat); letter-spacing:0; color:var(--ink); font-variant-numeric:lining-nums tabular-nums}
+
+/* soft pill buttons (calendar, maps) */
+.wmd .btn{display:inline-block; margin-top:8cqw; padding:2.8cqw 6.4cqw; border:1px solid var(--rose); border-radius:999px; color:var(--rose); font:400 max(10.5px,2.5cqw)/1.6 var(--sans); letter-spacing:.22em; text-transform:uppercase; text-decoration:none; transition:background .4s,color .4s; cursor:pointer}
+.wmd .btn:hover{background:var(--rose); color:var(--paper)}
+
+/* ---------- program ---------- */
+.wmd .tl{list-style:none; max-width:76cqw; margin:7cqw auto 0}
+.wmd .tl li{display:grid; grid-template-columns:1fr 1fr; align-items:baseline; gap:5cqw; padding:3.2cqw 0; border-bottom:1px solid var(--hair)}
+.wmd .tl li:first-child{border-top:1px solid var(--hair)}
+.wmd .tl time{text-align:right; font:300 max(20px,6cqw)/1 var(--lat); color:var(--rose); font-variant-numeric:lining-nums}
+.wmd .tl li>span{text-align:left; font:300 max(14px,3.8cqw)/1.4 var(--arm)}
+
+/* ---------- places (a misty strip leads in) ---------- */
+.wmd .venue{padding:0 0 13cqw}
+.wmd .venue>.band{height:44cqw}
+.wmd .vin{padding:4cqw 9cqw 0}
+.wmd .place{margin-top:9cqw}
+.wmd .place+.place{margin-top:12cqw}
+.wmd .ptime{font:300 max(22px,7cqw)/1.2 var(--lat); color:var(--rose); margin-top:.6cqw}
+.wmd .pname{font:300 max(18px,5.2cqw)/1.4 var(--arm); margin-top:1.4cqw; text-wrap:balance}
+.wmd .paddr{font:300 max(13px,3.4cqw)/1.6 var(--sans); color:var(--mute); margin-top:1cqw}
+.wmd .place .btn{margin-top:5cqw}
+
+/* ---------- dress code: painted dabs ---------- */
+.wmd .sw{display:flex; justify-content:center; gap:4cqw; margin-top:8cqw}
+.wmd .sw-i{
+  display:block; width:13cqw; aspect-ratio:1; background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.28),transparent 55%),var(--c);
+  border-radius:58% 42% 55% 45%/45% 55% 45% 55%; transition:transform .5s var(--ease);
+}
+.wmd .sw-i:nth-child(2){border-radius:45% 55% 40% 60%/55% 45% 60% 40%; rotate:20deg}
+.wmd .sw-i:nth-child(3){border-radius:52% 48% 62% 38%/40% 58% 42% 60%; rotate:-14deg}
+.wmd .sw-i:nth-child(4){border-radius:40% 60% 48% 52%/60% 40% 55% 45%; rotate:40deg}
+.wmd .sw-i:hover{transform:translateY(-1.5cqw) scale(1.06)}
+.wmd .sw-edit{width:13cqw; height:13cqw; border:1px solid var(--rose); border-radius:50%; padding:0; background:none; cursor:pointer; overflow:hidden}
+
+/* ---------- rsvp: a cream panel over the painting ---------- */
+.wmd .rsvp{padding:26cqw 6cqw}
+.wmd .rsvp::before{
+  content:""; position:absolute; inset:0; background-size:cover; background-position:50% 48%;
+  -webkit-mask:linear-gradient(transparent,#000 16%,#000 84%,transparent); mask:linear-gradient(transparent,#000 16%,#000 84%,transparent);
+}
+.wmd .panel{position:relative; padding:11cqw 7cqw; background:rgba(var(--mist),.95); box-shadow:0 20px 50px -30px rgba(40,50,35,.55)}
+.wmd .form{display:grid; gap:6cqw; margin-top:8cqw; text-align:left}
+.wmd .field{display:grid; gap:1cqw}
+.wmd .field .caps{padding-left:0}
+.wmd .field input,.wmd .field select,.wmd .field textarea{width:100%; font:300 16px/1.5 var(--sans); color:var(--ink); background:transparent; border:0; border-bottom:1px solid rgba(59,70,55,.35); padding:8px 2px; border-radius:0; resize:vertical; transition:border-color .3s}
+.wmd .field select{appearance:none; background:linear-gradient(45deg,transparent 50%,var(--rose) 50%) right 6px center/6px 6px no-repeat}
+.wmd .field input:focus,.wmd .field select:focus,.wmd .field textarea:focus{outline:0; border-color:var(--rose)}
+.wmd .field input[aria-invalid]{border-color:#b33d3d}
+.wmd .err{font-size:13px; color:#a43535}
+.wmd .choice{display:grid; grid-template-columns:1fr 1fr; gap:3cqw}
+.wmd .choice label{position:relative; display:flex; align-items:center; justify-content:center; text-align:center; min-height:44px; padding:2.4cqw 2cqw; border:1px solid rgba(59,70,55,.3); border-radius:999px; font:400 max(13px,3.2cqw)/1.35 var(--sans); cursor:pointer; transition:background .35s,color .35s,border-color .35s}
+.wmd .choice input{position:absolute; opacity:0; pointer-events:none}
+.wmd .choice label.on{background:var(--ink); color:var(--paper); border-color:var(--ink)}
+.wmd .choice label:has(input:focus-visible){outline:1px solid var(--rose); outline-offset:3px}
+.wmd .send{justify-self:center; min-width:60%; margin-top:2cqw; padding:3.4cqw 6cqw; border:0; border-radius:999px; background:var(--rose); color:#fff; font:400 max(11px,2.6cqw)/1.4 var(--sans); letter-spacing:.24em; text-transform:uppercase; cursor:pointer; transition:background .35s}
+.wmd .send:hover{background:var(--ink)}
+.wmd .thanks{margin-top:8cqw; font:300 max(18px,5.4cqw)/1.6 var(--arm); animation:wmdFade 1s both}
+
+/* ---------- closing: the lower meadow down to the sheet's edge ---------- */
+.wmd .closing{min-height:150cqw; padding:0 9cqw; display:flex; align-items:center; justify-content:center}
+.wmd .closing::before{
+  content:""; position:absolute; inset:0; background-size:100% auto; background-position:50% 100%;
+  -webkit-mask:linear-gradient(transparent,#000 22%); mask:linear-gradient(transparent,#000 22%);
+}
+.wmd .closing::after{content:""; position:absolute; inset:0; background:radial-gradient(ellipse 58% 30% at 50% 52%,rgba(var(--mist),.95) 0,rgba(var(--mist),.9) 50%,rgba(var(--mist),.5) 78%,rgba(var(--mist),0) 100%)}
+.wmd .ctxt{position:relative; z-index:1; max-width:70cqw}
+.wmd .sign{font:300 max(14px,4cqw)/1.4 var(--arm); color:var(--mute); margin-top:5cqw}
+.wmd .ctxt .names{font:200 max(28px,9cqw)/1.2 var(--arm); margin-top:1cqw}
+.wmd .ctxt .names .amp{margin:0 .22em}
+.wmd .htxt .caps{letter-spacing:.24em; padding-left:.24em; text-wrap:balance}
+
+/* ---------- live editing ---------- */
+.wmd .wdb-editable{outline:1px dashed transparent; outline-offset:3px; border-radius:2px; transition:outline-color .2s}
+.wmd .wdb-editable:hover,.wmd .wdb-editable:focus{outline-color:var(--rose)}
+.wmd .wdb-edit-input{font:400 15px var(--sans); color:var(--ink); background:#fffaf3; border:1px dashed var(--rose); border-radius:4px; padding:6px 8px; margin:3cqw 0}
+.wmd.editing .r{opacity:1; transform:none; filter:none; transition:none}
+
+@media (prefers-reduced-motion:reduce){
+  .wmd *,.wmd *::before,.wmd *::after{animation:none!important; transition:none!important}
+  .wmd .r{opacity:1; transform:none; filter:none}
+}

@@ -1,0 +1,147 @@
+/* =========================================================
+   "bd-stitch" — storybook friends embroidered on linen
+   (assets/: pieces of the supplied artwork). Needlework all the
+   way: woven linen, running stitches, felt labels and patches,
+   wooden embroidery hoops. Sizes are cqw of the sheet.
+   Everything is scoped under .bst.
+   ========================================================= */
+.bst{
+  --linen:#efe6d3; --thread:#8a5a35; --ink:#4a3423; --mute:#7d6a58;
+  --red:#c2352c; --honey:#e3a52e; --sage:#8fa678; --sky:#8fb1c8; --wood:#c99358; --wood-d:#93622f;
+  --sans:"Noto Sans Armenian","Segoe UI",system-ui,sans-serif;
+  --serif:"Noto Serif Armenian","Sylfaen",Georgia,serif;
+  --ease:cubic-bezier(.22,.8,.24,1);
+  min-height:100vh; color:var(--ink); text-align:center; overflow-x:hidden;
+  font:400 1rem/1.7 var(--sans); -webkit-font-smoothing:antialiased;
+  background:#ddd2bb;
+}
+.bst,.bst *{box-sizing:border-box; margin:0; padding:0}
+.bst :focus-visible{outline:2px dashed var(--red); outline-offset:4px}
+
+/* woven linen: fine warp and weft threads over a flax base */
+.bst .sheet{
+  position:relative; width:min(100%,500px); margin:0 auto; overflow:hidden; container-type:inline-size;
+  background-color:var(--linen);
+  background-image:
+    repeating-linear-gradient(0deg,rgba(120,90,50,.06) 0 1px,transparent 1px 3px),
+    repeating-linear-gradient(90deg,rgba(120,90,50,.05) 0 1px,transparent 1px 3px),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45 0 0 0 0 .36 0 0 0 0 .22 0 0 0 .35 -.1'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+@media (min-width:700px){.bst .sheet{margin:40px auto; box-shadow:0 1px 3px rgba(80,55,30,.1),0 30px 80px -30px rgba(80,55,30,.45)}}
+
+.bst .blk{position:relative; padding:12cqw 8cqw}
+
+/* ---------- type & needlework bits ---------- */
+.bst .caps{font:600 max(11px,2.7cqw)/1.6 var(--sans); letter-spacing:.26em; text-transform:uppercase; padding-left:.26em; color:var(--thread)}
+.bst .title{font:600 max(22px,6.6cqw)/1.3 var(--serif); color:var(--ink); text-wrap:balance}
+.bst .body{font:400 max(14px,3.8cqw)/1.85 var(--sans); color:var(--mute); max-width:30em; margin:4cqw auto 0}
+/* a running stitch */
+.bst .stitch{display:block; width:34cqw; height:2px; margin:3.5cqw auto; border-radius:2px; background:repeating-linear-gradient(90deg,var(--thread) 0 2.4cqw,transparent 2.4cqw 3.6cqw)}
+
+/* felt label with stitched edges */
+.bst .label{
+  display:inline-block; position:relative; padding:2.2cqw 6cqw; border-radius:1.6cqw;
+  font:700 max(17px,5.2cqw)/1.25 var(--sans); color:#fffaf0; letter-spacing:.01em;
+  background:var(--tone); box-shadow:0 1.2cqw 2cqw -1.2cqw rgba(70,45,20,.45),inset 0 -.6cqw 0 rgba(0,0,0,.08);
+  outline:2px dashed rgba(255,250,240,.75); outline-offset:-1.6cqw; text-shadow:0 1px 0 rgba(0,0,0,.15);
+}
+.bst .label.sage{--tone:var(--sage)} .bst .label.honey{--tone:var(--honey)} .bst .label.sky{--tone:var(--sky)} .bst .label.red{--tone:var(--red)}
+
+/* reveal: .r children appear once their section is in view */
+.bst .r{opacity:0; transform:translateY(16px) scale(.98); transition:opacity .9s var(--ease),transform .9s var(--ease); transition-delay:calc(var(--i,0)*.1s)}
+.bst .in .r{opacity:1; transform:none}
+
+/* ---------- wooden embroidery hoop ---------- */
+.bst .hoop{position:relative; width:var(--w); aspect-ratio:1; margin:0 auto; cursor:pointer; -webkit-tap-highlight-color:transparent}
+.bst .hoop .fabric{
+  position:absolute; inset:0; border-radius:50%; background-size:cover; background-position:center;
+  box-shadow:
+    inset 0 0 0 .5cqw rgba(60,35,10,.25), inset 0 0 3cqw rgba(60,35,10,.35),
+    0 0 0 1.3cqw var(--wood), 0 0 0 1.6cqw var(--wood-d), 0 0 0 3cqw #d6a56b, 0 0 0 3.3cqw var(--wood-d),
+    0 2.4cqw 4cqw 2cqw rgba(80,50,20,.28);
+}
+/* the brass screw clamp at the top of the hoop */
+.bst .hoop .clamp{position:absolute; left:50%; top:-4.6cqw; width:8cqw; height:4.4cqw; translate:-50% 0; border-radius:1cqw 1cqw .4cqw .4cqw; background:linear-gradient(90deg,var(--wood-d),var(--wood) 30%,#e0b47c 50%,var(--wood) 70%,var(--wood-d))}
+.bst .hoop .clamp::before{content:""; position:absolute; left:50%; top:-2.8cqw; width:3.4cqw; height:3.4cqw; translate:-50% 0; border-radius:50%; background:radial-gradient(circle at 35% 35%,#f4e2b0,#b8913f 60%,#7d5f22)}
+.bst .hoop.big{--w:84cqw; margin-top:12cqw}
+.bst .hoop.mid{--w:58cqw; margin:4cqw auto 11cqw}
+.bst .hoop.small{--w:46cqw; margin:4cqw auto 10cqw}
+.bst .hoop.wob{animation:bstWobble .7s var(--ease)}
+@keyframes bstWobble{25%{rotate:-4deg}55%{rotate:3deg}80%{rotate:-1deg}}
+@keyframes bstPop{from{opacity:0; transform:scale(.9)}}
+
+/* ---------- cover ---------- */
+.bst .hero{padding-top:18cqw; padding-bottom:16cqw}
+.bst .htitle{font:700 max(28px,9cqw)/1.15 var(--serif); color:var(--ink); text-wrap:balance; margin-top:2cqw}
+/* the age on a round felt patch, satin-stitched in red */
+.bst .patch{
+  position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  width:34cqw; aspect-ratio:1; margin:6cqw auto 0; border-radius:50%;
+  background:radial-gradient(circle at 40% 35%,#f2c14f,var(--honey) 60%,#cf8f1d);
+  box-shadow:0 1.6cqw 3cqw -1cqw rgba(110,70,10,.5),inset 0 -1cqw 0 rgba(0,0,0,.07);
+  outline:2px dashed rgba(255,248,225,.85); outline-offset:-2.4cqw;
+  font:800 19cqw/1 var(--sans); color:var(--red);
+  text-shadow:0 .4cqw 0 #8c1f19,0 .9cqw 1.2cqw rgba(90,20,10,.3);
+}
+.bst .patch small{display:block; margin-top:.4cqw; font:700 max(10px,2.6cqw)/1 var(--sans); letter-spacing:.18em; color:#7a4f12; text-shadow:none}
+.bst .hdate{font:500 max(14px,3.9cqw)/1.5 var(--sans); color:var(--thread); margin-top:6cqw}
+
+/* ---------- welcome ---------- */
+.bst .welcome{padding-top:6cqw}
+
+/* ---------- countdown: felt squares ---------- */
+.bst .cells{display:flex; justify-content:center; gap:3cqw; margin-top:7cqw}
+.bst .cells span{
+  display:flex; flex-direction:column; align-items:center; width:18cqw; padding:2.6cqw 0 2cqw; border-radius:1.6cqw;
+  background:#fff8ea; box-shadow:0 1cqw 2cqw -1.2cqw rgba(70,45,20,.4); outline:1.5px dashed rgba(138,90,53,.55); outline-offset:-1.2cqw;
+  font:600 max(10px,2.4cqw)/1.4 var(--sans); color:var(--mute);
+}
+.bst .cells b{font:800 max(22px,7cqw)/1.1 var(--sans); color:var(--red); font-variant-numeric:tabular-nums}
+
+/* buttons: a felt tab with a stitched edge */
+.bst .btn{display:inline-block; margin-top:7cqw; padding:2.8cqw 6cqw; border-radius:999px; background:var(--thread); color:#fff8ea; font:700 max(12px,3cqw)/1.4 var(--sans); text-decoration:none; outline:1.5px dashed rgba(255,248,234,.7); outline-offset:-1cqw; box-shadow:0 1cqw 2cqw -1cqw rgba(70,45,20,.6); transition:transform .3s var(--ease),background .3s; cursor:pointer}
+.bst .btn:hover{transform:translateY(-2px); background:var(--ink)}
+
+/* ---------- program ---------- */
+.bst .tl{list-style:none; max-width:78cqw; margin:7cqw auto 0; text-align:left}
+.bst .tl li{display:grid; grid-template-columns:20cqw 1fr; align-items:center; gap:4cqw; padding:2.6cqw 0; border-bottom:2px dashed rgba(138,90,53,.3)}
+.bst .tl time{justify-self:start; padding:1cqw 2.4cqw; border-radius:1.2cqw; background:var(--honey); color:#fff; font:700 max(13px,3.6cqw)/1.3 var(--sans); outline:1.5px dashed rgba(255,255,255,.75); outline-offset:-.9cqw}
+.bst .tl li>span{font:500 max(14px,3.9cqw)/1.4 var(--sans)}
+
+/* ---------- venue ---------- */
+.bst .vname{font:600 max(18px,5.4cqw)/1.35 var(--serif); margin-top:5cqw; text-wrap:balance}
+.bst .vaddr{font:400 max(13px,3.6cqw)/1.6 var(--sans); color:var(--mute); margin-top:1cqw}
+
+/* ---------- rsvp: a linen patch stitched onto the page ---------- */
+.bst .card{padding:10cqw 7cqw; background:#f8f2e4; border-radius:3cqw; box-shadow:0 2cqw 5cqw -3cqw rgba(70,45,20,.5); outline:2px dashed rgba(194,53,44,.55); outline-offset:-2.4cqw}
+.bst .form{display:grid; gap:5cqw; margin-top:7cqw; text-align:left}
+.bst .field{display:grid; gap:1.4cqw; font:600 max(12px,3.2cqw)/1.4 var(--sans); color:var(--thread)}
+.bst .field input,.bst .field select{width:100%; font:400 16px/1.5 var(--sans); color:var(--ink); background:#fffaf0; border:2px dashed rgba(138,90,53,.4); border-radius:2.4cqw; padding:10px 12px; transition:border-color .3s}
+.bst .field select{appearance:none; background:#fffaf0 linear-gradient(45deg,transparent 50%,var(--thread) 50%) right 14px center/7px 7px no-repeat}
+.bst .field input:focus,.bst .field select:focus{outline:0; border-color:var(--red)}
+.bst .field input[aria-invalid]{border-color:var(--red); border-style:solid}
+.bst .err{font-weight:500; color:var(--red)}
+.bst .choice{display:grid; grid-template-columns:1fr 1fr; gap:3cqw}
+.bst .choice label{position:relative; display:flex; align-items:center; justify-content:center; min-height:46px; padding:2cqw; border-radius:2.4cqw; background:#fffaf0; border:2px dashed rgba(138,90,53,.35); font:700 max(13px,3.4cqw)/1.3 var(--sans); cursor:pointer; transition:background .3s,color .3s,border-color .3s}
+.bst .choice input{position:absolute; opacity:0; pointer-events:none}
+.bst .choice label.on{background:var(--sage); color:#fff; border-color:rgba(255,255,255,.7)}
+.bst .choice label:has(input:focus-visible){outline:2px dashed var(--red); outline-offset:3px}
+.bst .send{justify-self:center; min-width:58%; margin-top:2cqw; padding:3.2cqw 6cqw; border:0; border-radius:999px; background:var(--red); color:#fff; font:700 max(14px,3.8cqw)/1.3 var(--sans); outline:1.5px dashed rgba(255,255,255,.75); outline-offset:-1.2cqw; box-shadow:0 1.2cqw 2.4cqw -1.2cqw rgba(120,20,10,.6); cursor:pointer; transition:transform .3s var(--ease)}
+.bst .send:hover{transform:translateY(-2px)}
+.bst .thanks{margin-top:7cqw; font:600 max(17px,5cqw)/1.6 var(--serif); animation:bstPop .6s var(--ease) both}
+
+/* ---------- closing ---------- */
+.bst .closing{padding-bottom:16cqw}
+.bst .sig{font:700 max(16px,4.6cqw)/1.4 var(--sans); color:var(--red)}
+
+/* ---------- live editing ---------- */
+.bst .wdb-editable{outline:1px dashed transparent; outline-offset:3px; border-radius:2px; transition:outline-color .2s}
+.bst .wdb-editable:hover,.bst .wdb-editable:focus{outline-color:var(--red)}
+.bst .label .wdb-editable:hover,.bst .label .wdb-editable:focus,.bst .patch .wdb-editable:focus{outline-color:#fff}
+.bst .wdb-edit-input{font:400 15px var(--sans); color:var(--ink); background:#fffaf0; border:1px dashed var(--red); border-radius:4px; padding:6px 8px; margin:3cqw 0}
+.bst.editing .r{opacity:1; transform:none; transition:none}
+
+@media (prefers-reduced-motion:reduce){
+  .bst *,.bst *::before,.bst *::after{animation:none!important; transition:none!important}
+  .bst .r{opacity:1; transform:none}
+}

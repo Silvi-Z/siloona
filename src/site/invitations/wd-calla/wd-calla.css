@@ -1,0 +1,148 @@
+/* =========================================================
+   "wd-calla" — white calla lilies and sage leaves on textured
+   cream paper (assets/: the artwork as the cover, a seamless
+   paper tile cut from its plain area, and its lowest lilies for
+   the end). Pages follow a thin sage "stem" line down the left.
+   Sizes are cqw of the sheet so the cover keeps the artwork's
+   proportions on every screen. Everything is scoped under .wcl.
+   ========================================================= */
+.wcl{
+  --paper:#f4f1ec; --sage:#7d8a66; --olive:#56613f; --ink:#3e4136; --mute:#7c7e71;
+  --hair:rgba(86,97,63,.28);
+  --arm:"Noto Serif Armenian","Sylfaen",Georgia,serif;
+  --sans:"Noto Sans Armenian","Segoe UI",system-ui,sans-serif;
+  --lat:"Cormorant Garamond","Noto Serif Armenian",Georgia,serif;
+  --ease:cubic-bezier(.22,.8,.24,1);
+  min-height:100vh; color:var(--ink); overflow-x:hidden;
+  font:300 1rem/1.8 var(--sans); -webkit-font-smoothing:antialiased;
+  background:#e7e3da;
+}
+.wcl,.wcl *{box-sizing:border-box; margin:0; padding:0}
+.wcl :focus-visible{outline:1px solid var(--sage); outline-offset:4px}
+
+/* The paper tile is shown at the artwork's own scale (its 600px tile
+   = 600/1152 of the sheet width), so the cover and the pages match. */
+.wcl .sheet{
+  position:relative; width:min(100%,500px); margin:0 auto; overflow:hidden; container-type:inline-size;
+  background:var(--paper) url("./assets/paper.webp") 0 0/52.083% auto repeat;
+}
+@media (min-width:700px){.wcl .sheet{margin:40px auto; box-shadow:0 1px 3px rgba(60,60,40,.06),0 30px 80px -30px rgba(60,60,40,.3)}}
+
+/* ---------- type ---------- */
+.wcl .caps{font:400 max(10.5px,2.5cqw)/1.8 var(--sans); letter-spacing:.3em; text-transform:uppercase; color:var(--sage)}
+.wcl .caps.small{font-size:max(10px,2.25cqw); letter-spacing:.22em; color:var(--mute)}
+.wcl .body{font:300 max(14px,3.7cqw)/1.95 var(--sans); color:var(--mute); margin-top:5cqw}
+.wcl .amp{font-family:var(--lat); font-style:italic; font-weight:300; color:var(--sage)}
+
+/* reveal: .r children appear once their section is in view */
+.wcl .r{opacity:0; transform:translateY(14px); filter:blur(4px); transition:opacity 1.1s var(--ease),transform 1.1s var(--ease),filter 1.1s var(--ease); transition-delay:calc(var(--i,0)*.12s)}
+.wcl .in .r{opacity:1; transform:none; filter:none}
+@keyframes wclSettle{from{opacity:0; transform:scale(1.035)}}
+@keyframes wclFade{from{opacity:0}}
+
+/* ---------- cover (the artwork, 1152 × 2048) ---------- */
+.wcl .hero{--u:calc(100cqw/1152); position:relative; height:calc(var(--u)*2048)}
+/* the lowest lilies are cut by the artwork's lower edge; the page goes on
+   below, so that edge dissolves into the paper */
+.wcl .art{
+  position:absolute; inset:0; width:100%; height:100%; display:block; object-fit:cover; transform-origin:0 50%;
+  translate:0 calc(var(--sy,0)*.05px);
+  -webkit-mask:linear-gradient(#000 80%,transparent 99%); mask:linear-gradient(#000 80%,transparent 99%);
+  animation:wclSettle 2.4s var(--ease) both;
+}
+.wcl .htxt{position:absolute; left:calc(var(--u)*590); right:calc(var(--u)*40); top:calc(var(--u)*470); bottom:calc(var(--u)*600); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center}
+.wcl .hero .r{transition-delay:calc(.8s + var(--i,0)*.18s)}
+.wcl .htxt .caps{letter-spacing:.26em; padding-left:.26em; text-wrap:balance}
+.wcl .htxt .names{font:200 max(28px,10.4cqw)/1.08 var(--arm); color:var(--ink); margin-top:7cqw}
+.wcl .htxt .names>span{display:block}
+.wcl .htxt .names .amp{display:block; font-size:.8em; line-height:1; margin:1cqw 0 1.6cqw}
+.wcl .rule{display:block; width:1px; height:11cqw; margin:6cqw auto 4cqw; background:linear-gradient(var(--sage),transparent)}
+.wcl .hdate{font:300 max(16px,5.2cqw)/1.2 var(--lat); letter-spacing:.12em; color:var(--ink); font-variant-numeric:lining-nums; white-space:nowrap}
+.wcl .htxt .caps.small{margin-top:2.4cqw; padding-left:.22em}
+
+/* ---------- the stem: a sage hairline down the left; leaf per heading ---------- */
+.wcl .stem{position:relative; padding:2cqw 0 6cqw}
+.wcl .stem::before{content:""; position:absolute; left:11cqw; top:0; bottom:0; width:1px; background:linear-gradient(transparent,var(--hair) 6%,var(--hair) 94%,transparent)}
+.wcl .blk{position:relative; padding:11cqw 9cqw 11cqw 21cqw}
+.wcl .hd{position:relative; font:300 max(23px,7cqw)/1.25 var(--arm); color:var(--ink); text-wrap:balance}
+.wcl .hd::before{
+  content:""; position:absolute; left:-10cqw; top:.42em; width:2.8cqw; height:2.8cqw; min-width:10px; min-height:10px;
+  translate:-50% 0; rotate:45deg; border-radius:0 100% 0 100%; background:var(--sage);
+}
+
+/* ---------- date ---------- */
+.wcl .big{display:flex; align-items:center; gap:5cqw; margin-top:6cqw}
+.wcl .big>b{font:300 27cqw/.9 var(--lat); color:var(--olive); font-variant-numeric:lining-nums}
+.wcl .big>span{display:flex; flex-direction:column; gap:1cqw; padding-left:5cqw; border-left:1px solid var(--hair)}
+.wcl .big .my{font:300 max(16px,4.6cqw)/1.35 var(--arm); color:var(--ink)}
+.wcl .big .tm{font:300 max(14px,3.8cqw)/1.4 var(--sans); color:var(--mute)}
+.wcl .cd{margin-top:9cqw}
+.wcl .cells{display:flex; gap:6cqw; margin-top:2cqw}
+.wcl .cells span{display:flex; flex-direction:column; min-width:10cqw; font:400 max(10px,2.3cqw)/1.4 var(--sans); letter-spacing:.12em; color:var(--mute)}
+.wcl .cells b{font:300 max(26px,8.4cqw)/1.15 var(--lat); letter-spacing:0; color:var(--ink); font-variant-numeric:lining-nums tabular-nums}
+
+/* outlined buttons (calendar, maps) */
+.wcl .btn{display:inline-block; margin-top:8cqw; padding:2.8cqw 6cqw; border:1px solid var(--sage); color:var(--olive); font:400 max(10.5px,2.5cqw)/1.6 var(--sans); letter-spacing:.22em; text-transform:uppercase; text-decoration:none; border-radius:999px; transition:background .4s,color .4s; cursor:pointer}
+.wcl .btn:hover{background:var(--olive); border-color:var(--olive); color:var(--paper)}
+
+/* ---------- program ---------- */
+.wcl .tl{list-style:none; margin-top:6cqw}
+.wcl .tl li{display:grid; grid-template-columns:17cqw 1fr; align-items:baseline; gap:4cqw; padding:3.2cqw 0; border-bottom:1px solid var(--hair)}
+.wcl .tl time{font:300 max(20px,6cqw)/1 var(--lat); color:var(--olive); font-variant-numeric:lining-nums}
+.wcl .tl li>span{font:300 max(14px,3.8cqw)/1.4 var(--arm)}
+
+/* ---------- places ---------- */
+.wcl .place{margin-top:8cqw}
+.wcl .place+.place{margin-top:11cqw; padding-top:9cqw; border-top:1px solid var(--hair)}
+.wcl .pname{font:300 max(18px,5.4cqw)/1.4 var(--arm); margin-top:1.4cqw; text-wrap:balance}
+.wcl .paddr{font:300 max(13px,3.4cqw)/1.6 var(--sans); color:var(--mute); margin-top:1cqw}
+.wcl .place .btn{margin-top:5cqw}
+
+/* ---------- dress code: leaf-shaped swatches ---------- */
+.wcl .sw{display:flex; gap:4.5cqw; margin-top:8cqw; padding-left:1cqw}
+.wcl .sw-i{display:block; width:11cqw; aspect-ratio:1; border-radius:0 100% 0 100%; background:var(--c); box-shadow:inset 0 0 0 1px rgba(0,0,0,.07),0 6px 14px -8px rgba(60,60,40,.35); transition:transform .5s var(--ease)}
+.wcl .sw-i:hover{transform:translateY(-1.5cqw) rotate(-6deg)}
+.wcl .sw-edit{width:11cqw; height:11cqw; border:1px solid var(--sage); border-radius:0 100% 0 100%; padding:0; background:none; cursor:pointer; overflow:hidden}
+
+/* ---------- rsvp ---------- */
+.wcl .form{display:grid; gap:6cqw; margin-top:8cqw}
+.wcl .field{display:grid; gap:1cqw}
+.wcl .field input,.wcl .field select,.wcl .field textarea{width:100%; font:300 16px/1.5 var(--sans); color:var(--ink); background:transparent; border:0; border-bottom:1px solid rgba(86,97,63,.4); padding:8px 2px; border-radius:0; resize:vertical; transition:border-color .3s}
+.wcl .field select{appearance:none; background:linear-gradient(45deg,transparent 50%,var(--sage) 50%) right 6px center/6px 6px no-repeat}
+.wcl .field input:focus,.wcl .field select:focus,.wcl .field textarea:focus{outline:0; border-color:var(--olive)}
+.wcl .field input[aria-invalid]{border-color:#b5574d}
+.wcl .err{font-size:13px; color:#a5463d}
+.wcl .choice{display:grid; grid-template-columns:1fr 1fr; gap:3cqw}
+.wcl .choice label{position:relative; display:flex; align-items:center; justify-content:center; text-align:center; min-height:44px; padding:2.4cqw 2cqw; border:1px solid rgba(86,97,63,.4); border-radius:999px; font:400 max(13px,3.2cqw)/1.35 var(--sans); cursor:pointer; transition:background .35s,color .35s,border-color .35s}
+.wcl .choice input{position:absolute; opacity:0; pointer-events:none}
+.wcl .choice label.on{background:var(--olive); color:var(--paper); border-color:var(--olive)}
+.wcl .choice label:has(input:focus-visible){outline:1px solid var(--sage); outline-offset:3px}
+.wcl .send{justify-self:start; min-width:60%; margin-top:2cqw; padding:3.4cqw 6cqw; border:0; border-radius:999px; background:var(--olive); color:var(--paper); font:400 max(11px,2.6cqw)/1.4 var(--sans); letter-spacing:.24em; text-transform:uppercase; cursor:pointer; transition:background .35s}
+.wcl .send:hover{background:var(--ink)}
+.wcl .thanks{margin-top:8cqw; font:300 max(18px,5.4cqw)/1.6 var(--arm); animation:wclFade 1s both}
+
+/* ---------- closing: the lowest lilies on the sheet's real bottom edge ---------- */
+.wcl .closing{--u:calc(100cqw/1152); position:relative; padding:0; min-height:calc(var(--u)*738 + 8cqw); display:flex; align-items:center}
+.wcl .cluster{
+  position:absolute; left:0; bottom:0; display:block; width:calc(var(--u)*620); height:auto;
+  -webkit-mask:linear-gradient(transparent,#000 16%),linear-gradient(90deg,#000 82%,transparent); -webkit-mask-composite:source-in;
+  mask:linear-gradient(transparent,#000 16%),linear-gradient(90deg,#000 82%,transparent); mask-composite:intersect;
+}
+.wcl .ctxt{position:relative; margin-left:calc(var(--u)*570); padding:14cqw 6cqw 8cqw 0; text-align:center; flex:1; min-width:0}
+.wcl .cline{font:300 max(17px,5.2cqw)/1.4 var(--arm); text-wrap:balance}
+.wcl .sign{font:300 max(14px,4cqw)/1.4 var(--arm); color:var(--mute); margin-top:6cqw}
+.wcl .ctxt .names{font:200 max(24px,7.6cqw)/1.15 var(--arm); margin-top:1cqw}
+.wcl .ctxt .names>span{display:block}
+.wcl .ctxt .names .amp{display:block; font-size:.8em; line-height:1}
+
+/* ---------- live editing ---------- */
+.wcl .wdb-editable{outline:1px dashed transparent; outline-offset:3px; border-radius:2px; transition:outline-color .2s}
+.wcl .wdb-editable:hover,.wcl .wdb-editable:focus{outline-color:var(--sage)}
+.wcl .wdb-edit-input{font:400 15px var(--sans); color:var(--ink); background:#fbf9f4; border:1px dashed var(--sage); border-radius:4px; padding:6px 8px; margin:3cqw 0}
+.wcl.editing .r{opacity:1; transform:none; filter:none; transition:none}
+
+@media (prefers-reduced-motion:reduce){
+  .wcl *,.wcl *::before,.wcl *::after{animation:none!important; transition:none!important}
+  .wcl .r{opacity:1; transform:none; filter:none}
+  .wcl .art{translate:none}
+}

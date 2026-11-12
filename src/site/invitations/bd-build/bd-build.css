@@ -1,0 +1,140 @@
+/* =========================================================
+   "bd-build" — a watercolour construction site (assets/: the
+   supplied artwork cut into pieces, placed by their coordinates
+   in the 1152 × 2048 original). Site signs, caution tape and the
+   artwork's hard hat, cone, hammer, vest and clouds on the pages.
+   Sizes are cqw of the sheet. Everything is scoped under .bbd.
+   ========================================================= */
+.bbd{
+  --paper:#fffdf8; --ink:#45413b; --mute:#77716a; --yellow:#f2c14e; --yellow-d:#d9a12f; --orange:#e57e33;
+  --sky:#9cc6e4; --sand:#e9d3ac;
+  --sans:"Noto Sans Armenian","Segoe UI",system-ui,sans-serif;
+  --ease:cubic-bezier(.22,.8,.24,1);
+  min-height:100vh; color:var(--ink); text-align:center; overflow-x:hidden;
+  font:400 1rem/1.7 var(--sans); -webkit-font-smoothing:antialiased;
+  background:#e8eef2;
+}
+.bbd,.bbd *{box-sizing:border-box; margin:0; padding:0}
+.bbd :focus-visible{outline:2px solid var(--orange); outline-offset:3px}
+
+.bbd .sheet{
+  position:relative; width:min(100%,500px); margin:0 auto; overflow:hidden; container-type:inline-size;
+  background:
+    radial-gradient(70% 16% at 90% 34%,rgba(156,198,228,.14),transparent 70%),
+    radial-gradient(60% 14% at 0% 62%,rgba(242,193,78,.1),transparent 70%),
+    var(--paper);
+}
+@media (min-width:700px){.bbd .sheet{margin:40px auto; box-shadow:0 1px 3px rgba(40,50,60,.08),0 30px 80px -30px rgba(40,50,60,.35)}}
+
+.bbd .blk{position:relative; padding:12cqw 8cqw}
+
+/* ---------- type ---------- */
+.bbd .caps{font:700 max(11px,2.8cqw)/1.6 var(--sans); letter-spacing:.22em; text-transform:uppercase; padding-left:.22em; color:var(--orange)}
+.bbd .title{font:800 max(22px,7cqw)/1.2 var(--sans); color:var(--ink); text-wrap:balance}
+.bbd .body{font:400 max(14px,3.8cqw)/1.85 var(--sans); color:var(--mute); max-width:30em; margin:4cqw auto 0}
+
+/* reveal: .r children appear once their section is in view */
+.bbd .r{opacity:0; transform:translateY(16px); transition:opacity .8s var(--ease),transform .8s var(--ease); transition-delay:calc(var(--i,0)*.1s)}
+.bbd .in .r{opacity:1; transform:none}
+@keyframes bbdFade{from{opacity:0}}
+@keyframes bbdRise{from{opacity:0; transform:translateY(8%)}}
+@keyframes bbdDriveIn{from{opacity:0; transform:translateX(30%)}}
+@keyframes bbdDrift{to{translate:calc(var(--u,.1cqw)*-14) 0}}
+@keyframes bbdHop{30%{translate:0 -3cqw; rotate:-4deg}60%{translate:0 0; rotate:2deg}100%{translate:0 0; rotate:0deg}}
+@keyframes bbdPop{from{opacity:0; transform:scale(.9)}}
+
+/* ---------- cover: the artwork rebuilt from its pieces ---------- */
+.bbd .hero{padding:0}
+.bbd .art{--u:calc(100cqw/1152); position:relative; height:calc(var(--u)*2110)}
+.bbd .pc{position:absolute; display:block; left:calc(var(--u)*var(--x)); top:calc(var(--u)*var(--y)); width:calc(var(--u)*var(--w)); height:auto; pointer-events:none; user-select:none; animation:bbdFade 1.2s var(--ease) both}
+/* clouds drift a little, only ever leftwards (two are cut by the left edge) */
+.bbd .pc-cloud-a,.bbd .pc-cloud-b,.bbd .pc-cloud-c,.bbd .pc-cloud-d{animation:bbdFade 1.4s var(--ease) both,bbdDrift 7s 1.4s ease-in-out infinite alternate}
+.bbd .pc-cloud-b{animation-duration:1.4s,9s}
+.bbd .pc-cloud-c{animation-duration:1.4s,8s; animation-delay:.2s,1.6s}
+.bbd .pc-hat{animation-delay:.3s} .bbd .pc-hammer{animation-delay:.4s} .bbd .pc-cone{animation-delay:.5s} .bbd .pc-vest{animation-delay:.45s}
+.bbd .pc-crane{animation:bbdRise 1.4s .3s var(--ease) both}
+.bbd .pc-machines{animation:bbdDriveIn 1.8s .6s var(--ease) both}
+.bbd .htxt{position:absolute; left:calc(var(--u)*360); right:calc(var(--u)*40); top:calc(var(--u)*640); height:calc(var(--u)*560); display:flex; flex-direction:column; align-items:center; justify-content:center}
+.bbd .hero .r{transition-delay:calc(.8s + var(--i,0)*.15s)}
+.bbd .htitle{font:900 max(26px,8.4cqw)/1.15 var(--sans); color:var(--ink); margin-top:2cqw; text-wrap:balance}
+.bbd .hdate{font:600 max(13px,3.7cqw)/1.5 var(--sans); color:var(--mute); margin-top:3cqw}
+/* the age, in the artwork's yellow felt-number style and place */
+.bbd .age{
+  position:absolute; left:calc(var(--u)*482); top:calc(var(--u)*1492); translate:-50% -50%;
+  font:900 calc(var(--u)*330)/1 var(--sans); color:#f6cf63; white-space:nowrap;
+  -webkit-text-stroke:calc(var(--u)*5) #eebd4a; paint-order:stroke fill;
+  text-shadow:0 calc(var(--u)*7) 0 #d9a23a,0 calc(var(--u)*16) calc(var(--u)*22) rgba(140,95,20,.28);
+}
+.bbd .ground{position:absolute; left:0; top:calc(var(--u)*1990); width:100%; height:calc(var(--u)*120); display:block; -webkit-mask:linear-gradient(#000 50%,transparent); mask:linear-gradient(#000 50%,transparent)}
+
+/* ---------- section sprites ---------- */
+.bbd .sp{display:block; height:auto; margin:0 auto 4cqw; cursor:pointer; -webkit-tap-highlight-color:transparent; user-select:none}
+.bbd .sp.hop{animation:bbdHop .7s var(--ease)}
+.bbd .sp-hat{width:30cqw}
+.bbd .sp-cone{width:17cqw}
+.bbd .sp-hammer{width:12cqw; rotate:-12deg}
+.bbd .sp.on-card{position:relative; z-index:1; margin-bottom:-3cqw}
+.bbd .drift{position:absolute; display:block; height:auto; pointer-events:none; opacity:.9; animation:bbdDrift 9s ease-in-out infinite alternate; --u:.1cqw}
+
+/* ---------- welcome ---------- */
+.bbd .welcome{padding-top:10cqw}
+
+/* ---------- countdown: diamond site signs ---------- */
+.bbd .signs{display:flex; justify-content:center; gap:4.2cqw; margin-top:10cqw; padding-bottom:3cqw}
+.bbd .signs span{display:grid; place-items:center; width:14.5cqw; aspect-ratio:1; rotate:45deg; border-radius:1.8cqw; background:var(--yellow); border:.8cqw solid var(--ink); box-shadow:0 0 0 .7cqw var(--yellow),1.2cqw 1.2cqw 0 rgba(69,65,59,.15)}
+.bbd .signs i{rotate:-45deg; display:flex; flex-direction:column; align-items:center; font:700 max(9px,2.2cqw)/1.2 var(--sans); font-style:normal; color:var(--ink)}
+.bbd .signs b{font:900 max(17px,5.6cqw)/1.05 var(--sans); font-variant-numeric:tabular-nums}
+
+/* buttons */
+.bbd .btn{display:inline-block; margin-top:8cqw; padding:3cqw 6.4cqw; border-radius:999px; background:var(--yellow); color:var(--ink); font:800 max(12px,3.1cqw)/1.4 var(--sans); text-decoration:none; box-shadow:0 1.2cqw 0 var(--yellow-d); transition:transform .25s var(--ease),box-shadow .25s; cursor:pointer}
+.bbd .btn:hover{transform:translateY(-2px)}
+.bbd .btn:active{transform:translateY(1cqw); box-shadow:none}
+
+/* ---------- programme ---------- */
+.bbd .tl{list-style:none; max-width:80cqw; margin:7cqw auto 0; text-align:left}
+.bbd .tl li{display:grid; grid-template-columns:20cqw 1fr; align-items:center; gap:4cqw; padding:3cqw 0; border-bottom:2px dashed rgba(69,65,59,.18)}
+.bbd .tl time{justify-self:start; padding:1cqw 2.6cqw; border-radius:1.4cqw; background:var(--orange); color:#fff; font:800 max(13px,3.6cqw)/1.3 var(--sans)}
+.bbd .tl li>span{font:600 max(14px,4cqw)/1.4 var(--sans)}
+
+/* ---------- venue ---------- */
+.bbd .venue{overflow:hidden; padding-top:16cqw}
+.bbd .d-r{right:-6cqw; top:4cqw; width:30cqw}
+.bbd .vname{font:800 max(18px,5.4cqw)/1.35 var(--sans); margin-top:4cqw; text-wrap:balance}
+.bbd .vaddr{font:400 max(13px,3.6cqw)/1.6 var(--sans); color:var(--mute); margin-top:1cqw}
+
+/* ---------- rsvp: a card with caution tape ---------- */
+.bbd .card{position:relative; padding:12cqw 7cqw 10cqw; background:#fff; border-radius:4cqw; overflow:hidden; box-shadow:0 2cqw 6cqw -3cqw rgba(40,50,60,.35)}
+.bbd .card::before{content:""; position:absolute; left:0; right:0; top:0; height:4cqw; background:repeating-linear-gradient(-45deg,var(--yellow) 0 2.6cqw,var(--ink) 2.6cqw 5.2cqw)}
+.bbd .form{display:grid; gap:5cqw; margin-top:7cqw; text-align:left}
+.bbd .field{display:grid; gap:1.4cqw; font:700 max(12px,3.2cqw)/1.4 var(--sans)}
+.bbd .field input,.bbd .field select{width:100%; font:400 16px/1.5 var(--sans); color:var(--ink); background:#f8f6f1; border:2px solid #e7e1d5; border-radius:2.6cqw; padding:10px 12px; transition:border-color .3s}
+.bbd .field select{appearance:none; background:#f8f6f1 linear-gradient(45deg,transparent 50%,var(--ink) 50%) right 14px center/7px 7px no-repeat}
+.bbd .field input:focus,.bbd .field select:focus{outline:0; border-color:var(--orange)}
+.bbd .field input[aria-invalid]{border-color:#c8432c}
+.bbd .err{font-weight:600; color:#c8432c}
+.bbd .choice{display:grid; grid-template-columns:1fr 1fr; gap:3cqw}
+.bbd .choice label{position:relative; display:flex; align-items:center; justify-content:center; min-height:46px; padding:2cqw; border-radius:2.6cqw; background:#f8f6f1; border:2px solid #e7e1d5; font:800 max(13px,3.4cqw)/1.3 var(--sans); cursor:pointer; transition:background .3s,color .3s,border-color .3s}
+.bbd .choice input{position:absolute; opacity:0; pointer-events:none}
+.bbd .choice label.on{background:var(--yellow); border-color:var(--yellow-d)}
+.bbd .choice label:has(input:focus-visible){outline:2px solid var(--orange); outline-offset:3px}
+.bbd .send{justify-self:center; min-width:58%; margin-top:2cqw; padding:3.4cqw 6cqw; border:0; border-radius:999px; background:var(--orange); color:#fff; font:800 max(14px,3.8cqw)/1.3 var(--sans); box-shadow:0 1.2cqw 0 #bf6224; cursor:pointer; transition:transform .25s var(--ease),box-shadow .25s}
+.bbd .send:active{transform:translateY(1cqw); box-shadow:none}
+.bbd .thanks{margin-top:7cqw; font:700 max(17px,5cqw)/1.6 var(--sans); animation:bbdPop .6s var(--ease) both}
+
+/* ---------- closing: clouds drift by ---------- */
+.bbd .closing{padding:30cqw 8cqw 34cqw; overflow:hidden}
+.bbd .d-l{left:-8cqw; top:4cqw; width:34cqw}
+.bbd .d-c{right:-10cqw; bottom:2cqw; width:52cqw; animation-duration:11s}
+.bbd .closing .title,.bbd .closing .sig{position:relative}
+.bbd .sig{font:900 max(16px,4.8cqw)/1.4 var(--sans); color:var(--orange); margin-top:3cqw}
+
+/* ---------- live editing ---------- */
+.bbd .wdb-editable{outline:1px dashed transparent; outline-offset:3px; border-radius:2px; transition:outline-color .2s}
+.bbd .wdb-editable:hover,.bbd .wdb-editable:focus{outline-color:var(--orange)}
+.bbd .wdb-edit-input{font:400 15px var(--sans); color:var(--ink); background:#fffdf8; border:1px dashed var(--orange); border-radius:4px; padding:6px 8px; margin:3cqw 0}
+.bbd.editing .r{opacity:1; transform:none; transition:none}
+
+@media (prefers-reduced-motion:reduce){
+  .bbd *,.bbd *::before,.bbd *::after{animation:none!important; transition:none!important}
+  .bbd .r{opacity:1; transform:none}
+}
