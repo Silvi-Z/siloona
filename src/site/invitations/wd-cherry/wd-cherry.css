@@ -1,0 +1,166 @@
+/* wd-cherry — playful cherry and cream. Everything is under .wch; sizes in
+   cqw follow the paper's width. */
+.wch{
+  --cream:#FBF6EE; --card:#FFFDF9; --wine:#6E1428; --wine-2:#7D1A2F; --ink:#3A1F25; --soft:#6B4A50; --line:rgba(110,20,40,.25);
+  --hand:"Noto Serif Armenian",Georgia,serif;  /* italic = the hand-written voice */
+  --num:"Caveat","Noto Serif Armenian",cursive;
+  position:relative; min-height:100vh; color:var(--ink); font-family:var(--hand); font-weight:400; -webkit-font-smoothing:antialiased;
+  background:radial-gradient(120% 90% at 50% 0%,#7a1a2d 0%,#4a0d1a 55%,#2c0710 100%);
+}
+.wch *,.wch *::before,.wch *::after{box-sizing:border-box}
+.wch .sheet{position:relative; max-width:460px; margin:0 auto; background:var(--cream); container-type:inline-size; overflow:hidden; box-shadow:0 30px 90px rgba(0,0,0,.45)}
+@media (min-width:560px){ .wch .sheet{margin:48px auto} }
+.wch h1,.wch h2,.wch h3,.wch p{margin:0}
+.wch .ph-img{display:block; width:100%; height:100%; object-fit:cover}
+
+/* drawn lines + hearts */
+.wch .draw{fill:none; stroke:var(--wine); stroke-width:1.6; stroke-linecap:round; stroke-dasharray:1; stroke-dashoffset:1; transition:stroke-dashoffset 2.6s cubic-bezier(.45,.1,.3,1) .2s}
+.wch .heart{fill:var(--wine); transform-box:fill-box; transform-origin:center; opacity:0; transition:opacity .5s ease 1.6s}
+.wch .in .draw,.wch .hero .draw,.wch.editing .draw{stroke-dashoffset:0}
+.wch .in .heart,.wch .hero .heart,.wch.editing .heart{opacity:1}
+.wch .hero .heart{animation:wch-beat 2.4s ease-in-out 2.2s infinite}
+@keyframes wch-beat{0%,100%{scale:1} 12%{scale:1.18} 24%{scale:1} 36%{scale:1.12} 48%{scale:1}}
+
+/* ---------- cover ---------- */
+.wch .hero{position:relative; text-align:center; padding-top:16cqw}
+.wch .topline{display:block; width:100%; height:20cqw; overflow:visible}
+.wch .topline .draw{stroke-width:1.8}
+.wch .kicker{font:italic 400 5.4cqw var(--hand); color:var(--soft); margin-top:3cqw}
+.wch .title{font:italic 500 9.6cqw/1.08 var(--hand); color:var(--wine); padding:0 6cqw; margin-top:1cqw; letter-spacing:.01em}
+.wch .talk{position:relative; display:flex; justify-content:space-between; align-items:flex-start; gap:4cqw; padding:7cqw 6cqw 0}
+.wch .say{font:italic 400 3.4cqw/1.35 var(--hand); color:var(--wine); text-align:left; max-width:52%}
+.wch .say.her{transform:rotate(-3deg)}
+.wch .say.him{transform:rotate(4deg); margin-top:2cqw; text-align:right}
+.wch .sticker{position:relative; margin:4cqw auto 0; width:84%; transform:rotate(-2deg)}
+.wch .sticker-ph{aspect-ratio:1100/904; overflow:hidden; border:2.6cqw solid #fff; border-radius:7cqw 5cqw 6cqw 8cqw; box-shadow:0 2cqw 5cqw rgba(60,10,20,.22); background:#e9ddd2}
+.wch .band{position:relative; z-index:2; margin-top:-3cqw; background:var(--wine); color:#F4E6DA; overflow:hidden; white-space:nowrap; padding:2.6cqw 0}
+.wch .band-run{display:inline-flex; animation:wch-run 26s linear infinite}
+.wch .band span{font:italic 400 3.6cqw var(--hand); padding:0 5cqw}
+.wch .band-edit{text-align:center; font:italic 400 3.6cqw var(--hand)}
+@keyframes wch-run{to{transform:translateX(-50%)}}
+
+/* ---------- welcome + date ---------- */
+.wch .blk{position:relative; padding:12cqw 8cqw; text-align:center}
+.wch .greet{font:italic 500 4.6cqw/1.4 var(--hand); color:var(--wine)}
+.wch .body{font-size:4cqw; line-height:1.65; color:var(--ink); max-width:88%; margin:2.4cqw auto 0}
+.wch .bigd{font:600 11cqw/1 var(--num); color:var(--wine); margin-top:4cqw; letter-spacing:.02em}
+
+/* ---------- calendar card ---------- */
+.wch .cal{padding-top:2cqw}
+.wch .card{position:relative; background:var(--card); border-radius:2cqw; padding:9cqw 6cqw 7cqw; box-shadow:0 2cqw 6cqw rgba(80,20,30,.12), 0 .3cqw 1cqw rgba(80,20,30,.08)}
+.wch .tape{position:absolute; left:50%; top:-3.4cqw; width:30cqw; height:7cqw; transform:translateX(-50%) rotate(-3deg); background:rgba(225,222,215,.78); box-shadow:0 .3cqw .8cqw rgba(0,0,0,.08); clip-path:polygon(3% 0,97% 8%,100% 92%,2% 100%,0 50%)}
+.wch .month{font:italic 500 7cqw var(--hand); color:var(--wine); margin-bottom:5cqw}
+.wch .grid{display:grid; grid-template-columns:repeat(7,1fr); row-gap:3.4cqw; align-items:center}
+.wch .wd{font:italic 400 3.3cqw var(--hand); color:var(--soft)}
+.wch .day{position:relative; font:500 6cqw/1 var(--num); color:var(--ink)}
+.wch .day.other{color:rgba(58,31,37,.25)}
+.wch .day.event{color:var(--wine); font-weight:600}
+.wch .circle{position:absolute; left:50%; top:50%; width:11cqw; height:11cqw; transform:translate(-50%,-52%); overflow:visible}
+.wch .circle .draw{stroke-width:2.2; transition-delay:.9s}
+.wch .note{position:absolute; right:4cqw; bottom:-7cqw; font:italic 400 3.6cqw var(--hand); color:var(--wine); transform:rotate(-7deg); display:flex; align-items:center; gap:1cqw}
+.wch .note svg{width:8cqw; order:-1; transform:scaleX(-1) rotate(-30deg)}
+.wch .note path,.wch .refs-note path{fill:none; stroke:var(--wine); stroke-width:1.6; stroke-linecap:round}
+
+/* ---------- plan ---------- */
+.wch .plan{padding-top:16cqw}
+.wch .plan-title{position:absolute; left:6cqw; top:12cqw; font:italic 400 4cqw var(--hand); color:var(--wine); transform:rotate(-8deg); z-index:1}
+.wch .plist{position:relative; margin-top:6cqw}
+.wch .planline{position:absolute; inset:0; width:100%; height:100%; overflow:visible; pointer-events:none}
+.wch .planline .draw{transition-duration:3.6s}
+.wch .plist ol{position:relative; list-style:none; margin:0; padding:0 0 26cqw}
+.wch .plist li{position:relative; padding:5cqw 0; margin-bottom:22cqw}
+.wch .plist li:last-child{margin-bottom:0}
+.wch .plist li.l-side{text-align:left; padding-left:16cqw}
+.wch .plist li.r-side{text-align:right; padding-right:16cqw}
+.wch .plist time{display:block; font:600 9cqw/1 var(--num); color:var(--wine)}
+.wch .plist time + p{font:italic 400 3.8cqw var(--hand); color:var(--soft); margin-top:1cqw}
+
+/* ---------- wine (dark) sections ---------- */
+.wch .wine{background:var(--wine); color:#F6E9DE}
+.wch .h{font:italic 500 8cqw/1.15 var(--hand); color:var(--wine); margin-bottom:6cqw}
+.wch .wine .h{color:#F6E9DE}
+.wch .dress{padding-bottom:0}
+.wch .dress .card{color:var(--ink); padding:10cqw 6cqw 7cqw}
+.wch .dress .body{margin-top:0; font-size:3.8cqw}
+.wch .pal{list-style:none; display:flex; justify-content:center; gap:2.4cqw; margin:6cqw 0 0; padding:0}
+.wch .pal i{display:block; width:11cqw; height:11cqw; border-radius:50%; background:var(--c); box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.wch .color-edit{width:11cqw; height:11cqw; padding:0; border:2px dashed var(--wine); border-radius:50%; cursor:pointer; background:none}
+.wch .refs-note{display:flex; align-items:center; justify-content:center; gap:2cqw; margin:8cqw 0 5cqw; font:italic 400 3.8cqw var(--hand)}
+.wch .refs-note svg{width:12cqw}
+.wch .refs-note path{stroke:#F6E9DE}
+.wch .refs{display:grid; grid-template-columns:repeat(3,1fr); margin:0 -8cqw}
+.wch .ref{aspect-ratio:3/4.4; overflow:hidden; background:#5a1020}
+
+/* ---------- wishes ---------- */
+.wch .wine-row{display:flex; align-items:flex-end; justify-content:center; gap:3cqw; margin-top:6cqw}
+.wch .bottle{width:18cqw; height:auto; transform:rotate(8deg)}
+.wch .bottle .glass{fill:#3a0d18}
+.wch .bottle .foil{fill:#6E1428}
+.wch .bottle .label{fill:#F4E9DC}
+.wch .bottle .ink{fill:none; stroke:var(--wine); stroke-width:1.4; stroke-linecap:round}
+.wch .bottle .heart{opacity:1; transition:none}
+.wch .bottle .string{fill:none; stroke:#C9B49A; stroke-width:1.2}
+.wch .bottle .tag{fill:#F4E9DC; stroke:#C9B49A; stroke-width:.8}
+.wch .hand{font:italic 400 3.8cqw var(--hand); color:var(--wine)}
+.wch .note2{transform:rotate(-8deg); margin-bottom:10cqw}
+
+/* ---------- venue ---------- */
+.wch .place + .place{margin-top:11cqw}
+.wch .pl{font:italic 400 3.8cqw var(--hand); opacity:.85}
+.wch .pl .num{font:600 5cqw var(--num)}
+.wch .place h3{font:500 6.2cqw/1.25 var(--hand); margin:2cqw 0 1.4cqw}
+.wch .addr{font-size:3.7cqw; opacity:.8}
+.wch .btn-light{display:inline-block; margin-top:5cqw; padding:2.8cqw 8cqw; border:1px solid rgba(246,233,222,.7); border-radius:999px; color:#F6E9DE; text-decoration:none; font:italic 400 3.8cqw var(--hand); transition:background .25s, color .25s}
+.wch .btn-light:hover{background:#F6E9DE; color:var(--wine)}
+
+/* ---------- rsvp ---------- */
+.wch .form{display:grid; gap:5.5cqw; margin-top:7cqw; text-align:left}
+.wch .field{display:grid; gap:1.6cqw}
+.wch .lbl{font:italic 400 3.5cqw var(--hand); color:var(--soft)}
+.wch .field input,.wch .field select{
+  width:100%; font:inherit; font-size:16px; color:var(--ink); background:var(--card);
+  border:1px solid var(--line); border-radius:3cqw; padding:3cqw 3.6cqw; -webkit-appearance:none; appearance:none;
+}
+.wch .field select{background-image:linear-gradient(45deg,transparent 50%,var(--wine) 50%),linear-gradient(135deg,var(--wine) 50%,transparent 50%); background-position:calc(100% - 16px) 55%,calc(100% - 11px) 55%; background-size:5px 5px; background-repeat:no-repeat}
+.wch .field input:focus,.wch .field select:focus{outline:none; border-color:var(--wine); box-shadow:0 0 0 3px rgba(110,20,40,.12)}
+.wch .field [aria-invalid=true]{border-color:#B0263A}
+.wch .err{font-size:3.3cqw; color:#B0263A}
+.wch .choice{display:grid; grid-template-columns:1fr 1fr; gap:3cqw}
+.wch .choice label{position:relative; text-align:center; padding:3cqw 2cqw; border:1px solid var(--wine); border-radius:999px; color:var(--wine); font:italic 400 4cqw var(--hand); cursor:pointer; transition:background .25s, color .25s}
+.wch .choice label.on{background:var(--wine); color:#fff}
+.wch .choice input{position:absolute; opacity:0; pointer-events:none}
+.wch .choice label:focus-within,.wch .btn-wine:focus-visible,.wch .btn-light:focus-visible{outline:2px solid var(--wine); outline-offset:3px}
+.wch .btn-light:focus-visible{outline-color:#F6E9DE}
+.wch .btn-wine{justify-self:center; margin-top:2cqw; padding:3.2cqw 12cqw; border:0; border-radius:999px; background:var(--wine); color:#fff; font:italic 500 4.2cqw var(--hand); cursor:pointer}
+.wch .btn-wine:hover{background:#5a0f20}
+.wch .thanks{margin-top:7cqw; font:italic 400 4.8cqw/1.5 var(--hand); color:var(--wine)}
+
+/* ---------- closing ---------- */
+.wch .closing{padding-top:6cqw; padding-bottom:14cqw}
+.wch .endline{display:block; width:100%; height:16cqw; overflow:visible; margin-bottom:6cqw}
+.wch .closing .hand{font-size:4.6cqw}
+.wch .cnames{font:italic 500 9cqw/1.2 var(--hand); color:var(--wine); margin-top:1cqw}
+.wch .cnames .amp{font:600 9cqw var(--num)}
+
+/* ---------- scroll reveal ---------- */
+.wch .r{opacity:0; transform:translateY(16px); transition:opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1); transition-delay:calc(var(--i,0) * .13s)}
+.wch .in .r,.wch.editing .r{opacity:1; transform:none}
+.wch .hero > *:not(.topline){animation:wch-rise 1s cubic-bezier(.2,.7,.2,1) both}
+.wch .hero > .kicker{animation-delay:.2s}
+.wch .hero > .title{animation-delay:.35s}
+.wch .hero > .talk{animation-delay:.6s}
+.wch .hero > .sticker{animation-delay:.75s}
+@keyframes wch-rise{from{opacity:0; translate:0 12px}}
+@media (prefers-reduced-motion:reduce){
+  .wch .r{opacity:1; transform:none; transition:none}
+  .wch .draw{stroke-dashoffset:0; transition:none}
+  .wch .heart{opacity:1; transition:none; animation:none}
+  .wch .band-run,.wch .hero > *{animation:none}
+}
+
+/* ---------- edit mode ---------- */
+.wch .wdb-editable{outline:1px dashed transparent; outline-offset:3px; border-radius:2px; transition:outline-color .15s; cursor:text}
+.wch .wdb-editable:hover,.wch .wdb-editable:focus{outline-color:currentColor}
+.wch.editing .wdb-editable{outline-color:rgba(110,20,40,.35)}
+.wch.editing .wine .wdb-editable{outline-color:rgba(246,233,222,.45)}
+.wch .wdb-edit-input{font:400 15px var(--hand); color:var(--ink); background:#fff; border:1px solid var(--line); border-radius:6px; padding:6px 8px}

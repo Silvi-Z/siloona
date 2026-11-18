@@ -1,0 +1,329 @@
+/* =========================================================
+   Checkout & order page — built on the marketing site's own
+   tokens (styles.css .siloona-site): cream paper, burgundy
+   accent, gold numerals, serif Armenian headings, hairlines.
+   Mobile-first; scoped under .co.
+   ========================================================= */
+
+.siloona-site .co{
+  --co-paper:#FFFDF9;
+  --co-err:#A3322B;
+  background:
+    radial-gradient(60% 40% at 85% 0%, rgba(176,137,63,.08), transparent 70%),
+    radial-gradient(50% 40% at 0% 10%, rgba(107,29,44,.06), transparent 70%),
+    var(--cream);
+  padding:28px 0 96px;
+  min-height:70vh;
+}
+.siloona-site .co .wrap{padding:0 16px}
+
+/* ---------- Layout ---------- */
+.siloona-site .co-grid{display:flex; flex-direction:column-reverse; gap:22px}
+.siloona-site .co-main{min-width:0}
+
+.siloona-site .co-crumbs{display:flex; gap:8px; font-size:12.5px; color:var(--muted); margin-bottom:10px}
+.siloona-site .co-crumbs a:hover{color:var(--violet)}
+.siloona-site .co-title{
+  font-family:var(--serif); font-weight:500; font-size:clamp(1.9rem,6vw,2.8rem); line-height:1.15;
+  margin:0 0 26px; color:var(--ink);
+}
+
+/* ---------- Steps: an editorial numbered list, not stacked cards ---------- */
+.siloona-site .co-step{border-top:1px solid var(--line-2); padding:22px 0; scroll-margin-top:88px} /* clears the sticky site header */
+.siloona-site .co-step:last-child{border-bottom:1px solid var(--line-2)}
+.siloona-site .co-step-h{display:flex; align-items:baseline; gap:16px}
+.siloona-site .co-num{
+  font-family:var(--latin); font-size:30px; line-height:1; color:var(--gold); min-width:34px;
+  font-variant-numeric:lining-nums;
+}
+.siloona-site .co-step.todo .co-num{color:var(--line-2)}
+.siloona-site .co-step-t{flex:1; min-width:0}
+.siloona-site .co-step-t h2{font-family:var(--serif); font-weight:500; font-size:21px; margin:0; line-height:1.3}
+.siloona-site .co-step.todo h2{color:var(--muted)}
+.siloona-site .co-step-sum{margin:4px 0 0; font-size:13.5px; color:var(--ink-2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.siloona-site .co-edit{
+  background:none; border:0; padding:4px 0; font-size:13px; color:var(--violet);
+  border-bottom:1px solid rgba(107,29,44,.35); align-self:center;
+}
+.siloona-site .co-step-b{padding:22px 0 4px 0; animation:co-in .45s ease both}
+@keyframes co-in{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+@media (prefers-reduced-motion:reduce){.siloona-site .co-step-b{animation:none}}
+
+/* ---------- 01 options ---------- */
+.siloona-site .co-options{display:grid; gap:12px}
+.siloona-site .co-opt{
+  position:relative; display:block; padding:16px 18px 16px 46px; border:1px solid var(--line-2); border-radius:6px;
+  background:var(--co-paper); cursor:pointer; transition:border-color .2s ease, background .2s ease;
+}
+.siloona-site .co-opt input, .siloona-site .co-method input{position:absolute; opacity:0; pointer-events:none}
+.siloona-site .co-opt::before, .siloona-site .co-method-dot{
+  content:""; position:absolute; left:18px; top:20px; width:16px; height:16px; border-radius:50%;
+  border:1px solid var(--line-2); background:#fff; transition:border-color .2s ease, box-shadow .2s ease;
+}
+.siloona-site .co-opt.on, .siloona-site .co-method.on{border-color:var(--violet); background:#FFFBF6}
+.siloona-site .co-opt.on::before, .siloona-site .co-method.on .co-method-dot{border-color:var(--violet); box-shadow:inset 0 0 0 4px #fff, inset 0 0 0 8px var(--violet)}
+.siloona-site .co-opt:has(input:focus-visible), .siloona-site .co-method:has(input:focus-visible){outline:2px solid var(--violet); outline-offset:2px}
+.siloona-site .co-opt-top{display:flex; justify-content:space-between; gap:12px; align-items:baseline}
+.siloona-site .co-opt-name{font-family:var(--serif); font-size:17px; color:var(--ink)}
+.siloona-site .co-opt-price{font-size:14px; color:var(--ink-2); white-space:nowrap; font-variant-numeric:tabular-nums}
+.siloona-site .co-opt-text{display:block; font-size:13.5px; color:var(--muted); margin-top:4px; line-height:1.5}
+.siloona-site .co-demo{margin:16px 0 0; font-size:14px}
+.siloona-site .co-demo a{color:var(--violet); border-bottom:1px solid rgba(107,29,44,.3)}
+
+/* ---------- 02 fields ---------- */
+.siloona-site .co-fields{display:grid; gap:16px}
+.siloona-site .co-field{display:flex; flex-direction:column; gap:6px; min-width:0}
+.siloona-site .co-label{font-size:12.5px; letter-spacing:.02em; color:var(--ink-2); font-weight:500}
+.siloona-site .co-label i{color:var(--violet); font-style:normal}
+.siloona-site .co-field input, .siloona-site .co-field textarea{
+  width:100%; font:inherit; font-size:16px; /* 16px keeps iOS from zooming */
+  color:var(--ink); background:var(--co-paper); border:1px solid var(--line-2); border-radius:6px;
+  padding:12px 14px; transition:border-color .2s ease, box-shadow .2s ease; -webkit-appearance:none; appearance:none;
+}
+.siloona-site .co-field input[type=date], .siloona-site .co-field input[type=time]{min-height:48px}
+.siloona-site .co-field textarea{resize:vertical; min-height:110px; line-height:1.5}
+.siloona-site .co-field input:focus, .siloona-site .co-field textarea:focus{outline:none; border-color:var(--violet); box-shadow:0 0 0 3px rgba(107,29,44,.1)}
+.siloona-site .co-field [aria-invalid=true]{border-color:var(--co-err)}
+.siloona-site .co-hint{font-size:12px; color:var(--muted)}
+.siloona-site .co-err{font-size:12.5px; color:var(--co-err); margin:0}
+.siloona-site .co-sub{
+  font-family:var(--serif); font-weight:500; font-size:17px; margin:30px 0 14px; padding-top:22px;
+  border-top:1px dashed var(--line-2); display:flex; gap:10px; align-items:baseline; flex-wrap:wrap;
+}
+.siloona-site .co-sub span{font-family:var(--sans); font-size:12px; color:var(--muted); font-weight:400}
+.siloona-site .co-hp{position:absolute; left:-9999px; width:1px; height:1px; opacity:0}
+
+.siloona-site .co-actions{display:flex; gap:12px; flex-wrap:wrap; margin-top:24px}
+.siloona-site .co-actions.center{justify-content:center}
+.siloona-site .co-actions .btn{justify-content:center}
+.siloona-site .btn[disabled]{opacity:.7; cursor:default; transform:none}
+
+/* ---------- 03 summary + payment ---------- */
+.siloona-site .co-recap{margin:0 0 22px; display:grid; gap:0; border-top:1px solid var(--line)}
+.siloona-site .co-recap div{display:flex; justify-content:space-between; gap:16px; padding:10px 0; border-bottom:1px solid var(--line); font-size:14px}
+.siloona-site .co-recap dt{color:var(--muted)}
+.siloona-site .co-recap dd{margin:0; text-align:right; min-width:0; overflow-wrap:anywhere}
+
+.siloona-site .co-methods{border:0; padding:0; margin:0 0 18px; display:grid; gap:10px; min-width:0}
+.siloona-site .co-methods legend{margin-bottom:10px; padding:0}
+.siloona-site .co-method{
+  position:relative; display:flex; align-items:center; padding:15px 18px 15px 46px; border:1px solid var(--line-2);
+  border-radius:6px; background:var(--co-paper); cursor:pointer; transition:border-color .2s ease, background .2s ease;
+}
+.siloona-site .co-method-dot{top:50%; margin-top:-8px}
+.siloona-site .co-method-txt{display:flex; flex-direction:column}
+.siloona-site .co-method-name{font-size:15px; color:var(--ink); font-weight:500}
+.siloona-site .co-method-sub{font-size:12.5px; color:var(--muted)}
+.siloona-site .co-methods[disabled] .co-method{cursor:default; opacity:.7}
+
+.siloona-site .co-consent{display:flex; gap:12px; align-items:flex-start; font-size:13.5px; color:var(--ink-2); cursor:pointer; margin:4px 0 6px; line-height:1.5}
+.siloona-site .co-consent input{width:18px; height:18px; margin:2px 0 0; accent-color:var(--violet); flex:none}
+
+.siloona-site .co-note{
+  background:var(--cream-2); border-left:2px solid var(--gold); padding:14px 16px; font-size:14px;
+  color:var(--ink-2); margin:0 0 18px; line-height:1.6;
+}
+.siloona-site .co-note.center{text-align:center; border:0; background:none}
+.siloona-site .co-alert{
+  margin:14px 0 0; padding:12px 14px; border:1px solid rgba(163,50,43,.3); background:#FBF0EE;
+  color:var(--co-err); border-radius:6px; font-size:14px;
+}
+
+.siloona-site .co-pay{width:100%; justify-content:center; margin-top:18px; padding:16px 30px; font-size:15.5px}
+.siloona-site .co-pay.busy{background:var(--violet-2)}
+.siloona-site .co-secure{display:flex; gap:10px; align-items:flex-start; font-size:12.5px; color:var(--muted); margin:14px 0 0; line-height:1.5}
+.siloona-site .co-secure svg{flex:none; margin-top:2px; color:var(--gold)}
+
+.siloona-site .co-spin{
+  width:16px; height:16px; border-radius:50%; border:2px solid rgba(255,255,255,.35); border-top-color:#fff;
+  display:inline-block; animation:co-spin .8s linear infinite; vertical-align:-3px;
+}
+.siloona-site .co-spin.lg{width:38px; height:38px; border-width:2px; border-color:rgba(176,137,63,.25); border-top-color:var(--gold); display:block; margin:0 auto}
+@keyframes co-spin{to{transform:rotate(360deg)}}
+
+/* ---------- Summary aside ---------- */
+.siloona-site .co-sum{
+  display:flex; gap:16px; align-items:center; background:var(--co-paper); border:1px solid var(--line);
+  border-radius:8px; padding:14px;
+}
+.siloona-site .co-sum-thumb{width:76px; flex:none}
+.siloona-site .co-sum-thumb .thumb{padding:0; background:none; aspect-ratio:auto}
+.siloona-site .co-sum-thumb .thumb.card-thumb{aspect-ratio:1200/1697; overflow:hidden; border-radius:3px; box-shadow:0 6px 16px -10px rgba(33,20,40,.35)}
+.siloona-site .co-sum-thumb .thumb-soon{display:none}
+.siloona-site .co-sum-body{min-width:0; flex:1}
+.siloona-site .co-sum .eyebrow{font-size:10.5px; letter-spacing:.16em; margin:0 0 4px}
+.siloona-site .co-sum-title{font-family:var(--serif); font-weight:500; font-size:17px; margin:0; line-height:1.3}
+.siloona-site .co-sum-type{font-size:12.5px; color:var(--muted); margin:2px 0 0}
+.siloona-site .co-sum-total{display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-top:10px; padding-top:10px; border-top:1px solid var(--line)}
+.siloona-site .co-sum-total span{font-size:13px; color:var(--ink-2)}
+.siloona-site .co-sum-total strong{font-family:var(--serif); font-weight:500; font-size:19px; color:var(--ink); white-space:nowrap}
+.siloona-site .co-sum-cur{display:none; font-size:12px; color:var(--muted); margin:6px 0 0}
+
+/* ---------- Order page ---------- */
+.siloona-site .co-result{padding-top:40px}
+.siloona-site .co-card{
+  max-width:640px; margin:0 auto; background:var(--co-paper); border:1px solid var(--line);
+  border-radius:10px; padding:36px 20px 28px; text-align:center; box-shadow:var(--shadow);
+}
+.siloona-site .co-mark{width:52px; height:52px; margin:0 auto 18px; display:grid; place-items:center}
+.siloona-site .co-mark svg{width:52px; height:52px; fill:none; stroke-width:1.4; stroke-linecap:round; stroke-linejoin:round}
+.siloona-site .tone-ok .co-mark svg{stroke:var(--gold)}
+.siloona-site .tone-bad .co-mark svg{stroke:var(--violet)}
+.siloona-site .tone-wait .co-mark svg, .siloona-site .tone-muted .co-mark svg{stroke:var(--muted)}
+.siloona-site .co-card h1{font-family:var(--serif); font-weight:500; font-size:clamp(1.7rem,6vw,2.4rem); line-height:1.2; margin:0 0 12px}
+.siloona-site .co-lede{color:var(--ink-2); font-size:15px; max-width:46ch; margin:0 auto}
+.siloona-site .co-reason{font-size:13px; color:var(--muted); margin:10px 0 0}
+.siloona-site .co-details{margin:28px 0 0; text-align:left; border-top:1px solid var(--line)}
+.siloona-site .co-details div{display:flex; justify-content:space-between; gap:16px; padding:11px 0; border-bottom:1px solid var(--line); font-size:14px}
+.siloona-site .co-details dt{color:var(--muted); flex:none}
+.siloona-site .co-details dd{margin:0; text-align:right; min-width:0; overflow-wrap:anywhere; color:var(--ink)}
+.siloona-site .co-details .mono{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:12.5px}
+.siloona-site .co-retry{text-align:left; margin-top:28px}
+.siloona-site .co-foot{margin-top:28px; padding-top:22px; border-top:1px dashed var(--line-2)}
+.siloona-site .co-foot p{font-size:13px; color:var(--muted); margin:0}
+.siloona-site .co-foot .co-actions{margin-top:16px}
+.siloona-site .co-foot .btn{padding:11px 20px; font-size:13.5px}
+
+.siloona-site .co-empty{text-align:center; padding:80px 16px}
+.siloona-site .co-empty h1{font-family:var(--serif); font-weight:500; font-size:clamp(1.6rem,5vw,2.2rem); margin:0 0 26px}
+
+/* ---------- Tablet & up ---------- */
+@media (min-width:640px){
+  .siloona-site .co .wrap{padding:0 28px}
+  .siloona-site .co-options{grid-template-columns:1fr 1fr}
+  .siloona-site .co-fields{grid-template-columns:1fr 1fr}
+  .siloona-site .co-field.wide{grid-column:1/-1}
+  .siloona-site .co-step-b{padding-left:50px}
+  .siloona-site .co-pay{width:auto; min-width:280px}
+  .siloona-site .co-retry .co-pay{width:100%}
+  .siloona-site .co-card{padding:48px 48px 34px}
+}
+
+/* ---------- Desktop: form + sticky summary ---------- */
+@media (min-width:960px){
+  .siloona-site .co{padding:48px 0 120px}
+  .siloona-site .co-grid{display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:72px; align-items:start}
+  .siloona-site .co-aside{position:sticky; top:96px}
+  .siloona-site .co-sum{flex-direction:column; align-items:stretch; padding:26px 26px 22px; gap:20px}
+  .siloona-site .co-sum-thumb{width:190px; margin:0 auto}
+  .siloona-site .co-sum-title{font-size:21px}
+  .siloona-site .co-sum-total{margin-top:18px; padding-top:16px}
+  .siloona-site .co-sum-total strong{font-size:24px}
+  .siloona-site .co-sum-cur{display:block}
+}
+
+/* ---------- Payment simulator page (PAYMENTS_SIMULATION=1 only) ---------- */
+.siloona-site .co-sim{padding-top:0}
+.siloona-site .co-sim-banner{
+  background:repeating-linear-gradient(135deg,#F3E3C4 0 14px,#EFD9B0 14px 28px);
+  color:#6A4A12; text-align:center; font-size:13px; font-weight:600; letter-spacing:.04em;
+  padding:10px 16px; margin-bottom:36px; border-bottom:1px solid rgba(176,137,63,.35);
+}
+.siloona-site .co-sim-card{text-align:left; border-top:3px solid var(--gold)}
+.siloona-site .co-sim-card h1, .siloona-site .co-sim-card .eyebrow{text-align:center}
+.siloona-site .co-sim-card .co-lede{text-align:center}
+.siloona-site .co-sim-amount{font-family:var(--serif); font-size:19px}
+.siloona-site .co-sim-actions{display:grid; gap:14px; margin-top:28px}
+.siloona-site .co-sim-opt{display:flex; flex-direction:column; gap:6px}
+.siloona-site .co-sim-opt .btn{justify-content:center; width:100%}
+.siloona-site .co-sim-opt span{font-size:12.5px; color:var(--muted); text-align:center}
+.siloona-site .co-spin.dark{border-color:rgba(33,28,40,.2); border-top-color:var(--ink)}
+.siloona-site .co-test-note{
+  display:inline-block; margin:14px 0 0; font-size:12.5px; color:#6A4A12; background:#F6EAD2;
+  border-radius:999px; padding:5px 14px;
+}
+
+/* ---------- Share the paid invitation ---------- */
+.siloona-site .co-share{
+  margin:28px 0 0; padding:24px 18px 20px; border-radius:8px; text-align:center;
+  background:linear-gradient(160deg,#FBF3E8 0%,#F6ECE9 100%); border:1px solid rgba(176,137,63,.28);
+}
+.siloona-site .co-share .eyebrow{margin-bottom:8px}
+.siloona-site .co-share h2{font-family:var(--serif); font-weight:500; font-size:21px; line-height:1.3; margin:0 0 16px}
+.siloona-site .co-link{
+  display:flex; align-items:center; gap:8px; background:var(--co-paper); border:1px solid var(--line-2);
+  border-radius:999px; padding:5px 5px 5px 16px; min-width:0;
+}
+.siloona-site .co-link a{flex:1; min-width:0; text-align:left; font-size:14px; color:var(--violet); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.siloona-site .co-link button{flex:none; border:0; background:var(--ink); color:var(--cream); border-radius:999px; padding:9px 16px; font-size:13px; font-weight:600}
+.siloona-site .co-share-btns{display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-top:14px}
+.siloona-site .co-share-btns .btn{padding:10px 18px; font-size:13.5px}
+.siloona-site .co-share-note{font-size:12.5px; color:var(--muted); margin:14px auto 0; max-width:44ch; line-height:1.55}
+@media (min-width:640px){ .siloona-site .co-share{padding:28px 28px 22px} }
+
+/* ---------- Customer's own web edits attached to the order ---------- */
+.siloona-site .co-edits{margin:18px 0 0; padding:14px 16px; background:var(--cream-2); border-left:2px solid var(--gold)}
+.siloona-site .co-edits .co-consent{margin:0 0 6px; font-weight:500; color:var(--ink)}
+.siloona-site .co-edits p{margin:0 0 0 30px; font-size:13px; color:var(--ink-2); line-height:1.55}
+.siloona-site .co-edits a, .siloona-site .co-demo a{color:var(--violet); border-bottom:1px solid rgba(107,29,44,.3)}
+.siloona-site .co-demo-sep{margin:0 10px; color:var(--muted)}
+
+/* Details taken from the customer's edited invitation */
+.siloona-site .co-fromedit-lead{margin:0 0 6px; font-size:12.5px; color:var(--gold); font-weight:600; letter-spacing:.02em}
+.siloona-site .co-fromedit .co-recap{margin-bottom:10px}
+.siloona-site .co-fromedit-edit{margin:0 0 18px; font-size:13.5px}
+.siloona-site .co-fromedit-edit a{color:var(--violet); border-bottom:1px solid rgba(107,29,44,.3)}
+
+/* The design's own details, grouped as its editor groups them */
+.siloona-site .co-group{border:0; margin:0 0 22px; padding:0; min-width:0}
+.siloona-site .co-group-t{padding:0; margin:0 0 12px; font-family:var(--serif); font-size:15px; font-weight:500; color:var(--violet); letter-spacing:.01em}
+.siloona-site .co-recap-g{margin:0 0 4px}
+.siloona-site .co-recap-gt{margin:14px 0 6px; font-family:var(--serif); font-size:14.5px; color:var(--violet)}
+.siloona-site .co-recap-g .co-recap{margin-bottom:8px}
+.siloona-site .co-sched-row{display:grid; grid-template-columns:auto 1fr 40px; gap:8px; align-items:center}
+.siloona-site .co-sched-row input{width:100%; font:inherit; font-size:16px; color:var(--ink); background:var(--co-paper); border:1px solid var(--line-2); border-radius:6px; padding:10px 10px; min-height:46px; -webkit-appearance:none; appearance:none; min-width:0}
+.siloona-site .co-sched-row input:focus{outline:none; border-color:var(--violet); box-shadow:0 0 0 3px rgba(107,29,44,.1)}
+.siloona-site .co-sched-x{width:40px; height:40px; border:1px solid var(--line-2); border-radius:50%; background:transparent; color:var(--muted); font-size:20px; line-height:1; cursor:pointer}
+.siloona-site .co-sched-x:hover{color:var(--violet); border-color:var(--violet)}
+.siloona-site .co-sched-add{align-self:flex-start; margin-top:2px; padding:8px 0; border:0; background:none; color:var(--violet); font:inherit; font-size:13.5px; font-weight:500; cursor:pointer}
+
+/* 24-hour time: hour and minute lists (TimeSelect) */
+.siloona-site .co-sel{
+  font:inherit; font-size:16px; color:var(--ink); background:var(--co-paper,#FFFDF9); border:1px solid var(--line-2); border-radius:6px;
+  min-height:46px; padding:0 26px 0 12px; -webkit-appearance:none; appearance:none; cursor:pointer;
+  background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+  background-position:calc(100% - 13px) 52%,calc(100% - 9px) 52%; background-size:4px 4px; background-repeat:no-repeat;
+}
+.siloona-site .co-sel:focus{outline:none; border-color:var(--violet); box-shadow:0 0 0 3px rgba(107,29,44,.1)}
+.siloona-site .co-sel[aria-invalid=true]{border-color:var(--co-err)}
+
+/* Armenian calendar field (ArmenianDate.jsx) */
+.siloona-site .co-datebtn{
+  width:100%; min-height:48px; font:inherit; font-size:16px; color:var(--ink); background:var(--co-paper,#FFFDF9);
+  border:1px solid var(--line-2); border-radius:6px; padding:12px 14px;
+}
+.siloona-site .co-datebtn:focus{outline:none; border-color:var(--violet); box-shadow:0 0 0 3px rgba(107,29,44,.1)}
+.siloona-site .co-datebtn[aria-invalid=true]{border-color:var(--co-err)}
+.siloona-site .co-maplink{align-self:flex-start; font-size:13px; color:var(--violet); border-bottom:1px solid rgba(107,29,44,.3); margin-top:2px}
+
+/* guests' answers on the order page */
+.siloona-site .co-answers{margin:26px 0 6px; padding-top:22px; border-top:1px dashed var(--line-2); text-align:left}
+.siloona-site .co-answers h2{font-family:var(--serif); font-weight:500; font-size:19px; margin:0 0 10px; text-align:center}
+.siloona-site .co-ans-sum{text-align:center; font-size:14px; color:var(--ink-2); margin:0 0 12px}
+.siloona-site .co-ans-sum b{font-family:var(--serif); font-size:18px; color:var(--violet)}
+.siloona-site .co-ans-list{list-style:none; margin:0 0 14px; padding:0; max-height:320px; overflow:auto; border-top:1px solid var(--line)}
+.siloona-site .co-ans-list li{display:flex; justify-content:space-between; gap:12px; padding:10px 2px; border-bottom:1px solid var(--line); font-size:14px}
+.siloona-site .co-ans-list .who{min-width:0; overflow-wrap:anywhere}
+.siloona-site .co-ans-list small{display:block; color:var(--muted); font-size:12.5px}
+.siloona-site .co-ans-list .st{flex:none; font-size:12.5px; padding:2px 10px; border-radius:999px; align-self:flex-start; background:rgba(122,140,85,.15); color:#4f5e2f}
+.siloona-site .co-ans-list .st.declined{background:rgba(163,50,43,.1); color:#8f2a24}
+.siloona-site .co-answers .btn{display:flex; margin:0 auto}
+
+/* «Իմ պատվերները» */
+.siloona-site .mo .wrap{max-width:720px}
+.siloona-site .mo-list{list-style:none; margin:0; padding:0; display:grid; gap:14px}
+.siloona-site .mo-card{background:var(--co-paper); border:1px solid var(--line); border-radius:10px; padding:18px 18px 16px}
+.siloona-site .mo-top{display:flex; justify-content:space-between; align-items:center; gap:10px; font-size:13px; color:var(--muted)}
+.siloona-site .mo-st{padding:3px 10px; border-radius:999px; font-size:12.5px; background:rgba(0,0,0,.05); color:var(--ink-2)}
+.siloona-site .mo-st.tone-ok{background:rgba(122,140,85,.16); color:#4f5e2f}
+.siloona-site .mo-st.tone-wait{background:rgba(176,137,63,.16); color:#7a5a1c}
+.siloona-site .mo-st.tone-bad{background:rgba(163,50,43,.1); color:#8f2a24}
+.siloona-site .mo-name{font-family:var(--serif); font-weight:500; font-size:19px; margin:8px 0 4px}
+.siloona-site .mo-meta,.siloona-site .mo-ans{font-size:14px; color:var(--ink-2); margin:0}
+.siloona-site .mo-ans b{color:var(--violet)}
+.siloona-site .mo-link{margin:10px 0 4px; font-size:14px; overflow-wrap:anywhere}
+.siloona-site .mo-link a{color:var(--violet); border-bottom:1px solid rgba(107,29,44,.3)}
+.siloona-site .mo-actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:14px}
+.siloona-site .mo-add{margin-top:30px; padding-top:20px; border-top:1px dashed var(--line-2); display:grid; gap:8px; font-size:14px; color:var(--ink-2)}
+.siloona-site .mo-add-row{display:flex; gap:8px}
+.siloona-site .mo-add input{flex:1; min-width:0; font:inherit; font-size:16px; padding:10px 12px; border:1px solid var(--line-2); border-radius:6px; background:var(--co-paper)}

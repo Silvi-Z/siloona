@@ -1,4 +1,5 @@
 import Editable from '../../shared/Editable'
+import { RowAdd, RowRemove } from '../../shared/ListEdit'
 import Section, { useSectionHidden } from '../../shared/Section'
 import { useInvitationContent } from '../../shared/EditableContext'
 import { Decor, Rv, SplitHeading } from './bits'
@@ -32,9 +33,11 @@ export default function VenueSection() {
               <div key={i}>
                 <Editable as="time" path={`schedule.${i}.time`} />
                 <Editable path={`schedule.${i}.label`} />
+                <RowRemove list="schedule" index={i} />
               </div>
             ))}
           </Rv>
+          <RowAdd list="schedule" />
         </Section>
         {!(isHidden('dressCode') && isHidden('gifts')) && (
           <div className="nts">

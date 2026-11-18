@@ -50,4 +50,5 @@
 /* edit mode */
 .cmo-card .wdb-editable{outline:1px dashed transparent;border-radius:3px;transition:outline-color .15s}
 .cmo-card .wdb-editable:hover,.cmo-card .wdb-editable:focus{outline-color:var(--rust)}
-.cmo-card .wdb-edit-input{position:absolute;left:50%;top:50%;translate:-50% -50%;font:400 max(12px,2.8cqw) var(--sans);color:var(--ink);background:#fff;border:1.5px dashed var(--rust);border-radius:6px;padding:2px 4px}
+.cmo-card .wdb-edit-dt{position:absolute;left:50%;top:50%;translate:-50% -50%;z-index:2;width:max-content;background:#fff;padding:4px 6px;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.08);font:400 max(12px,2.8cqw) var(--sans);color:var(--ink)}
+.cmo-card .wdb-edit-input{font:400 max(12px,2.8cqw) var(--sans);color:var(--ink);background:#fff;border:1.5px dashed var(--rust);border-radius:6px;padding:2px 4px}

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import Editable from '../../shared/Editable'
+import { RowAdd, RowRemove } from '../../shared/ListEdit'
 import GuestGreeting, { fillName } from '../../shared/GuestGreeting'
 import Section, { useSectionHidden } from '../../shared/Section'
 import { useInvitationContent } from '../../shared/EditableContext'
@@ -181,9 +182,11 @@ export function Program() {
             <Editable as="time" path={`schedule.${i}.time`} />
             <i aria-hidden="true" />
             <Editable path={`schedule.${i}.label`} />
+            <RowRemove list="schedule" index={i} />
           </li>
         ))}
       </ol>
+      <RowAdd list="schedule" />
     </Block>
   )
 }

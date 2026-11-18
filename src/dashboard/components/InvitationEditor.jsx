@@ -6,6 +6,7 @@ import { fillName } from '../../site/invitations/shared/GuestGreeting';
 import { eventDesignContent, designSections, setDesignField, sampleGuestName } from '../data/designPrefill';
 import { toISO } from '../utils/format';
 import * as actions from '../data/actions';
+import TimeSelect from '../../site/invitations/shared/TimeSelect';
 
 // «Հրավերի բովանդակություն» — the one place on «Իմ հրավերը» where the
 // invitation's content is edited. Built entirely from the selected design's
@@ -67,7 +68,17 @@ function Field({ field, value, onChange, sample }) {
   const input = field.type === 'textarea'
     ? <textarea id={id} className="input" value={value ?? ''} onChange={(e) => onChange(e.target.value)} />
     : field.type === 'date'
-      ? <input id={id} className="input" type="datetime-local" value={toLocalInput(value)} onChange={(e) => e.target.value && onChange(`${e.target.value}:00`)} />
+      ? (() => {
+          // Date + 24-hour time lists (never AM/PM).
+          const [day, time] = (toLocalInput(value) || 'T').split('T');
+          const commit = (d, t) => d && onChange(`${d}T${t || '12:00'}:00`);
+          return (
+            <span style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+              <input id={id} className="input" type="date" value={day} onChange={(e) => commit(e.target.value, time)} />
+              <TimeSelect className="input" value={time} onChange={(t) => commit(day, t)} />
+            </span>
+          );
+        })()
       : <input id={id} className="input" value={value ?? ''} onChange={(e) => onChange(e.target.value)} />;
   return (
     <label className="full" htmlFor={id}>{field.label}{input}

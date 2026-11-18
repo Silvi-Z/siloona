@@ -1,5 +1,6 @@
 import Icon from '../utils/icons';
 import { num } from '../utils/format';
+import TimeSelect from '../../site/invitations/shared/TimeSelect';
 
 export function Seg({ items, value, onChange, full }) {
   return (
@@ -40,9 +41,8 @@ export function SelectField({ value, onChange, options, ariaLabel }) {
   );
 }
 
-// lang="en-GB" forces the native time picker to render in 24h format
-// regardless of the browser/OS's default locale — the stored value
-// ("18:00") is already 24h everywhere, this only affects the picker UI.
+// Always 24h: hour and minute lists (a native time input shows AM/PM in
+// some browser languages, whatever the page asks). Value "18:00" or "".
 export function TimeField({ value, onChange, className = 'input', ...rest }) {
-  return <input className={className} type="time" lang="en-GB" value={value} onChange={e => onChange(e.target.value)} {...rest} />;
+  return <TimeSelect value={value} onChange={onChange} className={className} allowEmpty {...rest} />;
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useSession } from '../lib/useSession'
+import { listOrders } from './checkout/checkoutApi'
 
 const LINKS = [
   { to: '/', label: 'Գլխավոր' },
@@ -13,6 +14,9 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
   const session = useSession()
+  // «Իմ պատվերները» appears once this device has placed an order.
+  const hasOrders = listOrders().length > 0
+  const links = hasOrders ? [...LINKS, { to: '/my-orders', label: 'Իմ պատվերները' }] : LINKS
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
@@ -37,7 +41,7 @@ export default function Header() {
           <NavLink to="/" className="wordmark">SILOONA</NavLink>
 
           <nav className="site-nav">
-            {LINKS.map((l) => (
+            {links.map((l) => (
               <NavLink key={l.to} to={l.to} end={l.to === '/'}>
                 {l.label}
               </NavLink>
@@ -62,7 +66,7 @@ export default function Header() {
       </div>
 
       <div className={`mobile-nav${menuOpen ? ' open' : ''}`}>
-        {LINKS.map((l) => (
+        {links.map((l) => (
           <NavLink key={l.to} to={l.to} end={l.to === '/'}>
             {l.label}
           </NavLink>

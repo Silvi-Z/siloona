@@ -9,6 +9,7 @@ import Calendar from './Calendar';
 import Events from './Events';
 import Archive from './Archive';
 import Account from './Account';
+import Orders from './Orders';
 import { useDashboard } from '../state/DashboardContext';
 
 function EventPage() {
@@ -28,4 +29,5 @@ export const PAGES = {
   events: { component: Events, modes: ['org'] },
   archive: { component: Archive, modes: ['org'] },
   account: { component: Account, modes: ['couple', 'org'] },
+  orders: { component: Orders, modes: ['couple', 'org'], admin: true },
 };

@@ -29,11 +29,7 @@ export default function Invitations() {
     <>
       <section className="page-hero">
         <div className="wrap">
-          <h1>Հրավիրատոմսերի հավաքածու</h1>
-          <p>
-            Յուրաքանչյուր դիզայն ունի իր տեսողական ուղղությունը։ Ընտրեք՝ թվային, թե՞
-            տպագիր հրավիրատոմս եք փնտրում։
-          </p>
+          {/* <h1>Հրավիրատոմսերի հավաքածու</h1> */}
 
           <div className="catalog-controls">
             <div className="mode-switch" role="tablist" aria-label="Հրավիրատոմսի տեսակ">

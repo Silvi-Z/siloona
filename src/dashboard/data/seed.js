@@ -22,5 +22,9 @@ export const shuffle = a => {
   return a;
 };
 
-let uidCounter = 1;
+// Record ids (guests, groups, …) must stay unique across visits: saved
+// events keep the ids they were given, so a counter restarting at 1 on
+// every page load would hand a new guest an id already in use. Starting
+// from the current time keeps every session's ids above earlier ones.
+let uidCounter = Date.now();
 export const nid = p => p + uidCounter++;

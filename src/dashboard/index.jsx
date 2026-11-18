@@ -13,12 +13,15 @@ import { PAGES } from './pages';
 
 function Shell() {
   const dash = useDashboard();
+  const { isAdmin } = useAuth();
   const { mode, page, go, ctx, sidebarOpen, setSidebarOpen, drawer, closeDrawer } = dash;
-  const Page = PAGES[page] ? PAGES[page].component : PAGES.overview.component;
+  const def = PAGES[page] && (!PAGES[page].admin || isAdmin) ? PAGES[page] : PAGES.overview;
+  const Page = def.component;
   const ev = ctx();
   // The platform isn't wedding-only: a fresh couple-mode event has no type
-  // yet, so nothing event-specific renders until one is picked.
-  const gated = mode === 'couple' && !ev.type;
+  // yet, so nothing event-specific renders until one is picked. Admin pages
+  // aren't about the event, so they never wait for that.
+  const gated = mode === 'couple' && !ev.type && !def.admin;
 
   useEffect(() => {
     const initial = location.hash.slice(1);

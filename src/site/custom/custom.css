@@ -1,0 +1,73 @@
+/* «Անհատական դիզայն» request — opened over the home page, so it uses the
+   home's editorial tokens (ivory, ink, burgundy, hairlines; see home.css). */
+.cr-backdrop{
+  position:fixed; inset:0; z-index:300; background:rgba(25,23,22,.42);
+  display:flex; justify-content:center; align-items:flex-end;
+  animation:cr-fade .25s ease both;
+}
+.cr-panel{
+  position:relative; width:100%; max-height:94dvh; overflow-y:auto; overscroll-behavior:contain;
+  background:var(--ivory); color:var(--ink); padding:40px 20px 28px;
+  border-top:1px solid var(--line); animation:cr-up .35s var(--ease) both; outline:none;
+}
+@keyframes cr-fade{from{opacity:0}}
+@keyframes cr-up{from{transform:translateY(24px); opacity:0}}
+@media (prefers-reduced-motion:reduce){ .cr-backdrop,.cr-panel{animation:none} }
+
+.cr-close{position:absolute; top:12px; right:12px; width:44px; height:44px; display:grid; place-items:center; background:none; border:0; color:var(--ink); cursor:pointer}
+.cr-close svg{width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.3; stroke-linecap:round}
+.cr-close:hover{color:var(--burgundy)}
+
+.cr-head{padding-right:36px; margin-bottom:28px}
+.cr-head h2{font-family:var(--serif); font-weight:400; font-size:clamp(1.7rem,6vw,2.3rem); line-height:1.15; margin:14px 0 12px}
+.cr-head p:last-child{margin:0; font-size:15px; line-height:1.65; color:var(--ink-soft); max-width:52ch}
+
+.cr-group{border:0; padding:0; margin:0 0 24px; min-width:0}
+.cr-label{display:block; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft); font-weight:400; padding:0; margin-bottom:10px}
+.cr-label i{color:var(--burgundy); font-style:normal}
+.cr-field .cr-label{margin-bottom:8px}
+
+.cr-chips{display:flex; flex-wrap:wrap; gap:8px}
+.cr-chip{position:relative; padding:10px 16px; border:1px solid var(--line); font-size:14px; cursor:pointer; transition:border-color .2s, background .2s, color .2s; user-select:none}
+.cr-chip input,.cr-kind input{position:absolute; opacity:0; pointer-events:none}
+.cr-chip:hover{border-color:var(--ink)}
+.cr-chip.on{background:var(--ink); border-color:var(--ink); color:var(--ivory)}
+.cr-chip:focus-within,.cr-kind:focus-within{outline:2px solid var(--burgundy); outline-offset:2px}
+
+.cr-kinds{display:grid; gap:0; border-top:1px solid var(--line)}
+.cr-kind{position:relative; display:flex; align-items:center; gap:14px; padding:14px 0; border-bottom:1px solid var(--line); font-size:15px; cursor:pointer}
+.cr-kind::before{content:""; width:16px; height:16px; border-radius:50%; border:1px solid var(--ink); flex:none; box-shadow:inset 0 0 0 3px var(--ivory); transition:background .2s}
+.cr-kind.on::before{background:var(--burgundy); border-color:var(--burgundy)}
+
+.cr-fields{display:grid; gap:18px}
+.cr-field{display:flex; flex-direction:column; min-width:0}
+.cr-field input,.cr-field textarea,.cr-field select{
+  width:100%; font:inherit; font-size:16px; font-weight:300; color:var(--ink); background:var(--paper);
+  border:1px solid var(--line); border-radius:0; padding:12px 14px; -webkit-appearance:none; appearance:none;
+  transition:border-color .2s;
+}
+.cr-field select{background-image:linear-gradient(45deg,transparent 50%,var(--ink) 50%),linear-gradient(135deg,var(--ink) 50%,transparent 50%); background-position:calc(100% - 18px) 50%,calc(100% - 13px) 50%; background-size:5px 5px; background-repeat:no-repeat; padding-right:36px}
+.cr-field input[type=date]{min-height:48px}
+.cr-field textarea{resize:vertical; line-height:1.55}
+.cr-field input:focus,.cr-field textarea:focus,.cr-field select:focus{outline:none; border-color:var(--ink)}
+.cr-field [aria-invalid=true]{border-color:#A3322B}
+.cr-hint{font-size:12.5px; color:var(--ink-soft); margin-top:6px; line-height:1.45}
+.cr-err{display:block; font-size:12.5px; color:#A3322B; margin-top:6px}
+.cr-sub{font-family:var(--serif); font-size:19px; margin:34px 0 16px; padding-top:24px; border-top:1px solid var(--line)}
+.cr-hp{position:absolute; left:-9999px; width:1px; height:1px; opacity:0}
+
+.cr-consent{display:flex; gap:12px; align-items:flex-start; margin:26px 0 4px; font-size:14px; line-height:1.55; color:var(--ink-soft); cursor:pointer}
+.cr-consent input{width:18px; height:18px; margin:3px 0 0; accent-color:var(--burgundy); flex:none}
+.cr-alert{margin:14px 0 0; padding:12px 14px; border-left:2px solid #A3322B; background:rgba(163,50,43,.06); font-size:14px}
+.cr-actions{display:flex; flex-wrap:wrap; align-items:center; gap:16px; margin-top:24px}
+.cr-actions .hm-btn{width:100%}
+.cr-actions .hm-btn[disabled]{opacity:.7; cursor:default}
+
+@media (min-width:700px){
+  .cr-backdrop{align-items:center; padding:32px}
+  .cr-panel{max-width:680px; max-height:calc(100dvh - 64px); padding:52px 52px 40px; border:1px solid var(--line)}
+  .cr-close{top:18px; right:18px}
+  .cr-fields{grid-template-columns:1fr 1fr; gap:20px 18px}
+  .cr-field.wide{grid-column:1/-1}
+  .cr-actions .hm-btn{width:auto}
+}

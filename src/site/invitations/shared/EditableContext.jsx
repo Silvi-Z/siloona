@@ -28,7 +28,10 @@ const Ctx = createContext(null)
 //   skipIntro    open straight to the content (no envelope/curtain)
 //   live         keep following `defaultData` when the host replaces it
 //                (the dashboard preview while settings change)
-export function InvitationContentProvider({ defaultData, saved, onSave, onReset, editing, setEditing, guestName = null, onRsvp, skipIntro = false, live = false, children }) {
+//   transform(prev, next)  optional: adjusts content after each edit — the
+//                public preview uses it to carry a renamed person into the
+//                sentences built from their name (invitationDetails.js)
+export function InvitationContentProvider({ defaultData, saved, onSave, onReset, editing, setEditing, guestName = null, onRsvp, skipIntro = false, live = false, transform, children }) {
   const [data, setData] = useState(() => deepMerge(defaultData, saved))
   const [dirty, setDirty] = useState(() => saved != null)
   // Latest content, read synchronously so onSave (which may update the
@@ -45,7 +48,16 @@ export function InvitationContentProvider({ defaultData, saved, onSave, onReset,
   function setField(path, value) {
     const prev = dataRef.current
     if (getByPath(prev, path) === value) return
-    const next = setByPath(prev, path, value)
+    let next = setByPath(prev, path, value)
+    if (transform) next = transform(prev, next)
+    dataRef.current = next
+    setData(next)
+    setDirty(true)
+    onSave?.(next)
+  }
+
+  // Several changes at once (the editing wizard's answers).
+  function replaceData(next) {
     dataRef.current = next
     setData(next)
     setDirty(true)
@@ -60,7 +72,7 @@ export function InvitationContentProvider({ defaultData, saved, onSave, onReset,
   }
 
   const value = useMemo(
-    () => ({ data, editing, setEditing, setField, reset, dirty, guestName, onRsvp, skipIntro }),
+    () => ({ data, editing, setEditing, setField, replaceData, reset, dirty, guestName, onRsvp, skipIntro }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [data, editing, dirty, guestName, onRsvp, skipIntro],
   )
@@ -70,7 +82,7 @@ export function InvitationContentProvider({ defaultData, saved, onSave, onReset,
 
 // Public /invitations/preview/:slug host — edit mode lives in the `?edit`
 // query param, edits persist in this browser's localStorage per slug.
-export function InvitationEditProvider({ slug, defaultData, children }) {
+export function InvitationEditProvider({ slug, defaultData, transform, children }) {
   const [searchParams, setSearchParams] = useSearchParams()
   const [saved] = useState(() => loadOverride(slug))
   const editing = searchParams.has('edit')
@@ -92,6 +104,7 @@ export function InvitationEditProvider({ slug, defaultData, children }) {
       onReset={() => clearOverride(slug)}
       editing={editing}
       setEditing={setEditing}
+      transform={transform}
     >
       {children}
     </InvitationContentProvider>

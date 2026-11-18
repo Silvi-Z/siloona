@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react';
 import { EV, coupleEvent, orgEvents } from '../data/selectors';
 import { schedulePersist } from '../data/sync';
+import { syncReplies } from '../data/replies';
 import Icon from '../utils/icons';
 
 const initialUi = () => ({
@@ -61,6 +62,15 @@ export function DashboardProvider({ children, initialMode = 'couple' }) {
   const setOrgEvent = useCallback((id) => { setOrgEventState(prev => { if (prev === id) return prev; resetGuestUi(); return id; }); }, [resetGuestUi]);
 
   const ctx = useCallback(() => mode === 'couple' ? coupleEvent() : EV(orgEvent), [mode, orgEvent]);
+
+  // New answers from guests' links while the dashboard is open: check every
+  // minute (and when the tab comes back into view) and redraw if any came.
+  useEffect(() => {
+    const pull = () => { if (document.visibilityState !== 'hidden') syncReplies().then(n => { if (n) setRev(r => r + 1); }); };
+    const t = setInterval(pull, 60000);
+    document.addEventListener('visibilitychange', pull);
+    return () => { clearInterval(t); document.removeEventListener('visibilitychange', pull); };
+  }, []);
 
   useEffect(() => {
     const onHash = () => { const h = location.hash.slice(1); if (h) setPage(h); };
