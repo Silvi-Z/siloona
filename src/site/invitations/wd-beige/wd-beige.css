@@ -234,7 +234,7 @@
 }
 .wdb .wdb-editable:hover{outline-color:rgba(160,141,121,.6)}
 .wdb .wdb-editable:focus{outline:1px dashed var(--taupe); background:rgba(160,141,121,.08)}
-.wdb input.wdb-edit-input{
+.wdb input.wdb-edit-input, .wdb select.wdb-edit-input{
   font:inherit; color:var(--ink); background:var(--paper2); border:1px solid var(--taupe); border-radius:3px;
   padding:6px 10px;
 }

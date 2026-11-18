@@ -184,6 +184,9 @@ body{margin:0}
   justify-content:center; transition:border-color .2s ease, color .2s ease;
 }
 .siloona-site .social-row a:hover{border-color:var(--violet); color:var(--violet)}
+.siloona-site .site-footer .foot-col .social-row a{display:flex; margin:0; color:var(--ink-2)}
+.siloona-site .site-footer .foot-col .social-row a:hover{color:var(--violet)}
+.siloona-site .social-row svg{width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.4; stroke-linecap:round; stroke-linejoin:round}
 .siloona-site .foot-bottom{
   max-width:1180px; margin:40px auto 0; padding:24px 28px 0; border-top:1px solid var(--line);
   font-size:12.5px; color:var(--muted); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
@@ -196,7 +199,7 @@ body{margin:0}
 
 /* ---------- Catalog mode switcher + category tabs ---------- */
 .siloona-site .catalog-controls{
-  display:flex; flex-direction:column; align-items:center; gap:24px; margin-top:44px;
+  display:flex; flex-direction:column; align-items:center; gap:55px;
 }
 .siloona-site .mode-switch{
   display:inline-flex; gap:6px; padding:7px;
@@ -257,21 +260,6 @@ body{margin:0}
 .siloona-site .price-row-label{font-size:12.5px; font-weight:600; color:var(--ink)}
 .siloona-site .price-row-amount{font-size:12.5px; color:var(--violet); white-space:nowrap}
 .siloona-site .price-row-note{font-size:11px; color:var(--muted); line-height:1.4}
-
-/* ---------- Order placeholder modal ---------- */
-.siloona-site .order-backdrop{
-  position:fixed; inset:0; z-index:60; background:rgba(33,28,40,.5); backdrop-filter:blur(4px);
-  display:flex; align-items:center; justify-content:center; padding:24px;
-}
-.siloona-site .order-modal{
-  position:relative; width:min(100%,460px); background:#fff; border-radius:4px; box-shadow:var(--shadow); padding:40px;
-}
-.siloona-site .order-modal h3{font-family:var(--serif); font-size:24px; font-weight:500; margin:0 0 14px}
-.siloona-site .order-modal p:not(.eyebrow){color:var(--ink-2); font-size:14.5px; margin:0 0 26px}
-.siloona-site .order-close{
-  position:absolute; top:16px; right:16px; border:none; background:none; font-size:16px; color:var(--muted); line-height:1;
-}
-.siloona-site .order-close:hover{color:var(--ink)}
 
 /* Sample invitation preview (ported from the original placeholder, kept as a real working demo) */
 .siloona-site .sample-stage{padding:48px; display:flex; justify-content:center}

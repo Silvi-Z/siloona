@@ -54,31 +54,6 @@
 
 /* ---------- Print card designs ---------- */
 .sil-catalog .thumb.card-thumb{padding:0; background:none}
-.sil-catalog .card-art{
-  position:relative; width:100%; height:100%; display:flex; flex-direction:column; align-items:center;
-  justify-content:center; text-align:center; padding:30px 24px; overflow:hidden;
-}
-.sil-catalog .card-art .eyebrow{font-size:10px; letter-spacing:.16em; margin:0 0 14px}
-.sil-catalog .card-art h4{font-family:var(--cat-serif); font-weight:500; font-size:clamp(20px,4vw,26px); margin:0 0 14px; line-height:1.25}
-.sil-catalog .card-art .ca-sub{font-size:12px; line-height:1.6; margin:0 0 18px; max-width:22ch}
-.sil-catalog .card-art .ca-meta{font-size:11.5px; font-weight:600; letter-spacing:.03em; margin:0 0 10px}
-.sil-catalog .card-art .ca-note{font-size:10.5px; margin:0; opacity:.75; max-width:20ch}
-
-.sil-catalog .gr-card{background:linear-gradient(135deg,#F7DEE2 0%,#F2E6E8 48%,#DCE8F2 100%); color:#5C4A52}
-.sil-catalog .gr-card .eyebrow{color:#B5758A}
-.sil-catalog .gr-card .ca-meta{color:#6E7F99}
-.sil-catalog .gr-ring{
-  width:46px; height:46px; border:1.5px solid rgba(92,74,82,.4); border-radius:50%; margin-bottom:16px;
-}
-
-.sil-catalog .bd-card{background:linear-gradient(160deg,#2B2630 0%,#3A2F38 100%); color:#F3ECE1}
-.sil-catalog .bd-card .eyebrow{color:#D9B36C}
-.sil-catalog .bd-card .ca-meta{color:#D9B36C}
-.sil-catalog .bd-card .bd-age{font-family:var(--cat-serif); font-size:clamp(52px,11vw,70px); line-height:1; margin:0 0 6px; color:#D9B36C}
-.sil-catalog .bd-card .bd-dot{position:absolute; width:6px; height:6px; border-radius:50%; background:#D9B36C; opacity:.65}
-.sil-catalog .bd-card .d1{top:16%; left:18%}
-.sil-catalog .bd-card .d2{top:24%; right:16%; width:4px; height:4px}
-.sil-catalog .bd-card .d3{bottom:18%; left:22%; width:5px; height:5px}
 
 /* ---------- Card body / actions ---------- */
 .sil-catalog .catalog-card .card-body{padding:10px 22px 0; flex:1}

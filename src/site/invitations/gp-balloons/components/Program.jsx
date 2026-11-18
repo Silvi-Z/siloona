@@ -1,4 +1,5 @@
 import Editable from '../../shared/Editable'
+import { RowAdd, RowRemove } from '../../shared/ListEdit'
 import { useInvitationContent } from '../../shared/EditableContext'
 import Rv from './Rv'
 
@@ -24,9 +25,11 @@ export default function Program() {
                 <Editable as="time" path={`schedule.${i}.time`} />
                 <Editable as="p" path={`schedule.${i}.label`} />
               </div>
+              <RowRemove list="schedule" index={i} />
             </li>
           ))}
         </Rv>
+        <RowAdd list="schedule" />
       </div>
     </section>
   )

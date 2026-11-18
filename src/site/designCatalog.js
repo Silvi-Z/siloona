@@ -1,17 +1,21 @@
-import GenderRevealCard from './cards/GenderRevealCard'
-import BirthdayCard from './cards/BirthdayCard'
 import { CardMouseArt } from './invitations/card-mouse/CardMouse'
 import wdBeigeThumb from './assets/wd-beige-catalog.png'
 import bdAnimalsThumb from './invitations/bd-animals/assets/lion.webp'
 import gpBalloonsThumb from './invitations/gp-balloons/assets/catalog-thumb.webp'
 import gpStorkThumb from './invitations/gp-stork/assets/catalog-thumb.webp'
 import ceOrnamentThumb from './invitations/ce-ornament/assets/catalog-thumb.webp'
+import ceGarlandThumb from './invitations/ce-garland/assets/catalog-thumb.webp'
 import bdDuckThumb from './invitations/bd-duck/assets/catalog-thumb.webp'
 import bpBlueThumb from './invitations/bp-blue/assets/catalog-thumb.webp'
 import wdGardenSoftThumb from './invitations/wd-garden-soft/assets/catalog-thumb.webp'
 import wdGreenThumb from './invitations/wd-green/assets/catalog-thumb.webp'
 import wdGardenThumb from './invitations/wd-garden/assets/catalog-thumb.webp'
 import wdTulipThumb from './invitations/wd-tulip/assets/catalog-thumb.webp'
+import wdMonoThumb from './invitations/wd-mono/assets/catalog-thumb.webp'
+import wdRougeThumb from './invitations/wd-rouge/assets/catalog-thumb.webp'
+import wdCherryThumb from './invitations/wd-cherry/assets/catalog-thumb.webp'
+import wdFeteThumb from './invitations/wd-fete/assets/catalog-thumb.webp'
+import wdPortraitThumb from './invitations/wd-portrait/assets/catalog-thumb.webp'
 import wdVelvetThumb from './invitations/wd-velvet/assets/catalog-thumb.webp'
 import wdLineThumb from './invitations/wd-line/assets/catalog-thumb.webp'
 import wdCallaThumb from './invitations/wd-calla/assets/catalog-thumb.webp'
@@ -21,6 +25,7 @@ import bdBalloonsThumb from './invitations/bd-balloons/assets/catalog-thumb.webp
 import bdStitchThumb from './invitations/bd-stitch/assets/catalog-thumb.webp'
 import bdCarsThumb from './invitations/bd-cars/assets/catalog-thumb.webp'
 import bdBuildThumb from './invitations/bd-build/assets/catalog-thumb.webp'
+import { pricesFor } from './prices'
 
 // Single source of truth for every invitation design Siloona offers —
 // read by the public /invitations catalog (WebCatalog / CardCatalog) and
@@ -37,6 +42,8 @@ import bdBuildThumb from './invitations/bd-build/assets/catalog-thumb.webp'
 //   previewRoute / previewSlug  designs with a full page of their own
 //               (see invitationRegistry.js) — web designs, and cards built
 //               as editable pages; only those can be edited.
+//   pricing     NOT set here — prices live in prices.js (shared with the
+//               payment server) and are attached at the bottom of this file.
 export const WEB_DESIGNS = [
   // {
   //   id: 'wd-beige',
@@ -50,7 +57,6 @@ export const WEB_DESIGNS = [
   //   previewSlug: 'wd-beige',
   //   previewRoute: '/invitations/preview/wd-beige',
   //   image: wdBeigeThumb,
-  //   pricing: { diy: 15000, assisted: 20000 },
   // },
   {
     id: 'wd-garden-soft',
@@ -64,7 +70,6 @@ export const WEB_DESIGNS = [
     previewSlug: 'wd-garden-soft',
     previewRoute: '/invitations/preview/wd-garden-soft',
     image: wdGardenSoftThumb,
-    pricing: { diy: null, assisted: null },
   },
   // {
   //   id: 'wd-green',
@@ -78,7 +83,6 @@ export const WEB_DESIGNS = [
   //   previewSlug: 'wd-green',
   //   previewRoute: '/invitations/preview/wd-green',
   //   image: wdGreenThumb,
-  //   pricing: { diy: null, assisted: null },
   // },
   // {
   //   id: 'wd-garden',
@@ -92,7 +96,6 @@ export const WEB_DESIGNS = [
   //   previewSlug: 'wd-garden',
   //   previewRoute: '/invitations/preview/wd-garden',
   //   image: wdGardenThumb,
-  //   pricing: { diy: null, assisted: null },
   // },
   {
     id: 'wd-tulip',
@@ -106,7 +109,6 @@ export const WEB_DESIGNS = [
     previewSlug: 'wd-tulip',
     previewRoute: '/invitations/preview/wd-tulip',
     image: wdTulipThumb,
-    pricing: { diy: null, assisted: null },
   },
   {
     id: 'wd-velvet',
@@ -120,7 +122,6 @@ export const WEB_DESIGNS = [
     previewSlug: 'wd-velvet',
     previewRoute: '/invitations/preview/wd-velvet',
     image: wdVelvetThumb,
-    pricing: { diy: null, assisted: null },
   },
   {
     id: 'wd-line',
@@ -134,7 +135,6 @@ export const WEB_DESIGNS = [
     previewSlug: 'wd-line',
     previewRoute: '/invitations/preview/wd-line',
     image: wdLineThumb,
-    pricing: { diy: null, assisted: null },
   },
   {
     id: 'wd-calla',
@@ -148,7 +148,6 @@ export const WEB_DESIGNS = [
     previewSlug: 'wd-calla',
     previewRoute: '/invitations/preview/wd-calla',
     image: wdCallaThumb,
-    pricing: { diy: null, assisted: null },
   },
   {
     id: 'wd-meadow',
@@ -162,7 +161,71 @@ export const WEB_DESIGNS = [
     previewSlug: 'wd-meadow',
     previewRoute: '/invitations/preview/wd-meadow',
     image: wdMeadowThumb,
-    pricing: { diy: null, assisted: null },
+  },
+  {
+    id: 'wd-mono',
+    kind: 'web',
+    title: 'Լիանա & Հայկ',
+    code: 'WEB-WED-10',
+    type: 'Հարսանիք',
+    category: 'wedding',
+    eventTypes: ['wedding'],
+    available: true,
+    previewSlug: 'wd-mono',
+    previewRoute: '/invitations/preview/wd-mono',
+    image: wdMonoThumb,
+  },
+  {
+    id: 'wd-rouge',
+    kind: 'web',
+    title: 'Տիգրան & Անի',
+    code: 'WEB-WED-11',
+    type: 'Հարսանիք',
+    category: 'wedding',
+    eventTypes: ['wedding'],
+    available: true,
+    previewSlug: 'wd-rouge',
+    previewRoute: '/invitations/preview/wd-rouge',
+    image: wdRougeThumb,
+  },
+  {
+    id: 'wd-cherry',
+    kind: 'web',
+    title: 'Անի & Դավիթ',
+    code: 'WEB-WED-12',
+    type: 'Հարսանիք',
+    category: 'wedding',
+    eventTypes: ['wedding'],
+    available: true,
+    previewSlug: 'wd-cherry',
+    previewRoute: '/invitations/preview/wd-cherry',
+    image: wdCherryThumb,
+  },
+  {
+    id: 'wd-fete',
+    kind: 'web',
+    title: 'Նարինե & Գոռ',
+    code: 'WEB-WED-13',
+    type: 'Հարսանիք',
+    category: 'wedding',
+    eventTypes: ['wedding'],
+    available: true,
+    previewSlug: 'wd-fete',
+    previewRoute: '/invitations/preview/wd-fete',
+    image: wdFeteThumb,
+  },
+  {
+    id: 'wd-portrait',
+    kind: 'web',
+    title: 'Լիլիթ & Արման',
+    code: 'WEB-WED-14',
+    type: 'Հարսանիք',
+    category: 'wedding',
+    eventTypes: ['wedding'],
+    available: true,
+    previewSlug: 'wd-portrait',
+    previewRoute: '/invitations/preview/wd-portrait',
+    image: wdPortraitThumb,
   },
   {
     id: 'bd-animals',
@@ -176,7 +239,6 @@ export const WEB_DESIGNS = [
     previewSlug: 'bd-animals',
     previewRoute: '/invitations/preview/bd-animals',
     image: bdAnimalsThumb,
-    pricing: { diy: 15000, assisted: 20000 },
   },
   {
     id: 'bd-duck',
@@ -190,7 +252,6 @@ export const WEB_DESIGNS = [
     previewSlug: 'bd-duck',
     previewRoute: '/invitations/preview/bd-duck',
     image: bdDuckThumb,
-    pricing: { diy: 15000, assisted: 20000 },
   },
   {
     id: 'bd-planet',
@@ -204,7 +265,6 @@ export const WEB_DESIGNS = [
     previewSlug: 'bd-planet',
     previewRoute: '/invitations/preview/bd-planet',
     image: bdPlanetThumb,
-    pricing: { diy: null, assisted: null },
   },
   {
     id: 'bd-balloons',
@@ -218,7 +278,6 @@ export const WEB_DESIGNS = [
     previewSlug: 'bd-balloons',
     previewRoute: '/invitations/preview/bd-balloons',
     image: bdBalloonsThumb,
-    pricing: { diy: null, assisted: null },
   },
   {
     id: 'bd-stitch',
@@ -232,7 +291,6 @@ export const WEB_DESIGNS = [
     previewSlug: 'bd-stitch',
     previewRoute: '/invitations/preview/bd-stitch',
     image: bdStitchThumb,
-    pricing: { diy: null, assisted: null },
   },
   {
     id: 'bd-cars',
@@ -246,7 +304,6 @@ export const WEB_DESIGNS = [
     previewSlug: 'bd-cars',
     previewRoute: '/invitations/preview/bd-cars',
     image: bdCarsThumb,
-    pricing: { diy: null, assisted: null },
   },
   {
     id: 'bd-build',
@@ -260,7 +317,6 @@ export const WEB_DESIGNS = [
     previewSlug: 'bd-build',
     previewRoute: '/invitations/preview/bd-build',
     image: bdBuildThumb,
-    pricing: { diy: null, assisted: null },
   },
   {
     id: 'gp-balloons',
@@ -275,7 +331,6 @@ export const WEB_DESIGNS = [
     previewSlug: 'gp-balloons',
     previewRoute: '/invitations/preview/gp-balloons',
     image: gpBalloonsThumb,
-    pricing: { diy: null, assisted: null },
   },
   {
     id: 'gp-stork',
@@ -290,7 +345,6 @@ export const WEB_DESIGNS = [
     previewSlug: 'gp-stork',
     previewRoute: '/invitations/preview/gp-stork',
     image: gpStorkThumb,
-    pricing: { diy: null, assisted: null },
   },
   {
     id: 'ce-ornament',
@@ -305,7 +359,19 @@ export const WEB_DESIGNS = [
     previewSlug: 'ce-ornament',
     previewRoute: '/invitations/preview/ce-ornament',
     image: ceOrnamentThumb,
-    pricing: { diy: null, assisted: null },
+  },
+  {
+    id: 'ce-garland',
+    kind: 'web',
+    title: 'Սուրբ Ծննդյան երեկո',
+    code: 'WEB-CORP-02',
+    type: 'Կորպորատիվ միջոցառում',
+    category: 'corporate',
+    eventTypes: ['corporate'],
+    available: true,
+    previewSlug: 'ce-garland',
+    previewRoute: '/invitations/preview/ce-garland',
+    image: ceGarlandThumb,
   },
   {
     id: 'bp-blue',
@@ -319,15 +385,16 @@ export const WEB_DESIGNS = [
     previewSlug: 'bp-blue',
     previewRoute: '/invitations/preview/bp-blue',
     image: bpBlueThumb,
-    pricing: { diy: null, assisted: null },
   },
 ]
 
 export const CARD_DESIGNS = [
-  { id: 'card-gender-reveal', kind: 'card', title: 'Աղջի՞կ, թե՞ Տղա', code: 'CARD-BAP-01', type: 'Գենդերի բացահայտում', category: 'baptism', eventTypes: ['genderReveal'], Art: GenderRevealCard, pricing: { diy: null, assisted: null } },
-  { id: 'card-birthday', kind: 'card', title: 'Տարեդարձի երեկո', code: 'CARD-BDAY-01', type: 'Ծննդյան տոն', category: 'birthday', eventTypes: ['birthday'], Art: BirthdayCard, pricing: { diy: null, assisted: null } },
-  { id: 'card-mouse', kind: 'card', title: 'Էրիկի 1 տարեկանը', code: 'CARD-BDAY-02', type: 'Ծննդյան տոն', category: 'birthday', eventTypes: ['birthday'], Art: CardMouseArt, previewSlug: 'card-mouse', previewRoute: '/invitations/preview/card-mouse', pricing: { diy: null, assisted: null } },
+  { id: 'card-mouse', kind: 'card', title: 'Էրիկի 1 տարեկանը', code: 'CARD-BDAY-02', type: 'Ծննդյան տոն', category: 'birthday', eventTypes: ['birthday'], Art: CardMouseArt, previewSlug: 'card-mouse', previewRoute: '/invitations/preview/card-mouse' },
 ]
+
+// Every entry's price comes from prices.js, the one list the payment server
+// also checks against.
+for (const d of [...WEB_DESIGNS, ...CARD_DESIGNS]) d.pricing = pricesFor(d.id)
 
 export const CATEGORY_LABELS = {
   wedding: 'Հարսանեկան',

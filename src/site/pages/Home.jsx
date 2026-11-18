@@ -1,10 +1,15 @@
-import { useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { Suspense, lazy, useRef } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Reveal from '../Reveal'
 import '../home.css'
 import tulipShot from '../invitations/wd-tulip/assets/catalog-thumb.webp'
 import gardenShot from '../invitations/wd-garden-soft/assets/catalog-thumb.webp'
 import planetShot from '../invitations/bd-planet/assets/catalog-thumb.webp'
+
+// The «Անհատական դիզայն» request form, loaded only when opened. It opens
+// for the #custom-design link, so any page can link straight to it.
+const CustomRequestDialog = lazy(() => import('../custom/CustomRequestDialog'))
+const CUSTOM_HASH = '#custom-design'
 
 // Home page — an editorial spread: asymmetric columns, hairlines instead
 // of cards, ivory pages interrupted by burgundy, charcoal and pale-rose
@@ -41,6 +46,7 @@ const BENEFITS = [
   { title: 'Մասնակցության հաստատում', text: 'Հյուրերը պատասխանում են հենց հրավերից, իսկ դուք տեսնում եք ամբողջ ցուցակը։' },
 ]
 
+/* Dashboard section hidden for now (not shared yet) — its sample data:
 // The dashboard illustration — clearly marked «Օրինակ» (sample).
 const SAMPLE_GUESTS = [
   { name: 'Մարիամ Հակոբյան', n: '2 հոգի', st: 'yes', label: 'Կգա' },
@@ -49,11 +55,14 @@ const SAMPLE_GUESTS = [
   { name: 'Արամ Գրիգորյան', n: '2 հոգի', st: 'no', label: 'Չի գա' },
   { name: 'Նարե Ավետիսյան', n: '3 հոգի', st: 'yes', label: 'Կգա' },
 ]
+*/
 
 const FAQ = [
   { q: 'Ինչպե՞ս պատվիրել թվային հրավիրատոմս', a: 'Ընտրեք հրավիրատոմսը հավաքածուից, լրացրեք ձեր միջոցառման տվյալները և ձևակերպեք պատվերը կայքում։' },
   { q: 'Կարո՞ղ եմ անհատականացնել հրավիրատոմսը', a: 'Այո։ Անունները, ամսաթիվը, վայրը և տեքստը փոխում եք ինքներդ։ Եթե ուզում եք ավելին, կարող եք պատվիրել ընտրած դիզայնի հարմարեցում կամ ամբողջովին նոր դիզայն։' },
-  { q: 'Ինչպե՞ս են հյուրերը հաստատում մասնակցությունը', a: 'Հյուրը բացում է հրավերի հղումը և նշում իր պատասխանը։ Բոլոր պատասխանները տեսնում եք ձեր անձնական վահանակում։' },
+  // Dashboard not shared yet — the answer's second sentence was:
+  // «Բոլոր պատասխանները տեսնում եք ձեր անձնական վահանակում։»
+  { q: 'Ինչպե՞ս են հյուրերը հաստատում մասնակցությունը', a: 'Հյուրը բացում է հրավերի հղումը և նշում իր պատասխանը։' },
   { q: 'Կարո՞ղ եմ հրավիրատոմսն ուղարկել WhatsApp-ով կամ Telegram-ով', a: 'Այո։ Հրավիրատոմսը հղում է, ուստի կարող եք ուղարկել այն ցանկացած հավելվածով կամ հաղորդագրությամբ։' },
 ]
 
@@ -122,6 +131,11 @@ function Faq() {
 }
 
 export default function Home() {
+  const location = useLocation()
+  const navigate = useNavigate()
+  const customOpen = location.hash === CUSTOM_HASH
+  const closeCustom = () => navigate({ pathname: location.pathname, search: location.search }, { replace: true })
+
   return (
     <main className="hm">
       {/* Hero */}
@@ -136,7 +150,7 @@ export default function Home() {
             </div>
             <div className="hm-actions">
               <Link className="hm-btn hm-btn-solid" to="/invitations">Դիտել հրավիրատոմսերը <Arrow /></Link>
-              <a className="hm-link" href="#services">Ստեղծել անհատական հրավեր</a>
+              <a className="hm-link" href={CUSTOM_HASH}>Ստեղծել անհատական հրավեր</a>
             </div>
           </div>
           <HeroStage />
@@ -198,7 +212,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Dashboard */}
+      {/* Dashboard — hidden for now (not shared yet). Uncomment, with
+          SAMPLE_GUESTS above, to show it again.
       <section className="hm-section hm-dash hm-dark" id="dashboard" aria-labelledby="hm-dash-h">
         <div className="hm-wrap">
           <Reveal>
@@ -239,6 +254,7 @@ export default function Home() {
           </Reveal>
         </div>
       </section>
+      */}
 
       {/* Services */}
       <section className="hm-section" id="services" aria-labelledby="hm-srv-h">
@@ -259,7 +275,7 @@ export default function Home() {
               <span className="hm-mark" aria-hidden="true">բ.</span>
               <h3>Անհատական դիզայն</h3>
               <p>Հարմարեցնում ենք ձեր ընտրած դիզայնը կամ ստեղծում ենք նորը՝ հատուկ ձեր միջոցառման համար։</p>
-              <a className="hm-link" href="#contact">Պատվիրել անհատական դիզայն <Arrow /></a>
+              <a className="hm-link" href={CUSTOM_HASH}>Պատվիրել անհատական դիզայն <Arrow /></a>
             </article>
           </Reveal>
         </div>
@@ -298,11 +314,16 @@ export default function Home() {
             <p>Ստեղծեք հրավիրատոմս, որը կարտահայտի ձեր կարևոր պահի յուրահատուկ տրամադրությունը։</p>
             <div className="hm-actions">
               <Link className="hm-btn hm-btn-solid" to="/invitations">Դիտել հրավիրատոմսերը <Arrow /></Link>
-              <a className="hm-btn hm-btn-line" href="#contact">Անհատական դիզայն</a>
+              <a className="hm-btn hm-btn-line" href={CUSTOM_HASH}>Անհատական դիզայն</a>
             </div>
           </div>
         </div>
       </section>
+      {customOpen && (
+        <Suspense fallback={null}>
+          <CustomRequestDialog onClose={closeCustom} />
+        </Suspense>
+      )}
     </main>
   )
 }

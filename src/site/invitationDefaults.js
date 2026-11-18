@@ -16,6 +16,16 @@ import { wdGardenDefaultData } from './invitations/wd-garden/data'
 import { wdGardenSections } from './invitations/wd-garden/sections'
 import { wdTulipDefaultData } from './invitations/wd-tulip/data'
 import { wdTulipSections } from './invitations/wd-tulip/sections'
+import { wdMonoDefaultData } from './invitations/wd-mono/data'
+import { wdMonoSections } from './invitations/wd-mono/sections'
+import { wdRougeDefaultData } from './invitations/wd-rouge/data'
+import { wdRougeSections } from './invitations/wd-rouge/sections'
+import { wdCherryDefaultData } from './invitations/wd-cherry/data'
+import { wdCherrySections } from './invitations/wd-cherry/sections'
+import { wdFeteDefaultData } from './invitations/wd-fete/data'
+import { wdFeteSections } from './invitations/wd-fete/sections'
+import { wdPortraitDefaultData } from './invitations/wd-portrait/data'
+import { wdPortraitSections } from './invitations/wd-portrait/sections'
 import { wdVelvetDefaultData } from './invitations/wd-velvet/data'
 import { wdVelvetSections } from './invitations/wd-velvet/sections'
 import { wdLineDefaultData } from './invitations/wd-line/data'
@@ -38,6 +48,8 @@ import { gpStorkDefaultData } from './invitations/gp-stork/data'
 import { gpStorkSections } from './invitations/gp-stork/sections'
 import { ceOrnamentDefaultData } from './invitations/ce-ornament/data'
 import { ceOrnamentSections } from './invitations/ce-ornament/sections'
+import { ceGarlandDefaultData } from './invitations/ce-garland/data'
+import { ceGarlandSections } from './invitations/ce-garland/sections'
 import { cardMouseDefaultData } from './invitations/card-mouse/data'
 import { cardMouseSections } from './invitations/card-mouse/sections'
 
@@ -56,6 +68,11 @@ export const INVITATION_DEFAULTS = {
   'wd-green': wdGreenDefaultData,
   'wd-garden': wdGardenDefaultData,
   'wd-tulip': wdTulipDefaultData,
+  'wd-mono': wdMonoDefaultData,
+  'wd-rouge': wdRougeDefaultData,
+  'wd-cherry': wdCherryDefaultData,
+  'wd-fete': wdFeteDefaultData,
+  'wd-portrait': wdPortraitDefaultData,
   'wd-velvet': wdVelvetDefaultData,
   'wd-line': wdLineDefaultData,
   'wd-calla': wdCallaDefaultData,
@@ -67,6 +84,7 @@ export const INVITATION_DEFAULTS = {
   'bd-build': bdBuildDefaultData,
   'gp-stork': gpStorkDefaultData,
   'ce-ornament': ceOrnamentDefaultData,
+  'ce-garland': ceGarlandDefaultData,
   'card-mouse': cardMouseDefaultData,
 }
 
@@ -80,6 +98,11 @@ export const INVITATION_SECTIONS = {
   'wd-green': wdGreenSections,
   'wd-garden': wdGardenSections,
   'wd-tulip': wdTulipSections,
+  'wd-mono': wdMonoSections,
+  'wd-rouge': wdRougeSections,
+  'wd-cherry': wdCherrySections,
+  'wd-fete': wdFeteSections,
+  'wd-portrait': wdPortraitSections,
   'wd-velvet': wdVelvetSections,
   'wd-line': wdLineSections,
   'wd-calla': wdCallaSections,
@@ -91,5 +114,6 @@ export const INVITATION_SECTIONS = {
   'bd-build': bdBuildSections,
   'gp-stork': gpStorkSections,
   'ce-ornament': ceOrnamentSections,
+  'ce-garland': ceGarlandSections,
   'card-mouse': cardMouseSections,
 }

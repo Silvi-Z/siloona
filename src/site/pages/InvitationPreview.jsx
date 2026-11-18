@@ -1,13 +1,41 @@
-import { useEffect, useRef, useState } from 'react'
+import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { INVITATION_PREVIEWS } from '../invitationRegistry'
-import { InvitationEditProvider, InvitationContentProvider } from '../invitations/shared/EditableContext'
+import { InvitationEditProvider, InvitationContentProvider, useInvitationContent } from '../invitations/shared/EditableContext'
+import { detailFields, syncNames, applyDetails } from '../invitationDetails'
 import EditBar from '../invitations/shared/EditBar'
+import { WEB_DESIGNS, CARD_DESIGNS } from '../designCatalog'
 import { floatingBtnStyle, floatingTopLeft } from '../invitations/shared/chromeStyles'
 
 const backBtnStyle = { ...floatingTopLeft, ...floatingBtnStyle }
 
 const noop = () => {}
+
+// The editing wizard (EditWizard.jsx): opens by itself the first time a
+// visitor starts editing a design they haven't changed yet, and again
+// from the edit bar's «Քայլ առ քայլ».
+const EditWizard = lazy(() => import('../editor/EditWizard'))
+const wizardKey = (slug) => `siloona:wizard-done:${slug}`
+const wizardDone = (slug) => { try { return !!localStorage.getItem(wizardKey(slug)) } catch { return false } }
+const markWizardDone = (slug) => { try { localStorage.setItem(wizardKey(slug), '1') } catch { /* private mode */ } }
+
+function WizardHost({ slug, open, setOpen }) {
+  const { editing, dirty, data, replaceData } = useInvitationContent()
+  useEffect(() => {
+    if (editing && !dirty && !wizardDone(slug)) setOpen(true)
+  }, [editing]) // eslint-disable-line react-hooks/exhaustive-deps
+  if (!open || !editing) return null
+  const close = () => { markWizardDone(slug); setOpen(false) }
+  return (
+    <Suspense fallback={null}>
+      <EditWizard
+        slug={slug} data={data} fromContent={dirty}
+        onSkip={close}
+        onDone={(details) => { replaceData(applyDetails(slug, data, details)); close() }}
+      />
+    </Suspense>
+  )
+}
 
 // `?embed` — the chrome-less mode the dashboard loads in an <iframe>: the
 // «Իմ հրավերը» live preview, and the published/guest view. The design runs
@@ -124,14 +152,25 @@ export default function InvitationPreview() {
   }
 
   const Invitation = entry.component
-  if (searchParams.has('embed')) {
-    return <EmbeddedInvitation slug={slug} Invitation={Invitation} defaultData={entry.defaultData} />
-  }
+  // The catalog design this page belongs to, if it's on sale.
+  const orderable = [...WEB_DESIGNS, ...CARD_DESIGNS].find((d) => d.previewSlug === slug && d.available !== false)
+  return searchParams.has('embed')
+    ? <EmbeddedInvitation slug={slug} Invitation={Invitation} defaultData={entry.defaultData} />
+    : <EditablePreview slug={slug} entry={entry} orderable={orderable} />
+}
+
+function EditablePreview({ slug, entry, orderable }) {
+  const Invitation = entry.component
+  const [wizardOpen, setWizardOpen] = useState(false)
+  // A renamed person carries into the sentences built from their name.
+  const transform = useCallback((prev, next) => syncNames(slug, prev, next), [slug])
+  const hasWizard = !!detailFields(slug)
   return (
-    <InvitationEditProvider slug={slug} defaultData={entry.defaultData}>
+    <InvitationEditProvider slug={slug} defaultData={entry.defaultData} transform={transform}>
       <Link to="/invitations" style={backBtnStyle} aria-label="Վերադառնալ հավաքածուին">← Հավաքածու</Link>
-      <EditBar />
+      <EditBar orderTo={orderable ? `/checkout/${orderable.id}` : null} onWizard={hasWizard ? () => setWizardOpen(true) : undefined} />
       <Invitation />
+      {hasWizard && <WizardHost slug={slug} open={wizardOpen} setOpen={setWizardOpen} />}
     </InvitationEditProvider>
   )
 }

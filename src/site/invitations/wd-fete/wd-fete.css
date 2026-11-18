@@ -1,0 +1,155 @@
+/* wd-fete — a garden party sketched in coloured pens on cream. Everything
+   is under .wft; sizes in cqw follow the paper's width. */
+.wft{
+  --paper:#FCF8F0; --rasp:#A3204A; --olive:#59613A; --ink:#3D3530; --soft:#6C625B; --line:rgba(61,53,48,.28);
+  --serif:"Noto Serif Armenian","Cormorant Garamond",Georgia,serif;
+  --num:"Cormorant Garamond","Noto Serif Armenian",Georgia,serif;
+  position:relative; min-height:100vh; color:var(--ink); font-family:var(--serif); font-weight:300; -webkit-font-smoothing:antialiased;
+  background:radial-gradient(120% 90% at 50% 0%,#2f3a26 0%,#1d2618 60%,#121810 100%);
+}
+.wft *,.wft *::before,.wft *::after{box-sizing:border-box}
+.wft .sheet{position:relative; max-width:460px; margin:0 auto; background:var(--paper); container-type:inline-size; overflow:hidden; box-shadow:0 30px 90px rgba(0,0,0,.45)}
+@media (min-width:560px){ .wft .sheet{margin:48px auto} }
+.wft h1,.wft h2,.wft h3,.wft p{margin:0}
+.wft .ph-img{display:block; width:100%; height:100%; object-fit:cover}
+
+/* ---------- cover ---------- */
+.wft .hero{position:relative; padding:16cqw 7cqw 2cqw}
+.wft .corner{display:flex; justify-content:space-between; font-size:3.4cqw; color:var(--soft)}
+.wft .names{margin-top:6cqw; font:200 12.4cqw/1.02 var(--serif); text-transform:uppercase; letter-spacing:.01em; color:var(--ink); animation:wft-rise 1.1s cubic-bezier(.2,.7,.2,1) both}
+.wft .names .amp{font-family:var(--num); font-weight:300}
+.wft .date-row{display:flex; align-items:flex-end; justify-content:space-between; margin-top:4cqw}
+.wft .bigdate{font:300 15cqw/.92 var(--num); color:var(--rasp); white-space:pre-line; animation:wft-rise 1.1s .25s cubic-bezier(.2,.7,.2,1) both}
+.wft .disco{width:28cqw; margin:0 4cqw 4cqw 0; animation:wft-swing 6s ease-in-out infinite; transform-origin:50% 0}
+.wft .table{display:block; width:calc(100% + 6cqw); margin:4cqw -3cqw 0; animation:wft-rise 1.2s .45s cubic-bezier(.2,.7,.2,1) both}
+@keyframes wft-rise{from{opacity:0; transform:translateY(12px)}}
+@keyframes wft-swing{0%,100%{transform:rotate(-4deg)} 50%{transform:rotate(4deg)}}
+
+/* ---------- shared ---------- */
+.wft .blk{position:relative; padding:11cqw 8cqw; text-align:center}
+.wft .h{font:400 5.6cqw/1.3 var(--serif); color:var(--rasp); margin-bottom:6cqw}
+.wft .h.right{text-align:right}
+.wft .body{font-size:3.8cqw; line-height:1.65; color:var(--ink); max-width:90%; margin:0 auto}
+.wft .btn{display:inline-block; padding:2.6cqw 7cqw; border-radius:999px; font:400 3.6cqw/1.2 var(--serif); text-decoration:none; transition:transform .2s ease, background .2s ease}
+.wft .btn:hover{transform:translateY(-1px)}
+.wft .btn.rasp{background:var(--rasp); color:#fff}
+.wft .btn.olive{background:var(--olive); color:#fff}
+.wft .btn.line{border:1px solid var(--ink); color:var(--ink); background:transparent}
+.wft .btn:focus-visible{outline:2px solid var(--rasp); outline-offset:3px}
+
+/* ---------- welcome + week strip ---------- */
+.wft .greet{font:400 5.2cqw/1.3 var(--serif); color:var(--rasp); margin-bottom:4cqw}
+.wft .week{display:flex; align-items:center; justify-content:center; gap:5cqw; margin-top:8cqw}
+.wft .wday{font:400 8cqw var(--num); color:var(--rasp)}
+.wft .hday{position:relative; width:26cqw; display:grid; place-items:center}
+.wft .hday svg{width:100%; display:block; fill:var(--olive)}
+.wft .hday b{position:absolute; inset:0; display:grid; place-items:center; padding-bottom:3cqw; font:400 6.4cqw var(--num); color:#fff}
+.wft .in .hday svg{animation:wft-beat 2.6s ease-in-out 1s infinite}
+@keyframes wft-beat{0%,100%{transform:scale(1)} 10%{transform:scale(1.06)} 20%{transform:scale(1)} 30%{transform:scale(1.04)} 40%{transform:scale(1)}}
+
+/* ---------- venue ---------- */
+.wft .venue{padding-top:4cqw}
+.wft .place{display:grid; grid-template-columns:36% 1fr; gap:4cqw; align-items:center; text-align:left}
+.wft .place.flip{grid-template-columns:1fr 30%}
+.wft .place.flip .vart{order:2}
+.wft .place + .place{margin-top:10cqw}
+.wft .vart{width:100%; height:auto}
+.wft .vart.small{width:80%; justify-self:center}
+.wft .vlabel{font:400 4.6cqw/1.3 var(--serif); color:var(--rasp)}
+.wft .vtext h3{font:400 4.6cqw/1.3 var(--serif); color:var(--rasp); margin-top:.6cqw}
+.wft .addr{font-size:3.4cqw; line-height:1.5; color:var(--soft); margin:2cqw 0 4cqw}
+
+/* ---------- plan ---------- */
+.wft .plist{position:relative}
+.wft .dotted{position:absolute; inset:0; width:100%; height:100%; overflow:visible; pointer-events:none}
+.wft .dotted path{fill:none; stroke:var(--ink); stroke-width:1.6; stroke-linecap:round; stroke-dasharray:.1 7; opacity:0; transition:opacity 1.4s ease .4s}
+.wft .in .dotted path,.wft.editing .dotted path{opacity:.55}
+.wft .plist ol{position:relative; list-style:none; margin:0; padding:0 0 6cqw}
+.wft .plist li{position:relative; width:52%; padding:3cqw 0}
+.wft .plist li + li{margin-top:4cqw}
+.wft .plist li.right{margin-left:auto}
+.wft .sk{display:block; width:20cqw; height:auto; margin:0 auto 1cqw; background:var(--paper)}
+.wft .ico-btn{display:block; margin:0 auto; border:1px dashed var(--line); border-radius:10px; background:var(--paper); padding:0; cursor:pointer}
+.wft .plist time{display:block; font:400 6.4cqw/1.1 var(--num); color:var(--rasp)}
+.wft .plist time + p{font-size:3.7cqw}
+
+/* ---------- dress code ---------- */
+.wft .dtitle{font:400 5cqw/1.3 var(--serif); margin-bottom:4cqw}
+.wft .rasp-t{color:var(--rasp)}
+.wft .hearts{list-style:none; display:flex; flex-wrap:wrap; justify-content:center; gap:1.5cqw 2.4cqw; margin:7cqw auto 0; padding:0; max-width:82cqw}
+.wft .hearts li{width:14cqw; transform:rotate(var(--t))}
+.wft .hearts li:nth-child(n+6){width:15.5cqw}
+.wft .hearts svg{display:block; width:100%; height:auto}
+.wft .heart-edit{position:relative; display:block; cursor:pointer; outline:1px dashed var(--line); outline-offset:2px; border-radius:6px}
+.wft .heart-edit input{position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer}
+.wft .frames{display:grid; grid-template-columns:1fr 1fr; gap:3cqw; margin:9cqw -3cqw 6cqw}
+.wft .pframe{--rot:-3deg; transform:rotate(var(--rot))}
+.wft .pframe.t2{--rot:3deg; margin-top:3cqw}
+.wft .fph{aspect-ratio:4/5; overflow:hidden; border-radius:2cqw; background:#e8e0d4}
+
+/* wavy frames (photos, organizer card) */
+.wft .wavy{position:relative; padding:4cqw}
+.wft .wavy-line{position:absolute; inset:0; width:100%; height:100%; overflow:visible; pointer-events:none}
+.wft .wavy-line path{fill:none; stroke:var(--ink); stroke-width:1.2; stroke-linecap:round; stroke-linejoin:round}
+.wft .wavy-line .wavy-heart{fill:var(--paper); stroke:var(--ink)}
+.wft .wavy-in{position:relative}
+
+/* ---------- details + organizer ---------- */
+.wft .dsketch{display:block; width:100%; height:auto; margin:-2cqw 0 6cqw}
+.wft .star{color:var(--rasp); font-size:5cqw; margin:5cqw 0}
+.wft .org{margin-top:12cqw; padding:9cqw 7cqw}
+.wft .org-btns{display:grid; gap:3cqw; justify-items:center; margin-top:5cqw}
+.wft .org-btns .btn{min-width:50%}
+.wft .org-edit{display:grid; gap:1.5cqw; margin-top:4cqw; font-size:13px; color:var(--soft)}
+
+/* ---------- questionnaire ---------- */
+.wft .form{display:grid; gap:7cqw; margin-top:8cqw; text-align:left}
+.wft .field{display:grid; gap:2.4cqw}
+.wft .q{font:400 3.8cqw var(--serif); color:var(--ink); padding:0}
+.wft .field input{
+  width:100%; font:inherit; font-size:16px; color:var(--ink); background:var(--paper);
+  border:1px solid var(--ink); border-radius:999px; padding:2.6cqw 4cqw; -webkit-appearance:none; appearance:none;
+}
+.wft .field input:focus{outline:none; box-shadow:0 0 0 3px rgba(163,32,74,.15); border-color:var(--rasp)}
+.wft .field [aria-invalid=true]{border-color:var(--rasp)}
+.wft .err{font-size:3.3cqw; color:var(--rasp)}
+.wft .opts{border:0; padding:0; margin:0; display:grid; gap:2.6cqw; min-width:0}
+.wft .opts legend{margin-bottom:3cqw}
+.wft .opts label{position:relative; display:flex; align-items:center; gap:3cqw; font-size:3.6cqw; cursor:pointer}
+.wft .opts input{position:absolute; opacity:0; width:1px; height:1px}
+.wft .dot,.wft .box{flex:none; width:5cqw; height:5cqw; border:1px solid var(--ink); display:grid; place-items:center; transition:background .2s}
+.wft .dot{border-radius:50%}
+.wft .box{border-radius:1cqw}
+.wft .opts input:checked + .dot{background:radial-gradient(circle,var(--rasp) 45%,transparent 50%); border-color:var(--rasp)}
+.wft .opts input:checked + .box{background:var(--rasp); border-color:var(--rasp); box-shadow:inset 0 0 0 1cqw var(--paper)}
+.wft .opts input:focus-visible + i{outline:2px solid var(--rasp); outline-offset:2px}
+.wft .send{justify-self:center; border:0; cursor:pointer; padding:2.8cqw 12cqw}
+.wft .thanks{margin-top:7cqw; font:400 4.8cqw/1.5 var(--serif); color:var(--rasp)}
+
+/* ---------- countdown + closing ---------- */
+.wft .count{padding-top:4cqw}
+.wft .chand{display:block; width:calc(100% + 16cqw); margin:0 -8cqw 6cqw}
+.wft .cd{display:grid; grid-template-columns:repeat(4,1fr)}
+.wft .cd div + div{border-left:1px solid var(--line)}
+.wft .cd b{display:block; font:400 6.4cqw/1.1 var(--num); color:var(--ink); font-variant-numeric:lining-nums tabular-nums}
+.wft .cd span{display:block; font-size:3.2cqw; color:var(--soft); margin-top:1cqw}
+.wft .closing{text-align:left; padding-top:2cqw; padding-bottom:14cqw; color:var(--rasp); font-size:4cqw}
+.wft .sign{font:400 5cqw var(--serif); margin-top:1cqw}
+
+/* ---------- scroll reveal ---------- */
+.wft .r{opacity:0; transform:translateY(14px); transition:opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1); transition-delay:calc(var(--i,0) * .13s)}
+.wft .in .r,.wft.editing .r{opacity:1; transform:none}
+.wft .pframe.r{transform:translateY(14px) rotate(var(--rot))}
+.wft .in .frames .pframe{transform:rotate(var(--rot))}
+@media (prefers-reduced-motion:reduce){
+  .wft .r{opacity:1; transform:none; transition:none}
+  .wft .names,.wft .bigdate,.wft .table,.wft .disco,.wft .in .hday svg{animation:none}
+  .wft .dotted path{opacity:.55; transition:none}
+}
+
+/* ---------- edit mode ---------- */
+.wft .wdb-editable{outline:1px dashed transparent; outline-offset:3px; border-radius:2px; transition:outline-color .15s; cursor:text}
+.wft .wdb-editable:hover,.wft .wdb-editable:focus{outline-color:currentColor}
+.wft.editing .wdb-editable{outline-color:rgba(163,32,74,.35)}
+.wft .wdb-edit-input{font:400 15px var(--serif); color:var(--ink); background:#fff; border:1px solid var(--line); border-radius:6px; padding:6px 8px}
+.wft .bigdate .wdb-edit-dt{justify-content:flex-start}

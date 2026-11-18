@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import Editable from '../../shared/Editable'
+import { RowAdd, RowRemove } from '../../shared/ListEdit'
 import GuestGreeting, { fillName } from '../../shared/GuestGreeting'
 import Section, { useSectionHidden } from '../../shared/Section'
 import { useInvitationContent } from '../../shared/EditableContext'
@@ -88,9 +89,10 @@ export function Program() {
         <Art className="clip" viewBox="0 0 60 70" aria-hidden="true" svg={CLIP} />
         <ul className="paper grain" style={{ paddingLeft: '1.5rem' }}>
           {data.schedule.map((_, i) => (
-            <li key={i} style={{ '--i': i }}><Editable as="time" path={`schedule.${i}.time`} /><Editable path={`schedule.${i}.label`} /></li>
+            <li key={i} style={{ '--i': i }}><Editable as="time" path={`schedule.${i}.time`} /><Editable path={`schedule.${i}.label`} /><RowRemove list="schedule" index={i} /></li>
           ))}
         </ul>
+        <RowAdd list="schedule" />
       </Rv>
     </section>
   )

@@ -8,11 +8,11 @@ import { stats, evStatus, orgEvents } from '../data/selectors';
 import { SETTINGS } from '../data/mockMeta';
 import { EV_ST, TYPES } from '../data/constants';
 import { fmtD, fmtDL, untilLabel } from '../utils/format';
-import { NAV, SCOPED } from '../navConfig';
+import { NAV, SCOPED, ADMIN_NAV } from '../navConfig';
 
 export default function Sidebar() {
   const { mode, page, go, orgEvent, setOrgEvent, ctx, sidebarOpen, openMenu, closeMenu } = useDashboard();
-  const { logOut } = useAuth();
+  const { logOut, isAdmin } = useAuth();
   const ev = ctx();
   const s = ev ? stats(ev) : null;
   const groups = NAV[mode];
@@ -82,6 +82,12 @@ export default function Sidebar() {
               </div>
             );
           })}
+          {isAdmin && (
+            <div className="nav-group">
+              <div className="nav-label">{ADMIN_NAV.label}</div>
+              {ADMIN_NAV.items.map(([k, l]) => navLink(k, l))}
+            </div>
+          )}
           {!gated && <div className="nav-group">{navLink('account', 'Կարգավորումներ')}</div>}
         </nav>
         <div className="sb-foot">

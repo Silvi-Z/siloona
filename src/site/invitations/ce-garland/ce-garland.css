@@ -1,0 +1,130 @@
+/* ce-garland — a printed Christmas card: cream paper, watercolour garland,
+   deep green spaced capitals. Everything is under .ceg; sizes in cqw
+   follow the paper's width. */
+.ceg{
+  --paper:#F6F1EA; --green:#2F4B2C; --green-soft:#5E7457; --ink:#2C3328; --line:rgba(47,75,44,.38); --berry:#A8262B;
+  --serif:"Cormorant Garamond","Noto Serif Armenian",Georgia,serif;
+  --serif-hy:"Noto Serif Armenian","Cormorant Garamond",Georgia,serif;
+  --sans:"Jost","Noto Sans Armenian",system-ui,sans-serif;
+  position:relative; min-height:100vh; color:var(--ink); font-family:var(--sans); font-variant-numeric:lining-nums; -webkit-font-smoothing:antialiased;
+  background:#E8E0D5;
+}
+.ceg *,.ceg *::before,.ceg *::after{box-sizing:border-box}
+.ceg .sheet{
+  position:relative; max-width:460px; margin:0 auto; container-type:inline-size; overflow:hidden;
+  /* a faint paper grain */
+  background:var(--paper) radial-gradient(120% 60% at 50% 0%,rgba(255,255,255,.55),transparent 70%);
+  box-shadow:0 2px 3px rgba(60,50,40,.08),0 24px 60px rgba(60,50,40,.16);
+}
+@media (min-width:560px){ .ceg .sheet{margin:48px auto} }
+.ceg h1,.ceg h2,.ceg p{margin:0}
+
+/* ---------- rules & dots ---------- */
+.ceg .rule{position:relative; height:1px; width:46cqw; margin:6cqw auto; background:linear-gradient(90deg,var(--line) 0 45%,transparent 45% 55%,var(--line) 55%)}
+.ceg .rule.short{width:28cqw}
+.ceg .rule i,.ceg .dot{display:block; width:1.3cqw; height:1.3cqw; border-radius:50%; background:var(--green)}
+.ceg .rule i{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%)}
+.ceg .dot{margin:3.6cqw auto 0}
+
+/* ---------- Cover ---------- */
+.ceg .cover{position:relative; text-align:center; padding-bottom:16cqw}
+/* The garland is cut by the card's left/right edges, so it always spans
+   the full sheet width with its top at the sheet's top. */
+.ceg .garland{display:block; width:100%; height:auto; transform-origin:50% 0; animation:ceg-garland 1.8s cubic-bezier(.2,.7,.2,1) both}
+@keyframes ceg-garland{from{opacity:0; transform:translateY(-3cqw) scale(1.02)}}
+.ceg .cover-text{position:relative; margin-top:-30cqw; padding:0 20cqw}
+.ceg .kicker{font:400 3.1cqw/1.75 var(--sans); letter-spacing:.2em; color:var(--green); animation:ceg-rise 1.2s cubic-bezier(.2,.7,.2,1) .5s both}
+/* margins let the longest Armenian word fit between the branches */
+.ceg .title{margin:5cqw -8cqw 0; font:300 9.4cqw/1.22 var(--serif-hy); letter-spacing:.14em; color:var(--green)}
+.ceg .title span{display:block; animation:ceg-rise 1.3s cubic-bezier(.2,.7,.2,1) both; animation-delay:calc(.75s + var(--i) * .15s)}
+.ceg .hero-rule{margin:7cqw auto 6cqw; animation:ceg-rule 1.2s cubic-bezier(.2,.7,.2,1) 1.4s both}
+.ceg .hero-rule.short{margin:6cqw auto 7cqw}
+@keyframes ceg-rule{from{opacity:0; transform:scaleX(.2)}}
+.ceg .when{display:flex; align-items:center; justify-content:center; gap:4cqw; color:var(--green); animation:ceg-rise 1.2s cubic-bezier(.2,.7,.2,1) 1.5s both}
+.ceg .when .mon,.ceg .when .tm{font:500 4.1cqw/1 var(--serif); letter-spacing:.18em; min-width:15cqw}
+.ceg .when .mon{text-align:right; font-family:var(--serif-hy); font-weight:400; font-size:3.6cqw}
+.ceg .when .tm{text-align:left; letter-spacing:.06em; font-size:4.8cqw; font-variant-numeric:lining-nums}
+.ceg .when .day{font:400 14cqw/1 var(--serif); padding:0 4cqw; border-left:1px solid var(--line); border-right:1px solid var(--line); font-variant-numeric:lining-nums}
+.ceg .when-edit{display:flex; justify-content:center}
+.ceg .dot.solo{margin-top:4cqw}
+.ceg .addr,.ceg .contact{font:400 3cqw/1.8 var(--sans); letter-spacing:.16em; color:var(--green); margin-top:5cqw; animation:ceg-rise 1.2s cubic-bezier(.2,.7,.2,1) 1.7s both}
+.ceg .contact{margin-top:0; letter-spacing:.18em}
+.ceg .contact a{color:inherit; text-decoration:none; letter-spacing:.12em}
+.ceg .company{margin-top:9cqw; font:400 2.7cqw var(--sans); letter-spacing:.24em; color:var(--green-soft); animation:ceg-rise 1.2s cubic-bezier(.2,.7,.2,1) 1.9s both}
+@keyframes ceg-rise{from{opacity:0; transform:translateY(10px)}}
+
+/* ---------- inner parts ---------- */
+.ceg .blk{position:relative; padding:12cqw 11cqw; text-align:center}
+.ceg .blk::before{content:""; position:absolute; top:0; left:30%; right:30%; height:1px; background:var(--line)}
+.ceg .head{margin-bottom:7cqw}
+.ceg .ht{font:300 6.2cqw/1.3 var(--serif-hy); letter-spacing:.14em; color:var(--green)}
+.ceg .greet{font:300 6cqw/1.4 var(--serif-hy); color:var(--green); margin-bottom:5cqw}
+.ceg .body{font:400 3.9cqw/1.75 var(--serif-hy); color:var(--ink); max-width:92%; margin:0 auto}
+.ceg .lbl-caps{font:400 3cqw var(--sans); letter-spacing:.2em; color:var(--green)}
+
+/* countdown */
+.ceg .cells{display:flex; justify-content:center; align-items:center; gap:5cqw; margin-top:5cqw; color:var(--green)}
+.ceg .cells span{display:grid; font:400 3cqw var(--sans); letter-spacing:.12em}
+.ceg .cells b{font:400 12cqw/1.05 var(--serif); letter-spacing:0; font-variant-numeric:lining-nums}
+.ceg .cells i{width:1px; height:12cqw; background:var(--line)}
+.ceg .long{margin-top:5cqw; font:400 3.8cqw var(--serif-hy); color:var(--ink)}
+.ceg .btn{display:inline-block; margin-top:6cqw; padding:3cqw 7cqw; border:1px solid var(--green); color:var(--green); text-decoration:none; font:400 3.2cqw var(--sans); letter-spacing:.08em; cursor:pointer; transition:background .25s,color .25s}
+.ceg .btn:hover{background:var(--green); color:var(--paper)}
+
+/* programme */
+.ceg .plist{list-style:none; margin:0 auto; padding:0; max-width:74cqw}
+.ceg .plist li{position:relative; display:grid; grid-template-columns:19cqw 1fr; gap:5cqw; align-items:baseline; padding:3.6cqw 0; text-align:left}
+.ceg .plist li + li{border-top:1px solid rgba(47,75,44,.16)}
+.ceg .plist time{font:500 6cqw/1 var(--serif); color:var(--green); text-align:right; font-variant-numeric:lining-nums}
+.ceg .plist p{font:400 3.9cqw/1.45 var(--serif-hy)}
+
+/* venue */
+.ceg .vname{font:400 5.4cqw/1.35 var(--serif-hy); color:var(--green)}
+.ceg .vaddr{font:400 3.1cqw/1.6 var(--sans); letter-spacing:.1em; color:var(--green-soft); margin-top:2cqw}
+
+/* dress code */
+.ceg .sw{display:flex; justify-content:center; gap:3.6cqw; margin-top:7cqw}
+.ceg .sw-i{width:9cqw; height:9cqw; border-radius:50%; box-shadow:inset 0 0 0 1px rgba(47,75,44,.2)}
+.ceg .sw-edit{width:44px; height:44px; padding:0; border:1px solid var(--line); background:none; cursor:pointer}
+
+/* rsvp */
+.ceg .form{display:grid; gap:5.5cqw; margin-top:8cqw; text-align:left}
+.ceg .field{display:grid; gap:1.8cqw}
+.ceg .lbl{font:400 3.3cqw var(--sans); color:var(--green-soft); letter-spacing:.02em}
+.ceg .field input,.ceg .field textarea{
+  width:100%; font:400 16px var(--serif-hy); color:var(--ink); background:transparent;
+  border:0; border-bottom:1px solid var(--line); border-radius:0; padding:2.4cqw 0; resize:vertical; -webkit-appearance:none; appearance:none;
+}
+.ceg .field input:focus,.ceg .field textarea:focus{outline:none; border-bottom-color:var(--green)}
+.ceg .field [aria-invalid=true]{border-bottom-color:var(--berry)}
+.ceg .err{font-size:3.3cqw; color:var(--berry)}
+.ceg .choice{display:grid; grid-template-columns:1fr 1fr; gap:3cqw}
+.ceg .choice label{position:relative; text-align:center; padding:3cqw 2cqw; border:1px solid var(--green); color:var(--green); font:400 3.6cqw var(--sans); cursor:pointer; transition:background .25s,color .25s}
+.ceg .choice label.on{background:var(--green); color:var(--paper)}
+.ceg .choice.soft label{border-color:var(--line)}
+.ceg .choice.soft label.on{background:rgba(47,75,44,.1); color:var(--green); border-color:var(--green)}
+.ceg .choice input{position:absolute; opacity:0; pointer-events:none}
+.ceg .choice label:focus-within,.ceg .send:focus-visible,.ceg .btn:focus-visible,.ceg .contact a:focus-visible{outline:2px solid var(--green); outline-offset:3px}
+.ceg .send{justify-self:center; margin-top:2cqw; padding:3.4cqw 12cqw; border:0; background:var(--green); color:var(--paper); font:400 3.6cqw var(--sans); letter-spacing:.12em; cursor:pointer}
+.ceg .send:hover{background:#243b22}
+.ceg .thanks{margin-top:7cqw; font:400 5cqw/1.5 var(--serif-hy); color:var(--green)}
+
+/* closing */
+.ceg .closing{padding-top:6cqw; padding-bottom:18cqw}
+.ceg .closing::before{display:none}
+.ceg .cline{font:300 6.2cqw/1.3 var(--serif-hy); letter-spacing:.14em; color:var(--green)}
+.ceg .sig{margin-top:4cqw; font:400 3.4cqw var(--sans); letter-spacing:.08em; color:var(--green-soft)}
+
+/* ---------- scroll reveal ---------- */
+.ceg .r{opacity:0; transform:translateY(14px); transition:opacity 1s ease,transform 1s cubic-bezier(.2,.7,.2,1); transition-delay:calc(var(--i,0) * .14s)}
+.ceg .in .r,.ceg.editing .r{opacity:1; transform:none}
+@media (prefers-reduced-motion:reduce){
+  .ceg .r{opacity:1; transform:none; transition:none}
+  .ceg .garland,.ceg .kicker,.ceg .title span,.ceg .hero-rule,.ceg .when,.ceg .addr,.ceg .contact,.ceg .company{animation:none}
+}
+
+/* ---------- edit mode ---------- */
+.ceg .wdb-editable{outline:1px dashed transparent; outline-offset:3px; border-radius:2px; transition:outline-color .15s; cursor:text}
+.ceg .wdb-editable:hover,.ceg .wdb-editable:focus{outline-color:var(--green)}
+.ceg.editing .wdb-editable{outline-color:rgba(47,75,44,.35)}
+.ceg .wdb-edit-input{font:400 15px var(--sans); color:var(--ink); background:#fff; border:1px solid var(--line); border-radius:6px; padding:6px 8px}

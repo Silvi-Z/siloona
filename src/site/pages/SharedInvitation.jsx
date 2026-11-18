@@ -1,0 +1,124 @@
+import { useEffect, useMemo, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { INVITATION_PREVIEWS } from '../invitationRegistry'
+import { InvitationContentProvider } from '../invitations/shared/EditableContext'
+import { deepMerge } from '../invitations/shared/pathUtils'
+import { findDesign } from '../designCatalog'
+import { prefillFromCustomization, prefillFromEvent } from '../invitationPrefill'
+import { contentFromDetails } from '../invitationDetails'
+
+// The invitation guests open — /i/:code[/:token]. Two kinds, the server
+// tells which (GET /api/invitations):
+//   order  a purchased invitation: the design with the checkout details and
+//          the customer's own edits; RSVPs are recorded for the order
+//   event  a dashboard event: the design the organizer chose, filled from
+//          the event's details and their edits; on a guest's own link the
+//          greeting has their name. RSVPs go to the organizer's guest list.
+// Full page, no site chrome.
+
+const noop = () => {}
+
+function Message({ title, text }) {
+  return (
+    <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', padding: 24, background: '#FBF7F0', color: '#211C28', textAlign: 'center' }}>
+      <div style={{ maxWidth: 420 }}>
+        <p style={{ fontFamily: '"Cormorant Garamond",Georgia,serif', fontSize: 22, letterSpacing: '.12em', color: '#6B1D2C', margin: '0 0 18px' }}>SILOONA</p>
+        <h1 style={{ fontFamily: '"Noto Serif Armenian",Georgia,serif', fontWeight: 500, fontSize: 24, margin: '0 0 10px' }}>{title}</h1>
+        {text && <p style={{ fontFamily: '"Noto Sans Armenian",sans-serif', fontSize: 15, color: '#4B4256', margin: 0 }}>{text}</p>}
+      </div>
+    </div>
+  )
+}
+
+// An RSVP is retried a few times so a brief connection drop on a guest's
+// phone doesn't lose the answer.
+async function sendRsvp(body) {
+  for (let i = 0; i < 3; i++) {
+    try {
+      const r = await fetch('/api/invitations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      if (r.ok || r.status < 500) return
+    } catch { /* network — retry */ }
+    await new Promise((res) => setTimeout(res, 1500 * (i + 1)))
+  }
+}
+
+// The event as the dashboard's prefill expects it (dates as Date objects).
+function reviveEvent(e) {
+  const date = e.date ? new Date(/^\d{4}-\d{2}-\d{2}$/.test(e.date) ? `${e.date}T00:00:00` : e.date) : undefined
+  return {
+    ...e,
+    date,
+    locations: e.locations || [],
+    schedule: e.schedule || [],
+    inv: { ...(e.inv || {}), deadline: e.inv?.deadline ? new Date(e.inv.deadline) : undefined },
+  }
+}
+
+export default function SharedInvitation() {
+  const { code, token } = useParams()
+  const [state, setState] = useState({ status: 'loading' })
+
+  useEffect(() => {
+    let alive = true
+    const qs = new URLSearchParams({ code })
+    if (token) qs.set('t', token)
+    fetch(`/api/invitations?${qs}`)
+      .then(async (r) => {
+        const data = await r.json().catch(() => null)
+        if (!alive) return
+        if (r.ok) setState({ status: 'ok', data })
+        else setState({ status: r.status === 410 ? 'gone' : r.status === 429 ? 'busy' : 'missing', message: data?.message })
+      })
+      .catch(() => alive && setState({ status: 'error' }))
+    return () => { alive = false }
+  }, [code, token])
+
+  const data = state.data
+  const slug = data ? findDesign(data.designId)?.previewSlug : null
+  const entry = slug ? INVITATION_PREVIEWS[slug] : null
+
+  const content = useMemo(() => {
+    if (!entry || !data) return null
+    if (data.kind === 'event') {
+      // Same layering as the dashboard preview: design ← event details ← the organizer's edits.
+      const base = deepMerge(entry.defaultData, prefillFromEvent(slug, reviveEvent(data.event)))
+      return deepMerge(base, data.designContent?.[slug])
+    }
+    // Purchased: design ← checkout details ← the customer's edits. Orders
+    // from before the design's own details were asked have only names / date / venue.
+    const filled = data.details ? contentFromDetails(slug, data.details) : prefillFromCustomization(slug, data.customization)
+    return deepMerge(deepMerge(entry.defaultData, filled), data.content)
+  }, [entry, slug, data])
+
+  useEffect(() => {
+    if (!data) return
+    const names = data.kind === 'event'
+      ? [data.event.person1?.first, data.event.person2?.first].filter(Boolean).join(' & ') || data.event.title
+      : data.customization?.names
+    if (names) document.title = `${names} · Հրավեր`
+  }, [data])
+
+  if (state.status === 'loading') return <div style={{ minHeight: '100vh', background: '#FBF7F0' }} />
+  if (state.status === 'gone') return <Message title="Հրավերն այլևս հասանելի չէ" text={state.message} />
+  if (state.status === 'busy') return <Message title="Մի պահ" text="Շատ հարցումներ ստացանք։ Թարմացրեք էջը մեկ րոպեից։" />
+  if (state.status === 'error') return <Message title="Չհաջողվեց բացել հրավերը" text="Ստուգեք ինտերնետ կապը և թարմացրեք էջը։" />
+  if (state.status === 'missing') return <Message title="Հրավերը չի գտնվել" text="Ստուգեք հղումը։" />
+  if (!entry) return <Message title="Հրավերը պատրաստվում է" text="Շուտով այն հասանելի կլինի այս հղումով։" />
+
+  const Invitation = entry.component
+  const isEvent = data.kind === 'event'
+  const guestName = isEvent && data.event.inv?.personalize !== false ? data.guest?.first || null : null
+  const rsvpOn = !isEvent || data.event.inv?.rsvp !== false
+  const onRsvp = rsvpOn
+    ? (answer) => { sendRsvp(isEvent ? { slug: code, t: token, ...answer } : { code, ...answer }) }
+    : undefined
+  return (
+    <InvitationContentProvider defaultData={content} editing={false} setEditing={noop} guestName={guestName} onRsvp={onRsvp}>
+      <Invitation />
+    </InvitationContentProvider>
+  )
+}

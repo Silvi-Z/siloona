@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import Editable from '../../shared/Editable'
+import { RowAdd, RowRemove } from '../../shared/ListEdit'
 import Section, { useSectionHidden } from '../../shared/Section'
 import { useInvitationContent } from '../../shared/EditableContext'
 import { FIGURES, SCENE } from '../lib/art'
@@ -55,9 +56,11 @@ export function Timeline() {
             {data.schedule.map((_, i) => (
               <li key={i} style={{ '--k': i }}>
                 <Editable as="time" path={`schedule.${i}.time`} /><i /><Editable path={`schedule.${i}.label`} />
+                <RowRemove list="schedule" index={i} />
               </li>
             ))}
           </Rv>
+          <RowAdd list="schedule" />
           <Editable as="p" path="scheduleCaption" className="cap2" />
         </div>
       </div>

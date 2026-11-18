@@ -1,5 +1,7 @@
 import { useInvitationContent } from './EditableContext'
 import { getByPath } from './pathUtils'
+import TimeSelect from './TimeSelect'
+import { DateField } from './ArmenianDate'
 
 function toLocalInputValue(iso) {
   const d = new Date(iso)
@@ -12,7 +14,7 @@ function toLocalInputValue(iso) {
 // content. `type="text"` (default) edits in place via contentEditable,
 // committed on blur only — so a re-render from a sibling field's edit
 // never disturbs an in-progress keystroke/caret here. `type="date"`
-// swaps to a native datetime picker instead of free text, so the
+// swaps to a native date picker + 24-hour time lists instead of free text, so the
 // countdown and every derived date string can never go out of sync.
 export default function Editable({ path, as: Tag = 'span', className, style, type = 'text', format }) {
   const { data, editing, setField } = useInvitationContent()
@@ -24,16 +26,15 @@ export default function Editable({ path, as: Tag = 'span', className, style, typ
   }
 
   if (type === 'date') {
+    // The Armenian calendar + a 24-hour time, the same on every phone.
+    const local = toLocalInputValue(value)
+    const [day, time] = local ? local.split('T') : ['', '']
+    const commit = (d, t) => { if (d) setField(path, new Date(`${d}T${t || '12:00'}`).toISOString()) }
     return (
-      <input
-        type="datetime-local"
-        className={`wdb-edit-input ${className || ''}`.trim()}
-        value={toLocalInputValue(value)}
-        onChange={(e) => {
-          if (!e.target.value) return
-          setField(path, new Date(e.target.value).toISOString())
-        }}
-      />
+      <span className={`wdb-edit-dt ${className || ''}`.trim()} style={{ display: 'inline-flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+        <DateField className="wdb-edit-input" value={day} onChange={(d) => commit(d, time)} />
+        <TimeSelect value={time} onChange={(t) => commit(day, t)} className="wdb-edit-input" />
+      </span>
     )
   }
 

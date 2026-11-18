@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Editable from '../../shared/Editable'
+import { RowAdd, RowRemove } from '../../shared/ListEdit'
 import { fillName } from '../../shared/GuestGreeting'
 import { useInvitationContent } from '../../shared/EditableContext'
 import { daysLeft, formatEventDate } from '../lib/date'
@@ -76,9 +77,11 @@ export function Program() {
             <div key={i} className={`it ${i % 2 ? 'r' : 'l'}`} style={{ '--i': i }}>
               <div><Editable as="time" path={`schedule.${i}.time`} /><Editable path={`schedule.${i}.label`} /></div>
               <Heart className="m" />
+              <RowRemove list="schedule" index={i} />
             </div>
           ))}
         </Rv>
+        <RowAdd list="schedule" />
       </section>
       <Band seed={57} bottom className="bb" />
     </div>

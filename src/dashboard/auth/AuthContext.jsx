@@ -3,6 +3,7 @@ import { supabase, isSupabaseConfigured } from '../../lib/supabaseClient';
 import { EVENTS } from '../data/mockEvents';
 import { SETTINGS } from '../data/mockMeta';
 import { setSyncOwner, markSaved } from '../data/sync';
+import { syncReplies } from '../data/replies';
 import { fromISO, addDays } from '../utils/format';
 
 const AuthCtx = createContext(null);
@@ -62,6 +63,10 @@ export function AuthProvider({ children }) {
   const [profile, setProfile] = useState(null);
   const [status, setStatus] = useState(isSupabaseConfigured ? 'loading' : 'unconfigured'); // loading | signed-out | ready | error
   const [error, setError] = useState('');
+  // Siloona staff (rows in admin_users, see supabase/payments.sql) also get
+  // the Orders page. Purely a UI switch — the data itself is protected by
+  // RLS and by the server checking admin_users on every admin action.
+  const [isAdmin, setIsAdmin] = useState(false);
 
   // Which user's data is currently loaded (or loading). Supabase reports the
   // same session more than once — getSession() plus the INITIAL_SESSION
@@ -91,6 +96,11 @@ export function AuthProvider({ children }) {
       }
       setSyncOwner(sess.user.id);
       await loadEvents(sess.user.id);
+      // Guests' answers from their invitation links since the last visit.
+      await syncReplies();
+      // A missing admin_users table (payments.sql not run yet) just means no admins.
+      const adm = await supabase.from('admin_users').select('user_id').eq('user_id', sess.user.id).maybeSingle();
+      setIsAdmin(!adm.error && !!adm.data);
       setStatus('ready');
     } catch (e) {
       loadedFor.current = null;
@@ -110,7 +120,7 @@ export function AuthProvider({ children }) {
     supabase.auth.getSession().then(({ data }) => { setSession(data.session); bootstrap(data.session); });
     const { data: sub } = supabase.auth.onAuthStateChange((_event, sess) => {
       setSession(sess);
-      if (_event === 'SIGNED_OUT') { loadedFor.current = null; setProfile(null); setSyncOwner(null); EVENTS.length = 0; setStatus('signed-out'); }
+      if (_event === 'SIGNED_OUT') { loadedFor.current = null; setProfile(null); setIsAdmin(false); setSyncOwner(null); EVENTS.length = 0; setStatus('signed-out'); }
       else bootstrap(sess);
     });
     return () => sub.subscription.unsubscribe();
@@ -133,6 +143,6 @@ export function AuthProvider({ children }) {
 
   const logOut = () => supabase.auth.signOut();
 
-  const value = { isSupabaseConfigured, session, profile, status, error, signUp, logIn, logOut };
+  const value = { isSupabaseConfigured, session, profile, isAdmin, status, error, signUp, logIn, logOut };
   return <AuthCtx.Provider value={value}>{children}</AuthCtx.Provider>;
 }

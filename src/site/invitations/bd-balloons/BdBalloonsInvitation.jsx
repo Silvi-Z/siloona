@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import './bd-balloons.css'
 import Editable from '../shared/Editable'
+import { RowAdd, RowRemove } from '../shared/ListEdit'
 import GuestGreeting, { fillName } from '../shared/GuestGreeting'
 import Section, { useSectionHidden } from '../shared/Section'
 import { useInvitationContent } from '../shared/EditableContext'
@@ -131,9 +132,11 @@ function Program() {
           <li key={i} className="r" style={{ '--i': i + 1 }}>
             <Editable as="time" path={`schedule.${i}.time`} />
             <Editable path={`schedule.${i}.label`} />
+            <RowRemove list="schedule" index={i} />
           </li>
         ))}
       </ol>
+      <RowAdd list="schedule" />
     </Sec>
   )
 }
