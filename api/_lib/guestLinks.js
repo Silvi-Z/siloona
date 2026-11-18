@@ -47,8 +47,12 @@ export async function rateLimit(store, req, scope) {
 // The public invitation of a dashboard event
 // ---------------------------------------------------------------------------
 
+// Dashboard events are not offered yet (src/site/features.js), and anyone
+// could otherwise publish one without an order. EVENT_LINKS=on turns them on.
+const eventLinksEnabled = () => process.env.EVENT_LINKS === 'on'
+
 async function loadPublished(store, slug) {
-  if (!SLUG.test(slug || '')) throw notFound()
+  if (!eventLinksEnabled() || !SLUG.test(slug || '')) throw notFound()
   const row = await store.getEventBySlug(slug)
   if (!row) throw notFound()
   if (row.data?.inv?.status !== 'published') {

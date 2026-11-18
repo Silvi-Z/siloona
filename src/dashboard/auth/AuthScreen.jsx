@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from './AuthContext';
+import { CUSTOMER_DASHBOARD } from '../../site/features';
 
 export default function AuthScreen() {
   const { signUp, logIn } = useAuth();
@@ -56,9 +57,11 @@ export default function AuthScreen() {
           <button className="btn primary full" type="submit" disabled={busy}>
             {busy ? '…' : mode === 'signin' ? 'Մուտք' : 'Ստեղծել հաշիվ'}
           </button>
-          <button type="button" className="link" style={{ marginTop: 14 }} onClick={() => { setErr(''); setMode(mode === 'signin' ? 'signup' : 'signin'); }}>
-            {mode === 'signin' ? 'Հաշիվ չունե՞ք. Ստեղծել' : 'Արդեն հաշիվ ունե՞ք. Մուտք գործել'}
-          </button>
+          {CUSTOMER_DASHBOARD && (
+            <button type="button" className="link" style={{ marginTop: 14 }} onClick={() => { setErr(''); setMode(mode === 'signin' ? 'signup' : 'signin'); }}>
+              {mode === 'signin' ? 'Հաշիվ չունե՞ք. Ստեղծել' : 'Արդեն հաշիվ ունե՞ք. Մուտք գործել'}
+            </button>
+          )}
         </form>
       </div>
     </div>

@@ -10,6 +10,7 @@ import BulkBar from './components/BulkBar';
 import EventTypeGate from './components/EventTypeGate';
 import { ModalHost, DrawerHost, MenuHost, ToastHost } from './components/Overlays';
 import { PAGES } from './pages';
+import { CUSTOMER_DASHBOARD } from '../site/features';
 
 function Shell() {
   const dash = useDashboard();
@@ -64,17 +65,54 @@ function Shell() {
   );
 }
 
+// While the customer dashboard is off (site/features.js): Siloona staff get
+// the Orders page alone, and any other signed-in account gets nothing.
+export function StaffOrders() {
+  const { sidebarOpen, setSidebarOpen, drawer, closeDrawer } = useDashboard();
+  const { logOut } = useAuth();
+  const Orders = PAGES.orders.component;
+  return (
+    <div className="siloona-dashboard">
+      <main className="view">
+        <button type="button" className="link" style={{ padding: 0, marginBottom: 16 }} onClick={logOut}>Դուրս գալ</button>
+        <Orders />
+      </main>
+      <div className={`scrim ${sidebarOpen || drawer ? 'on' : ''}`} onClick={() => { setSidebarOpen(false); closeDrawer(); }} />
+      <DrawerHost />
+      <ModalHost />
+      <MenuHost />
+      <ToastHost />
+    </div>
+  );
+}
+
+function NoAccess() {
+  const { logOut } = useAuth();
+  return (
+    <div className="siloona-dashboard">
+      <div className="auth-screen">
+        <div className="auth-card">
+          <p className="eyebrow">Siloona</p>
+          <h1>Մուտքն արգելված է</h1>
+          <button type="button" className="btn primary full" onClick={logOut}>Դուրս գալ</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function AuthGate() {
-  const { isSupabaseConfigured, status, error, profile } = useAuth();
+  const { isSupabaseConfigured, status, error, profile, isAdmin } = useAuth();
 
   if (!isSupabaseConfigured) return <SetupScreen />;
   if (status === 'loading') return <div className="siloona-dashboard"><div className="auth-screen"><p className="muted">Բեռնվում է…</p></div></div>;
   if (status === 'error') return <div className="siloona-dashboard"><div className="auth-screen"><div className="auth-card"><h1>Սխալ</h1><p className="muted">{error}</p></div></div></div>;
   if (status === 'signed-out') return <AuthScreen />;
+  if (!CUSTOMER_DASHBOARD && !isAdmin) return <NoAccess />;
 
   return (
     <DashboardProvider initialMode={profile.mode}>
-      <Shell />
+      {CUSTOMER_DASHBOARD ? <Shell /> : <StaffOrders />}
     </DashboardProvider>
   );
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useSession } from '../lib/useSession'
 import { listOrders } from './checkout/checkoutApi'
+import { CUSTOMER_DASHBOARD } from './features'
 
 const LINKS = [
   { to: '/', label: 'Գլխավոր' },
@@ -46,11 +47,11 @@ export default function Header() {
                 {l.label}
               </NavLink>
             ))}
-            {session ? (
+            {CUSTOMER_DASHBOARD && (session ? (
               <a target="_blank" href="/dashboard" className="nav-cta">Վահանակ</a>
             ) : (
               <NavLink to="/login" className="nav-cta">Մուտք</NavLink>
-            )}
+            ))}
           </nav>
 
           <button
@@ -71,11 +72,11 @@ export default function Header() {
             {l.label}
           </NavLink>
         ))}
-        {session ? (
+        {CUSTOMER_DASHBOARD && (session ? (
           <a target="_blank" href="/dashboard">Վահանակ</a>
         ) : (
           <NavLink to="/login">Մուտք</NavLink>
-        )}
+        ))}
       </div>
     </header>
   )

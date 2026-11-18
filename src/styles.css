@@ -343,6 +343,6 @@ body{margin:0}
   .siloona-site .sample-card{padding:28px}
   .siloona-site .catalog-controls{margin-top:32px; gap:18px}
   .siloona-site .mode-switch{display:flex; width:100%}
-  .siloona-site .mode-switch button{flex:1; padding:12px 10px; font-size:13px}
+  .siloona-site .mode-switch button{flex:1; min-width:0; padding:12px 10px; font-size:13px; white-space:normal; line-height:1.25}
   .siloona-site .category-tabs{gap:18px 22px}
 }

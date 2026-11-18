@@ -4,14 +4,15 @@
 // real gateway can produce (paid / declined / cancelled), and the server
 // applies them through the same state machine as real payments.
 //
-// Off unless PAYMENTS_SIMULATION=1. Every attempt is stored with
+// Off unless PAYMENTS_SIMULATION=1, and always off on Vercel's production
+// deployment, whatever that variable says. Every attempt is stored with
 // provider 'test', shown as «Թեստ» in the dashboard and left out of
-// revenue. Never leave it on for the public production site: anyone could
-// "pay" for an order with it.
+// revenue. It must never run on the public site: anyone could "pay" for an
+// order with it.
 
 export const simulator = {
   id: 'test',
-  configured: () => process.env.PAYMENTS_SIMULATION === '1',
+  configured: () => process.env.PAYMENTS_SIMULATION === '1' && process.env.VERCEL_ENV !== 'production',
 }
 
 export const SIM_OUTCOMES = {

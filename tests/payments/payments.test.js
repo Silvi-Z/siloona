@@ -89,6 +89,7 @@ before(async () => {
     IDRAM_ACCOUNT_ID: IDRAM.account, IDRAM_SECRET_KEY: IDRAM.secret,
     PUBLIC_SITE_URL: base, SUPABASE_URL: 'http://unused', SUPABASE_SERVICE_ROLE_KEY: 'unused',
     RATE_LIMITS: 'off', // one test below turns it back on
+    EVENT_LINKS: 'on', // one test below turns it off
   })
   const { setStore } = await import(pathToFileURL(path.join(ROOT, 'api/_lib/store.js')).href)
   setStore(store)
@@ -597,6 +598,29 @@ test('guest links: RSVP is stored as a reply, companions capped by the event', a
   assert.equal((await call('POST', '/api/invitations', { body: { slug: 'event-E3', name: 'Աննա Ա', status: 'maybe' } })).status, 422)
   await addEvent('E4', { rsvp: false })
   assert.equal((await call('POST', '/api/invitations', { body: { slug: 'event-E4', name: 'Աննա Ա', status: 'confirmed' } })).status, 409)
+})
+
+test('with event links off, a published dashboard event is not public', async () => {
+  await addEvent('E6')
+  delete process.env.EVENT_LINKS
+  try {
+    assert.equal((await call('GET', '/api/invitations?code=event-E6')).status, 404)
+    assert.equal((await call('POST', '/api/invitations', { body: { slug: 'event-E6', name: 'Աննա Ա', status: 'confirmed' } })).status, 404)
+  } finally {
+    process.env.EVENT_LINKS = 'on'
+  }
+})
+
+test('the payment simulator never runs on Vercel production', async () => {
+  Object.assign(process.env, { PAYMENTS_SIMULATION: '1', VERCEL_ENV: 'production' })
+  try {
+    assert.ok(!(await call('GET', '/api/checkout/config')).json.methods.includes('test'))
+    process.env.VERCEL_ENV = 'preview'
+    assert.ok((await call('GET', '/api/checkout/config')).json.methods.includes('test'))
+  } finally {
+    delete process.env.PAYMENTS_SIMULATION
+    delete process.env.VERCEL_ENV
+  }
 })
 
 test('rate limits refuse a flood from one address', async () => {

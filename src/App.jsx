@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import './styles.css'
 import SiteLayout from './site/SiteLayout'
 import Home from './site/pages/Home'
@@ -7,6 +7,7 @@ import Invitations from './site/pages/Invitations'
 import InvitationCards from './site/pages/InvitationCards'
 import About from './site/pages/About'
 import Login from './site/pages/Login'
+import { CUSTOMER_DASHBOARD } from './site/features'
 
 // Lazy-loaded: each invitation design can be its own heavy, self-styled
 // bundle (fonts, animation, generated SVG). Without this, visiting any
@@ -52,7 +53,7 @@ export default function App() {
           <Route path="/invitations" element={<Invitations />} />
           <Route path="/invitation-cards" element={<InvitationCards />} />
           <Route path="/about" element={<About />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={CUSTOMER_DASHBOARD ? <Login /> : <Navigate to="/" replace />} />
           <Route path="/my-orders" element={<Suspense fallback={null}><MyOrders /></Suspense>} />
           <Route path="/checkout/result" element={<Suspense fallback={null}><CheckoutResult /></Suspense>} />
           <Route path="/checkout/:designId" element={<Suspense fallback={null}><Checkout /></Suspense>} />

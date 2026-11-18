@@ -124,6 +124,6 @@ export const METHOD_INFO = {
 }
 
 export const OPTION_INFO = {
-  diy: { label: 'Խմբագրում', text: 'Հրավերը լրացնում և խմբագրում եք ինքներդ՝ Siloona-ի վահանակում։' },
+  diy: { label: 'Խմբագրում', text: 'Հրավերը լրացնում և խմբագրում եք ինքներդ՝ կայքում։' },
   assisted: { label: 'Պատվեր', text: 'Siloona-ն պատրաստում է հրավերը Ձեր տվյալներով։' },
 }
