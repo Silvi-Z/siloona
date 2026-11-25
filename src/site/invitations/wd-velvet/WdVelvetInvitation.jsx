@@ -3,6 +3,7 @@ import Section from '../shared/Section'
 import { useInvitationContent } from '../shared/EditableContext'
 import { useDesignFonts } from '../shared/useDesignFonts'
 import { Closing, DateArch, DressCode, Hero, Program, Rsvp, Venue, Welcome } from './components/Sections'
+import SiloonaCredit from '../shared/SiloonaCredit'
 
 // Light weights of Cormorant (for the ampersand and numerals) aren't in
 // the site-wide font link.
@@ -26,6 +27,7 @@ export default function WdVelvetInvitation() {
         <Section id="dressCode"><DressCode /></Section>
         <Section id="rsvp"><Rsvp /></Section>
         <Section id="closing"><Closing /></Section>
+        <SiloonaCredit design="wd-velvet" />
       </main>
     </div>
   )

@@ -3,6 +3,7 @@ import Section from '../shared/Section'
 import { useInvitationContent } from '../shared/EditableContext'
 import { useDesignFonts } from '../shared/useDesignFonts'
 import { Closing, Countdown, Hero, Instagram, PhotoBand, Places, Playlist, Program, Rsvp } from './components/Sections'
+import SiloonaCredit from '../shared/SiloonaCredit'
 
 // Light Noto Serif Armenian weights, Cormorant for figures, and a script
 // face for Latin names and the ampersand.
@@ -29,6 +30,7 @@ export default function WdMonoInvitation() {
         <Section id="playlist"><Playlist /></Section>
         <Section id="rsvp"><Rsvp /></Section>
         <Section id="closing"><Closing /></Section>
+        <SiloonaCredit design="wd-mono" />
       </main>
     </div>
   )

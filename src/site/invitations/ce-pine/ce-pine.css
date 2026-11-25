@@ -1,0 +1,191 @@
+/* =========================================================
+   "ce-pine" — holiday party at home. Deep green card, watercolour
+   pine (assets/pine.webp) across the top and down the right side,
+   gold-glitter capitals, a handwritten line, a little snow.
+   One column, 560px at most; sizes are cqw of that column, so the
+   cover keeps the reference card's proportions on a wide screen
+   and gets taller (art larger, text column narrower) on a phone.
+   ========================================================= */
+.cep{
+  --green:#1c3825; --deep:#122719; --gold:#d8b66f; --cream:#ece2c8; --soft:rgba(236,226,200,.72);
+  --serif:"Cormorant Garamond","Noto Serif Armenian",Georgia,serif;
+  --arm:"Noto Serif Armenian","Cormorant Garamond",Georgia,serif;
+  --script:"Marck Script","Noto Serif Armenian",cursive;
+  min-height:100vh; color:var(--cream); font-family:var(--serif); -webkit-font-smoothing:antialiased;
+  background:var(--snow) 0 0/420px 420px, radial-gradient(120% 80% at 50% 0%,#1a3322 0%,var(--deep) 70%);
+}
+.cep *{box-sizing:border-box}
+.cep .col{
+  position:relative; width:min(100%,560px); margin:0 auto; overflow:hidden; container-type:inline-size;
+  background:var(--snow) 30px 60px/420px 420px, radial-gradient(90% 60% at 30% 30%,#21422c 0%,var(--green) 60%,#183220 100%);
+  box-shadow:0 0 0 1px rgba(216,182,111,.08), 0 30px 80px -30px rgba(0,0,0,.6);
+}
+.cep :is(h1,h2,p,ol){margin:0}
+
+/* gold glitter on the capitals: a gold sweep with sparkle grain, clipped to the letters */
+.cep .gold{
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 .95  0 0 0 0 .78  0 0 0 3.2 -1.9'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)'/%3E%3C/svg%3E") 0 0/120px 120px,
+    linear-gradient(100deg,#a8823a 0%,#e9cf8a 22%,#c39a4e 40%,#f3dea0 58%,#b48c42 78%,#dcbf79 100%) 0 0/220% 100%;
+  -webkit-background-clip:text; background-clip:text; color:transparent; -webkit-text-fill-color:transparent;
+  animation:cepShine 8s ease-in-out infinite;
+}
+/* the gold catches the light: the sweep drifts and the glitter grain shifts */
+@keyframes cepShine{0%,100%{background-position:0 0, 0% 0}50%{background-position:36px 24px, 100% 0}}
+.cep.editing .gold{color:var(--gold); -webkit-text-fill-color:var(--gold); background:none}
+
+/* ---------- cover ---------- */
+.cep .hero{position:relative; aspect-ratio:932/1304; padding:39cqw 0 8cqw; overflow:hidden}
+.cep .pine{position:absolute; top:0; right:0; width:100%; height:auto; pointer-events:none; user-select:none}
+/* snow: two layers falling at different speeds (small and near, larger and far),
+   each a tile-tall strip moved by transform only, so the loop is seamless */
+.cep .snow{position:absolute; inset:0; pointer-events:none; overflow:hidden}
+.cep .snow::before, .cep .snow::after{content:""; position:absolute; left:0; right:0; bottom:0; will-change:transform}
+.cep .snow::before{top:-300px; background:var(--snow) 0 0/300px 300px; opacity:.7; animation:cepFall 46s linear infinite}
+.cep .snow::after{top:-560px; background:var(--snow) 140px 60px/560px 560px; opacity:.45; animation:cepFall2 30s linear infinite}
+@keyframes cepFall{from{transform:translate3d(0,0,0)}to{transform:translate3d(0,300px,0)}}
+@keyframes cepFall2{from{transform:translate3d(0,0,0)}to{transform:translate3d(0,560px,0)}}
+.cep .htxt{position:relative; z-index:1; width:51cqw; margin-left:9cqw; text-align:center; color:var(--gold); font-variant-numeric:lining-nums}
+.cep .intro{font-size:3cqw; line-height:1.65; letter-spacing:.05em; font-weight:500; text-wrap:balance}
+.cep .script{font-family:var(--script); font-weight:400; color:var(--gold); letter-spacing:.01em}
+.cep .script.arm{font-family:var(--arm); font-style:italic; font-weight:300}
+.cep .htxt .script{font-size:5.4cqw; line-height:1.2; margin-top:6.5cqw}
+.cep .htxt .script.arm{font-size:3.9cqw}
+.cep .title{display:flex; flex-direction:column; align-items:center; margin-top:2.6cqw; font-weight:500; font-size:calc(9.6cqw * var(--fit,1)); line-height:1.04; letter-spacing:.06em; text-transform:uppercase}
+.cep .title span{padding:0 .04em}
+.cep .text{margin-top:4.6cqw; font-size:2.85cqw; line-height:1.5; letter-spacing:.04em; font-weight:500; text-wrap:balance}
+.cep .when{display:flex; align-items:center; justify-content:center; gap:3.4cqw; margin-top:7cqw; text-transform:uppercase}
+.cep .when span{font-size:2.7cqw; letter-spacing:.14em; font-weight:600; min-width:9cqw}
+.cep .when b{font-weight:400; font-size:6.4cqw; line-height:1; letter-spacing:.02em}
+.cep .when i{width:1px; height:6.2cqw; background:linear-gradient(transparent,var(--gold) 20% 80%,transparent)}
+.cep .at{margin-top:6.4cqw; font-style:italic; font-size:2.85cqw; letter-spacing:.06em}
+.cep .hosts{margin-top:5cqw; font-size:2.8cqw; letter-spacing:.14em; text-transform:uppercase; font-weight:600}
+.cep .htxt .wdb-edit-dt{margin-top:2cqw}
+
+/* phone: a taller cover — the art larger and pushed right, the text below the top branch */
+@container (max-width:520px){
+  .cep .hero{aspect-ratio:auto; min-height:max(100svh,205cqw); padding:52cqw 0 12cqw; display:flex; flex-direction:column; justify-content:center}
+  .cep .pine{width:140cqw; right:-22cqw}
+  .cep .htxt{width:59cqw; margin-left:3cqw}
+  .cep .intro{font-size:4.1cqw}
+  .cep .htxt .script{font-size:7.6cqw; margin-top:7cqw}
+  .cep .htxt .script.arm{font-size:5.4cqw}
+  .cep .title{font-size:calc(9.2cqw * var(--fit,1)); margin-top:3cqw}
+  .cep .text{font-size:4.2cqw; margin-top:5cqw}
+  .cep .when{margin-top:7cqw; gap:3cqw}
+  .cep .when span{font-size:3.6cqw; min-width:10cqw}
+  .cep .when b{font-size:9cqw}
+  .cep .when i{height:8.6cqw}
+  .cep .at{font-size:4.2cqw; margin-top:6cqw}
+  .cep .hosts{font-size:3.9cqw; margin-top:5cqw}
+}
+
+/* ---------- the evening, part by part ---------- */
+.cep .blk:not(.hero){position:relative; z-index:1; padding:6px 9cqw 64px; text-align:center}
+.cep .sprig{display:block; width:min(58cqw,300px); height:auto; margin:0 auto 22px; pointer-events:none; user-select:none}
+.cep .sprig.flip{transform:scaleX(-1)}
+.cep .title2{font-weight:500; font-size:clamp(24px,7cqw,38px); line-height:1.1; letter-spacing:.08em; text-transform:uppercase; margin-bottom:18px}
+.cep .script.big{font-size:clamp(34px,9cqw,48px); line-height:1.2; margin-bottom:16px}
+.cep .script.big.arm{font-size:clamp(24px,6.4cqw,34px)}
+.cep .script.mid{font-size:clamp(28px,7.4cqw,40px); line-height:1.2; margin-bottom:8px}
+.cep .script.mid.arm{font-size:clamp(20px,5.4cqw,28px)}
+.cep .body{font-variant-numeric:lining-nums; font-size:17px; line-height:1.65; color:var(--soft); text-wrap:pretty}
+.cep .body:has(+ *){margin-bottom:22px}
+.cep .small{font-size:13px; letter-spacing:.22em; text-transform:uppercase; color:var(--gold); font-weight:600}
+
+.cep .cells{display:flex; justify-content:center; margin:18px 0 16px}
+.cep .cells span{display:flex; flex-direction:column; align-items:center; gap:4px; min-width:22cqw; max-width:110px; font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--soft)}
+.cep .cells span + span{border-left:1px solid rgba(216,182,111,.4)}
+.cep .cells b{font-weight:400; font-size:clamp(30px,9cqw,46px); line-height:1; color:var(--gold); font-variant-numeric:lining-nums tabular-nums}
+.cep .long{font-variant-numeric:lining-nums; font-size:17px; font-style:italic; color:var(--cream); margin-bottom:22px}
+
+.cep .btn{
+  display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 28px; border:1px solid rgba(216,182,111,.7);
+  border-radius:999px; color:var(--gold); background:transparent; font:600 13px/1.2 var(--serif); letter-spacing:.2em; text-transform:uppercase;
+  text-decoration:none; cursor:pointer; transition:background .25s ease, color .25s ease;
+}
+.cep .btn:hover{background:var(--gold); color:var(--green)}
+.cep .btn:focus-visible{outline:2px solid var(--gold); outline-offset:3px}
+
+.cep .tl{list-style:none; padding:0; display:grid; max-width:400px; margin:0 auto}
+.cep .tl li{position:relative; display:grid; grid-template-columns:72px 1fr; gap:14px; align-items:baseline; text-align:left; padding:13px 0; border-bottom:1px solid rgba(216,182,111,.22); font-size:17px; color:var(--cream)}
+.cep .tl li:first-child{border-top:1px solid rgba(216,182,111,.22)}
+.cep .tl time{font-size:20px; color:var(--gold); font-variant-numeric:lining-nums}
+
+.cep .sw{display:flex; justify-content:center; gap:16px}
+.cep .sw-i{width:38px; height:38px; border-radius:50%; background:var(--c); box-shadow:0 0 0 1px rgba(216,182,111,.65), 0 0 0 5px var(--green), 0 0 0 6px rgba(216,182,111,.3)}
+.cep .sw-edit{width:44px; height:44px; border:0; padding:0; background:none; cursor:pointer}
+
+/* reply form */
+.cep .form{display:grid; gap:20px; max-width:400px; margin:0 auto; text-align:left}
+.cep .field{display:grid; gap:8px}
+.cep .lbl{font-size:12.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); font-weight:600}
+.cep .form input[type=text], .cep .form textarea{
+  width:100%; font:inherit; font-size:18px; color:var(--cream); background:rgba(10,24,15,.35); border:1px solid rgba(216,182,111,.35);
+  border-radius:4px; padding:11px 13px; outline:none; transition:border-color .2s ease; resize:vertical;
+}
+.cep .form input:focus, .cep .form textarea:focus{border-color:var(--gold)}
+.cep .form input[aria-invalid]{border-color:#e08a7a}
+.cep .err{font-size:14px; color:#f0a493}
+.cep .choice{display:flex; flex-wrap:wrap; gap:10px}
+.cep .choice label{
+  flex:1 1 140px; position:relative; display:flex; align-items:center; justify-content:center; min-height:46px; padding:10px 14px;
+  border:1px solid rgba(216,182,111,.4); border-radius:999px; font-size:16px; color:var(--cream); cursor:pointer; text-align:center; transition:background .2s ease, border-color .2s ease, color .2s ease;
+}
+.cep .choice.nums label{flex:1 1 0; min-width:54px}
+.cep .choice label.on{background:var(--gold); border-color:var(--gold); color:var(--green); font-weight:600}
+.cep .choice input{position:absolute; opacity:0; pointer-events:none}
+.cep .choice label:has(input:focus-visible){outline:2px solid var(--gold); outline-offset:2px}
+.cep .send{justify-self:center; margin-top:4px; min-width:200px}
+.cep .thanks{font-family:var(--arm); font-style:italic; font-size:20px; line-height:1.5; color:var(--gold); padding:10px 0}
+
+.cep .closing{padding-bottom:20px}
+.cep .closing .hosts{margin-top:0; font-size:14px; color:var(--gold)}
+.cep .siloona-credit{color:var(--cream)}
+
+/* motion */
+/* the pine arrives softly, then sways a little from the top right, as in a draught */
+.cep .pine{transform-origin:88% 0; opacity:0}
+.cep .pine.go{animation:cepIn 1.8s ease both, cepSway 9s ease-in-out 1.8s infinite alternate}
+@keyframes cepIn{from{opacity:0}to{opacity:1}}
+@keyframes cepSway{from{transform:rotate(0)}to{transform:rotate(.7deg)}}
+/* the hairlines of the day row draw themselves in */
+.cep .when i{animation:cepLine 1s cubic-bezier(.2,.7,.2,1) 1.1s both}
+@keyframes cepLine{from{transform:scaleY(0)}to{transform:none}}
+/* a countdown digit ticks in when it changes */
+.cep .cells b{animation:cepTick .5s cubic-bezier(.2,.7,.2,1)}
+@keyframes cepTick{from{opacity:.15; transform:translateY(-7px)}to{opacity:1; transform:none}}
+.cep .btn:hover{box-shadow:0 0 22px rgba(216,182,111,.35)}
+.cep .choice label{transition:background .2s ease, border-color .2s ease, color .2s ease, transform .15s ease}
+.cep .choice label:active{transform:scale(.97)}
+.cep .thanks{animation:cepFade .9s ease both}
+@keyframes cepFade{from{opacity:0; transform:translateY(10px)}to{opacity:1; transform:none}}
+
+/* reveal */
+.cep .r{opacity:0; transform:translateY(14px); transition:opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1); transition-delay:calc(var(--i,0) * 110ms)}
+.cep .in .r{opacity:1; transform:none}
+.cep .sprig.r{transform:translateY(14px) rotate(-5deg)}
+.cep .in .sprig.r{transform:none}
+.cep .sprig.flip.r{transform:scaleX(-1) translateY(14px) rotate(-5deg)}
+.cep .in .sprig.flip.r{transform:scaleX(-1)}
+.cep.editing .r{opacity:1; transform:none; transition:none}
+.cep.editing .sprig.flip{transform:scaleX(-1)}
+
+/* edit mode */
+.cep .wdb-editable{outline:1px dashed transparent; border-radius:3px; transition:outline-color .15s}
+.cep .wdb-editable:hover, .cep .wdb-editable:focus{outline-color:var(--gold)}
+.cep .wdb-edit-dt{background:var(--cream); padding:4px 6px; border-radius:8px}
+.cep .wdb-edit-input{font:500 15px var(--serif); color:#1c3825; background:#fff; border:1px solid var(--gold); border-radius:6px; padding:3px 6px}
+
+.cep.editing :is(.pine, .gold, .when i, .cells b){animation:none}
+.cep.editing .pine{opacity:1}
+.cep.editing .snow::before, .cep.editing .snow::after{animation:none}
+.cep.editing .sprig.r:not(.flip){transform:none}
+
+@media (prefers-reduced-motion:reduce){
+  .cep .pine{opacity:1}
+  .cep .snow::before, .cep .snow::after, .cep .pine.go, .cep .gold, .cep .when i, .cep .cells b, .cep .thanks{animation:none}
+  .cep .sprig.r{transform:none}
+  .cep .r{transition:none; opacity:1; transform:none}
+  .cep .sprig.flip.r{transform:scaleX(-1)}
+}

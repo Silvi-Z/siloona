@@ -380,6 +380,49 @@ test('simulator: off by default, then paid / declined / cancelled through the st
   assert.equal((await start(off, 'test')).status, 400, 'switched off again')
 })
 
+test('simulator page: only test cards, masked card kept, Idram and decline reasons', async () => {
+  process.env.PAYMENTS_SIMULATION = '1'
+  try {
+    const S = '/api/payments/simulator/complete'
+    const begin = async (o) => new URL((await start(o, 'test')).json.redirectUrl, base).searchParams.get('tx')
+    const o = await newOrder()
+
+    let tx = await begin(o)
+    const info = await call('GET', `${S}?tx=${tx}&k=${o.token}`)
+    assert.ok(info.json.cards.some((c) => c.number === '4111111111111111' && c.result === 'paid'), 'lists its test cards')
+
+    // a card that isn't a test card is refused, and nothing changes
+    const real = await call('POST', S, { body: { tx, k: o.token, outcome: 'paid', card: '4242424242424242' } })
+    assert.equal(real.status, 422)
+    assert.equal((await status(o)).json.paymentStatus, 'pending')
+    assert.equal((await call('POST', S, { body: { tx, k: o.token, outcome: 'failed', reason: 'nonsense' } })).status, 422)
+    assert.equal((await call('POST', S, { body: { tx, k: o.token, outcome: 'paid', via: 'bitcoin' } })).status, 422)
+
+    // decline reasons are kept on the attempt
+    for (const [reason, code] of [['funds', 'SIM-116'], ['declined', 'SIM-05'], ['3ds', 'SIM-3DS']]) {
+      if (reason !== 'funds') tx = await begin(o)
+      await call('POST', S, { body: { tx, k: o.token, outcome: 'failed', reason, card: '4000000000000002' } })
+      assert.equal((await status(o)).json.paymentStatus, 'failed')
+      assert.equal((await store.getTransaction(tx)).error_code, code)
+    }
+
+    // paid on the Mastercard test card: only its masked number is stored
+    tx = await begin(o)
+    await call('POST', S, { body: { tx, k: o.token, outcome: 'paid', via: 'card', card: '5555555555554444' } })
+    assert.equal((await status(o)).json.cardMask, '555555**4444')
+    assert.ok(!JSON.stringify(await store.getTransaction(tx)).includes('5555555555554444'), 'the full test number is not kept')
+
+    // Idram: paid with no card on it
+    const w = await newOrder()
+    const wtx = await begin(w)
+    await call('POST', S, { body: { tx: wtx, k: w.token, outcome: 'paid', via: 'idram' } })
+    assert.equal((await status(w)).json.paymentStatus, 'paid')
+    assert.ok(!(await status(w)).json.cardMask)
+  } finally {
+    delete process.env.PAYMENTS_SIMULATION
+  }
+})
+
 test('shareable invitation: created on payment, public page data, RSVP, disabled on refund', async () => {
   const o = await newOrder({ customization: { names: 'Աննա & Միքայել', eventDate: '2027-06-12', eventTime: '16:00', venue: 'Արարատ դահլիճ', notes: 'գաղտնի ցանկություն' } })
   assert.equal((await status(o)).json.invitationCode, null, 'no link before payment')
@@ -471,7 +514,7 @@ test('the design\'s own details are stored, served to the invitation, and replac
     'place0.name': 'Սուրբ Գայանե', 'place0.time': '13:00', 'place1.name': 'Իմ սրահ', 'place1.address': 'javascript:alert(1)',
     schedule: [{ time: '13:00', title: 'Պսակադրություն' }], extra: {},
   }
-  const o = await newOrder({ designId: 'wd-tulip', customization: { names: 'Աննա & Միքայել', eventDate: '2027-06-12', details } })
+  const o = await newOrder({ designId: 'wd-cherry', customization: { names: 'Աննա & Միքայել', eventDate: '2027-06-12', details } })
   const s = await start(o, 'arca')
   await payOnBank(s.json.redirectUrl, 'pay')
   const code = (await status(o)).json.invitationCode
@@ -497,14 +540,14 @@ test('custom-design request: stored with no price, then priced by the admin and 
   assert.equal(bad.status, 422)
   assert.ok(bad.json.fields.eventType && bad.json.fields.notes)
 
-  const r = await call('POST', '/api/orders', { body: body({ eventType: 'wedding', kind: 'adapt', basedOn: 'wd-tulip', notes: 'Ուզում ենք կանաչ գույներով, պարզ ու նուրբ', references: 'https://pin.it/x' }) })
+  const r = await call('POST', '/api/orders', { body: body({ eventType: 'wedding', kind: 'adapt', basedOn: 'wd-cherry', notes: 'Ուզում ենք կանաչ գույներով, պարզ ու նուրբ', references: 'https://pin.it/x' }) })
   assert.equal(r.status, 201, JSON.stringify(r.json))
   assert.equal(r.json.amount, null)
   const st = await status({ orderId: r.json.orderId, token: r.json.token })
   assert.equal(st.json.paymentStatus, 'unpaid')
   const row = await store.getOrder(r.json.orderId)
   assert.equal(row.design_option, 'assisted', 'always prepared by Siloona')
-  assert.equal(row.customization.basedOn, 'wd-tulip')
+  assert.equal(row.customization.basedOn, 'wd-cherry')
   assert.equal(row.customization.request, 'custom')
 
   const priced = await call('POST', '/api/admin/orders', { token: USERS.admin.token, body: { orderId: r.json.orderId, action: 'set_amount', amount: 45000 } })
@@ -543,7 +586,7 @@ test('photo uploads: real images only, size-limited, served back', async () => {
 
 async function addEvent(id, { status = 'published', rsvp = true } = {}) {
   const data = {
-    inv: { slug: `event-${id}`, status, design: 'wd-tulip', rsvp, personalize: true, greeting: 'Սիրով, {name}', message: 'Հրավիրում ենք', deadline: '2027-08-01T00:00:00.000Z', designContent: { 'wd-tulip': { hero: { kicker: 'Մեր օրը' } } } },
+    inv: { slug: `event-${id}`, status, design: 'wd-cherry', rsvp, personalize: true, greeting: 'Սիրով, {name}', message: 'Հրավիրում ենք', deadline: '2027-08-01T00:00:00.000Z', designContent: { 'wd-cherry': { hero: { kicker: 'Մեր օրը' } } } },
     person1: { first: 'Աննա', last: 'Պետրոսյան', phone: '+37499000001' },
     person2: { first: 'Արամ', last: 'Սարգսյան' },
     locations: [{ id: 'l1', kind: 'Եկեղեցի', name: 'Սուրբ Գայանե', address: 'Էջմիածին', time: '15:00', notes: 'գաղտնի' }],
@@ -560,10 +603,10 @@ test('guest links: published event, personal token, nothing private leaks', asyn
   const r = await call('GET', '/api/invitations?code=event-E1&t=AbCdEfGhJk23mnPq')
   assert.equal(r.status, 200, r.text)
   assert.equal(r.json.kind, 'event')
-  assert.equal(r.json.designId, 'wd-tulip')
+  assert.equal(r.json.designId, 'wd-cherry')
   assert.equal(r.json.guest.first, 'Լուսինե')
   assert.equal(r.json.event.person1.first, 'Աննա')
-  assert.equal(r.json.designContent['wd-tulip'].hero.kicker, 'Մեր օրը')
+  assert.equal(r.json.designContent['wd-cherry'].hero.kicker, 'Մեր օրը')
   const raw = JSON.stringify(r.json)
   for (const secret of ['+37491111111', 'մասնավոր', '+37499000001', 'գաղտնի', 'parking']) assert.ok(!raw.includes(secret), `leaked ${secret}`)
   assert.equal(raw.includes('guests'), false, 'no guest list')
@@ -645,7 +688,7 @@ test('Telegram: told about new orders and real payments only, when configured', 
   }
   Object.assign(process.env, { TELEGRAM_BOT_TOKEN: 'test-bot', TELEGRAM_CHAT_ID: '42' })
   try {
-    const o = await newOrder({ designId: 'wd-tulip', customization: { names: 'Աննա & Արամ', eventDate: '2027-06-12' } })
+    const o = await newOrder({ designId: 'wd-cherry', customization: { names: 'Աննա & Արամ', eventDate: '2027-06-12' } })
     assert.ok(sent.some((t) => t.includes(`№ ${o.orderNumber}`) && t.includes('Նոր պատվեր')), sent.join('|'))
     const s = await start(o, 'arca')
     await payOnBank(s.json.redirectUrl, 'pay')
@@ -661,7 +704,7 @@ test('Telegram: told about new orders and real payments only, when configured', 
 })
 
 test('the customer sees the guests answers on the order page', async () => {
-  const o = await newOrder({ designId: 'wd-tulip', customization: { names: 'Աննա & Արամ', eventDate: '2027-06-12' } })
+  const o = await newOrder({ designId: 'wd-cherry', customization: { names: 'Աննա & Արամ', eventDate: '2027-06-12' } })
   assert.deepEqual((await status(o)).json.rsvps, [], 'none before payment')
   const s = await start(o, 'arca')
   await payOnBank(s.json.redirectUrl, 'pay')

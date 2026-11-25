@@ -42,7 +42,7 @@ await store.db.query(
     ],
     schedule: [{ id: 's1', time: '15:00', title: 'Պսակադրություն' }, { id: 's2', time: '18:00', title: 'Խնջույք' }],
     info: { maxPlus: 2 },
-    inv: { slug: 'demo-event', status: 'published', design: 'wd-tulip', rsvp: true, personalize: true, greeting: 'Սիրով հրավիրում ենք Ձեզ, {name}', message: 'Սիրով հրավիրում ենք Ձեզ', deadline: '2027-08-18T00:00:00.000Z', designContent: {} },
+    inv: { slug: 'demo-event', status: 'published', design: 'wd-cherry', rsvp: true, personalize: true, greeting: 'Սիրով հրավիրում ենք Ձեզ, {name}', message: 'Սիրով հրավիրում ենք Ձեզ', deadline: '2027-08-18T00:00:00.000Z', designContent: {} },
     guests: GUESTS,
   })],
 )

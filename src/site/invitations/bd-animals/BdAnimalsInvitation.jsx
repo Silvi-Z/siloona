@@ -7,6 +7,7 @@ import Hero from './components/Hero'
 import DetailsSection from './components/DetailsSection'
 import RsvpForm from './components/RsvpForm'
 import Section from '../shared/Section'
+import SiloonaCredit from '../shared/SiloonaCredit'
 
 // The shared decorative vine, referenced via <use> from Hero and
 // DetailsSection — defined once here rather than duplicated per section.
@@ -61,6 +62,7 @@ function BdAnimalsBody({ editing }) {
         <Hero buntingRef={buntingRef} rootRef={rootRef} />
         <Section id="details"><DetailsSection /></Section>
         <RsvpForm rootRef={rootRef} />
+        <SiloonaCredit design="bd-animals" />
       </main>
     </div>
   )

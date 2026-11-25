@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { findDesign } from '../designCatalog'
+import { designTitle } from '../designI18n'
 import { CUSTOM_DESIGN_ID, CUSTOM_DESIGN_LABEL } from '../customRequest'
 import { formatPrice } from '../pricing'
+import { useLang, useText } from '../i18n'
 import { getOrderStatus, listOrders, orderLink, rememberOrder } from '../checkout/checkoutApi'
 import '../checkout/checkout.css'
 
@@ -12,13 +14,48 @@ import '../checkout/checkout.css'
 // share and how many guests have answered. An order from another device
 // is added by pasting its link.
 
-const STATUS = {
-  paid: ['Վճարված', 'ok'],
-  pending: ['Վճարումը ընթացքում է', 'wait'],
-  unpaid: ['Վճարված չէ', 'wait'],
-  failed: ['Վճարումը չի կատարվել', 'bad'],
-  cancelled: ['Վճարումը չեղարկվել է', 'bad'],
-  refunded: ['Գումարը վերադարձված է', 'muted'],
+const TONE = { paid: 'ok', pending: 'wait', unpaid: 'wait', failed: 'bad', cancelled: 'bad', refunded: 'muted' }
+
+const TEXT = {
+  hy: {
+    status: {
+      paid: 'Վճարված', pending: 'Վճարումը ընթացքում է', unpaid: 'Վճարված չէ',
+      failed: 'Վճարումը չի կատարվել', cancelled: 'Վճարումը չեղարկվել է', refunded: 'Գումարը վերադարձված է',
+    },
+    priceTbd: 'Գինը ճշտվում է', custom: CUSTOM_DESIGN_LABEL, locale: 'hy-AM',
+    answers: (n, people) => <>Պատասխաններ՝ <b>{n}</b> · կգա <b>{people}</b> հոգի</>, noAnswers: 'Պատասխաններ դեռ չկան',
+    open: 'Բացել պատվերը', copied: 'Պատճենված է', copyLink: 'Պատճենել հղումը',
+    notLink: 'Սա պատվերի հղում չէ։ Այն սկսվում է …/checkout/result?order=…',
+    title: 'Իմ պատվերները', loading: 'Բեռնվում է…', empty: 'Այս սարքում պատվերներ դեռ չկան։', choose: 'Ընտրել հրավիրատոմս →',
+    loadErr: 'Որոշ պատվերներ չհաջողվեց բեռնել։ Ստուգեք ինտերնետ կապը և թարմացրեք էջը։',
+    pasteLabel: 'Պատվերը կատարել եք այլ սարքից՝ տեղադրեք պատվերի հղումը', add: 'Ավելացնել',
+  },
+  ru: {
+    status: {
+      paid: 'Оплачен', pending: 'Оплата в процессе', unpaid: 'Не оплачен',
+      failed: 'Оплата не прошла', cancelled: 'Оплата отменена', refunded: 'Деньги возвращены',
+    },
+    priceTbd: 'Цена уточняется', custom: 'Индивидуальный дизайн', locale: 'ru-RU',
+    answers: (n, people) => <>Ответов: <b>{n}</b> · придут <b>{people}</b> чел.</>, noAnswers: 'Ответов пока нет',
+    open: 'Открыть заказ', copied: 'Скопировано', copyLink: 'Копировать ссылку',
+    notLink: 'Это не ссылка на заказ. Она начинается с …/checkout/result?order=…',
+    title: 'Мои заказы', loading: 'Загрузка…', empty: 'На этом устройстве заказов пока нет.', choose: 'Выбрать приглашение →',
+    loadErr: 'Некоторые заказы не удалось загрузить. Проверьте подключение к интернету и обновите страницу.',
+    pasteLabel: 'Заказ сделан с другого устройства? Вставьте ссылку на заказ', add: 'Добавить',
+  },
+  en: {
+    status: {
+      paid: 'Paid', pending: 'Payment in progress', unpaid: 'Not paid',
+      failed: 'Payment failed', cancelled: 'Payment cancelled', refunded: 'Refunded',
+    },
+    priceTbd: 'Price being confirmed', custom: 'Custom design', locale: 'en-GB',
+    answers: (n, people) => <>Answers: <b>{n}</b> · <b>{people}</b> attending</>, noAnswers: 'No answers yet',
+    open: 'Open the order', copied: 'Copied', copyLink: 'Copy the link',
+    notLink: 'This isn’t an order link. It starts with …/checkout/result?order=…',
+    title: 'My orders', loading: 'Loading…', empty: 'No orders on this device yet.', choose: 'Choose an invitation →',
+    loadErr: 'Some orders couldn’t be loaded. Check your internet connection and refresh the page.',
+    pasteLabel: 'Ordered from another device? Paste the order link', add: 'Add',
+  },
 }
 
 function parseLink(text) {
@@ -31,10 +68,12 @@ function parseLink(text) {
 }
 
 function OrderCard({ o }) {
+  const { lang, to } = useLang()
+  const t = useText(TEXT)
   const d = o.data
   const design = findDesign(d.designId)
-  const name = design ? `${design.code} · ${design.title}` : d.designId === CUSTOM_DESIGN_ID ? CUSTOM_DESIGN_LABEL : d.designId
-  const [label, tone] = d.amount == null && d.paymentStatus === 'unpaid' ? ['Գինը ճշտվում է', 'wait'] : STATUS[d.paymentStatus] || [d.paymentStatus, 'muted']
+  const name = design ? `${design.code} · ${designTitle(design, lang)}` : d.designId === CUSTOM_DESIGN_ID ? t.custom : d.designId
+  const [label, tone] = d.amount == null && d.paymentStatus === 'unpaid' ? [t.priceTbd, 'wait'] : TONE[d.paymentStatus] ? [t.status[d.paymentStatus], TONE[d.paymentStatus]] : [d.paymentStatus, 'muted']
   const link = d.invitationCode && design?.previewSlug ? `${window.location.origin}/i/${d.invitationCode}` : null
   const coming = (d.rsvps || []).filter((r) => r.status === 'confirmed')
   const people = coming.reduce((n, r) => n + 1 + (r.plus || 0), 0)
@@ -46,18 +85,18 @@ function OrderCard({ o }) {
         <span className={`mo-st tone-${tone}`}>{label}</span>
       </div>
       <h2 className="mo-name">{name}</h2>
-      <p className="mo-meta">{formatPrice(d.amount)} · {new Date(d.createdAt).toLocaleDateString('hy-AM')}</p>
+      <p className="mo-meta">{formatPrice(d.amount, lang)} · {new Date(d.createdAt).toLocaleDateString(t.locale)}</p>
       {link && (
         <>
           <p className="mo-link"><a href={link} target="_blank" rel="noopener noreferrer">{link.replace(/^https?:\/\//, '')}</a></p>
-          <p className="mo-ans">{d.rsvps?.length ? <>Պատասխաններ՝ <b>{d.rsvps.length}</b> · կգա <b>{people}</b> հոգի</> : 'Պատասխաններ դեռ չկան'}</p>
+          <p className="mo-ans">{d.rsvps?.length ? t.answers(d.rsvps.length, people) : t.noAnswers}</p>
         </>
       )}
       <div className="mo-actions">
-        <Link className="btn btn-primary" to={orderLink(o.orderId, o.token)}>Բացել պատվերը</Link>
+        <Link className="btn btn-primary" to={to(orderLink(o.orderId, o.token))}>{t.open}</Link>
         {link && (
           <button type="button" className="btn btn-ghost" onClick={() => navigator.clipboard?.writeText(link).then(() => { setCopied(true); setTimeout(() => setCopied(false), 1800) })}>
-            {copied ? 'Պատճենված է' : 'Պատճենել հղումը'}
+            {copied ? t.copied : t.copyLink}
           </button>
         )}
       </div>
@@ -66,6 +105,8 @@ function OrderCard({ o }) {
 }
 
 export default function MyOrders() {
+  const { to } = useLang()
+  const t = useText(TEXT)
   const [orders, setOrders] = useState(null)
   const [paste, setPaste] = useState('')
   const [pasteErr, setPasteErr] = useState('')
@@ -82,7 +123,7 @@ export default function MyOrders() {
   const add = async (e) => {
     e.preventDefault()
     const o = parseLink(paste)
-    if (!o) { setPasteErr('Սա պատվերի հղում չէ։ Այն սկսվում է …/checkout/result?order=…'); return }
+    if (!o) { setPasteErr(t.notLink); return }
     try {
       await getOrderStatus(o.orderId, o.token)
       rememberOrder(o.orderId, o.token)
@@ -96,23 +137,23 @@ export default function MyOrders() {
     <main className="co mo">
       <div className="wrap">
         <p className="eyebrow">Siloona</p>
-        <h1 className="co-title">Իմ պատվերները</h1>
+        <h1 className="co-title">{t.title}</h1>
         {orders === null ? (
-          <p className="co-note">Բեռնվում է…</p>
+          <p className="co-note">{t.loading}</p>
         ) : shown.length ? (
           <ul className="mo-list">{shown.map((o) => <OrderCard key={o.orderId} o={o} />)}</ul>
         ) : (
           <div className="co-note">
-            Այս սարքում պատվերներ դեռ չկան։ <Link to="/invitations">Ընտրել հրավիրատոմս →</Link>
+            {t.empty} <Link to={to('/invitations')}>{t.choose}</Link>
           </div>
         )}
-        {orders?.some((o) => o.error === 'error') && <p className="co-alert">Որոշ պատվերներ չհաջողվեց բեռնել։ Ստուգեք ինտերնետ կապը և թարմացրեք էջը։</p>}
+        {orders?.some((o) => o.error === 'error') && <p className="co-alert">{t.loadErr}</p>}
 
         <form className="mo-add" onSubmit={add}>
-          <label htmlFor="mo-paste">Պատվերը կատարել եք այլ սարքից՝ տեղադրեք պատվերի հղումը</label>
+          <label htmlFor="mo-paste">{t.pasteLabel}</label>
           <div className="mo-add-row">
             <input id="mo-paste" value={paste} onChange={(e) => { setPaste(e.target.value); setPasteErr('') }} placeholder="https://…/checkout/result?order=…" />
-            <button type="submit" className="btn btn-ghost">Ավելացնել</button>
+            <button type="submit" className="btn btn-ghost">{t.add}</button>
           </div>
           {pasteErr && <p className="co-err">{pasteErr}</p>}
         </form>

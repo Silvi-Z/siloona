@@ -6,6 +6,7 @@ import { useDesignFonts } from '../shared/useDesignFonts'
 import { SYMBOLS } from './lib/art'
 import { Curtain, Hero } from './components/Opening'
 import { CalendarCountdown, Details, DressCode, Program, Sign, Venue, Welcome } from './components/Sections'
+import SiloonaCredit from '../shared/SiloonaCredit'
 
 // Cormorant 300 and Noto Serif Armenian 200/300 aren't in the site-wide
 // font link.
@@ -76,6 +77,7 @@ function WdGreenBody({ editing }) {
           <Section id="venue"><Venue /></Section>
           <Sign />
         </div>
+        <SiloonaCredit design="wd-green" />
       </main>
     </div>
   )

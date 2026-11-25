@@ -1,0 +1,191 @@
+/* =========================================================
+   "ce-truck" — holiday party at home. Soft paper, a watercolour
+   red pickup with three decorated trees (assets/truck.webp), red
+   handwritten «join us», red serif title, spaced black details.
+   One column, 560px at most; sizes are cqw of that column, so the
+   cover keeps the reference card's proportions; on a phone the
+   type is set larger to stay readable.
+   ========================================================= */
+.cet{
+  --paper:#eeebe9; --red:#c8141c; --ink:#25211f; --soft:#4a4441; --line:rgba(37,33,31,.16);
+  --title:"Playfair Display","Noto Serif Armenian",Georgia,serif;
+  --text:"Lora","Noto Serif Armenian",Georgia,serif;
+  --arm:"Noto Serif Armenian","Lora",Georgia,serif;
+  --script:"Caveat","Noto Serif Armenian",cursive;
+  min-height:100vh; color:var(--ink); font-family:var(--text); -webkit-font-smoothing:antialiased;
+  background:#e3dedb;
+}
+.cet *{box-sizing:border-box}
+.cet .col{
+  position:relative; width:min(100%,560px); margin:0 auto; overflow:hidden; container-type:inline-size;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 .35  0 0 0 0 .3  0 0 0 0 .28  0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23p)'/%3E%3C/svg%3E"),
+    var(--paper);
+  box-shadow:0 30px 80px -40px rgba(60,40,30,.45);
+}
+.cet :is(h1,h2,p,ol){margin:0}
+
+/* ---------- cover ---------- */
+.cet .hero{padding:11cqw 7cqw 13cqw; text-align:center}
+.cet .art{position:relative; width:85cqw; margin-left:1.5cqw}
+.cet .truck{display:block; width:100%; height:auto; pointer-events:none; user-select:none}
+.cet .script{font-family:var(--script); font-weight:500; color:var(--red); line-height:1}
+.cet .script.arm{font-family:var(--arm); font-style:italic; font-weight:400}
+.cet .join{position:absolute; left:4cqw; top:-1cqw; font-size:15cqw; letter-spacing:.01em; transform:rotate(-6deg); transform-origin:left bottom}
+.cet .join.arm{font-size:8.4cqw; top:1cqw}
+.cet .kicker{margin-top:5cqw; font-size:2.9cqw; letter-spacing:.32em; text-transform:uppercase; padding-left:.32em}
+.cet .title{display:flex; flex-direction:column; align-items:center; margin-top:2.4cqw; font-family:var(--title); font-weight:400; font-size:calc(9cqw * var(--fit,1)); line-height:1.12; letter-spacing:-.005em; color:var(--red)}
+.cet .details{margin-top:4cqw; display:grid; gap:3.2cqw; font-variant-numeric:lining-nums}
+.cet .caps{font-size:2.9cqw; letter-spacing:.28em; text-transform:uppercase; padding-left:.28em}
+.cet .it{font-style:italic; font-size:3cqw; letter-spacing:.16em}
+.cet .edit-when{display:flex; flex-wrap:wrap; gap:8px; justify-content:center}
+
+@container (max-width:520px){
+  .cet .hero{padding:16cqw 5cqw 14cqw}
+  .cet .art{width:90cqw; margin-left:0}
+  .cet .join{font-size:17cqw; top:-6cqw}
+  .cet .join.arm{font-size:9.6cqw; top:-2cqw}
+  .cet .kicker{font-size:3.8cqw; margin-top:7cqw}
+  .cet .title{font-size:calc(10.6cqw * var(--fit,1))}
+  .cet .details{gap:4cqw; margin-top:6cqw}
+  .cet .caps{font-size:3.7cqw; letter-spacing:.2em; padding-left:.2em}
+  .cet .it{font-size:3.9cqw; letter-spacing:.08em}
+}
+
+/* ---------- the evening, part by part ---------- */
+.cet .blk:not(.hero){position:relative; padding:4px 9cqw 60px; text-align:center}
+.cet .star{display:flex; align-items:center; justify-content:center; gap:14px; color:var(--red); margin-bottom:22px}
+.cet .star::before, .cet .star::after{content:""; width:46px; height:1px; background:var(--line)}
+.cet .title2{font-family:var(--title); font-weight:400; font-size:clamp(28px,8cqw,40px); line-height:1.15; color:var(--red); margin-bottom:16px}
+.cet .script.big{font-size:clamp(40px,11cqw,58px); margin-bottom:14px}
+.cet .script.big.arm{font-size:clamp(24px,6.6cqw,34px); line-height:1.25}
+.cet .body{font-size:16.5px; line-height:1.7; color:var(--soft); text-wrap:pretty; font-variant-numeric:lining-nums}
+.cet .body:has(+ *){margin-bottom:22px}
+.cet .small{font-size:12.5px; letter-spacing:.26em; text-transform:uppercase; padding-left:.26em}
+.cet .vname{font-family:var(--title); font-style:italic; font-size:24px; margin-bottom:6px}
+
+.cet .cells{display:flex; justify-content:center; margin:18px 0 16px}
+.cet .cells span{display:flex; flex-direction:column; align-items:center; gap:4px; min-width:22cqw; max-width:110px; font-size:11.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--soft)}
+.cet .cells span + span{border-left:1px solid var(--line)}
+.cet .cells b{font-family:var(--title); font-weight:400; font-size:clamp(30px,9cqw,46px); line-height:1; color:var(--red); font-variant-numeric:lining-nums tabular-nums}
+.cet .long{font-style:italic; font-size:16px; letter-spacing:.04em; margin-bottom:22px; font-variant-numeric:lining-nums}
+
+.cet .btn{
+  display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 26px; border:1px solid var(--red);
+  border-radius:2px; color:var(--red); background:transparent; font:500 12.5px/1.2 var(--text); letter-spacing:.22em; text-transform:uppercase;
+  text-decoration:none; cursor:pointer; transition:background .25s ease, color .25s ease;
+}
+.cet .btn:hover, .cet .btn.solid{background:var(--red); color:#fff}
+.cet .btn.solid:hover{background:#a50f16}
+.cet .btn:focus-visible{outline:2px solid var(--red); outline-offset:3px}
+
+.cet .tl{list-style:none; padding:0; display:grid; max-width:400px; margin:0 auto}
+.cet .tl li{position:relative; display:grid; grid-template-columns:70px 1fr; gap:14px; align-items:baseline; text-align:left; padding:13px 0; border-bottom:1px solid var(--line); font-size:16.5px}
+.cet .tl li:first-child{border-top:1px solid var(--line)}
+.cet .tl time{font-family:var(--title); font-size:19px; color:var(--red); font-variant-numeric:lining-nums}
+
+.cet .sw{display:flex; justify-content:center; gap:16px}
+.cet .sw-i{width:36px; height:36px; border-radius:50%; background:var(--c); box-shadow:0 0 0 1px var(--line), 0 0 0 5px var(--paper), 0 0 0 6px var(--line)}
+.cet .sw-edit{width:44px; height:44px; border:0; padding:0; background:none; cursor:pointer}
+
+/* reply form */
+.cet .form{display:grid; gap:20px; max-width:400px; margin:0 auto; text-align:left}
+.cet .field{display:grid; gap:8px}
+.cet .lbl{font-size:11.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--soft)}
+.cet .form input[type=text], .cet .form textarea{
+  width:100%; font:inherit; font-size:17px; color:var(--ink); background:rgba(255,255,255,.55); border:1px solid rgba(37,33,31,.22);
+  border-radius:2px; padding:11px 13px; outline:none; transition:border-color .2s ease; resize:vertical;
+}
+.cet .form input:focus, .cet .form textarea:focus{border-color:var(--red)}
+.cet .form input[aria-invalid]{border-color:var(--red)}
+.cet .err{font-size:14px; color:var(--red)}
+.cet .choice{display:flex; flex-wrap:wrap; gap:10px}
+.cet .choice label{
+  flex:1 1 140px; position:relative; display:flex; align-items:center; justify-content:center; min-height:46px; padding:10px 14px;
+  border:1px solid rgba(37,33,31,.22); border-radius:2px; font-size:15.5px; cursor:pointer; text-align:center; background:rgba(255,255,255,.4);
+  transition:background .2s ease, border-color .2s ease, color .2s ease;
+}
+.cet .choice.nums label{flex:1 1 0; min-width:54px}
+.cet .choice label.on{background:var(--red); border-color:var(--red); color:#fff}
+.cet .choice input{position:absolute; opacity:0; pointer-events:none}
+.cet .choice label:has(input:focus-visible){outline:2px solid var(--red); outline-offset:2px}
+.cet .send{justify-self:center; margin-top:4px; min-width:200px}
+.cet .thanks{font-family:var(--title); font-style:italic; font-size:21px; line-height:1.5; color:var(--red); padding:10px 0}
+
+.cet .closing{padding-bottom:16px}
+.cet .truck-s{display:block; width:min(52cqw,260px); height:auto; margin:0 auto 18px}
+.cet .closing .caps{font-size:13px}
+.cet .siloona-credit{color:var(--ink)}
+
+/* reveal */
+.cet .r{opacity:0; transform:translateY(14px); transition:opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1); transition-delay:calc(var(--i,0) * 110ms)}
+.cet .in .r{opacity:1; transform:none}
+.cet .hero .join.r{transform:rotate(-6deg) translateY(14px)}
+.cet .hero.in .join.r{transform:rotate(-6deg)}
+/* motion */
+/* the truck (it faces left) drives in from the right, dips its nose as it
+   brakes, then idles for a moment, a few puffs from the exhaust */
+.cet .art{isolation:isolate}
+.cet .truck{transform-origin:50% 100%; opacity:0}
+.cet .art.go .truck{animation:cetDrive 1.8s cubic-bezier(.25,.7,.25,1) both, cetIdle .3s ease-in-out 1.8s 6 alternate}
+@keyframes cetDrive{0%{opacity:0; transform:translateX(18%)} 18%{opacity:1} 78%{transform:translateX(-1.2%) rotate(-.9deg)} 100%{opacity:1; transform:none}}
+@keyframes cetIdle{from{transform:none}to{transform:translateY(-.4%)}}
+.cet .puff{position:absolute; left:90%; top:78%; z-index:-1; width:3.4cqw; height:3.4cqw; border-radius:50%; pointer-events:none; opacity:0;
+  background:radial-gradient(circle, rgba(130,130,138,.42), rgba(130,130,138,0) 70%);
+}
+.cet .art.go .puff{animation:cetPuff 2.2s ease-out calc(1.7s + var(--d) * .7s) 3}
+@keyframes cetPuff{0%{opacity:0; transform:translate(0,0) scale(.4)} 18%{opacity:1} 100%{opacity:0; transform:translate(8cqw,-5cqw) scale(2.8)}}
+/* «join us» writes itself in, left to right */
+.cet .join{clip-path:inset(-30% 100% -30% -10%)}
+.cet .art.go .join{animation:cetWrite 1.3s cubic-bezier(.45,.05,.35,1) 1.1s forwards}
+@keyframes cetWrite{to{clip-path:inset(-30% -10% -30% -10%)}}
+/* the title settles from airy to its own spacing */
+.cet .hero .title.r{letter-spacing:.05em; transition:opacity .9s ease, transform .9s cubic-bezier(.2,.7,.2,1), letter-spacing 1.8s cubic-bezier(.2,.7,.2,1); transition-delay:.2s}
+.cet .hero.in .title.r{letter-spacing:-.005em}
+/* each star turns into place and its hairlines draw out */
+.cet .star svg{transition:transform 1.1s cubic-bezier(.2,.7,.2,1) .15s}
+.cet .star.r svg{transform:rotate(-144deg) scale(.3)}
+.cet .in .star.r svg{transform:none}
+.cet .star::before, .cet .star::after{transform:scaleX(0); transition:transform .9s cubic-bezier(.2,.7,.2,1) .35s}
+.cet .star::before{transform-origin:100% 50%}
+.cet .star::after{transform-origin:0 50%}
+.cet .in .star::before, .cet .in .star::after{transform:none}
+/* the swatches pop in one by one */
+.cet .in .sw-i{animation:cetPop .6s cubic-bezier(.3,1.6,.5,1) calc(.4s + var(--k, 0) * .09s) both}
+@keyframes cetPop{from{opacity:0; transform:scale(.4)}to{opacity:1; transform:none}}
+/* a countdown digit ticks in when it changes */
+.cet .cells b{animation:cetTick .5s cubic-bezier(.2,.7,.2,1)}
+@keyframes cetTick{from{opacity:.15; transform:translateY(-7px)}to{opacity:1; transform:none}}
+/* the small truck at the end arrives from the right as well */
+.cet .closing .truck-s.r{transform:translateX(40%); transition:opacity 1.2s ease, transform 1.6s cubic-bezier(.2,.75,.25,1)}
+.cet .closing.in .truck-s.r{transform:none}
+.cet .btn{transition:background .25s ease, color .25s ease, transform .2s ease}
+.cet .btn:hover{transform:translateY(-1px)}
+.cet .choice label:active{transform:scale(.97)}
+.cet .thanks{animation:cetFade .9s ease both}
+@keyframes cetFade{from{opacity:0; transform:translateY(10px)}to{opacity:1; transform:none}}
+.cet.editing .r{opacity:1; transform:none; transition:none}
+.cet.editing .hero .join{transform:rotate(-6deg)}
+.cet.editing :is(.cells b, .sw-i){animation:none}
+.cet.editing .art .truck, .cet.editing .art.go .truck{animation:none; opacity:1}
+.cet.editing .puff{display:none}
+.cet.editing .art .join, .cet.editing .art.go .join{clip-path:none; animation:none}
+.cet.editing .star svg, .cet.editing .star::before, .cet.editing .star::after{transform:none; transition:none}
+.cet.editing .hero .title.r{letter-spacing:-.005em}
+
+/* edit mode */
+.cet .wdb-editable{outline:1px dashed transparent; border-radius:3px; transition:outline-color .15s}
+.cet .wdb-editable:hover, .cet .wdb-editable:focus{outline-color:var(--red)}
+.cet .wdb-edit-dt{background:#fff; padding:4px 6px; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,.08); font-size:13px; letter-spacing:0; text-transform:none; display:inline-flex; align-items:center; gap:6px}
+.cet .wdb-edit-input{font:400 14px var(--text); color:var(--ink); background:#fff; border:1px solid var(--red); border-radius:6px; padding:3px 6px}
+
+@media (prefers-reduced-motion:reduce){
+  .cet .art .truck, .cet .art.go .truck, .cet .cells b, .cet .sw-i, .cet .thanks{animation:none; opacity:1}
+  .cet .puff{display:none}
+  .cet .art .join, .cet .art.go .join{clip-path:none; animation:none}
+  .cet .star svg, .cet .star::before, .cet .star::after{transform:none; transition:none}
+  .cet .hero .title.r{letter-spacing:-.005em; transition:none}
+  .cet .closing .truck-s.r{transform:none}
+  .cet .r{transition:none; opacity:1; transform:none}
+  .cet .hero .join.r{transform:rotate(-6deg)}
+}

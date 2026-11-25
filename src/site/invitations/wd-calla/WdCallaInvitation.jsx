@@ -3,6 +3,7 @@ import Section from '../shared/Section'
 import { useInvitationContent } from '../shared/EditableContext'
 import { useDesignFonts } from '../shared/useDesignFonts'
 import { Closing, DateBlock, DressCode, Hero, Program, Rsvp, Venue, Welcome } from './components/Sections'
+import SiloonaCredit from '../shared/SiloonaCredit'
 
 // Light weights of Cormorant (numerals, ampersand) and Noto Serif
 // Armenian aren't all in the site-wide font link.
@@ -29,6 +30,7 @@ export default function WdCallaInvitation() {
           <Section id="rsvp"><Rsvp /></Section>
         </div>
         <Section id="closing"><Closing /></Section>
+        <SiloonaCredit design="wd-calla" />
       </main>
     </div>
   )

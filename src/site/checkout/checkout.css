@@ -117,6 +117,9 @@
 .siloona-site .co-methods[disabled] .co-method{cursor:default; opacity:.7}
 
 .siloona-site .co-consent{display:flex; gap:12px; align-items:flex-start; font-size:13.5px; color:var(--ink-2); cursor:pointer; margin:4px 0 6px; line-height:1.5}
+.siloona-site .co-consent a,.siloona-site .co-legal a{color:inherit; text-decoration:underline; text-underline-offset:2px; text-decoration-color:var(--muted)}
+.siloona-site .co-consent a:hover,.siloona-site .co-legal a:hover{color:var(--violet)}
+.siloona-site .co-legal{display:flex; flex-wrap:wrap; gap:4px 18px; margin:0 0 8px 30px; font-size:12.5px; color:var(--muted)}
 .siloona-site .co-consent input{width:18px; height:18px; margin:2px 0 0; accent-color:var(--violet); flex:none}
 
 .siloona-site .co-note{
@@ -157,6 +160,11 @@
 .siloona-site .co-sum-total{display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-top:10px; padding-top:10px; border-top:1px solid var(--line)}
 .siloona-site .co-sum-total span{font-size:13px; color:var(--ink-2)}
 .siloona-site .co-sum-total strong{font-family:var(--serif); font-weight:500; font-size:19px; color:var(--ink); white-space:nowrap}
+.siloona-site .co-sum-lang{display:flex; flex-wrap:wrap; gap:4px 12px; align-items:baseline; margin:10px 0 0; padding-top:10px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-2)}
+.siloona-site .co-sum-lang b{font-weight:600; color:var(--ink)}
+.siloona-site .co-sum-lang small{flex-basis:100%; font-size:12px; color:var(--muted)}
+.siloona-site .co-sum-langs{display:flex; gap:12px}
+.siloona-site .co-sum-langs a{color:var(--violet); border-bottom:1px solid currentColor; padding:6px 0; line-height:1}
 .siloona-site .co-sum-cur{display:none; font-size:12px; color:var(--muted); margin:6px 0 0}
 
 /* ---------- Order page ---------- */
@@ -213,20 +221,70 @@
 }
 
 /* ---------- Payment simulator page (PAYMENTS_SIMULATION=1 only) ---------- */
-.siloona-site .co-sim{padding-top:0}
 .siloona-site .co-sim-banner{
   background:repeating-linear-gradient(135deg,#F3E3C4 0 14px,#EFD9B0 14px 28px);
   color:#6A4A12; text-align:center; font-size:13px; font-weight:600; letter-spacing:.04em;
-  padding:10px 16px; margin-bottom:36px; border-bottom:1px solid rgba(176,137,63,.35);
+  padding:10px 16px; margin-bottom:0; border-bottom:1px solid rgba(176,137,63,.35);
 }
-.siloona-site .co-sim-card{text-align:left; border-top:3px solid var(--gold)}
-.siloona-site .co-sim-card h1, .siloona-site .co-sim-card .eyebrow{text-align:center}
-.siloona-site .co-sim-card .co-lede{text-align:center}
-.siloona-site .co-sim-amount{font-family:var(--serif); font-size:19px}
-.siloona-site .co-sim-actions{display:grid; gap:14px; margin-top:28px}
-.siloona-site .co-sim-opt{display:flex; flex-direction:column; gap:6px}
-.siloona-site .co-sim-opt .btn{justify-content:center; width:100%}
-.siloona-site .co-sim-opt span{font-size:12.5px; color:var(--muted); text-align:center}
+.siloona-site .gw{min-height:100vh; background:#F4F1EC; padding-bottom:40px}
+.siloona-site .gw-wrap{width:min(100% - 32px, 460px); margin:0 auto; padding-top:26px}
+.siloona-site .gw-head{display:flex; align-items:center; gap:8px; font-size:13px; letter-spacing:.04em; color:var(--ink-2); margin-bottom:14px}
+.siloona-site .gw-head svg{color:#2F7A55}
+.siloona-site .gw-3ds{margin-left:auto; font-size:11px; font-weight:600; letter-spacing:.06em; color:var(--muted); border:1px solid var(--line-2); border-radius:4px; padding:2px 7px}
+.siloona-site .gw-order{background:#fff; border:1px solid var(--line); border-radius:8px 8px 0 0; padding:16px 20px 18px}
+.siloona-site .gw-order dl{margin:0; display:grid; gap:6px}
+.siloona-site .gw-order dl div{display:flex; justify-content:space-between; gap:16px; font-size:13px}
+.siloona-site .gw-order dt{color:var(--muted)}
+.siloona-site .gw-order dd{margin:0; color:var(--ink); text-align:right; min-width:0; overflow-wrap:anywhere}
+.siloona-site .gw-amount{display:flex; justify-content:space-between; align-items:baseline; gap:16px; margin:14px 0 0; padding-top:14px; border-top:1px dashed var(--line-2)}
+.siloona-site .gw-amount span{font-size:13px; color:var(--muted)}
+.siloona-site .gw-amount strong{font-family:var(--serif); font-weight:400; font-size:26px; color:var(--ink)}
+.siloona-site .gw-card{background:#fff; border:1px solid var(--line); border-top:0; border-radius:0 0 8px 8px; padding:22px 20px 20px; box-shadow:0 18px 40px -30px rgba(40,30,20,.35)}
+.siloona-site .gw-card.gw-solo{border-top:1px solid var(--line); border-radius:8px}
+.siloona-site .gw-wait{display:grid; place-items:center; min-height:220px}
+.siloona-site .gw-title{font-family:inherit; font-size:17px; font-weight:600; letter-spacing:0; margin:0 0 14px; color:var(--ink)}
+.siloona-site .gw-text{font-size:13.5px; line-height:1.55; color:var(--ink-2); margin:0 0 16px}
+.siloona-site .gw-form{display:grid; gap:14px}
+.siloona-site .gw-form .co-alert{margin:0}
+.siloona-site .gw-brands{display:flex; gap:6px}
+.siloona-site .gw-brand{font-size:11px; font-weight:700; letter-spacing:.04em; padding:4px 8px; border:1px solid var(--line-2); border-radius:4px; color:var(--ink-2); transition:opacity .2s ease, border-color .2s ease}
+.siloona-site .gw-brand.on{border-color:var(--ink); color:var(--ink)}
+.siloona-site .gw-brand.off{opacity:.35}
+.siloona-site .gw-field{display:flex; flex-direction:column; gap:6px; min-width:0}
+.siloona-site .gw-label{font-size:12.5px; color:var(--ink-2)}
+.siloona-site .gw-field input{width:100%; font:inherit; font-size:16px; color:var(--ink); background:#fff; border:1px solid var(--line-2); border-radius:6px; padding:12px 13px; outline:none; transition:border-color .2s ease, box-shadow .2s ease}
+.siloona-site .gw-field input:focus{border-color:var(--ink); box-shadow:0 0 0 3px rgba(33,28,40,.08)}
+.siloona-site .gw-field input[aria-invalid="true"]{border-color:#B4483C}
+.siloona-site .gw-field input::placeholder{color:#B9B2AA}
+.siloona-site .gw-field .mono, .siloona-site .gw .mono{font-family:ui-monospace,Menlo,Consolas,monospace; letter-spacing:.04em}
+.siloona-site .gw-secret{-webkit-text-security:disc}
+.siloona-site .gw-hint{font-size:12px; color:var(--muted)}
+.siloona-site .gw-row{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.siloona-site .gw-otp{text-align:center; font-size:22px !important; letter-spacing:.5em; font-family:ui-monospace,Menlo,Consolas,monospace}
+.siloona-site .gw-pay{width:100%; justify-content:center; margin-top:4px}
+.siloona-site .gw-cancel{background:none; border:0; padding:4px; font:inherit; font-size:13px; color:var(--muted); text-decoration:underline; text-underline-offset:3px; cursor:pointer; justify-self:center}
+.siloona-site .gw-center{display:flex; flex-direction:column; align-items:center; text-align:center; gap:14px; padding:12px 0}
+.siloona-site .gw-center p{margin:0}
+.siloona-site .gw-busy{min-height:190px; justify-content:center}
+.siloona-site .gw-busy-t{font-size:15px; color:var(--ink)}
+.siloona-site .gw-busy-s{font-size:12.5px; color:var(--muted)}
+.siloona-site .gw-test{margin-top:16px; border:1px dashed rgba(176,137,63,.55); border-radius:8px; background:#FBF4E6; padding:10px 16px; font-size:12.5px; color:#6A4A12}
+.siloona-site .gw-test summary{cursor:pointer; font-weight:600; letter-spacing:.03em}
+.siloona-site .gw-test-h{margin:10px 0 6px}
+.siloona-site .gw-test ul{list-style:none; margin:0; padding:0}
+.siloona-site .gw-test li{display:grid; grid-template-columns:1fr auto; align-items:center; gap:1px 10px; padding:6px 0; border-top:1px solid rgba(176,137,63,.2)}
+.siloona-site .gw-test-r{grid-column:1; font-size:12px; opacity:.85}
+.siloona-site .gw-test li button{grid-column:2; grid-row:1 / span 2}
+.siloona-site .gw-test button{font:inherit; font-size:12px; color:#6A4A12; background:none; border:1px solid rgba(176,137,63,.55); border-radius:4px; padding:2px 8px; cursor:pointer}
+.siloona-site .gw-foot{display:flex; gap:8px; align-items:flex-start; margin:18px 0 0; font-size:12px; line-height:1.5; color:var(--muted)}
+.siloona-site .gw-foot svg{flex:none; margin-top:1px}
+@media (max-width:380px){ .siloona-site .gw-row{grid-template-columns:1fr} }
+
+/* method picker: an icon and a «Թեստ» tag */
+.siloona-site .co-method-txt{flex:1; min-width:0}
+.siloona-site .co-method-ico{flex:none; color:var(--muted); margin-left:12px}
+.siloona-site .co-method.on .co-method-ico{color:var(--violet)}
+.siloona-site .co-method-tag{display:inline-block; margin-left:8px; vertical-align:2px; font-size:10.5px; font-weight:600; letter-spacing:.03em; color:#6A4A12; background:#F6EAD2; border-radius:3px; padding:2px 6px}
 .siloona-site .co-spin.dark{border-color:rgba(33,28,40,.2); border-top-color:var(--ink)}
 .siloona-site .co-test-note{
   display:inline-block; margin:14px 0 0; font-size:12.5px; color:#6A4A12; background:#F6EAD2;

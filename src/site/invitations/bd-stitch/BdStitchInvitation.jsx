@@ -3,6 +3,7 @@ import Section from '../shared/Section'
 import { useInvitationContent } from '../shared/EditableContext'
 import { useDesignFonts } from '../shared/useDesignFonts'
 import { Closing, Countdown, Hero, Program, Rsvp, Venue, Welcome } from './components/Sections'
+import SiloonaCredit from '../shared/SiloonaCredit'
 
 // The heavy weights for the embroidered titles aren't in the site-wide
 // font link.
@@ -25,6 +26,7 @@ export default function BdStitchInvitation() {
         <Section id="venue"><Venue /></Section>
         <Section id="rsvp"><Rsvp /></Section>
         <Section id="closing"><Closing /></Section>
+        <SiloonaCredit design="bd-stitch" />
       </main>
     </div>
   )

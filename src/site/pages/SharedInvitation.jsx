@@ -6,6 +6,7 @@ import { deepMerge } from '../invitations/shared/pathUtils'
 import { findDesign } from '../designCatalog'
 import { prefillFromCustomization, prefillFromEvent } from '../invitationPrefill'
 import { contentFromDetails } from '../invitationDetails'
+import { defaultsFor } from '../invitationDefaults'
 
 // The invitation guests open — /i/:code[/:token]. Two kinds, the server
 // tells which (GET /api/invitations):
@@ -58,6 +59,10 @@ function reviveEvent(e) {
   }
 }
 
+// The invitation's language, as the order's content records it.
+const invLangOf = (data) => (data?.kind !== 'event' && INVITATION_WORD[data?.content?.lang] ? data.content.lang : 'hy')
+const INVITATION_WORD = { hy: 'Հրավեր', ru: 'Приглашение', en: 'Invitation' }
+
 export default function SharedInvitation() {
   const { code, token } = useParams()
   const [state, setState] = useState({ status: 'loading' })
@@ -90,8 +95,10 @@ export default function SharedInvitation() {
     }
     // Purchased: design ← checkout details ← the customer's edits. Orders
     // from before the design's own details were asked have only names / date / venue.
-    const filled = data.details ? contentFromDetails(slug, data.details) : prefillFromCustomization(slug, data.customization)
-    return deepMerge(deepMerge(entry.defaultData, filled), data.content)
+    // A Russian / English invitation starts from that language's demo.
+    const lang = invLangOf(data)
+    const filled = data.details ? contentFromDetails(slug, data.details, lang) : prefillFromCustomization(slug, data.customization, lang)
+    return deepMerge(deepMerge(defaultsFor(slug, lang), filled), data.content)
   }, [entry, slug, data])
 
   useEffect(() => {
@@ -99,7 +106,9 @@ export default function SharedInvitation() {
     const names = data.kind === 'event'
       ? [data.event.person1?.first, data.event.person2?.first].filter(Boolean).join(' & ') || data.event.title
       : data.customization?.names
-    if (names) document.title = `${names} · Հրավեր`
+    const lang = invLangOf(data)
+    if (names) document.title = `${names} · ${INVITATION_WORD[lang]}`
+    document.documentElement.lang = lang
   }, [data])
 
   if (state.status === 'loading') return <div style={{ minHeight: '100vh', background: '#FBF7F0' }} />

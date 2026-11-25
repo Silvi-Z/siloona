@@ -1,0 +1,197 @@
+/* =========================================================
+   "ce-groovy" — corporate Christmas party, retro seventies. A rainbow
+   arch (nested rounded bands, so its top stays a true half-circle at
+   any height) over a blush panel; the disco ball, bells and gifts are
+   inline SVG (components/Art.jsx). One column, 560px at most; sizes
+   are cqw of that column.
+   ========================================================= */
+.cgr{
+  --ink:#3d2b26; --red:#c8513b; --mustard:#e0a83c; --green:#5f8f6c; --pink:#eaa597; --blue:#9cc0d3; --blush:#f4e2d8; --cream:#fbf2ea;
+  --soft:#6b5650; --line:rgba(61,43,38,.16);
+  --display:"Shrikhand","Unbounded","Noto Sans Armenian",system-ui,sans-serif;
+  --sans:"Jost","Noto Sans Armenian",system-ui,sans-serif;
+  min-height:100vh; color:var(--ink); font-family:var(--sans); -webkit-font-smoothing:antialiased;
+  background:#efe1d6;
+}
+.cgr *{box-sizing:border-box}
+.cgr .col{position:relative; width:min(100%,560px); margin:0 auto; overflow:hidden; container-type:inline-size; background:var(--cream); box-shadow:0 30px 80px -40px rgba(61,43,38,.45)}
+.cgr :is(h1,h2,p,ol){margin:0}
+.cgr .caps{font-size:2.6cqw; font-weight:500; letter-spacing:.2em; text-transform:uppercase; padding-left:.2em}
+
+/* ---------- cover ---------- */
+.cgr .hero{position:relative; aspect-ratio:522/712; background:#dfeaf0}
+.cgr .arch{position:absolute; left:-14cqw; right:-14cqw; top:-1cqw; bottom:0; --b:4.4cqw}
+.cgr .band{position:absolute; left:calc(var(--k) * var(--b)); right:calc(var(--k) * var(--b)); top:calc(var(--k) * var(--b)); bottom:0;
+  border-radius:calc(64cqw - var(--k) * var(--b)) calc(64cqw - var(--k) * var(--b)) 0 0}
+.cgr .b0{background:var(--blue)}
+.cgr .b1{background:var(--red)}
+.cgr .b2{background:var(--mustard)}
+.cgr .b3{background:var(--green)}
+.cgr .b4{background:var(--pink)}
+.cgr .b5{background:var(--blush)}
+.cgr .disco-w{position:absolute; left:72cqw; top:11cqw; width:28cqw; transform-origin:50% 0; z-index:1}
+.cgr .disco{display:block; width:100%; height:auto; overflow:visible}
+.cgr .sp{position:absolute; width:3.4cqw; height:3.4cqw; z-index:1}
+.cgr .sp1{left:88cqw; top:54cqw}
+.cgr .sp2{left:93cqw; top:58.5cqw; width:2.6cqw; height:2.6cqw}
+.cgr .sp3{left:24cqw; top:40cqw; width:2.6cqw; height:2.6cqw}
+.cgr .bells-w{position:absolute; left:-3cqw; top:50cqw; width:34cqw; z-index:1}
+.cgr .bells{display:block; width:100%; height:auto; overflow:visible}
+.cgr .gifts-w{position:absolute; left:73cqw; top:95cqw; width:23cqw; z-index:1}
+.cgr .gifts{display:block; width:100%; height:auto; overflow:visible}
+.cgr .words{position:relative; z-index:2; color:var(--ink); display:grid; justify-items:center; gap:2.4cqw; width:52cqw; margin:0 auto; padding-top:27cqw; text-align:center}
+.cgr .title{display:flex; flex-direction:column; align-items:center; font-family:var(--display); font-weight:800; font-synthesis:none; font-size:calc(10.6cqw * var(--fit,1)); line-height:1.02; letter-spacing:.01em; text-shadow:.07em .07em 0 var(--ink)}
+.cgr .title .t1{color:var(--green)}
+.cgr .title .t2{color:var(--red)}
+.cgr .sub{font-size:2.9cqw; font-weight:600}
+.cgr .when{color:var(--ink); display:flex; align-items:baseline; justify-content:center; gap:2.4cqw; font-size:2.6cqw; font-weight:500; letter-spacing:.16em; text-transform:uppercase; font-variant-numeric:lining-nums}
+.cgr .when b{font-size:5.2cqw; font-weight:600; letter-spacing:0}
+.cgr .co{font-family:var(--display); font-weight:800; font-synthesis:none; font-size:5cqw; color:var(--blue); text-shadow:.06em .06em 0 var(--ink); letter-spacing:.02em}
+.cgr .addr{display:grid; color:var(--ink)}
+.cgr .note{color:var(--red); max-width:38cqw; line-height:1.5}
+.cgr .edit-when{margin:4px 0}
+
+@container (max-width:520px){
+  .cgr .hero{aspect-ratio:auto; min-height:max(100svh,200cqw); padding-bottom:62cqw}
+  .cgr .arch{left:-24cqw; right:-24cqw; --b:5.2cqw}
+  .cgr .band{border-radius:calc(74cqw - var(--k) * var(--b)) calc(74cqw - var(--k) * var(--b)) 0 0}
+  .cgr .disco-w{left:72cqw; top:12cqw; width:26cqw}
+  .cgr .sp1{left:66cqw; top:46cqw; width:4.4cqw; height:4.4cqw}
+  .cgr .sp2{left:93cqw; top:62cqw; width:3.6cqw; height:3.6cqw}
+  .cgr .sp3{display:none}
+  .cgr .bells-w{left:-4cqw; top:auto; bottom:2cqw; width:24cqw}
+  .cgr .gifts-w{left:auto; right:3cqw; top:auto; bottom:3cqw; width:26cqw}
+  .cgr .words{width:76cqw; gap:3.2cqw; padding-top:62cqw}
+  .cgr .caps{font-size:3.7cqw}
+  .cgr .title{font-size:calc(14.4cqw * var(--fit,1))}
+  .cgr .sub{font-size:4.1cqw}
+  .cgr .when{font-size:3.8cqw}
+  .cgr .when b{font-size:8cqw}
+  .cgr .co{font-size:7.6cqw}
+  .cgr .note{max-width:none; font-size:3.6cqw}
+}
+
+/* ---------- the evening, part by part ---------- */
+.cgr .blk:not(.hero){position:relative; padding:8px 9cqw 58px; text-align:center}
+.cgr .mini-rb{display:block; width:70px; height:auto; margin:0 auto 14px}
+.cgr .title2{font-family:var(--display); font-weight:800; font-synthesis:none; font-size:clamp(26px,7.6cqw,38px); line-height:1.15; letter-spacing:.01em; text-shadow:.07em .07em 0 var(--ink); margin-bottom:16px}
+.cgr .title2.green{color:var(--green)}
+.cgr .title2.red{color:var(--red)}
+.cgr .title2.big{font-size:clamp(32px,9.6cqw,48px)}
+.cgr .body{font-family:var(--sans); font-size:17px; line-height:1.65; color:var(--soft); text-wrap:pretty}
+.cgr .body:has(+ *){margin-bottom:22px}
+.cgr .blk:not(.hero) .caps{font-size:13px; font-weight:600; color:var(--soft)}
+.cgr .vname{font-family:var(--display); font-weight:800; font-synthesis:none; font-size:22px; color:var(--blue); text-shadow:.06em .06em 0 var(--ink); margin-bottom:6px}
+.cgr .blk:not(.hero) .co{font-size:22px}
+
+.cgr .cells{display:flex; justify-content:center; gap:10px; margin:16px 0 12px}
+.cgr .cells span{display:grid; justify-items:center; gap:2px; width:min(20cqw,92px); padding:10px 0; border:2px solid var(--ink); border-radius:14px; font-size:12px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--ink); box-shadow:3px 3px 0 var(--ink)}
+.cgr .cells .red{background:#f6d3c9} .cgr .cells .mustard{background:#f8e3b3} .cgr .cells .green{background:#d3e4d6} .cgr .cells .blue{background:#d9e9f1}
+.cgr .cells b{font-family:var(--display); font-weight:800; font-synthesis:none; font-size:clamp(24px,7cqw,34px); line-height:1.1; font-variant-numeric:lining-nums tabular-nums}
+.cgr .long{font-size:15px; color:var(--soft); margin-bottom:22px}
+
+.cgr .btn{
+  display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:11px 26px; border:2px solid var(--ink);
+  border-radius:999px; color:var(--ink); background:var(--mustard); box-shadow:3px 3px 0 var(--ink); font:600 13px/1.2 var(--sans); letter-spacing:.16em; text-transform:uppercase;
+  text-decoration:none; cursor:pointer; transition:transform .15s ease, box-shadow .15s ease;
+}
+.cgr .btn:hover{transform:translate(-2px,-2px); box-shadow:5px 5px 0 var(--ink)}
+.cgr .btn:active{transform:translate(2px,2px); box-shadow:1px 1px 0 var(--ink)}
+.cgr .btn.solid{background:var(--red); color:#fff}
+.cgr .btn:focus-visible{outline:2px solid var(--green); outline-offset:4px}
+
+.cgr .tl{list-style:none; padding:0; display:grid; gap:10px; max-width:400px; margin:0 auto}
+.cgr .tl li{position:relative; display:grid; grid-template-columns:64px 1fr; gap:12px; align-items:center; text-align:left; padding:10px 14px; border:2px solid var(--ink); border-radius:14px; background:#fff; box-shadow:3px 3px 0 var(--ink); font-size:16px}
+.cgr .tl li:nth-child(4n+1){background:#f6d3c9} .cgr .tl li:nth-child(4n+2){background:#f8e3b3} .cgr .tl li:nth-child(4n+3){background:#d3e4d6} .cgr .tl li:nth-child(4n+4){background:#d9e9f1}
+.cgr .tl time{font-family:var(--display); font-weight:800; font-synthesis:none; font-size:17px; font-variant-numeric:lining-nums}
+
+.cgr .sw{display:flex; justify-content:center; gap:12px}
+.cgr .sw-i{width:38px; height:38px; border-radius:50%; background:var(--c); border:2px solid var(--ink); box-shadow:2px 2px 0 var(--ink)}
+.cgr .sw-edit{width:44px; height:44px; border:0; padding:0; background:none; cursor:pointer}
+
+/* reply form */
+.cgr .form{display:grid; gap:18px; max-width:400px; margin:0 auto; text-align:left}
+.cgr .field{display:grid; gap:7px}
+.cgr .lbl{font-size:12px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--soft)}
+.cgr .form input[type=text], .cgr .form textarea{
+  width:100%; font:400 17px var(--sans); color:var(--ink); background:#fff; border:2px solid var(--ink);
+  border-radius:12px; padding:10px 12px; outline:none; box-shadow:2px 2px 0 var(--ink); resize:vertical;
+}
+.cgr .form input:focus, .cgr .form textarea:focus{border-color:var(--green)}
+.cgr .err{font-size:14px; color:var(--red); font-weight:600}
+.cgr .choice{display:flex; flex-wrap:wrap; gap:10px}
+.cgr .choice label{
+  flex:1 1 140px; position:relative; display:flex; align-items:center; justify-content:center; min-height:46px; padding:8px 14px;
+  border:2px solid var(--ink); border-radius:999px; font-size:16px; font-weight:500; cursor:pointer; text-align:center; background:#fff;
+  transition:background .2s ease, color .2s ease, transform .15s ease;
+}
+.cgr .choice label.on{background:var(--green); color:#fff}
+.cgr .choice label:active{transform:scale(.97)}
+.cgr .choice input{position:absolute; opacity:0; pointer-events:none}
+.cgr .choice label:has(input:focus-visible){outline:2px solid var(--red); outline-offset:2px}
+.cgr .send{justify-self:center; min-width:200px}
+.cgr .thanks{font-family:var(--display); font-weight:800; font-synthesis:none; font-size:22px; color:var(--green); text-shadow:.06em .06em 0 var(--ink); padding:10px 0}
+
+.cgr .closing{padding-bottom:16px}
+.cgr .siloona-credit{color:var(--ink)}
+
+/* ---------- motion ---------- */
+/* the rainbow rises band by band */
+.cgr .band{animation:cgrBand .9s cubic-bezier(.2,.7,.2,1) calc(var(--k) * .09s) both}
+@keyframes cgrBand{from{transform:translateY(12%); opacity:0}to{transform:none; opacity:1}}
+/* the disco ball drops in on its string, then swings; some tiles glint */
+.cgr .disco-w{animation:cgrDrop 1.1s cubic-bezier(.3,1.4,.5,1) .5s both, cgrSwing 3.2s ease-in-out 1.6s infinite alternate}
+@keyframes cgrDrop{from{transform:translateY(-60%); opacity:0}to{transform:none; opacity:1}}
+@keyframes cgrSwing{from{transform:rotate(-4deg)}to{transform:rotate(4deg)}}
+.cgr .tile.glint{animation:cgrGlint 2.4s ease-in-out var(--d) infinite}
+@keyframes cgrGlint{0%,70%,100%{fill-opacity:1} 80%{fill-opacity:.25} 85%{fill-opacity:1}}
+.cgr .sp{animation:cgrTwinkle 1.8s ease-in-out infinite alternate}
+.cgr .sp2{animation-delay:-.6s}
+.cgr .sp3{animation-delay:-1.2s}
+@keyframes cgrTwinkle{from{transform:scale(.6) rotate(0)}to{transform:scale(1.1) rotate(45deg)}}
+/* the bells ring one after another */
+.cgr .bell-swing{transform-box:fill-box; transform-origin:50% 0; animation:cgrRing 2.8s ease-in-out infinite}
+.cgr .b2 .bell-swing{animation-delay:.25s} .cgr .b3 .bell-swing{animation-delay:.5s} .cgr .b4 .bell-swing{animation-delay:.75s}
+.cgr .b5 .bell-swing{animation-delay:1s} .cgr .b6 .bell-swing{animation-delay:1.25s} .cgr .b7 .bell-swing{animation-delay:1.5s}
+@keyframes cgrRing{0%,55%,100%{transform:rotate(0)} 62%{transform:rotate(10deg)} 70%{transform:rotate(-8deg)} 78%{transform:rotate(5deg)} 86%{transform:rotate(-2deg)}}
+.cgr .bells-w{animation:cgrIn .9s ease .3s both}
+/* the gifts land one on another; the top one hops now and then */
+.cgr .gifts .box3{animation:cgrLand .6s cubic-bezier(.3,1.5,.5,1) .6s both}
+.cgr .gifts .box2{animation:cgrLand .6s cubic-bezier(.3,1.5,.5,1) .85s both}
+.cgr .gifts .box1{animation:cgrLand .6s cubic-bezier(.3,1.5,.5,1) 1.1s both, cgrHop 4s ease-in-out 2.5s infinite}
+@keyframes cgrLand{from{transform:translateY(-60px); opacity:0}to{transform:none; opacity:1}}
+@keyframes cgrHop{0%,80%,100%{transform:none} 86%{transform:translateY(-10px) rotate(-3deg)} 92%{transform:none}}
+@keyframes cgrIn{from{opacity:0; transform:translateX(-12%)}to{opacity:1; transform:none}}
+/* the small rainbows draw themselves */
+.cgr .mini-rb .mb{stroke-dasharray:160; stroke-dashoffset:160}
+.cgr .in .mini-rb .mb{animation:cgrDraw .9s ease calc(var(--k) * .1s) forwards}
+@keyframes cgrDraw{to{stroke-dashoffset:0}}
+.cgr .cells b{animation:cgrTick .5s cubic-bezier(.2,.7,.2,1)}
+@keyframes cgrTick{from{opacity:.15; transform:translateY(-6px)}to{opacity:1; transform:none}}
+.cgr .in .sw-i{animation:cgrPop .6s cubic-bezier(.3,1.6,.5,1) calc(.35s + var(--k, 0) * .08s) both}
+@keyframes cgrPop{from{opacity:0; transform:scale(.3)}to{opacity:1; transform:none}}
+.cgr .thanks{animation:cgrFade .9s ease both}
+@keyframes cgrFade{from{opacity:0; transform:translateY(10px)}to{opacity:1; transform:none}}
+
+/* reveal */
+.cgr .r{opacity:0; translate:0 14px; transition:opacity .9s ease, translate .9s cubic-bezier(.2,.7,.2,1); transition-delay:calc(var(--i,0) * 110ms + .2s)}
+.cgr .in .r{opacity:1; translate:none}
+.cgr.editing .r{opacity:1; translate:none; transition:none}
+.cgr.editing :is(.band, .disco-w, .tile.glint, .sp, .bell-swing, .bells-w, .cells b, .sw-i){animation:none}
+.cgr.editing .gifts :is(.box1, .box2, .box3){animation:none}
+.cgr.editing .mini-rb .mb, .cgr.editing .in .mini-rb .mb{animation:none; stroke-dashoffset:0}
+.cgr.editing .in .sw-i{animation:none}
+
+/* edit mode */
+.cgr .wdb-editable{outline:1px dashed transparent; border-radius:3px; transition:outline-color .15s}
+.cgr .wdb-editable:hover, .cgr .wdb-editable:focus{outline-color:var(--red)}
+.cgr .wdb-edit-dt{background:#fff; padding:4px 6px; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,.08); font:400 14px var(--sans); letter-spacing:0; text-transform:none}
+.cgr .wdb-edit-input{font:400 14px var(--sans); color:var(--ink); background:#fff; border:1px solid var(--ink); border-radius:6px; padding:3px 6px}
+
+@media (prefers-reduced-motion:reduce){
+  .cgr :is(.band, .disco-w, .tile.glint, .sp, .bell-swing, .bells-w, .cells b, .sw-i, .thanks){animation:none}
+  .cgr .gifts :is(.box1, .box2, .box3){animation:none}
+  .cgr .mini-rb .mb, .cgr .in .mini-rb .mb{animation:none; stroke-dashoffset:0}
+  .cgr .in .sw-i{animation:none}
+  .cgr .r{transition:none; opacity:1; translate:none}
+}

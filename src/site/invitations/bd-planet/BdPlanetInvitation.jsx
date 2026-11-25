@@ -7,6 +7,7 @@ import Section, { useSectionHidden } from '../shared/Section'
 import { useInvitationContent } from '../shared/EditableContext'
 import { formatEventDate } from './lib/date'
 import picture from './assets/planet.webp'
+import SiloonaCredit from '../shared/SiloonaCredit'
 
 const calm = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
@@ -268,6 +269,7 @@ export default function BdPlanetInvitation() {
         <Section id="venue"><Venue /></Section>
         <Section id="rsvp"><Rsvp /></Section>
         <Section id="closing"><Closing /></Section>
+        <SiloonaCredit design="bd-planet" />
       </main>
     </div>
   )

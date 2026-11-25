@@ -5,9 +5,8 @@
 // spaced capitals, thin rules with a dot, and the «ԴԵԿ | 24 | 19:00»
 // date row.
 //
-// Same core keys as ce-ornament (company, hero.title, eventDate, venue,
-// schedule, closing.signature), so a dashboard event fills it in the same
-// way. eventDate drives the date row, the countdown and the calendar link.
+// The core keys (company, hero.title, eventDate, venue, schedule,
+// closing.signature) are the ones a dashboard event fills in. eventDate drives the date row, the countdown and the calendar link.
 export const ceGarlandDefaultData = {
   company: '«Նովա» ընկերություն',
   eventDate: '2026-12-24T19:00:00',

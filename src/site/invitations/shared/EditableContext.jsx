@@ -81,10 +81,11 @@ export function InvitationContentProvider({ defaultData, saved, onSave, onReset,
 }
 
 // Public /invitations/preview/:slug host — edit mode lives in the `?edit`
-// query param, edits persist in this browser's localStorage per slug.
-export function InvitationEditProvider({ slug, defaultData, transform, children }) {
+// query param, edits persist in this browser's localStorage per slug (and
+// per invitation language, `lang`).
+export function InvitationEditProvider({ slug, lang, defaultData, transform, children }) {
   const [searchParams, setSearchParams] = useSearchParams()
-  const [saved] = useState(() => loadOverride(slug))
+  const [saved] = useState(() => loadOverride(slug, lang))
   const editing = searchParams.has('edit')
 
   function setEditing(next) {
@@ -100,8 +101,8 @@ export function InvitationEditProvider({ slug, defaultData, transform, children 
     <InvitationContentProvider
       defaultData={defaultData}
       saved={saved}
-      onSave={(next) => saveOverride(slug, next)}
-      onReset={() => clearOverride(slug)}
+      onSave={(next) => saveOverride(slug, next, lang)}
+      onReset={() => clearOverride(slug, lang)}
       editing={editing}
       setEditing={setEditing}
       transform={transform}

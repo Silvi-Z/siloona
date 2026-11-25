@@ -1,6 +1,13 @@
 import { useRef, useState } from 'react'
 import { useInvitationContent } from './EditableContext'
 import { getByPath } from './pathUtils'
+import { useText } from '../../i18n'
+
+const TEXT = {
+  hy: { bad: 'Չհաջողվեց բացել այս ֆայլը։ Ընտրեք JPG կամ PNG լուսանկար։', loading: 'Բեռնվում է…', change: 'Փոխել լուսանկարը' },
+  ru: { bad: 'Не удалось открыть этот файл. Выберите фото в формате JPG или PNG.', loading: 'Загрузка…', change: 'Заменить фото' },
+  en: { bad: 'Couldn’t open this file. Choose a JPG or PNG photo.', loading: 'Loading…', change: 'Change photo' },
+}
 
 // A photo the customer can replace while editing. The chosen file is
 // shrunk in the browser (longest side ≤ 1600px, JPEG) and kept in the
@@ -34,6 +41,7 @@ export async function shrinkPhoto(file) {
 
 export default function EditablePhoto({ path, className, imgClassName, alt = '', loading = 'lazy', style, children }) {
   const { data, editing, setField } = useInvitationContent()
+  const t = useText(TEXT)
   const input = useRef(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
@@ -48,7 +56,7 @@ export default function EditablePhoto({ path, className, imgClassName, alt = '',
     try {
       setField(path, await shrinkPhoto(file))
     } catch {
-      setError('Չհաջողվեց բացել այս ֆայլը։ Ընտրեք JPG կամ PNG լուսանկար։')
+      setError(t.bad)
     } finally {
       setBusy(false)
     }
@@ -71,7 +79,7 @@ export default function EditablePhoto({ path, className, imgClassName, alt = '',
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M4 8h3l2-3h6l2 3h3v11H4z" /><circle cx="12" cy="13" r="3.5" />
             </svg>
-            {busy ? 'Բեռնվում է…' : 'Փոխել լուսանկարը'}
+            {busy ? t.loading : t.change}
           </button>
           {error && <span role="alert" style={{ maxWidth: 220, padding: '6px 10px', borderRadius: 8, background: '#fff', color: '#A3322B', fontFamily: FONT, fontSize: 12 }}>{error}</span>}
           <input ref={input} type="file" accept="image/*" onChange={pick} hidden />

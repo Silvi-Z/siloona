@@ -1,0 +1,36 @@
+/* Edit-mode tour (EditGuide.jsx) — the wizard's cream and burgundy, drawn
+   over any design, so every rule is under .eg- names of its own. */
+.eg-layer{
+  position:fixed; inset:0; z-index:400;
+  font-family:"Noto Sans Armenian","Noto Sans",-apple-system,"Segoe UI",Roboto,sans-serif; color:#211C28;
+}
+.eg-layer *,.eg-layer *::before,.eg-layer *::after{box-sizing:border-box}
+/* The lit-up control: a clear window in a dimmed page. The layer itself
+   catches every tap, so the page stays still during the tour. */
+.eg-hole{
+  position:fixed; border-radius:12px; pointer-events:none;
+  box-shadow:0 0 0 2px #fff,0 0 0 5px rgba(107,29,44,.85),0 0 0 200vmax rgba(25,23,22,.58);
+  transition:top .3s cubic-bezier(.2,.7,.2,1),left .3s cubic-bezier(.2,.7,.2,1),width .3s cubic-bezier(.2,.7,.2,1),height .3s cubic-bezier(.2,.7,.2,1);
+}
+.eg-dim{position:fixed; inset:0; background:rgba(25,23,22,.58)}
+
+.eg-card{
+  position:fixed; padding:16px 18px 14px; background:#FBF7F0; border-radius:14px;
+  box-shadow:0 14px 40px rgba(0,0,0,.28); animation:eg-in .3s cubic-bezier(.2,.7,.2,1) both;
+}
+.eg-top{display:flex; align-items:center; justify-content:space-between; margin-bottom:6px}
+.eg-count{font-size:12px; letter-spacing:.06em; color:#7A7080}
+.eg-skip{border:0; background:none; font:inherit; font-size:13.5px; color:#6B1D2C; padding:6px 0; cursor:pointer}
+.eg-card h2{margin:0 0 6px; font-family:"Noto Serif Armenian",Georgia,serif; font-weight:500; font-size:19px; line-height:1.3}
+.eg-card p{margin:0; font-size:14.5px; line-height:1.55; color:#4B4256}
+.eg-foot{display:flex; align-items:center; gap:8px; margin-top:14px}
+.eg-dots{display:flex; gap:5px; margin-right:auto}
+.eg-dots i{width:6px; height:6px; border-radius:50%; background:rgba(107,29,44,.2); transition:background .3s,width .3s}
+.eg-dots i.on{width:16px; border-radius:3px; background:#6B1D2C}
+.eg-back,.eg-next{font:inherit; font-size:14px; font-weight:500; border-radius:999px; padding:10px 18px; min-height:42px; cursor:pointer}
+.eg-back{border:1px solid rgba(33,28,40,.18); background:transparent; color:#211C28}
+.eg-next{border:0; background:#6B1D2C; color:#fff}
+.eg-next:focus-visible,.eg-back:focus-visible,.eg-skip:focus-visible{outline:2px solid #6B1D2C; outline-offset:3px}
+
+@keyframes eg-in{from{opacity:0; transform:translateY(8px)}}
+@media (prefers-reduced-motion:reduce){ .eg-hole{transition:none} .eg-card{animation:none} }

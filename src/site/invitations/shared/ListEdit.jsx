@@ -1,6 +1,13 @@
 import { useLayoutEffect, useRef } from 'react'
 import { useInvitationContent } from './EditableContext'
 import { getByPath } from './pathUtils'
+import { useText } from '../../i18n'
+
+const TEXT = {
+  hy: { remove: 'Հեռացնել կետը', add: 'Ավելացնել կետ' },
+  ru: { remove: 'Удалить пункт', add: 'Добавить пункт' },
+  en: { remove: 'Remove this item', add: 'Add an item' },
+}
 
 // Add / remove items of a list in a design's content (the day's programme)
 // while editing — shown only in edit mode, so guests never see them.
@@ -11,8 +18,10 @@ const FONT = '-apple-system,"Segoe UI",Roboto,"Noto Sans Armenian",sans-serif'
 
 // × in the item's corner. Put it as the item's last child; the item is
 // made the positioning parent if it isn't one already.
-export function RowRemove({ list, index, label = 'Հեռացնել կետը' }) {
+export function RowRemove({ list, index, label }) {
   const { data, editing, setField } = useInvitationContent()
+  const t = useText(TEXT)
+  label ??= t.remove
   const ref = useRef(null)
   useLayoutEffect(() => {
     const parent = ref.current?.parentElement
@@ -42,8 +51,12 @@ export function RowRemove({ list, index, label = 'Հեռացնել կետը' }) 
 
 // «+ Add» under the list: a copy of the last item with a placeholder text,
 // ready to be typed over.
-export function RowAdd({ list, field = 'label', text = 'Նոր կետ', label = 'Ավելացնել կետ', max = 20 }) {
+// `text` is the new item's own content (the invitation's language, still
+// Armenian), not the editor's.
+export function RowAdd({ list, field = 'label', text = 'Նոր կետ', label, max = 20 }) {
   const { data, editing, setField } = useInvitationContent()
+  const t = useText(TEXT)
+  label ??= t.add
   if (!editing) return null
   const items = getByPath(data, list) || []
   if (items.length >= max) return null
@@ -56,6 +69,7 @@ export function RowAdd({ list, field = 'label', text = 'Նոր կետ', label = 
     <div style={{ display: 'flex', justifyContent: 'center', margin: '14px 0 4px', position: 'relative', zIndex: 5 }}>
       <button
         type="button"
+        data-guide="row-add"
         onClick={add}
         style={{
           padding: '9px 18px', borderRadius: 999, border: '1.5px dashed currentColor', background: 'rgba(255,255,255,.55)',

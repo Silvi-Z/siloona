@@ -1,0 +1,223 @@
+/* =========================================================
+   "wd-chateau" — wedding in navy and soft blue on white. A
+   watercolour chateau (assets/chateau.webp) under the names,
+   blue-and-white roses (assets/florals.webp) between the parts.
+   One column, 560px at most; sizes are cqw of that column.
+   ========================================================= */
+.wdc{
+  --navy:#1f3a6e; --ink:#2a3550; --soft:#5d6a86; --blue:#a9c3e4; --pale:#eef3fb; --line:rgba(31,58,110,.18);
+  --serif:"Cormorant Garamond","Noto Serif Armenian",Georgia,serif;
+  min-height:100vh; color:var(--ink); font-family:var(--serif); -webkit-font-smoothing:antialiased;
+  background:linear-gradient(180deg,#d6e2f4 0%,#b9cdec 100%) fixed;
+}
+.wdc *{box-sizing:border-box}
+.wdc .col{
+  position:relative; width:min(100%,560px); margin:0 auto; overflow:hidden; container-type:inline-size;
+  background:radial-gradient(120% 50% at 50% 0%,#ffffff 0%,#fbfcff 60%,#f4f7fd 100%);
+  box-shadow:0 30px 90px -40px rgba(31,58,110,.45);
+}
+.wdc :is(h1,h2,h3,p,ol){margin:0}
+.wdc .sr{position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap}
+.wdc .small-caps{display:block; font-size:12px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--soft)}
+.wdc .hd{font-weight:700; font-size:clamp(20px,5.4cqw,26px); letter-spacing:.16em; text-transform:uppercase; color:var(--navy); margin-bottom:18px; padding-left:.16em}
+.wdc .hd.small{font-size:16px; margin:26px 0 8px}
+.wdc .amp{display:block; font-style:italic; font-weight:400; font-size:.5em; color:var(--soft); margin:.1em 0}
+
+/* ---------- cover ---------- */
+.wdc .hero{position:relative; display:flex; flex-direction:column; align-items:center; padding-top:12cqw; text-align:center}
+.wdc .orn{width:26cqw; max-width:130px; height:auto; color:var(--navy)}
+.wdc .welcome{display:flex; align-items:center; gap:3cqw; margin-top:2cqw; font-size:clamp(11px,2.6cqw,14px); font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--navy)}
+.wdc .welcome::before, .wdc .welcome::after{content:""; width:12cqw; height:1px; background:currentColor; opacity:.6}
+.wdc .names{position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; margin-top:7cqw; font-weight:300; font-size:clamp(36px,10cqw,56px); line-height:1.05; letter-spacing:.06em; text-transform:uppercase; color:var(--navy)}
+.wdc .names .amp{font-size:.4em; text-transform:none; margin:.3em 0}
+.wdc .chateau{display:block; width:100%; height:auto; margin-top:-14cqw; pointer-events:none; user-select:none}
+
+/* ---------- the parts ---------- */
+.wdc .blk:not(.hero){position:relative; padding:10cqw 8cqw 6cqw; text-align:center}
+.wdc .parents{display:grid; grid-template-columns:1fr auto 1fr; gap:4cqw; align-items:center; margin-bottom:18px}
+.wdc .parents p{display:grid; gap:6px}
+.wdc .parents b{font-weight:600; font-size:17px; color:var(--ink); line-height:1.3}
+.wdc .parents i{width:1px; align-self:stretch; background:var(--line)}
+.wdc .intro{font-style:italic; font-size:18px; line-height:1.5; color:var(--soft); max-width:30em; margin:0 auto}
+.wdc .bignames{display:flex; flex-direction:column; align-items:center; margin:22px 0 10px; font-weight:400; font-size:clamp(34px,9.6cqw,48px); line-height:1.05; color:var(--navy)}
+.wdc .edit-when{margin:10px 0}
+.wdc .place{margin-top:28px; display:grid; justify-items:center; gap:4px}
+.wdc .place .caps{font-size:15px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--navy)}
+.wdc .pname{font-size:19px; color:var(--ink)}
+.wdc .ptime{font-size:24px; font-weight:500; color:var(--navy); font-variant-numeric:lining-nums}
+.wdc .dr{display:grid; justify-items:center; margin-top:4px}
+.wdc .dr-row{display:flex; align-items:center; gap:14px; font-variant-numeric:lining-nums}
+.wdc .dr-row span{font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--soft); min-width:84px}
+.wdc .dr-row span:first-child{text-align:right}
+.wdc .dr-row span:last-child{text-align:left}
+.wdc .dr-row i{width:1px; height:30px; background:var(--navy); opacity:.5}
+.wdc .dr-row b{font-weight:500; font-size:34px; color:var(--navy); line-height:1}
+.wdc .dr-year{font-size:17px; color:var(--ink); margin-top:4px; font-variant-numeric:lining-nums}
+
+/* gallery: a swipeable row, the current photo in the middle */
+.wdc .g-wrap{position:relative; margin:0 -8cqw}
+.wdc .g-track{display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory; padding:6px 18cqw 14px; scrollbar-width:none; -webkit-overflow-scrolling:touch}
+.wdc .g-track::-webkit-scrollbar{display:none}
+.wdc .g-item{flex:0 0 64cqw; max-width:340px; aspect-ratio:3/4; scroll-snap-align:center; border-radius:12px; overflow:hidden; background:var(--pale);
+  box-shadow:0 14px 30px -18px rgba(31,58,110,.5); transform:scale(.9); opacity:.6; transition:transform .45s ease, opacity .45s ease}
+.wdc .g-item.on{transform:none; opacity:1}
+.wdc .g-ph{display:block; width:100%; height:100%; position:relative}
+.wdc .g-img{display:block; width:100%; height:100%; object-fit:cover}
+.wdc .g-btn{position:absolute; top:calc(50% - 26px); width:40px; height:40px; border-radius:50%; border:1px solid var(--line); background:rgba(255,255,255,.9); color:var(--navy); font:400 26px/1 var(--serif); cursor:pointer; box-shadow:0 4px 12px rgba(31,58,110,.15)}
+.wdc .g-btn.prev{left:4cqw}
+.wdc .g-btn.next{right:4cqw}
+.wdc .g-btn:disabled{opacity:.3; cursor:default}
+.wdc .g-count{font-size:14px; letter-spacing:.1em; color:var(--soft); font-variant-numeric:lining-nums}
+.wdc.editing .g-item{transform:none; opacity:1}
+
+.wdc .blk.divider{padding:2cqw 8cqw 0}
+.wdc .florals{display:block; width:min(88%,480px); height:auto; margin:4cqw auto 0}
+.wdc .florals.flip{transform:scaleX(-1)}
+
+/* reception, countdown, calendar */
+.wdc .two{display:grid; grid-template-columns:1fr 1fr; gap:10px; max-width:320px; margin:18px auto 0}
+.wdc .two p{display:grid; gap:4px}
+.wdc .two b{font-weight:500; font-size:20px; color:var(--navy); font-variant-numeric:lining-nums}
+.wdc .cd{display:flex; flex-wrap:wrap; justify-content:center; gap:4px 12px; font-size:15px; color:var(--soft); font-variant-numeric:lining-nums tabular-nums}
+.wdc .cd b{font-weight:600; font-size:19px; color:var(--navy); display:inline-block}
+.wdc .cal{position:relative; width:min(100%,330px); margin:24px auto 14px; padding:20px 16px 16px; border:1.5px solid var(--navy); border-radius:10px; background:#fff}
+.wdc .cc{position:absolute; width:30px; height:30px; color:var(--navy); background:#fbfcff}
+.wdc .cc.tl{left:-9px; top:-9px}
+.wdc .cc.tr{right:-9px; top:-9px; transform:scaleX(-1)}
+.wdc .cc.bl{left:-9px; bottom:-9px; transform:scaleY(-1)}
+.wdc .cc.br{right:-9px; bottom:-9px; transform:scale(-1,-1)}
+.wdc .cal-h{font-size:17px; font-weight:600; color:var(--navy); margin-bottom:10px}
+.wdc .cal-g{display:grid; grid-template-columns:repeat(7,1fr); gap:6px 2px; border-top:1px solid var(--line); padding-top:10px}
+.wdc .cal-wd{font-size:11px; font-weight:600; letter-spacing:.04em; color:var(--soft); padding-bottom:4px}
+.wdc .cal-day{position:relative; display:grid; place-items:center; height:30px; font-size:14px; color:var(--ink); font-variant-numeric:lining-nums}
+.wdc .cal-day b{position:relative; font-weight:500}
+.wdc .cal-day.on b{color:#fff; font-weight:700}
+.wdc .cal-day svg{position:absolute; width:32px; height:30px; fill:var(--navy)}
+.wdc .link{display:inline-block; margin:6px 0 16px; font-size:15px; font-weight:600; color:var(--navy); text-decoration:underline; text-underline-offset:4px; text-decoration-color:var(--blue)}
+.wdc .btn{
+  display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 28px; border:1.5px solid var(--navy);
+  border-radius:999px; color:var(--navy); background:transparent; box-shadow:none; font:700 13px/1.2 var(--serif); letter-spacing:.16em; text-transform:uppercase;
+  text-decoration:none; cursor:pointer; transition:background .25s ease, color .25s ease, transform .2s ease;
+}
+.wdc .btn.solid{background:var(--navy); color:#fff}
+.wdc .btn:hover{transform:translateY(-1px); background:#16305c; color:#fff}
+.wdc .btn:focus-visible, .wdc .link:focus-visible, .wdc .g-btn:focus-visible{outline:2px solid var(--blue); outline-offset:3px}
+
+/* venue */
+.wdc .addr{font-size:16px; color:var(--soft); margin-top:4px}
+.wdc .map{position:relative; margin:18px 0 10px; aspect-ratio:4/3; border-radius:10px; overflow:hidden; border:1px solid var(--line); background:var(--pale)}
+.wdc .map iframe{position:absolute; inset:0; width:100%; height:100%; border:0}
+.wdc .map-ph{position:absolute; inset:0; background:repeating-linear-gradient(135deg,#eef3fb 0 14px,#e6eef9 14px 28px)}
+
+/* dress code */
+.wdc .sw{display:flex; justify-content:center; gap:14px; margin-top:16px}
+.wdc .sw-i{width:40px; height:40px; border-radius:50%; background:var(--c); box-shadow:0 0 0 1px var(--line), 0 4px 10px -4px rgba(31,58,110,.4)}
+.wdc .sw-edit{width:44px; height:44px; border:0; padding:0; background:none; cursor:pointer}
+
+/* schedule: a timeline with a navy line and dots */
+.wdc .tl{list-style:none; padding:0; display:grid; max-width:380px; margin:0 auto; text-align:left}
+.wdc .tl li{position:relative; display:grid; grid-template-columns:62px 22px 1fr; gap:10px; align-items:center; padding:12px 0; font-size:17px; color:var(--ink)}
+.wdc .tl time{font-size:16px; color:var(--soft); text-align:right; font-variant-numeric:lining-nums}
+.wdc .tl li > i{position:relative; justify-self:center; width:9px; height:9px; border-radius:50%; background:var(--navy)}
+.wdc .tl li::before{content:""; position:absolute; left:calc(62px + 10px + 11px); top:0; bottom:0; width:1px; background:var(--line)}
+
+/* reply form */
+.wdc .body{font-size:17px; line-height:1.6; color:var(--soft); margin-bottom:20px}
+.wdc .form{display:grid; gap:18px; max-width:400px; margin:0 auto; text-align:left; padding:22px 18px; border:1px solid var(--line); border-radius:14px; background:#fff}
+.wdc .field{display:grid; gap:7px}
+.wdc .lbl{font-size:12px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--soft)}
+.wdc .form input[type=text], .wdc .form textarea{
+  width:100%; font:400 17px var(--serif); color:var(--ink); background:#fbfcff; border:1px solid rgba(31,58,110,.25);
+  border-radius:8px; padding:10px 12px; outline:none; transition:border-color .2s ease; resize:vertical;
+}
+.wdc .form input:focus, .wdc .form textarea:focus{border-color:var(--navy)}
+.wdc .form input[aria-invalid]{border-color:#b4483c}
+.wdc .err{font-size:14px; color:#b4483c}
+.wdc .choice{display:flex; flex-wrap:wrap; gap:10px}
+.wdc .choice label{
+  flex:1 1 140px; position:relative; display:flex; align-items:center; justify-content:center; min-height:44px; padding:8px 14px;
+  border:1px solid rgba(31,58,110,.3); border-radius:999px; font-size:16px; font-weight:500; cursor:pointer; text-align:center; background:#fff;
+  transition:background .2s ease, color .2s ease, transform .15s ease;
+}
+.wdc .choice.nums label{flex:1 1 0; min-width:50px}
+.wdc .choice label.on{background:var(--navy); border-color:var(--navy); color:#fff}
+.wdc .choice label:active{transform:scale(.97)}
+.wdc .choice input{position:absolute; opacity:0; pointer-events:none}
+.wdc .choice label:has(input:focus-visible){outline:2px solid var(--blue); outline-offset:2px}
+.wdc .send{justify-self:center; min-width:200px}
+.wdc .thanks{font-style:italic; font-size:22px; color:var(--navy); padding:10px 0}
+
+/* gift box */
+.wdc .g-open{display:inline-grid; justify-items:center; gap:6px; background:none; border:0; padding:0; cursor:pointer; font:inherit; color:inherit}
+.wdc .g-open:disabled{cursor:default}
+.wdc .g-open:focus-visible{outline:2px solid var(--blue); outline-offset:6px; border-radius:12px}
+.wdc .gbox{width:190px; height:auto; overflow:visible}
+.wdc .gbox .lid{transform-box:fill-box; transform-origin:50% 100%; transition:transform .8s cubic-bezier(.3,1.4,.5,1)}
+.wdc .gbox.open .lid{transform:translate(18px,-40px) rotate(18deg)}
+.wdc .gbox .spark{opacity:.5}
+.wdc .hint{font-size:13px; letter-spacing:.08em; color:var(--soft)}
+.wdc .gift-text{max-width:30em; margin:10px auto 0; font-style:italic; font-size:18px; line-height:1.55; color:var(--ink)}
+
+.wdc .closing{padding-bottom:16px}
+.wdc .cline{font-style:italic; font-size:21px; color:var(--soft); margin-top:12px}
+.wdc .siloona-credit{color:var(--ink)}
+
+/* ---------- motion ---------- */
+/* the names settle, the chateau rises out of the paper */
+.wdc .hero .names.r{letter-spacing:.2em; transition:opacity 1.2s ease, translate 1.2s cubic-bezier(.2,.7,.2,1), letter-spacing 2s cubic-bezier(.2,.7,.2,1); transition-delay:.3s}
+.wdc .hero.in .names.r{letter-spacing:.06em}
+.wdc .chateau{animation:wdcRise 1.8s cubic-bezier(.2,.7,.2,1) .5s both}
+@keyframes wdcRise{from{opacity:0; transform:translateY(6%) scale(.98)}to{opacity:1; transform:none}}
+/* the scroll draws itself */
+.wdc .orn path{stroke-dasharray:160; stroke-dashoffset:160; animation:wdcDraw 1.8s ease .2s forwards}
+@keyframes wdcDraw{to{stroke-dashoffset:0}}
+/* the roses open out from the middle */
+.wdc .florals.r{transform:scaleX(.6); transition:opacity 1s ease, transform 1.4s cubic-bezier(.2,.7,.2,1)}
+.wdc .in .florals.r{transform:none}
+.wdc .florals.flip.r{transform:scaleX(-.6)}
+.wdc .in .florals.flip.r{transform:scaleX(-1)}
+/* the heart on the day beats gently */
+.wdc .cal-day.on svg{animation:wdcBeat 2.4s ease-in-out infinite}
+@keyframes wdcBeat{0%,60%,100%{transform:scale(1)} 70%{transform:scale(1.14)} 80%{transform:scale(1)} 88%{transform:scale(1.08)}}
+/* the timeline's dots pop in one after another */
+.wdc .in .tl li > i{animation:wdcPop .5s cubic-bezier(.3,1.6,.5,1) calc(var(--i) * .12s + .2s) both}
+@keyframes wdcPop{from{transform:scale(0)}to{transform:none}}
+.wdc .in .sw-i{animation:wdcPop .6s cubic-bezier(.3,1.6,.5,1) calc(.3s + var(--k, 0) * .1s) both}
+/* the countdown's numbers tick in when they change */
+.wdc .cd b{animation:wdcTick .5s cubic-bezier(.2,.7,.2,1)}
+@keyframes wdcTick{from{opacity:.15; transform:translateY(-6px)}to{opacity:1; transform:none}}
+/* the closed gift box wobbles now and then, asking to be opened */
+.wdc .gbox:not(.open){animation:wdcWobble 3.6s ease-in-out 1.5s infinite}
+@keyframes wdcWobble{0%,82%,100%{transform:none} 86%{transform:rotate(-4deg)} 90%{transform:rotate(4deg)} 94%{transform:rotate(-2deg)}}
+.wdc .gift-text.shown{animation:wdcFade .9s ease .3s both}
+.wdc .thanks{animation:wdcFade .9s ease both}
+@keyframes wdcFade{from{opacity:0; transform:translateY(10px)}to{opacity:1; transform:none}}
+
+/* reveal */
+.wdc .r{opacity:0; translate:0 14px; transition:opacity .9s ease, translate .9s cubic-bezier(.2,.7,.2,1); transition-delay:calc(var(--i,0) * 110ms)}
+.wdc .in .r{opacity:1; translate:none}
+.wdc.editing .r{opacity:1; translate:none; transition:none}
+.wdc.editing :is(.chateau, .cal-day.on svg, .cd b, .gbox, .gbox:not(.open), .gift-text.shown){animation:none}
+.wdc.editing .orn path{animation:none; stroke-dashoffset:0}
+.wdc.editing .in .tl li > i, .wdc.editing .in .sw-i{animation:none}
+.wdc.editing .florals.r{transform:none}
+.wdc.editing .florals.flip.r{transform:scaleX(-1)}
+.wdc.editing .hero .names.r{letter-spacing:.06em}
+
+/* edit mode */
+.wdc .wdb-editable{outline:1px dashed transparent; border-radius:3px; transition:outline-color .15s}
+.wdc .wdb-editable:hover, .wdc .wdb-editable:focus{outline-color:var(--navy)}
+.wdc .wdb-edit-dt{background:#fff; padding:4px 6px; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,.08); font:400 14px system-ui, sans-serif}
+.wdc .wdb-edit-input{font:400 14px system-ui, sans-serif; color:var(--ink); background:#fff; border:1px solid var(--navy); border-radius:6px; padding:3px 6px}
+
+@media (prefers-reduced-motion:reduce){
+  .wdc .chateau, .wdc .cal-day.on svg, .wdc .cd b, .wdc .gbox, .wdc .gbox:not(.open), .wdc .gift-text.shown, .wdc .thanks,
+  .wdc .in .tl li > i, .wdc .in .sw-i{animation:none}
+  .wdc .orn path{animation:none; stroke-dashoffset:0}
+  .wdc .gbox .lid{transition:none}
+  .wdc .g-item{transition:none}
+  .wdc .r{transition:none; opacity:1; translate:none}
+  .wdc .florals.r{transform:none}
+  .wdc .florals.flip.r{transform:scaleX(-1)}
+  .wdc .hero .names.r{letter-spacing:.06em}
+}

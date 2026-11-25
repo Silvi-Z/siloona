@@ -1,13 +1,48 @@
 import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react'
-import { Link, useParams, useSearchParams } from 'react-router-dom'
+import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom'
 import { INVITATION_PREVIEWS } from '../invitationRegistry'
 import { InvitationEditProvider, InvitationContentProvider, useInvitationContent } from '../invitations/shared/EditableContext'
 import { detailFields, syncNames, applyDetails } from '../invitationDetails'
 import EditBar from '../invitations/shared/EditBar'
 import { WEB_DESIGNS, CARD_DESIGNS } from '../designCatalog'
 import { floatingBtnStyle, floatingTopLeft } from '../invitations/shared/chromeStyles'
+import { LANG_LABELS, LANG_NAMES, rememberLang, stripLang, useLang, useText, withLang } from '../i18n'
+import { defaultsFor, invitationLang, invitationLangs } from '../invitationDefaults'
+
+const TEXT = {
+  hy: { notFound: 'Հրավիրատոմսը չի գտնվել։', backToCatalog: '← Վերադառնալ հավաքածուին', backLabel: 'Վերադառնալ հավաքածուին', back: '← Հավաքածու' },
+  ru: { notFound: 'Приглашение не найдено.', backToCatalog: '← Вернуться в коллекцию', backLabel: 'Вернуться в коллекцию', back: '← Коллекция' },
+  en: { notFound: 'Invitation not found.', backToCatalog: '← Back to the collection', backLabel: 'Back to the collection', back: '← Collection' },
+}
 
 const backBtnStyle = { ...floatingTopLeft, ...floatingBtnStyle }
+// bottom-left: the top corners already hold «back» and the edit bar
+const langBarStyle = { ...floatingBtnStyle, position: 'fixed', bottom: 16, left: 16, zIndex: 200, padding: '2px 6px', gap: 0 }
+const langLinkStyle = { color: 'inherit', textDecoration: 'none', padding: '7px 8px', opacity: 0.7 }
+const langOnStyle = { ...langLinkStyle, opacity: 1, textDecoration: 'underline', textUnderlineOffset: 4 }
+const LANG_GROUP = { hy: 'Հրավերի լեզուն', ru: 'Язык приглашения', en: 'Invitation language' }
+
+// The invitation's language, when the design has more than one: the same
+// preview under /, /ru or /en (the page's chrome follows along).
+function InvitationLangSwitch({ slug, current }) {
+  const { pathname, search } = useLocation()
+  const { lang } = useLang()
+  const langs = invitationLangs(slug)
+  if (langs.length < 2) return null
+  return (
+    <nav style={langBarStyle} aria-label={LANG_GROUP[lang]}>
+      {langs.map((l) => (
+        <Link
+          key={l} to={withLang(l, stripLang(pathname) + search)} lang={l} hrefLang={l}
+          aria-label={LANG_NAMES[l]} aria-current={l === current ? 'true' : undefined}
+          style={l === current ? langOnStyle : langLinkStyle} onClick={() => rememberLang(l)}
+        >
+          {LANG_LABELS[l]}
+        </Link>
+      ))}
+    </nav>
+  )
+}
 
 const noop = () => {}
 
@@ -35,6 +70,26 @@ function WizardHost({ slug, open, setOpen }) {
       />
     </Suspense>
   )
+}
+
+// The edit-mode tour (EditGuide.jsx), on every design: starts by itself the first time a visitor is in edit mode
+// with the wizard behind them (finished, skipped, or not needed because
+// they've already edited), and again from the edit bar's «?».
+const EditGuide = lazy(() => import('../editor/EditGuide'))
+const guideKey = (slug) => `siloona:guide-done:${slug}`
+const guideDone = (slug) => { try { return !!localStorage.getItem(guideKey(slug)) } catch { return false } }
+const markGuideDone = (slug) => { try { localStorage.setItem(guideKey(slug), '1') } catch { /* private mode */ } }
+
+function GuideHost({ slug, hasWizard, wizardOpen, open, setOpen }) {
+  const { editing, dirty } = useInvitationContent()
+  // Same condition under which WizardHost would *not* open the wizard, so
+  // the two never show at once and the tour follows the wizard.
+  useEffect(() => {
+    if (editing && !wizardOpen && !guideDone(slug) && (!hasWizard || dirty || wizardDone(slug))) setOpen(true)
+  }, [editing, wizardOpen]) // eslint-disable-line react-hooks/exhaustive-deps
+  const close = useCallback(() => { markGuideDone(slug); setOpen(false) }, [slug, setOpen])
+  if (!open || !editing || wizardOpen) return null
+  return <Suspense fallback={null}><EditGuide onClose={close} /></Suspense>
 }
 
 // `?embed` — the chrome-less mode the dashboard loads in an <iframe>: the
@@ -138,14 +193,16 @@ function EmbeddedInvitation({ slug, Invitation, defaultData }) {
 export default function InvitationPreview() {
   const { slug } = useParams()
   const [searchParams] = useSearchParams()
+  const { to } = useLang()
+  const t = useText(TEXT)
   const entry = INVITATION_PREVIEWS[slug]
 
   if (!entry) {
     return (
       <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', fontFamily: '-apple-system,"Segoe UI",Roboto,sans-serif', textAlign: 'center', gap: 16 }}>
         <div>
-          <p style={{ marginBottom: 12 }}>Հրավիրատոմսը չի գտնվել։</p>
-          <Link to="/invitations">← Վերադառնալ հավաքածուին</Link>
+          <p style={{ marginBottom: 12 }}>{t.notFound}</p>
+          <Link to={to('/invitations')}>{t.backToCatalog}</Link>
         </div>
       </div>
     )
@@ -161,16 +218,28 @@ export default function InvitationPreview() {
 
 function EditablePreview({ slug, entry, orderable }) {
   const Invitation = entry.component
+  const { lang, to } = useLang()
+  // The page's language if the design has it, else Armenian.
+  const inv = invitationLang(slug, lang)
+  const t = useText(TEXT)
   const [wizardOpen, setWizardOpen] = useState(false)
+  const [guideOpen, setGuideOpen] = useState(false)
   // A renamed person carries into the sentences built from their name.
   const transform = useCallback((prev, next) => syncNames(slug, prev, next), [slug])
   const hasWizard = !!detailFields(slug)
   return (
-    <InvitationEditProvider slug={slug} defaultData={entry.defaultData} transform={transform}>
-      <Link to="/invitations" style={backBtnStyle} aria-label="Վերադառնալ հավաքածուին">← Հավաքածու</Link>
-      <EditBar orderTo={orderable ? `/checkout/${orderable.id}` : null} onWizard={hasWizard ? () => setWizardOpen(true) : undefined} />
+    // keyed by language: another language is another set of content and edits
+    <InvitationEditProvider key={inv} slug={slug} lang={inv} defaultData={defaultsFor(slug, inv)} transform={transform}>
+      <Link to={to('/invitations')} style={backBtnStyle} aria-label={t.backLabel}>{t.back}</Link>
+      <InvitationLangSwitch slug={slug} current={inv} />
+      <EditBar
+        orderTo={orderable ? to(`/checkout/${orderable.id}`) : null}
+        onWizard={hasWizard ? () => setWizardOpen(true) : undefined}
+        onGuide={() => setGuideOpen(true)}
+      />
       <Invitation />
       {hasWizard && <WizardHost slug={slug} open={wizardOpen} setOpen={setWizardOpen} />}
+      <GuideHost slug={slug} hasWizard={hasWizard} wizardOpen={hasWizard && wizardOpen} open={guideOpen} setOpen={setGuideOpen} />
     </InvitationEditProvider>
   )
 }

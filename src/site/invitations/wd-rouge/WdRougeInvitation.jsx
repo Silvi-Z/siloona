@@ -3,6 +3,7 @@ import Section from '../shared/Section'
 import { useInvitationContent } from '../shared/EditableContext'
 import { useDesignFonts } from '../shared/useDesignFonts'
 import { BigDate, Closing, Hero, Photos, Program, Rsvp, Venue, Welcome } from './components/Sections'
+import SiloonaCredit from '../shared/SiloonaCredit'
 
 // Hairline Cormorant for «LOVE» and the numerals, thin Noto Serif Armenian
 // capitals for headings, and a handwritten script for the Latin ribbon.
@@ -24,6 +25,7 @@ export default function WdRougeInvitation() {
         <Section id="venue"><Venue /></Section>
         <Section id="rsvp"><Rsvp /></Section>
         <Section id="closing"><Closing /></Section>
+        <SiloonaCredit design="wd-rouge" />
       </main>
     </div>
   )

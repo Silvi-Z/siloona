@@ -6,6 +6,7 @@ import { useDesignFonts } from '../shared/useDesignFonts'
 import { SYMBOLS, butterfly } from './lib/art'
 import { Footer, Gate, Hero } from './components/Opening'
 import { DateSection, Program, Rsvp, Story, Venue } from './components/Sections'
+import SiloonaCredit from '../shared/SiloonaCredit'
 
 // Playfair Display, Montserrat and the 300 Armenian weights aren't in the
 // site-wide font link.
@@ -73,6 +74,7 @@ function WdGardenBody({ editing }) {
         <Section id="schedule"><Program /></Section>
         <Section id="rsvp"><Rsvp /></Section>
         <Section id="closing"><Footer /></Section>
+        <SiloonaCredit design="wd-garden" />
       </main>
     </div>
   )

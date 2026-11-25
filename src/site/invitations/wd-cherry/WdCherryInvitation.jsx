@@ -3,6 +3,7 @@ import Section from '../shared/Section'
 import { useInvitationContent } from '../shared/EditableContext'
 import { useDesignFonts } from '../shared/useDesignFonts'
 import { CalendarCard, Closing, DressCode, Hero, Plan, Rsvp, Venue, Welcome, Wishes } from './components/Sections'
+import SiloonaCredit from '../shared/SiloonaCredit'
 
 // No handwriting font draws Armenian, so Armenian text uses Noto Serif
 // Armenian italic for the hand-written feel; numbers (times, the date,
@@ -26,6 +27,7 @@ export default function WdCherryInvitation() {
         <Section id="venue"><Venue /></Section>
         <Section id="rsvp"><Rsvp /></Section>
         <Section id="closing"><Closing /></Section>
+        <SiloonaCredit design="wd-cherry" />
       </main>
     </div>
   )

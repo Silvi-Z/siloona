@@ -9,6 +9,7 @@ import Place from './components/Place'
 import DressCode from './components/DressCode'
 import RsvpForm from './components/RsvpForm'
 import Closing from './components/Closing'
+import SiloonaCredit from '../shared/SiloonaCredit'
 
 // Balloon / bootee artwork, defined once and reused via <use>.
 function ArtDefs() {
@@ -52,6 +53,7 @@ export default function GpBalloonsInvitation() {
         <Section id="dressCode"><DressCode /></Section>
         <Section id="rsvp"><RsvpForm onConfirmed={() => confetti(fxRef.current)} /></Section>
         <Section id="closing"><Closing /></Section>
+        <SiloonaCredit design="gp-balloons" />
       </main>
       <canvas className="fx" ref={fxRef} aria-hidden="true" />
     </div>

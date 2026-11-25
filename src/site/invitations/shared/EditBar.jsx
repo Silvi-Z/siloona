@@ -1,5 +1,12 @@
 import { Link } from 'react-router-dom'
 import { useInvitationContent } from './EditableContext'
+import { useText } from '../../i18n'
+
+const TEXT = {
+  hy: { confirm: 'Վերակայե՞լ փոփոխությունները։', reset: 'Վերակայել', wizard: 'Քայլ առ քայլ', how: 'Ինչպես խմբագրել', done: 'Ավարտել խմբագրումը', edit: 'Խմբագրել', order: 'Պատվիրել' },
+  ru: { confirm: 'Сбросить изменения?', reset: 'Сбросить', wizard: 'Пошагово', how: 'Как редактировать', done: 'Готово', edit: 'Изменить', order: 'Заказать' },
+  en: { confirm: 'Discard your changes?', reset: 'Reset', wizard: 'Step by step', how: 'How to edit', done: 'Finish editing', edit: 'Edit', order: 'Order' },
+}
 
 const barStyle = {
   position: 'fixed', top: 16, right: 16, zIndex: 200,
@@ -26,28 +33,35 @@ const ghostBtnStyle = {
 // per-design wiring beyond registering defaultData.
 // `orderTo` (optional): the checkout for this design — your edits go with the order.
 // `onWizard` (optional): reopens the step-by-step questions (EditWizard).
-export default function EditBar({ orderTo, onWizard }) {
+// `onGuide` (optional): replays the edit-mode tour (EditGuide).
+// `data-guide` marks the buttons the tour points at.
+export default function EditBar({ orderTo, onWizard, onGuide }) {
   const { editing, setEditing, reset, dirty } = useInvitationContent()
+  const t = useText(TEXT)
 
   return (
     <div style={barStyle}>
       {editing && dirty && (
         <button
           type="button"
+          data-guide="reset"
           style={ghostBtnStyle}
-          onClick={() => { if (confirm('Վերակայե՞լ փոփոխությունները։')) reset() }}
+          onClick={() => { if (confirm(t.confirm)) reset() }}
         >
-          Վերակայել
+          {t.reset}
         </button>
       )}
       {editing && onWizard && (
-        <button type="button" style={ghostBtnStyle} onClick={onWizard}>Քայլ առ քայլ</button>
+        <button type="button" data-guide="wizard" style={ghostBtnStyle} onClick={onWizard}>{t.wizard}</button>
       )}
-      <button type="button" style={btnStyle(editing)} onClick={() => setEditing(!editing)}>
-        {editing ? 'Ավարտել խմբագրումը' : 'Խմբագրել'}
+      {editing && onGuide && (
+        <button type="button" style={{ ...ghostBtnStyle, padding: '9px 13px' }} onClick={onGuide} aria-label={t.how} title={t.how}>?</button>
+      )}
+      <button type="button" data-guide={editing ? 'done' : undefined} style={btnStyle(editing)} onClick={() => setEditing(!editing)}>
+        {editing ? t.done : t.edit}
       </button>
       {orderTo && !editing && (
-        <Link to={orderTo} style={{ ...btnStyle(false), background: '#6B1D2C', textDecoration: 'none' }}>Պատվիրել</Link>
+        <Link to={orderTo} style={{ ...btnStyle(false), background: '#6B1D2C', textDecoration: 'none' }}>{t.order}</Link>
       )}
     </div>
   )

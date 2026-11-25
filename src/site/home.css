@@ -176,7 +176,77 @@
 .hm-closing .hm-btn-solid{background:var(--ivory); border-color:var(--ivory); color:var(--burgundy)!important}
 .hm-closing .hm-btn-solid:hover{background:var(--champagne); border-color:var(--champagne)}
 
+/* sections reached from the menu (/#prices…) clear the sticky header */
+.hm [id]{scroll-margin-top:84px}
+
+/* hero: price beside the main button; the single video phone */
+.hm-main-cta{display:inline-flex; align-items:center; gap:18px; flex-wrap:wrap}
+.hm-from{font-family:var(--serif); font-size:19px; color:var(--burgundy); white-space:nowrap}
+.hm-phone--solo{left:calc(var(--u)*266); top:calc(var(--u)*40); width:calc(var(--u)*316); height:calc(var(--u)*664); z-index:3}
+.hm-screen video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top center}
+
+/* ---------- examples ---------- */
+.hm-ex-list{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(40px,4vw,64px) clamp(20px,3vw,48px)}
+.hm-ex-shot{display:block; aspect-ratio:4/5; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+.hm-ex-shot img{width:100%; height:100%; object-fit:cover; object-position:top center; transition:transform .8s var(--ease)}
+.hm-ex-list li:hover .hm-ex-shot img{transform:scale(1.03)}
+.hm-ex-type{margin-top:20px!important; font-size:12px; letter-spacing:.16em; text-transform:uppercase; font-weight:400; color:var(--ink-soft)}
+.hm-ex-list h3{font-size:clamp(22px,2vw,28px); line-height:1.25; margin-top:6px}
+.hm-ex-price{margin-top:4px!important; font-size:15px; color:var(--burgundy)}
+.hm-ex-list .hm-link{margin-top:16px}
+
+/* ---------- timing under the steps ---------- */
+.hm-timing{margin-top:clamp(28px,3vw,40px)!important; padding-top:20px; border-top:1px solid var(--line); color:var(--ink-soft); font-size:16px; max-width:46em}
+.hm-how .hm-steps-foot{margin-top:24px!important}
+
+/* ---------- prices ---------- */
+.hm-prices{background:var(--paper); border-block:1px solid var(--line)}
+.hm-tiers{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); border-top:1px solid var(--ink)}
+.hm-tiers>li{display:flex; flex-direction:column; align-items:flex-start; padding:clamp(28px,3vw,44px) clamp(20px,3vw,44px) 4px 0}
+.hm-tiers>li+li{border-left:1px solid var(--line); padding-left:clamp(20px,3vw,44px)}
+.hm-tiers h3{font-size:clamp(24px,2.4vw,32px); line-height:1.2; min-height:2.4em}
+.hm-tier-price{margin-top:14px!important; font-family:var(--serif); font-size:clamp(28px,3vw,40px); line-height:1.1; color:var(--burgundy); font-variant-numeric:lining-nums}
+.hm-tier-price.soft{font-size:clamp(20px,1.9vw,24px); font-style:italic; line-height:1.3}
+.hm-tiers ul{margin:24px 0 30px!important; border-top:1px solid var(--line); width:100%; flex:1}
+.hm-tiers ul li{display:flex; gap:12px; align-items:baseline; padding:12px 0; border-bottom:1px solid var(--line); font-size:15.5px; color:var(--ink-soft); line-height:1.55}
+.hm-tiers ul li::before{content:""; width:5px; height:5px; background:var(--burgundy); transform:rotate(45deg) translateY(-3px); flex:none}
+
+/* ---------- founder's word beside the quote ---------- */
+.hm-credo .hm-wrap{grid-template-columns:minmax(0,1.4fr) minmax(0,6.6fr) minmax(0,4fr); gap:28px clamp(28px,4vw,64px); align-items:start}
+.hm-credo blockquote{font-size:clamp(26px,3.1vw,44px)}
+.hm-personal{border-top:1px solid var(--burgundy); padding-top:22px}
+.hm-personal img{width:100%; max-width:280px; aspect-ratio:4/5; object-fit:cover; margin-bottom:20px}
+.hm-personal p{color:var(--ink-soft); font-size:16px}
+
+/* ---------- reviews (shown once there are real ones) ---------- */
+.hm-rev-list{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 clamp(24px,4vw,64px); margin-top:clamp(32px,4vw,56px)!important; border-top:1px solid var(--ink)}
+.hm-rev-list li{padding:28px 0; border-bottom:1px solid var(--line)}
+.hm-rev-list blockquote{font-family:var(--serif); font-style:italic; font-size:clamp(19px,1.8vw,23px); line-height:1.5}
+
 /* ---------- responsive ---------- */
+@media (max-width:1080px){
+  .hm-credo .hm-wrap{grid-template-columns:minmax(0,1fr) minmax(0,6fr)}
+  .hm-personal{grid-column:2; max-width:36em}
+  .hm-ex-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:860px){
+  .hm-tiers{grid-template-columns:1fr; border-top:0}
+  .hm-tiers>li,.hm-tiers>li+li{border-left:0; padding:28px 0 32px; border-top:1px solid var(--line)}
+  .hm-tiers>li:first-child{border-top-color:var(--ink)}
+  .hm-tiers ul{margin-bottom:24px!important}
+  .hm-tiers h3{min-height:0}
+}
+@media (max-width:700px){
+  .hm-main-cta{flex-direction:column; align-items:stretch; gap:10px}
+  .hm-from{text-align:center}
+  .hm-ex-list{gap:36px 16px}
+  .hm-ex-list h3{font-size:19px}
+  .hm-ex-type{font-size:11px; letter-spacing:.1em}
+  .hm-ex-list .hm-link{font-size:13px}
+  .hm-credo .hm-wrap{grid-template-columns:1fr}
+  .hm-personal{grid-column:auto}
+  .hm-rev-list{grid-template-columns:1fr}
+}
 @media (max-width:1080px){
   .hm-hero .hm-wrap{grid-template-columns:1fr}
   .hm-stage{max-width:680px; margin-inline:auto}
