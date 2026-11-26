@@ -1,9 +1,13 @@
 import { useState } from 'react';
 import { useAuth } from './AuthContext';
+import { CUSTOMER_DASHBOARD } from '../../site/features';
+import { pendingClaim } from '../data/claim';
 
 export default function AuthScreen() {
   const { signUp, logIn } = useAuth();
-  const [mode, setMode] = useState('signin'); // signin | signup
+  const claim = pendingClaim();
+  // from the order page: most customers don't have an account yet
+  const [mode, setMode] = useState(claim && CUSTOMER_DASHBOARD ? 'signup' : 'signin'); // signin | signup
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -32,6 +36,7 @@ export default function AuthScreen() {
             <p className="muted">Հաստատման հղում ուղարկվեց {email}-ին (եթե պահանջվում է)։ Հաստատելուց հետո մուտք գործեք ստորև։</p>
             <button className="btn primary full" onClick={() => { setSentConfirm(false); setMode('signin'); }}>Անցնել մուտքի</button>
           </div>
+        <a className="auth-back" href="/">← Վերադառնալ Siloona-ի կայք</a>
         </div>
       </div>
     );
@@ -43,6 +48,7 @@ export default function AuthScreen() {
         <form className="auth-card" onSubmit={submit}>
           <p className="eyebrow">Siloona</p>
           <h1>{mode === 'signin' ? 'Մուտք գործել' : 'Ստեղծել հաշիվ'}</h1>
+          {claim && <p className="muted" style={{ margin: '-4px 0 16px' }}>Ձեր պատվերը կավելանա վահանակում հենց մուտք գործեք։ Այնտեղ կարող եք ավելացնել հյուրերին և ուղարկել յուրաքանչյուրին իր անձնական հրավերը։</p>}
 
           <div className="form" style={{ marginBottom: 4 }}>
             {mode === 'signup' && (
@@ -56,10 +62,13 @@ export default function AuthScreen() {
           <button className="btn primary full" type="submit" disabled={busy}>
             {busy ? '…' : mode === 'signin' ? 'Մուտք' : 'Ստեղծել հաշիվ'}
           </button>
-          <button type="button" className="link" style={{ marginTop: 14 }} onClick={() => { setErr(''); setMode(mode === 'signin' ? 'signup' : 'signin'); }}>
-            {mode === 'signin' ? 'Հաշիվ չունե՞ք. Ստեղծել' : 'Արդեն հաշիվ ունե՞ք. Մուտք գործել'}
-          </button>
+          {CUSTOMER_DASHBOARD && (
+            <button type="button" className="link" style={{ marginTop: 14 }} onClick={() => { setErr(''); setMode(mode === 'signin' ? 'signup' : 'signin'); }}>
+              {mode === 'signin' ? 'Հաշիվ չունե՞ք. Ստեղծել' : 'Արդեն հաշիվ ունե՞ք. Մուտք գործել'}
+            </button>
+          )}
         </form>
+        <a className="auth-back" href="/">← Վերադառնալ Siloona-ի կայք</a>
       </div>
     </div>
   );

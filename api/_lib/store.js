@@ -86,12 +86,18 @@ export function createSupabaseStore(db) {
     // A dashboard event by its invitation link slug (the event id, or the
     // slug saved in its invitation settings).
     async getEventBySlug(slug) {
-      const cols = 'id, type, title, event_date, data'
+      const cols = 'id, owner_id, type, title, event_date, data'
       const byId = must(await db.from('events').select(cols).eq('id', slug).maybeSingle())
       if (byId) return byId
       return must(await db.from('events').select(cols).eq('data->inv->>slug', slug).limit(1).maybeSingle())
     },
+    // the order linked to a dashboard event (supabase/order-events.sql)
+    getOrderByEvent: async (eventId) => must(await db.from('orders').select('*').eq('event_id', eventId).maybeSingle()),
     insertReply: async (row) => must(await db.from('event_replies').insert(row).select().single()),
+
+    // «Ձեր սեղանը» (supabase/seating.sql). target: { invitation_id } or { event_id }.
+    getSeatingPlan: async (target) => must(await db.from('seating_plans').select('id, enabled, reveal_at').match(target).maybeSingle()),
+    listSeats: async (planId) => must(await db.from('seating').select('guest_name, table_label').eq('plan_id', planId).limit(5000)),
 
     // true while the caller is under the limit (supabase/guest-links.sql).
     // If the limiter itself is unavailable, requests go through.

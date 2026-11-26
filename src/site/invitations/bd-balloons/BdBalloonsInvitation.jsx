@@ -10,6 +10,7 @@ import pooh from './assets/pooh.webp'
 import piglet from './assets/piglet.webp'
 import eeyore from './assets/eeyore.webp'
 import tigger from './assets/tigger.webp'
+import SiloonaCredit from '../shared/SiloonaCredit'
 
 // Each section reveals its `.r` children (staggered by --i) once in view.
 function Sec({ className = '', children, label }) {
@@ -249,6 +250,7 @@ export default function BdBalloonsInvitation() {
         <Section id="venue"><Venue /></Section>
         <Section id="rsvp"><Rsvp /></Section>
         <Section id="closing"><Closing /></Section>
+        <SiloonaCredit design="bd-balloons" />
       </main>
     </div>
   )

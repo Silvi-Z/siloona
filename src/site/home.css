@@ -6,7 +6,7 @@
    ========================================================= */
 .siloona-site .hm{
   --ivory:#F7F3EC; --paper:#FFFDF9; --ink:#191716; --ink-soft:#4A4541;
-  --burgundy:#8F1028; --burgundy-deep:#6E0B1E; --rose:#CFA9A2; --rose-pale:#EBD9D3;
+  --burgundy:#4A0611; --burgundy-deep:#33040C; --rose:#CFA9A2; --rose-pale:#EBD9D3;
   --champagne:#E6D6B8; --sage:#98A28B; --taupe:#B8B0A5;
   --line:rgba(25,23,22,.14); --line-light:rgba(247,243,236,.18);
   --serif:"Noto Serif Armenian","Noto Serif",Georgia,"Times New Roman",serif;
@@ -58,7 +58,7 @@
 .hm-stage{position:relative; width:100%; aspect-ratio:860/840; container-type:inline-size; --u:calc(100cqw/860)}
 .hm-stage>*{position:absolute}
 .hm-floor{left:0; right:0; top:calc(var(--u)*680); bottom:0; background:linear-gradient(180deg,#E9E1D3 0%,#EFE8DC 30%,rgba(244,239,230,0) 100%); border-top:1px solid rgba(25,23,22,.1); -webkit-mask:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent); mask:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent)}
-.hm-arch{left:calc(var(--u)*248); top:calc(var(--u)*6); width:calc(var(--u)*500); height:calc(var(--u)*674); border-radius:calc(var(--u)*250) calc(var(--u)*250) 0 0; background:linear-gradient(100deg,#9B1730 0%,#8F1028 45%,#6E0B1E 100%)}
+.hm-arch{left:calc(var(--u)*248); top:calc(var(--u)*6); width:calc(var(--u)*500); height:calc(var(--u)*674); border-radius:calc(var(--u)*250) calc(var(--u)*250) 0 0; background:linear-gradient(100deg,#5C0A18 0%,#4A0611 45%,#33040C 100%)}
 .hm-arch-line{left:calc(var(--u)*270); top:calc(var(--u)*28); width:calc(var(--u)*456); height:calc(var(--u)*652); border-radius:calc(var(--u)*228) calc(var(--u)*228) 0 0; border:1px solid rgba(230,214,184,.35); border-bottom:0}
 .hm-shadow{left:calc(var(--u)*40); top:calc(var(--u)*680); width:calc(var(--u)*760); height:calc(var(--u)*150); background:radial-gradient(ellipse at 50% 0%,rgba(25,23,22,.26) 0%,rgba(25,23,22,.1) 38%,rgba(25,23,22,0) 70%)}
 
@@ -176,7 +176,168 @@
 .hm-closing .hm-btn-solid{background:var(--ivory); border-color:var(--ivory); color:var(--burgundy)!important}
 .hm-closing .hm-btn-solid:hover{background:var(--champagne); border-color:var(--champagne)}
 
+/* sections reached from the menu (/#prices…) clear the sticky header */
+.hm [id]{scroll-margin-top:84px}
+
+/* hero: price beside the main button; the single video phone */
+.hm-main-cta{display:inline-flex; align-items:center; gap:18px; flex-wrap:wrap}
+.hm-from{font-family:var(--serif); font-size:19px; color:var(--burgundy); white-space:nowrap}
+.hm-phone--solo{left:calc(var(--u)*266); top:calc(var(--u)*40); width:calc(var(--u)*316); height:calc(var(--u)*664); z-index:3}
+.hm-screen video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top center}
+
+/* ---------- examples ---------- */
+.hm-ex-list{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(40px,4vw,64px) clamp(20px,3vw,48px)}
+.hm-ex-shot{display:block; aspect-ratio:4/5; overflow:hidden; background:var(--paper); border:1px solid var(--line)}
+.hm-ex-shot img{width:100%; height:100%; object-fit:cover; object-position:top center; transition:transform .8s var(--ease)}
+.hm-ex-list li:hover .hm-ex-shot img{transform:scale(1.03)}
+.hm-ex-type{margin-top:20px!important; font-size:12px; letter-spacing:.16em; text-transform:uppercase; font-weight:400; color:var(--ink-soft)}
+.hm-ex-list h3{font-size:clamp(22px,2vw,28px); line-height:1.25; margin-top:6px}
+.hm-ex-price{margin-top:4px!important; font-size:15px; color:var(--burgundy)}
+.hm-ex-list .hm-link{margin-top:16px}
+
+/* ---------- timing under the steps ---------- */
+.hm-timing{margin-top:clamp(28px,3vw,40px)!important; padding-top:20px; border-top:1px solid var(--line); color:var(--ink-soft); font-size:16px; max-width:46em}
+.hm-how .hm-steps-foot{margin-top:24px!important}
+
+/* ---------- prices ---------- */
+.hm-prices{background:var(--paper); border-block:1px solid var(--line)}
+.hm-tiers{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); border-top:1px solid var(--ink)}
+.hm-tiers>li{display:flex; flex-direction:column; align-items:flex-start; padding:clamp(28px,3vw,44px) clamp(20px,3vw,44px) 4px 0}
+.hm-tiers>li+li{border-left:1px solid var(--line); padding-left:clamp(20px,3vw,44px)}
+.hm-tiers h3{font-size:clamp(24px,2.4vw,32px); line-height:1.2; min-height:2.4em}
+.hm-tier-price{margin-top:14px!important; font-family:var(--serif); font-size:clamp(28px,3vw,40px); line-height:1.1; color:var(--burgundy); font-variant-numeric:lining-nums}
+.hm-tier-price.soft{font-size:clamp(20px,1.9vw,24px); font-style:italic; line-height:1.3}
+.hm-tiers ul{margin:24px 0 30px!important; border-top:1px solid var(--line); width:100%; flex:1}
+.hm-tiers ul li{display:flex; gap:12px; align-items:baseline; padding:12px 0; border-bottom:1px solid var(--line); font-size:15.5px; color:var(--ink-soft); line-height:1.55}
+.hm-tiers ul li::before{content:""; width:5px; height:5px; background:var(--burgundy); transform:rotate(45deg) translateY(-3px); flex:none}
+
+/* ---------- founder's word beside the quote ---------- */
+.hm-credo .hm-wrap{grid-template-columns:minmax(0,1.4fr) minmax(0,6.6fr) minmax(0,4fr); gap:28px clamp(28px,4vw,64px); align-items:start}
+.hm-credo blockquote{font-size:clamp(26px,3.1vw,44px)}
+.hm-personal{border-top:1px solid var(--burgundy); padding-top:22px}
+.hm-personal img{width:100%; max-width:280px; aspect-ratio:4/5; object-fit:cover; margin-bottom:20px}
+.hm-personal p{color:var(--ink-soft); font-size:16px}
+
+/* ---------- reviews (shown once there are real ones) ---------- */
+.hm-rev-list{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 clamp(24px,4vw,64px); margin-top:clamp(32px,4vw,56px)!important; border-top:1px solid var(--ink)}
+.hm-rev-list li{padding:28px 0; border-bottom:1px solid var(--line)}
+.hm-rev-list blockquote{font-family:var(--serif); font-style:italic; font-size:clamp(19px,1.8vw,23px); line-height:1.5}
+
+/* ---------- more burgundy ----------
+   The house colour carries further down the page: the quote becomes a
+   second burgundy plate (with the closing one, two deep accents frame
+   the lower page), numerals and section rules turn burgundy. */
+.hm-credo{background:linear-gradient(160deg,var(--burgundy) 0%,var(--burgundy-deep) 100%); color:var(--ivory)}
+.hm-credo svg{color:var(--champagne)}
+.hm-credo .hm-by{color:var(--champagne)}
+.hm-credo .hm-personal{border-top-color:rgba(230,214,184,.45)}
+.hm-credo .hm-personal p{color:rgba(247,243,236,.8)}
+.hm-credo :focus-visible{outline-color:var(--champagne)}
+.hm-steps li::before,.hm-mark{color:var(--burgundy)}
+.hm-steps,.hm-services,.hm-tiers,.hm-faq-list,.hm-rev-list{border-top-color:var(--burgundy)}
+.hm-ex-type{color:var(--burgundy)}
+/* the occasions strip under the hero: a burgundy band near the top */
+.hm-occasions{background:var(--burgundy); border-block:0; color:var(--ivory)}
+.hm-occasions .hm-eyebrow{color:var(--champagne)}
+.hm-occ-list{border-bottom-color:var(--line-light)}
+.hm-occ-list a{border-top-color:var(--line-light); color:var(--ivory)}
+.hm-occ-list a:hover{color:var(--champagne)}
+.hm-occ-list svg{color:var(--champagne)}
+.hm-occasions :focus-visible{outline-color:var(--champagne)}
+
+/* section titles carry the accent on the ivory pages */
+.hm-h2{color:var(--burgundy)}
+.hm-dark .hm-h2,.hm-prices .hm-h2{color:var(--ivory)}
+
+/* prices: a burgundy plate between the ivory parts */
+.hm-prices{background:var(--burgundy); border-block:0; color:var(--ivory)}
+.hm-prices .hm-eyebrow{color:var(--champagne)}
+.hm-prices .hm-sec-head>p{color:rgba(247,243,236,.78)}
+.hm-prices .hm-tiers{border-top-color:var(--champagne)}
+.hm-prices .hm-tiers>li+li{border-left-color:var(--line-light)}
+.hm-prices .hm-tier-price{color:var(--champagne)}
+.hm-prices .hm-tiers ul{border-top-color:var(--line-light)}
+.hm-prices .hm-tiers ul li{border-bottom-color:var(--line-light); color:rgba(247,243,236,.8)}
+.hm-prices .hm-tiers ul li::before{background:var(--champagne)}
+.hm-prices .hm-link{color:var(--ivory)}
+.hm-prices .hm-link:hover{color:var(--champagne)}
+.hm-prices :focus-visible{outline-color:var(--champagne)}
+.hm-prices-all{margin-top:clamp(28px,3vw,44px)!important}
+@media (max-width:860px){
+  .hm-prices .hm-tiers>li,.hm-prices .hm-tiers>li+li{border-top-color:var(--line-light)}
+  .hm-prices .hm-tiers>li:first-child{border-top-color:var(--champagne)}
+}
+
+/* ---------- luxe pass ----------
+   Champagne gold as the finishing metal: fine gold rules on the eyebrows
+   and along the edges of every burgundy plate, a gold inner frame on the
+   pictures, lighter and larger serif headings. Colours stay solid. */
+.siloona-site .hm{--gold:#B08D57; --gold-2:#D3B784; --gold-line:rgba(211,183,132,.42)}
+.hm-eyebrow{letter-spacing:.24em}
+.hm-eyebrow::before{background:var(--gold); width:42px}
+
+/* hero */
+.hm-hero{border-bottom:1px solid var(--gold-line)}
+.hm-hero h1{font-weight:200; letter-spacing:-.015em}
+.hm-hero h1 em{font-weight:300}
+.hm-arch-line{border-color:rgba(211,183,132,.6)}
+.hm-from{color:var(--gold); font-style:italic}
+
+/* burgundy plates: gold rules along both edges, an inner hairline frame */
+.hm-occasions,.hm-prices,.hm-credo,.hm-closing{position:relative; box-shadow:inset 0 1px 0 var(--gold-line),inset 0 -1px 0 var(--gold-line)}
+.hm-occasions::after,.hm-prices::after,.hm-credo::after,.hm-closing::after{content:""; position:absolute; inset:10px; border:1px solid rgba(211,183,132,.16); pointer-events:none}
+.hm-occ-list a{font-weight:300}
+
+/* section titles: light, generous */
+.hm-h2{font-weight:200; letter-spacing:-.01em}
+.hm-steps li::before,.hm-mark{font-weight:200}
+
+/* examples: a gold inner frame on the pictures */
+.hm-ex-shot{position:relative; border-color:var(--line)}
+.hm-ex-shot::after{content:""; position:absolute; inset:8px; border:1px solid rgba(211,183,132,0); transition:border-color .5s var(--ease); pointer-events:none}
+.hm-ex-list li:hover .hm-ex-shot::after{border-color:rgba(211,183,132,.85)}
+.hm-ex-price{font-family:var(--serif); font-style:italic; font-size:16px}
+
+/* prices plate: gold figures and rules */
+.hm-prices .hm-tier-price{color:var(--gold-2); font-weight:200}
+
+/* the quote: a large gold opening mark */
+.hm-credo blockquote{font-weight:200}
+.hm-credo blockquote::before{content:"«"; display:block; margin-bottom:8px; font-style:normal; font-size:1.5em; line-height:.8; color:var(--gold-2)}
+.hm-credo svg{color:var(--gold-2)}
+
+/* FAQ and lists: gold signs */
+.hm-faq-list summary i::before,.hm-faq-list summary i::after{background:var(--gold)}
+.hm-tiers ul li::before,.hm-feat li::before{background:var(--gold)}
+
+/* closing: champagne button */
+.hm-closing .hm-btn-solid{background:var(--gold-2); border-color:var(--gold-2); color:#33040C!important}
+.hm-closing .hm-btn-solid:hover{background:var(--ivory); border-color:var(--ivory)}
+
 /* ---------- responsive ---------- */
+@media (max-width:1080px){
+  .hm-credo .hm-wrap{grid-template-columns:minmax(0,1fr) minmax(0,6fr)}
+  .hm-personal{grid-column:2; max-width:36em}
+  .hm-ex-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:860px){
+  .hm-tiers{grid-template-columns:1fr; border-top:0}
+  .hm-tiers>li,.hm-tiers>li+li{border-left:0; padding:28px 0 32px; border-top:1px solid var(--line)}
+  .hm-tiers>li:first-child{border-top-color:var(--burgundy)}
+  .hm-tiers ul{margin-bottom:24px!important}
+  .hm-tiers h3{min-height:0}
+}
+@media (max-width:700px){
+  .hm-main-cta{flex-direction:column; align-items:stretch; gap:10px}
+  .hm-from{text-align:center}
+  .hm-ex-list{gap:36px 16px}
+  .hm-ex-list h3{font-size:19px}
+  .hm-ex-type{font-size:11px; letter-spacing:.1em}
+  .hm-ex-list .hm-link{font-size:13px}
+  .hm-credo .hm-wrap{grid-template-columns:1fr}
+  .hm-personal{grid-column:auto}
+  .hm-rev-list{grid-template-columns:1fr}
+}
 @media (max-width:1080px){
   .hm-hero .hm-wrap{grid-template-columns:1fr}
   .hm-stage{max-width:680px; margin-inline:auto}
@@ -195,7 +356,7 @@
   .hm-occ-list svg{display:none}
   .hm-steps{grid-template-columns:1fr; border-top:0}
   .hm-steps li,.hm-steps li+li{border-left:0; padding:26px 0 28px; border-top:1px solid var(--line); display:grid; grid-template-columns:76px 1fr; column-gap:8px}
-  .hm-steps li:first-child{border-top-color:var(--ink)}
+  .hm-steps li:first-child{border-top-color:var(--burgundy)}
   .hm-steps li::before{grid-row:1/3; font-size:46px}
   .hm-steps h3{margin-top:0; font-size:23px}
   .hm-benefit-grid{grid-template-columns:1fr}

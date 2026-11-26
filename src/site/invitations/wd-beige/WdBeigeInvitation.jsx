@@ -13,6 +13,7 @@ import DetailsSection from './components/DetailsSection'
 import StorySection from './components/StorySection'
 import PlacesSection from './components/PlacesSection'
 import Section from '../shared/Section'
+import SiloonaCredit from '../shared/SiloonaCredit'
 
 function WdBeigeBody({ content, editing }) {
   const rootRef = useRef(null)
@@ -49,6 +50,7 @@ function WdBeigeBody({ content, editing }) {
         <ScheduleSection data={content} />
         <Section id="rsvp"><RsvpForm data={content} /></Section>
         <DetailsSection data={content} />
+        <SiloonaCredit design="wd-beige" />
       </main>
     </div>
   )

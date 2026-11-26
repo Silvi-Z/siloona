@@ -6,7 +6,7 @@
   --bg:#F8F4EE; --surface:#FFFDFA; --surface-2:#F2ECE4; --sidebar:#F3EEE7;
   --line:#E7DED3; --line-2:#D8CCBE;
   --ink:#2A2526; --ink-2:#564D4F; --muted:#8E8284;
-  --wine:#6B1D2C; --wine-2:#83303F; --wine-tint:#F3E7E6;
+  --wine:#4A0611; --wine-2:#6B1726; --wine-tint:#F3E7E6;
   --blush:#E6CCC8; --blush-2:#F6ECE9;
   --sage:#6B8A72; --sage-t:#E8EEE8; --amber:#B0843F; --amber-t:#F5EDDF;
   --slate:#7A8293; --slate-t:#ECEDF0; --red:#A23C3C; --rose:#C99A9A;
@@ -41,7 +41,7 @@
 .siloona-dashboard .nav a{display:flex;align-items:center;gap:9px;padding:6px 12px 6px 6px;border-radius:5px;text-decoration:none;color:var(--ink-2);font-size:13.5px;margin-bottom:1px;border-left:3px solid transparent}
 .siloona-dashboard .nav a svg{flex:none;opacity:.7}
 .siloona-dashboard .nav-ic{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;flex:none;transition:background .15s}
-.siloona-dashboard .nav a:hover{background:rgba(107,29,44,.045);color:var(--ink)}
+.siloona-dashboard .nav a:hover{background:rgba(74,6,17,.045);color:var(--ink)}
 .siloona-dashboard .nav a.active{color:var(--wine);background:var(--surface);box-shadow:0 0 0 1px var(--line);border-left-color:var(--wine)}
 .siloona-dashboard .nav a.active svg{opacity:1}
 .siloona-dashboard .nav a.active .nav-ic{background:var(--wine-tint)}
@@ -96,7 +96,7 @@
 .siloona-dashboard .btn.danger{color:var(--red);border-color:#E3C6C2}
 .siloona-dashboard .btn.danger:hover{border-color:var(--red)}
 .siloona-dashboard .btn[disabled]{opacity:.45;pointer-events:none}
-.siloona-dashboard .link{background:none;border:0;padding:0;color:var(--wine);font-size:inherit;text-decoration:underline;text-decoration-color:rgba(107,29,44,.28);text-underline-offset:3px}
+.siloona-dashboard .link{background:none;border:0;padding:0;color:var(--wine);font-size:inherit;text-decoration:underline;text-decoration-color:rgba(74,6,17,.28);text-underline-offset:3px}
 .siloona-dashboard .link:hover{text-decoration-color:var(--wine)}
 .siloona-dashboard .link.plain{text-decoration:none;color:var(--ink)}
 .siloona-dashboard .link.plain:hover{color:var(--wine)}
@@ -352,7 +352,7 @@
 .siloona-dashboard .set{display:grid;grid-template-columns:210px minmax(0,1fr);gap:44px;align-items:start}
 .siloona-dashboard .set-nav{position:sticky;top:96px;display:flex;flex-direction:column;gap:2px}
 .siloona-dashboard .set-nav button{text-align:left;background:none;border:0;padding:9px 12px;border-radius:5px;color:var(--ink-2)}
-.siloona-dashboard .set-nav button:hover{color:var(--ink);background:rgba(107,29,44,.04)}
+.siloona-dashboard .set-nav button:hover{color:var(--ink);background:rgba(74,6,17,.04)}
 .siloona-dashboard .set-nav button.active{background:var(--surface);box-shadow:0 0 0 1px var(--line);color:var(--wine)}
 .siloona-dashboard .set-body{max-width:820px}
 .siloona-dashboard .set-sec{border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:28px}
@@ -665,7 +665,7 @@
 .siloona-dashboard .design-grid .card-actions .btn{flex:1 1 0;min-width:0;padding:0 8px;justify-content:center}
 .siloona-dashboard .design-grid .card-actions .btn.select{flex-basis:100%}
 .siloona-dashboard .design-grid .card-actions .btn.select.is-on{background:var(--wine-tint);border-color:var(--wine);color:var(--wine);cursor:default}
-.siloona-dashboard .design-grid .catalog-card.is-selected{border-color:var(--wine);box-shadow:0 0 0 2px var(--wine),0 24px 48px -24px rgba(107,29,44,.35)}
+.siloona-dashboard .design-grid .catalog-card.is-selected{border-color:var(--wine);box-shadow:0 0 0 2px var(--wine),0 24px 48px -24px rgba(74,6,17,.35)}
 .siloona-dashboard .design-grid .catalog-card.is-selected .thumb-badge{background:var(--wine);border-color:var(--wine);color:#FBF3F1}
 .siloona-dashboard .card-preview .thumb{aspect-ratio:3/4;border-radius:10px;overflow:hidden}
 @media (prefers-reduced-motion:reduce){.siloona-dashboard .design-grid .catalog-card{transition:none}.siloona-dashboard .design-grid .catalog-card:hover{transform:none}}
@@ -753,3 +753,196 @@ body.inv-studio-open .siloona-dashboard{display:none}
 /* Published / guest view: the selected design at full size. */
 .siloona-dashboard .live-full iframe{display:block;width:100%;height:min(780px,calc(100vh - 150px));border:0}
 .siloona-dashboard .pv-result{padding:6px 20px 16px;text-align:center}
+
+/* =========================================================
+   Clarity pass — less uniform beige, clearer hierarchy.
+   A dark sidebar anchors navigation; the workspace is a quiet
+   neutral with white panels, so content and the wine actions
+   stand out. Overrides only (remove this block to revert).
+   ========================================================= */
+.siloona-dashboard{
+  --bg:#F3F1EE; --surface:#FFFFFF; --surface-2:#F6F3F0;
+  --line:#E6E0DA; --line-2:#D3CAC2;
+  --ink-2:#4A433D; --muted:#7D736A; --wine-tint:#F5EAE4;
+  --sb-bg:#4A0611; --sb-ink:#F6ECDD; --sb-dim:rgba(246,232,212,.68); --sb-line:rgba(240,214,170,.14); --sb-hi:#D9BC86;
+  --sb-veil:rgba(255,232,200,.06); --sb-veil-2:rgba(255,232,200,.1);
+  --shadow-s:0 1px 2px rgba(40,20,25,.05),0 4px 14px -8px rgba(40,20,25,.12);
+}
+
+/* Sidebar: brand burgundy kept warm — champagne accents and warm ivory
+   text (pink accents and cool white veils turned it lilac) */
+.siloona-dashboard .sidebar{background:var(--sb-bg);border-right:0;color:var(--sb-ink)}
+.siloona-dashboard .sidebar .brand .word{color:#F6ECDD}
+.siloona-dashboard .sidebar .brand .cap,.siloona-dashboard .sidebar .nav-label{color:rgba(246,232,212,.45)}
+.siloona-dashboard .sidebar .nav a{color:var(--sb-dim)}
+.siloona-dashboard .sidebar .nav a svg{opacity:.85}
+.siloona-dashboard .sidebar .nav a:hover{background:var(--sb-veil);color:var(--sb-ink)}
+.siloona-dashboard .sidebar .nav a.active{color:#FFF8EE;background:var(--sb-veil-2);box-shadow:none;border-left-color:var(--sb-hi)}
+.siloona-dashboard .sidebar .nav a.active .nav-ic{background:rgba(217,188,134,.2);color:var(--sb-hi)}
+.siloona-dashboard .sidebar .nav .count{background:rgba(217,188,134,.18);color:var(--sb-hi)}
+.siloona-dashboard .sidebar .wed-card{background:var(--sb-veil);border:1px solid var(--sb-line)}
+.siloona-dashboard .sidebar .wed-card .eyebrow{color:var(--sb-hi)}
+.siloona-dashboard .sidebar .wed-card .wc-names,.siloona-dashboard .sidebar .wed-card .amp{color:#FBF3E6}
+.siloona-dashboard .sidebar .wed-card:hover .wc-names{color:#FFF8EE}
+.siloona-dashboard .sidebar .wed-card .muted{color:var(--sb-dim)}
+.siloona-dashboard .sidebar .ev-switch{background:var(--sb-veil);border-color:var(--sb-line);color:var(--sb-ink)}
+.siloona-dashboard .sidebar .ev-switch:hover{border-color:rgba(240,214,170,.3)}
+.siloona-dashboard .sidebar .ev-switch small,.siloona-dashboard .sidebar .ev-switch svg{color:var(--sb-dim)}
+.siloona-dashboard .sidebar .seg{background:var(--sb-veil);border-color:var(--sb-line)}
+.siloona-dashboard .sidebar .seg button{color:var(--sb-dim)}
+.siloona-dashboard .sidebar .seg button:hover{color:var(--sb-ink)}
+.siloona-dashboard .sidebar .seg button.active{background:rgba(217,188,134,.2);color:#FFF8EE}
+.siloona-dashboard .sidebar .sb-foot{border-top-color:var(--sb-line);color:var(--sb-dim)}
+.siloona-dashboard .sidebar .sb-foot b{color:var(--sb-ink)}
+.siloona-dashboard .sidebar .link{color:var(--sb-hi);text-decoration-color:rgba(217,188,134,.45)}
+.siloona-dashboard .sidebar .muted{color:var(--sb-dim)}
+
+/* Workspace */
+.siloona-dashboard .topbar{background:rgba(255,255,255,.94)}
+.siloona-dashboard .page-title{font-size:22px}
+.siloona-dashboard .panel{border-radius:8px;box-shadow:var(--shadow-s)}
+.siloona-dashboard .panel-h{background:var(--surface);border-radius:8px 8px 0 0}
+.siloona-dashboard .panel-h h3{color:var(--ink)}
+.siloona-dashboard .t th{background:#FAF8F6}
+.siloona-dashboard .t tbody tr:hover,.siloona-dashboard .qa:hover,.siloona-dashboard .gsec-h:hover,.siloona-dashboard .gl:hover{background:#FAF6F4}
+.siloona-dashboard .gsec{border-radius:8px;box-shadow:var(--shadow-s)}
+.siloona-dashboard .cd{border-radius:8px;box-shadow:var(--shadow-s)}
+
+/* KPI strip: one white band, larger figures */
+.siloona-dashboard .kpis{border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:var(--shadow-s)}
+.siloona-dashboard .kpi,.siloona-dashboard .kpi:first-child{background:var(--surface);padding:18px 20px}
+.siloona-dashboard .kpi .l{color:var(--ink-2)}
+.siloona-dashboard .kpi .v{font-size:30px}
+@media (max-width:1280px){.siloona-dashboard .kpi:nth-child(3n+1){padding-left:20px}}
+@media (max-width:760px){
+  .siloona-dashboard .kpi,.siloona-dashboard .kpi:nth-child(2n+1){padding-left:16px!important}
+  .siloona-dashboard .kpi .v{font-size:25px}
+}
+/* an odd last figure fills its row instead of leaving a grey gap */
+@media (max-width:1100px){.siloona-dashboard .k5 .kpi:nth-child(5):last-child{grid-column:span 2}}
+@media (max-width:760px){.siloona-dashboard .k5 .kpi:nth-child(5):last-child{grid-column:1/-1}}
+
+/* Overview → «Հրավիրատոմս»: the event's real design, or a way to pick one */
+.siloona-dashboard .inv-thumb{width:96px;padding:0;border:0;background:var(--surface-2);display:block;cursor:pointer}
+.siloona-dashboard .inv-thumb img{display:block;width:100%;height:100%;object-fit:cover;object-position:top}
+.siloona-dashboard .inv-thumb .sil-catalog .thumb{box-shadow:none}
+.siloona-dashboard .inv-thumb.empty{border:1px dashed var(--line-2);box-shadow:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--wine);font-size:11.5px;text-align:center;line-height:1.3;padding:8px}
+.siloona-dashboard .inv-thumb.empty:hover{border-color:var(--wine);background:var(--wine-tint)}
+.siloona-dashboard .inv-thumb.empty svg{width:20px;height:20px}
+.siloona-dashboard .inv-fig{margin:0;flex:none}
+.siloona-dashboard .inv-fig figcaption{margin-top:7px;font-size:10.5px;letter-spacing:.06em;color:var(--muted);text-align:center;white-space:nowrap}
+
+/* the way back to the public site: sidebar (above the account block) and the sign-in screen */
+.siloona-dashboard .sb-site{display:flex;align-items:center;gap:9px;margin:auto 0 12px;padding:8px 12px;border-radius:5px;text-decoration:none;font-size:13px;color:var(--sb-dim)}
+.siloona-dashboard .sb-site svg{flex:none;opacity:.85}
+.siloona-dashboard .sb-site:hover{background:var(--sb-veil);color:var(--sb-ink)}
+.siloona-dashboard .sb-site + .sb-foot{margin-top:0}
+.siloona-dashboard .auth-screen{flex-direction:column;gap:18px}
+.siloona-dashboard .auth-back{font-size:13px;color:var(--ink-2);text-decoration:none}
+.siloona-dashboard .auth-back:hover{color:var(--wine);text-decoration:underline;text-underline-offset:3px}
+
+/* scrollbars: thin and quiet. The menu's is light on the burgundy; the
+   page's and the lists' are warm grey and turn burgundy under the pointer. */
+.siloona-dashboard,.siloona-dashboard *{scrollbar-width:thin;scrollbar-color:#CFC5BB transparent}
+.siloona-dashboard .sidebar{scrollbar-color:rgba(240,214,170,.28) transparent;scrollbar-gutter:stable}
+.siloona-dashboard ::-webkit-scrollbar{width:10px;height:10px}
+.siloona-dashboard ::-webkit-scrollbar-track{background:transparent}
+.siloona-dashboard ::-webkit-scrollbar-thumb{background:#CFC5BB;border-radius:10px;border:3px solid transparent;background-clip:padding-box}
+.siloona-dashboard ::-webkit-scrollbar-thumb:hover{background-color:var(--wine)}
+.siloona-dashboard .sidebar::-webkit-scrollbar-thumb{background-color:rgba(255,255,255,.2)}
+.siloona-dashboard .sidebar::-webkit-scrollbar-thumb:hover{background-color:rgba(255,255,255,.38)}
+html:has(.siloona-dashboard){scrollbar-width:thin;scrollbar-color:#CFC5BB #F3F1EE}
+
+/* =========================================================
+   Luxe pass — ivory paper, burgundy, champagne gold.
+   Sharper corners, finer hairlines, larger light serifs; the
+   event header becomes a burgundy showcase with gold figures.
+   Overrides only (remove this block to revert to the pass above).
+   ========================================================= */
+.siloona-dashboard{
+  --bg:#F8F7F5; --surface:#FFFFFF; --surface-2:#FAF9F7;
+  --line:#ECE8E2; --line-2:#DAD3C9;
+  --ink:#1E1916; --ink-2:#4A4038; --muted:#857767;
+  --gold:#B08D57; --gold-2:#D3B784; --gold-line:rgba(176,141,87,.38);
+  --wine-tint:#F6ECEA;
+  --r:3px;
+  --shadow-s:0 1px 0 rgba(176,141,87,.08),0 18px 40px -30px rgba(60,30,20,.35);
+  --shadow:0 1px 2px rgba(40,20,10,.05),0 28px 60px -30px rgba(60,30,20,.4);
+}
+.siloona-dashboard ::selection{background:#EAD9BE}
+
+/* sidebar: deep burgundy with a gold edge */
+.siloona-dashboard .sidebar{box-shadow:inset -1px 0 0 rgba(217,188,134,.28)}
+.siloona-dashboard .sidebar .brand{padding-bottom:30px}
+.siloona-dashboard .sidebar .brand .word{font-size:34px;font-weight:500;letter-spacing:.03em;color:var(--gold-2)}
+.siloona-dashboard .sidebar .wed-card{background:transparent;border:1px solid rgba(217,188,134,.42);outline:1px solid rgba(217,188,134,.16);outline-offset:-6px;border-radius:2px;padding:18px 16px 18px}
+.siloona-dashboard .sidebar .wed-card .eyebrow{letter-spacing:.24em}
+.siloona-dashboard .sidebar .wed-card .wc-names{font-size:21px;font-weight:400}
+.siloona-dashboard .sidebar .wed-card .amp{color:var(--gold-2)!important}
+.siloona-dashboard .sidebar .nav a{border-radius:2px;padding-top:8px;padding-bottom:8px}
+.siloona-dashboard .sidebar .nav a.active{border-left-color:var(--gold-2)}
+.siloona-dashboard .sidebar .sb-foot{border-top-color:rgba(217,188,134,.22)}
+
+/* top bar: ivory, a gold hairline, a larger title */
+.siloona-dashboard .topbar{background:rgba(255,255,255,.95);border-bottom:1px solid var(--gold-line)}
+.siloona-dashboard .crumbs{text-transform:uppercase;letter-spacing:.16em;font-size:10.5px;color:var(--gold)}
+.siloona-dashboard .crumbs button{color:var(--gold)}
+.siloona-dashboard .page-title{font-size:27px;font-weight:400;letter-spacing:0}
+.siloona-dashboard .top-search input,.siloona-dashboard .icon-btn{border-color:var(--line-2);background:var(--surface)}
+.siloona-dashboard .avatar{box-shadow:0 0 0 2px var(--surface),0 0 0 3px var(--gold-2)}
+
+/* buttons and fields: crisp */
+.siloona-dashboard .btn{border-radius:2px;letter-spacing:.02em}
+.siloona-dashboard .btn.primary{background:var(--wine);border-color:var(--wine);color:#FBF3E6}
+.siloona-dashboard .btn.primary:hover{background:#33040C;border-color:#33040C}
+.siloona-dashboard .input,.siloona-dashboard .chip,.siloona-dashboard .seg{border-radius:2px}
+.siloona-dashboard .seg button{border-radius:1px}
+.siloona-dashboard .input:focus,.siloona-dashboard .top-search input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(176,141,87,.16)}
+
+/* panels: paper, hairlines, serif titles with a gold diamond */
+.siloona-dashboard .panel,.siloona-dashboard .gsec{border-radius:2px;border-color:var(--line);box-shadow:var(--shadow-s)}
+.siloona-dashboard .panel-h{border-radius:2px 2px 0 0;padding:18px 22px;border-bottom-color:var(--line)}
+.siloona-dashboard .panel-h h3{font-size:18px;font-weight:400;display:inline-flex;align-items:center;gap:12px}
+.siloona-dashboard .panel-h h3::before{content:"";width:6px;height:6px;background:var(--gold);transform:rotate(45deg);flex:none}
+.siloona-dashboard .eyebrow{letter-spacing:.2em;color:var(--gold)}
+.siloona-dashboard .t th{background:var(--surface-2);text-transform:uppercase;letter-spacing:.1em;font-size:10.5px;color:var(--muted)}
+.siloona-dashboard .t tbody tr:hover,.siloona-dashboard .qa:hover,.siloona-dashboard .gsec-h:hover,.siloona-dashboard .gl:hover{background:#FAF8F5}
+.siloona-dashboard .tab.active::after{background:var(--gold)}
+.siloona-dashboard .tab.active{color:var(--wine)}
+
+/* figures: light serif, larger */
+.siloona-dashboard .kpis{border-radius:2px;border-color:var(--line);box-shadow:var(--shadow-s);background:var(--line)}
+.siloona-dashboard .kpi .l{text-transform:uppercase;letter-spacing:.12em;font-size:10.5px;color:var(--muted)}
+.siloona-dashboard .kpi .v{font-size:38px;font-weight:300;margin-top:8px}
+.siloona-dashboard .kpi .d{font-size:12px}
+.siloona-dashboard .kpi-ic{width:26px;height:26px}
+
+/* the event header: a burgundy showcase, names in light serif, gold countdown */
+.siloona-dashboard .hero{position:relative;padding:38px 42px;margin-bottom:24px;color:#FBF3E6;border-radius:2px;
+  background:radial-gradient(120% 140% at 100% 0%,#5C0A18 0%,var(--wine) 45%,#33040C 100%);
+  box-shadow:inset 0 0 0 1px rgba(217,188,134,.35),var(--shadow)}
+.siloona-dashboard .hero::after{content:"";position:absolute;inset:8px;border:1px solid rgba(217,188,134,.18);pointer-events:none}
+.siloona-dashboard .hero .eyebrow{color:var(--gold-2);letter-spacing:.26em}
+.siloona-dashboard .hero h2{font-size:48px;font-weight:300;margin:10px 0 14px;color:#FBF3E6}
+.siloona-dashboard .hero .amp{color:var(--gold-2)}
+.siloona-dashboard .hero-meta{color:rgba(251,243,230,.78);font-size:14px}
+.siloona-dashboard .hero-meta svg{color:var(--gold-2)}
+.siloona-dashboard .hero .badge{color:rgba(251,243,230,.85)}
+.siloona-dashboard .hero .cd{background:transparent;border:1px solid rgba(217,188,134,.4);border-radius:2px;box-shadow:none}
+.siloona-dashboard .hero .cd>div+div{border-left-color:rgba(217,188,134,.28)}
+.siloona-dashboard .hero .cd b{font-size:36px;font-weight:300;color:var(--gold-2)}
+.siloona-dashboard .hero .cd small{color:rgba(251,243,230,.65);letter-spacing:.08em}
+.siloona-dashboard .hero .today-box{background:rgba(255,255,255,.06);border-color:rgba(217,188,134,.45);color:#FBF3E6}
+.siloona-dashboard .hero .today-box .eyebrow{color:var(--gold-2)}
+.siloona-dashboard .hero .muted{color:rgba(251,243,230,.7)}
+@media (max-width:760px){
+  .siloona-dashboard .hero{padding:26px 22px}
+  .siloona-dashboard .hero h2{font-size:34px}
+  .siloona-dashboard .hero .cd b{font-size:26px}
+  .siloona-dashboard .kpi .v{font-size:30px}
+  .siloona-dashboard .page-title{font-size:22px}
+}
+
+/* white workspace: the few warm fills (empty states, link boxes) go neutral too */
+.siloona-dashboard .preview-stage,.siloona-dashboard .pub-url,.siloona-dashboard .send-note,.siloona-dashboard .pz-preview{background:var(--surface-2)}
+html:has(.siloona-dashboard){scrollbar-color:#D6D1CA #F8F7F5}

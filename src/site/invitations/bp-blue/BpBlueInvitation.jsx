@@ -8,6 +8,7 @@ import { useDesignFonts } from '../shared/useDesignFonts'
 import { CROSS, CURVE, DEFS, SILHOUETTE, cluster, florets } from './lib/art'
 import { formatEventDate } from './lib/formatDate'
 import { Art, CallButton, Icon, Place, Rv, Title } from './components/parts'
+import SiloonaCredit from '../shared/SiloonaCredit'
 
 // Thin Noto Serif Armenian / Sans weights and Cormorant 300 (+ italic for
 // the city lines) — not in the site-wide font link.
@@ -175,6 +176,7 @@ function BpBlueBody({ editing }) {
             <Rv style={{ '--dl': '.15s' }}><Editable as="p" path="closing.thanks" className="thx" /></Rv>
           </Section>
         </div>
+        <SiloonaCredit design="bp-blue" />
       </main>
     </div>
   )

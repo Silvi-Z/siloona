@@ -5,6 +5,7 @@ import GuestGreeting, { fillName } from '../../shared/GuestGreeting'
 import Section, { useSectionHidden } from '../../shared/Section'
 import { useInvitationContent } from '../../shared/EditableContext'
 import { getByPath } from '../../shared/pathUtils'
+import { SeatDialog, SeatForm, useSeatFinder } from '../../shared/Seating'
 import { WEEK_SHORT, caps, formatEventDate } from '../lib/date'
 import sceneArt from '../assets/scene.webp'
 import portraitArt from '../assets/portrait.webp'
@@ -185,6 +186,55 @@ export function DressCode() {
       <div className="swatches r" style={{ '--i': 2 }} aria-hidden="true">
         <i style={{ background: '#F7F3EA' }} /><i style={{ background: '#DCD3C4' }} /><i style={{ background: '#B9AFA4' }} /><i style={{ background: '#6E625A' }} />
       </div>
+    </Block>
+  )
+}
+
+// «Ձեր սեղանը» — only on an invitation with seating (shared/Seating.jsx
+// holds the behaviour). Here: the portrait's thin frame around the table
+// number, the dialog on the same ivory paper.
+// A round table seen from above, drawn in the same thin hand line as the
+// calendar's circled day: the table first, then the chairs one by one.
+function TableArt() {
+  const chairs = Array.from({ length: 8 }, (_, i) => {
+    const a = (i / 8) * Math.PI * 2 - Math.PI / 2
+    return [60 + Math.cos(a) * 31, 40 + Math.sin(a) * 31]
+  })
+  return (
+    <svg className="seat-art" viewBox="0 0 120 80" aria-hidden="true">
+      <path className="tb" pathLength="1" d="M61 21c11 0 19 8 19 19s-9 19-20 19-20-8-20-19 9-19 21-19" />
+      {chairs.map(([x, y], i) => (
+        <circle key={i} className="ch" cx={x.toFixed(1)} cy={y.toFixed(1)} r="5" pathLength="1" style={{ '--c': i }} />
+      ))}
+    </svg>
+  )
+}
+
+export function Seating() {
+  const f = useSeatFinder()
+  if (!f.on) return null
+  return (
+    <Block className="seat" label={f.t.title}>
+      <div className="seat-frame frame r" tabIndex={f.result ? -1 : undefined} data-seat-return>
+        <TableArt />
+        <h2 className="ht">{caps(f.t.title)}</h2>
+        {!f.revealed ? (
+          <p className="seat-soon">{f.soon}</p>
+        ) : f.result ? (
+          <div className="seat-res" role="status">
+            <p className={`seat-table${f.result.table.length > 3 ? ' long' : ''}`}>{f.result.table}</p>
+            <button type="button" className="seat-again" onClick={f.another}>{f.t.other}</button>
+          </div>
+        ) : (
+          <>
+            <p className="seat-teaser">{f.t.teaser}</p>
+            <button type="button" className="btn-fill seat-cta" onClick={f.open} aria-haspopup="dialog">{f.t.button}</button>
+          </>
+        )}
+      </div>
+      <SeatDialog finder={f} className="wpt-seat">
+        {(titleId) => <SeatForm finder={f} titleId={titleId} title={caps(f.t.title)} />}
+      </SeatDialog>
     </Block>
   )
 }

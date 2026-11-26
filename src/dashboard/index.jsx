@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './dashboard.css';
 import { DashboardProvider, useDashboard } from './state/DashboardContext';
 import { AuthProvider, useAuth } from './auth/AuthContext';
@@ -10,6 +10,30 @@ import BulkBar from './components/BulkBar';
 import EventTypeGate from './components/EventTypeGate';
 import { ModalHost, DrawerHost, MenuHost, ToastHost } from './components/Overlays';
 import { PAGES } from './pages';
+import { CUSTOMER_DASHBOARD } from '../site/features';
+import { claimOrder, dropClaim, pendingClaim, stashClaimFromUrl } from './data/claim';
+
+// Came from the order page (/dashboard?claim=…): once signed in, the paid
+// order is brought into this account (data/claim.js) and the invitation
+// page opens with it.
+function useOrderClaim(dash) {
+  const ran = useRef(false);
+  useEffect(() => {
+    const c = pendingClaim();
+    if (!c || ran.current) return;
+    ran.current = true;
+    claimOrder(c, dash.mode === 'couple' ? dash.ctx() : null)
+      .then((r) => {
+        dropClaim();
+        if (dash.mode !== 'couple') dash.setOrgEvent(r.eventId);
+        dash.bump();
+        dash.go('invitation');
+        dash.toast(r.already ? `Պատվեր №${r.orderNumber}-ն արդեն Ձեր վահանակում է` : `Պատվեր №${r.orderNumber}-ն ավելացվեց Ձեր վահանակ`);
+      })
+      .catch((e) => { if (e.final) dropClaim(); dash.toast(e.message); });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+}
 
 function Shell() {
   const dash = useDashboard();
@@ -22,6 +46,7 @@ function Shell() {
   // yet, so nothing event-specific renders until one is picked. Admin pages
   // aren't about the event, so they never wait for that.
   const gated = mode === 'couple' && !ev.type && !def.admin;
+  useOrderClaim(dash);
 
   useEffect(() => {
     const initial = location.hash.slice(1);
@@ -64,22 +89,61 @@ function Shell() {
   );
 }
 
+// While the customer dashboard is off (site/features.js): Siloona staff get
+// the Orders page alone, and any other signed-in account gets nothing.
+export function StaffOrders() {
+  const { sidebarOpen, setSidebarOpen, drawer, closeDrawer } = useDashboard();
+  const { logOut } = useAuth();
+  const Orders = PAGES.orders.component;
+  return (
+    <div className="siloona-dashboard">
+      <main className="view">
+        <button type="button" className="link" style={{ padding: 0, marginBottom: 16 }} onClick={logOut}>Դուրս գալ</button>
+        <Orders />
+      </main>
+      <div className={`scrim ${sidebarOpen || drawer ? 'on' : ''}`} onClick={() => { setSidebarOpen(false); closeDrawer(); }} />
+      <DrawerHost />
+      <ModalHost />
+      <MenuHost />
+      <ToastHost />
+    </div>
+  );
+}
+
+function NoAccess() {
+  const { logOut } = useAuth();
+  return (
+    <div className="siloona-dashboard">
+      <div className="auth-screen">
+        <div className="auth-card">
+          <p className="eyebrow">Siloona</p>
+          <h1>Մուտքն արգելված է</h1>
+          <button type="button" className="btn primary full" onClick={logOut}>Դուրս գալ</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function AuthGate() {
-  const { isSupabaseConfigured, status, error, profile } = useAuth();
+  const { isSupabaseConfigured, status, error, profile, isAdmin } = useAuth();
 
   if (!isSupabaseConfigured) return <SetupScreen />;
   if (status === 'loading') return <div className="siloona-dashboard"><div className="auth-screen"><p className="muted">Բեռնվում է…</p></div></div>;
   if (status === 'error') return <div className="siloona-dashboard"><div className="auth-screen"><div className="auth-card"><h1>Սխալ</h1><p className="muted">{error}</p></div></div></div>;
   if (status === 'signed-out') return <AuthScreen />;
+  if (!CUSTOMER_DASHBOARD && !isAdmin) return <NoAccess />;
 
   return (
     <DashboardProvider initialMode={profile.mode}>
-      <Shell />
+      {CUSTOMER_DASHBOARD ? <Shell /> : <StaffOrders />}
     </DashboardProvider>
   );
 }
 
 export default function Dashboard() {
+  // ?claim=… is read once, before anything else, and kept on this device
+  useState(() => { stashClaimFromUrl(); return null; });
   return (
     <AuthProvider>
       <AuthGate />

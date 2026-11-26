@@ -1,21 +1,27 @@
 import { CardMouseArt } from './invitations/card-mouse/CardMouse'
 import wdBeigeThumb from './assets/wd-beige-catalog.png'
-import bdAnimalsThumb from './invitations/bd-animals/assets/lion.webp'
+import bdAnimalsThumb from './invitations/bd-animals/assets/catalog-thumb.webp'
 import gpBalloonsThumb from './invitations/gp-balloons/assets/catalog-thumb.webp'
 import gpStorkThumb from './invitations/gp-stork/assets/catalog-thumb.webp'
-import ceOrnamentThumb from './invitations/ce-ornament/assets/catalog-thumb.webp'
 import ceGarlandThumb from './invitations/ce-garland/assets/catalog-thumb.webp'
-import bdDuckThumb from './invitations/bd-duck/assets/catalog-thumb.webp'
+import cePineThumb from './invitations/ce-pine/assets/catalog-thumb.webp'
+import ceTruckThumb from './invitations/ce-truck/assets/catalog-thumb.webp'
+import ceToastThumb from './invitations/ce-toast/assets/catalog-thumb.webp'
+import ceHollyThumb from './invitations/ce-holly/assets/catalog-thumb.webp'
+import ceGroovyThumb from './invitations/ce-groovy/assets/catalog-thumb.webp'
+import ceJingleThumb from './invitations/ce-jingle/assets/catalog-thumb.webp'
+import ceSparkleThumb from './invitations/ce-sparkle/assets/catalog-thumb.webp'
+import ceCozyThumb from './invitations/ce-cozy/assets/catalog-thumb.webp'
 import bpBlueThumb from './invitations/bp-blue/assets/catalog-thumb.webp'
-import wdGardenSoftThumb from './invitations/wd-garden-soft/assets/catalog-thumb.webp'
 import wdGreenThumb from './invitations/wd-green/assets/catalog-thumb.webp'
 import wdGardenThumb from './invitations/wd-garden/assets/catalog-thumb.webp'
-import wdTulipThumb from './invitations/wd-tulip/assets/catalog-thumb.webp'
 import wdMonoThumb from './invitations/wd-mono/assets/catalog-thumb.webp'
 import wdRougeThumb from './invitations/wd-rouge/assets/catalog-thumb.webp'
 import wdCherryThumb from './invitations/wd-cherry/assets/catalog-thumb.webp'
-import wdFeteThumb from './invitations/wd-fete/assets/catalog-thumb.webp'
+import wdChateauThumb from './invitations/wd-chateau/assets/catalog-thumb.webp'
 import wdPortraitThumb from './invitations/wd-portrait/assets/catalog-thumb.webp'
+import wdNoirThumb from './invitations/wd-noir/assets/catalog-thumb.webp'
+import wdNoirLiteThumb from './invitations/wd-noir-lite/assets/catalog-thumb.webp'
 import wdVelvetThumb from './invitations/wd-velvet/assets/catalog-thumb.webp'
 import wdLineThumb from './invitations/wd-line/assets/catalog-thumb.webp'
 import wdCallaThumb from './invitations/wd-calla/assets/catalog-thumb.webp'
@@ -25,6 +31,8 @@ import bdBalloonsThumb from './invitations/bd-balloons/assets/catalog-thumb.webp
 import bdStitchThumb from './invitations/bd-stitch/assets/catalog-thumb.webp'
 import bdCarsThumb from './invitations/bd-cars/assets/catalog-thumb.webp'
 import bdBuildThumb from './invitations/bd-build/assets/catalog-thumb.webp'
+import bdCastleThumb from './invitations/bd-castle/assets/catalog-thumb.webp'
+import bdDotsThumb from './invitations/bd-dots/assets/catalog-thumb.webp'
 import { pricesFor } from './prices'
 
 // Single source of truth for every invitation design Siloona offers —
@@ -58,19 +66,6 @@ export const WEB_DESIGNS = [
   //   previewRoute: '/invitations/preview/wd-beige',
   //   image: wdBeigeThumb,
   // },
-  {
-    id: 'wd-garden-soft',
-    kind: 'web',
-    title: 'Աննա & Միքայել',
-    code: 'WEB-WED-02',
-    type: 'Հարսանիք',
-    category: 'wedding',
-    eventTypes: ['wedding'],
-    available: true,
-    previewSlug: 'wd-garden-soft',
-    previewRoute: '/invitations/preview/wd-garden-soft',
-    image: wdGardenSoftThumb,
-  },
   // {
   //   id: 'wd-green',
   //   kind: 'web',
@@ -97,19 +92,6 @@ export const WEB_DESIGNS = [
   //   previewRoute: '/invitations/preview/wd-garden',
   //   image: wdGardenThumb,
   // },
-  {
-    id: 'wd-tulip',
-    kind: 'web',
-    title: 'Դավիթ & Մարիամ',
-    code: 'WEB-WED-05',
-    type: 'Հարսանիք',
-    category: 'wedding',
-    eventTypes: ['wedding'],
-    available: true,
-    previewSlug: 'wd-tulip',
-    previewRoute: '/invitations/preview/wd-tulip',
-    image: wdTulipThumb,
-  },
   {
     id: 'wd-velvet',
     kind: 'web',
@@ -202,19 +184,6 @@ export const WEB_DESIGNS = [
     image: wdCherryThumb,
   },
   {
-    id: 'wd-fete',
-    kind: 'web',
-    title: 'Նարինե & Գոռ',
-    code: 'WEB-WED-13',
-    type: 'Հարսանիք',
-    category: 'wedding',
-    eventTypes: ['wedding'],
-    available: true,
-    previewSlug: 'wd-fete',
-    previewRoute: '/invitations/preview/wd-fete',
-    image: wdFeteThumb,
-  },
-  {
     id: 'wd-portrait',
     kind: 'web',
     title: 'Լիլիթ & Արման',
@@ -228,6 +197,45 @@ export const WEB_DESIGNS = [
     image: wdPortraitThumb,
   },
   {
+    id: 'wd-chateau',
+    kind: 'web',
+    title: 'Դավիթ & Մարիամ',
+    code: 'WEB-WED-16',
+    type: 'Հարսանիք',
+    category: 'wedding',
+    eventTypes: ['wedding'],
+    available: true,
+    previewSlug: 'wd-chateau',
+    previewRoute: '/invitations/preview/wd-chateau',
+    image: wdChateauThumb,
+  },
+  {
+    id: 'wd-noir',
+    kind: 'web',
+    title: 'Ալեն & Միլենա',
+    code: 'WEB-WED-17',
+    type: 'Հարսանիք',
+    category: 'wedding',
+    eventTypes: ['wedding'],
+    available: true,
+    previewSlug: 'wd-noir',
+    previewRoute: '/invitations/preview/wd-noir',
+    image: wdNoirThumb,
+  },
+  {
+    id: 'wd-noir-lite',
+    kind: 'web',
+    title: 'Էդգար & Ալիսա',
+    code: 'WEB-WED-18',
+    type: 'Հարսանիք',
+    category: 'wedding',
+    eventTypes: ['wedding'],
+    available: true,
+    previewSlug: 'wd-noir-lite',
+    previewRoute: '/invitations/preview/wd-noir-lite',
+    image: wdNoirLiteThumb,
+  },
+  {
     id: 'bd-animals',
     kind: 'web',
     title: 'Նարեի 1 տարեկանը',
@@ -239,19 +247,6 @@ export const WEB_DESIGNS = [
     previewSlug: 'bd-animals',
     previewRoute: '/invitations/preview/bd-animals',
     image: bdAnimalsThumb,
-  },
-  {
-    id: 'bd-duck',
-    kind: 'web',
-    title: 'Լիլիթի 5 տարեկանը',
-    code: 'WEB-BDAY-02',
-    type: 'Ծննդյան տոն',
-    category: 'birthday',
-    eventTypes: ['birthday'],
-    available: true,
-    previewSlug: 'bd-duck',
-    previewRoute: '/invitations/preview/bd-duck',
-    image: bdDuckThumb,
   },
   {
     id: 'bd-planet',
@@ -319,13 +314,38 @@ export const WEB_DESIGNS = [
     image: bdBuildThumb,
   },
   {
+    id: 'bd-castle',
+    kind: 'web',
+    title: 'Էլենի 4 տարեկանը',
+    code: 'WEB-BDAY-08',
+    type: 'Ծննդյան տոն',
+    category: 'birthday',
+    eventTypes: ['birthday'],
+    available: true,
+    previewSlug: 'bd-castle',
+    previewRoute: '/invitations/preview/bd-castle',
+    image: bdCastleThumb,
+  },
+  {
+    id: 'bd-dots',
+    kind: 'web',
+    title: 'Սոնայի 6-րդ ծննդյան տոնը',
+    code: 'WEB-BDAY-09',
+    type: 'Ծննդյան տոն',
+    category: 'birthday',
+    eventTypes: ['birthday'],
+    available: true,
+    previewSlug: 'bd-dots',
+    previewRoute: '/invitations/preview/bd-dots',
+    image: bdDotsThumb,
+  },
+  {
     id: 'gp-balloons',
     kind: 'web',
     title: 'Տղա՞, թե՞ Աղջիկ',
     code: 'WEB-BAP-01',
     type: 'Գենդերի բացահայտում',
-    // Same public tab as the gender-reveal card design below.
-    category: 'baptism',
+    category: 'genderReveal',
     eventTypes: ['genderReveal'],
     available: true,
     previewSlug: 'gp-balloons',
@@ -338,27 +358,12 @@ export const WEB_DESIGNS = [
     title: 'Տղա՞, թե՞ աղջի՞կ · արագիլ',
     code: 'WEB-BAP-03',
     type: 'Գենդերի բացահայտում',
-    // Same public tab as gp-balloons.
-    category: 'baptism',
+    category: 'genderReveal',
     eventTypes: ['genderReveal'],
     available: true,
     previewSlug: 'gp-stork',
     previewRoute: '/invitations/preview/gp-stork',
     image: gpStorkThumb,
-  },
-  {
-    id: 'ce-ornament',
-    kind: 'web',
-    title: 'Ամանորյա երեկո',
-    code: 'WEB-CORP-01',
-    type: 'Կորպորատիվ միջոցառում',
-    // Each guest's personal link writes their name on the ornament.
-    category: 'corporate',
-    eventTypes: ['corporate'],
-    available: true,
-    previewSlug: 'ce-ornament',
-    previewRoute: '/invitations/preview/ce-ornament',
-    image: ceOrnamentThumb,
   },
   {
     id: 'ce-garland',
@@ -372,6 +377,115 @@ export const WEB_DESIGNS = [
     previewSlug: 'ce-garland',
     previewRoute: '/invitations/preview/ce-garland',
     image: ceGarlandThumb,
+  },
+  {
+    id: 'ce-pine',
+    kind: 'web',
+    title: 'Ամանորյա երեկույթ',
+    code: 'WEB-CORP-03',
+    type: 'Կորպորատիվ միջոցառում',
+    // A holiday party (at home or at work). The public catalog has no
+    // holiday tab, so it sits with the other holiday designs; the
+    // dashboard also offers it for "other" events.
+    category: 'corporate',
+    eventTypes: ['corporate', 'other'],
+    available: true,
+    previewSlug: 'ce-pine',
+    previewRoute: '/invitations/preview/ce-pine',
+    image: cePineThumb,
+  },
+  {
+    id: 'ce-truck',
+    kind: 'web',
+    title: 'Փոքրիկ ամանորյա երեկույթ',
+    code: 'WEB-CORP-04',
+    type: 'Կորպորատիվ միջոցառում',
+    // A holiday party, like ce-pine: with the holiday designs in the
+    // catalog, offered for "other" events in the dashboard too.
+    category: 'corporate',
+    eventTypes: ['corporate', 'other'],
+    available: true,
+    previewSlug: 'ce-truck',
+    previewRoute: '/invitations/preview/ce-truck',
+    image: ceTruckThumb,
+  },
+  {
+    id: 'ce-toast',
+    kind: 'web',
+    title: 'Ձմեռ Պապի կենացը',
+    code: 'WEB-CORP-05',
+    type: 'Կորպորատիվ միջոցառում',
+    category: 'corporate',
+    eventTypes: ['corporate', 'other'],
+    available: true,
+    previewSlug: 'ce-toast',
+    previewRoute: '/invitations/preview/ce-toast',
+    image: ceToastThumb,
+  },
+  {
+    id: 'ce-holly',
+    kind: 'web',
+    title: 'Ամանորյա երեկույթ · ընկերություն',
+    code: 'WEB-CORP-06',
+    type: 'Կորպորատիվ միջոցառում',
+    category: 'corporate',
+    eventTypes: ['corporate', 'other'],
+    available: true,
+    previewSlug: 'ce-holly',
+    previewRoute: '/invitations/preview/ce-holly',
+    image: ceHollyThumb,
+  },
+  {
+    id: 'ce-groovy',
+    kind: 'web',
+    title: 'Զնգ-զնգ ու պար',
+    code: 'WEB-CORP-07',
+    type: 'Կորպորատիվ միջոցառում',
+    category: 'corporate',
+    eventTypes: ['corporate', 'other'],
+    available: true,
+    previewSlug: 'ce-groovy',
+    previewRoute: '/invitations/preview/ce-groovy',
+    image: ceGroovyThumb,
+  },
+  {
+    id: 'ce-jingle',
+    kind: 'web',
+    title: 'Զնգոց ու ծիծաղ',
+    code: 'WEB-CORP-08',
+    type: 'Կորպորատիվ միջոցառում',
+    category: 'corporate',
+    eventTypes: ['corporate', 'other'],
+    available: true,
+    previewSlug: 'ce-jingle',
+    previewRoute: '/invitations/preview/ce-jingle',
+    image: ceJingleThumb,
+  },
+  {
+    id: 'ce-sparkle',
+    kind: 'web',
+    title: 'Կայծերի երեկո',
+    code: 'WEB-CORP-09',
+    type: 'Կորպորատիվ միջոցառում',
+    category: 'corporate',
+    eventTypes: ['corporate', 'other'],
+    available: true,
+    previewSlug: 'ce-sparkle',
+    previewRoute: '/invitations/preview/ce-sparkle',
+    image: ceSparkleThumb,
+  },
+  {
+    id: 'ce-cozy',
+    kind: 'web',
+    title: 'Ձմեռային տոն',
+    code: 'WEB-CORP-10',
+    type: 'Կորպորատիվ միջոցառում',
+    category: 'corporate',
+    eventTypes: ['corporate', 'other'],
+    available: true,
+    previewSlug: 'ce-cozy',
+    previewRoute: '/invitations/preview/ce-cozy',
+    image: ceCozyThumb,
   },
   {
     id: 'bp-blue',
@@ -400,6 +514,7 @@ export const CATEGORY_LABELS = {
   wedding: 'Հարսանեկան',
   baptism: 'Մկրտության',
   birthday: 'Ծննդյան',
+  genderReveal: 'Սեռի բացահայտում',
   corporate: 'Կորպորատիվ',
 }
 

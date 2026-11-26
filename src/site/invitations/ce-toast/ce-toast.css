@@ -1,0 +1,215 @@
+/* =========================================================
+   "ce-toast" — corporate New Year party, retro ink style. Textured
+   paper, Santa in a coupe glass (components/Art.jsx, SVG), tilted
+   handwritten lines in black and red, sparkles. One column, 560px at
+   most; sizes are cqw of that column. On a wide column the cover is
+   the reference card's layout; on a phone it stacks.
+   ========================================================= */
+.ctt{
+  --paper:#f6f2ec; --ink:#1d1b1b; --red:#c8412f; --soft:#4b4644; --line:rgba(29,27,27,.18);
+  --script:"Marck Script","Noto Serif Armenian",cursive;
+  --hand:"Caveat","Noto Serif Armenian",cursive;
+  --arm:"Noto Serif Armenian",Georgia,serif;
+  min-height:100vh; color:var(--ink); font-family:var(--hand); -webkit-font-smoothing:antialiased;
+  background:#e9e4dc;
+}
+.ctt *{box-sizing:border-box}
+.ctt .col{
+  position:relative; width:min(100%,560px); margin:0 auto; overflow:hidden; container-type:inline-size;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='4' seed='9'/%3E%3CfeColorMatrix values='0 0 0 0 .42  0 0 0 0 .38  0 0 0 0 .34  0 0 0 .14 -.02'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23p)'/%3E%3C/svg%3E"),
+    var(--paper);
+  box-shadow:0 30px 80px -40px rgba(60,40,30,.45);
+}
+.ctt :is(h1,h2,p,ol){margin:0}
+.ctt .arm{font-family:var(--arm) !important; font-style:italic}
+
+/* ---------- cover: the reference card's layout ---------- */
+.ctt .hero{position:relative; aspect-ratio:932/1304}
+.ctt .stage{position:absolute; left:10.7cqw; top:12.9cqw; width:75.1cqw}
+.ctt .art{display:block; width:100%; height:auto; overflow:visible}
+.ctt .ttl{position:absolute; z-index:1; left:9cqw; top:13cqw; display:flex; flex-direction:column; font-family:var(--script); font-weight:400; font-size:calc(8.6cqw * var(--fit,1)); line-height:1.05; color:var(--ink); transform:rotate(-16deg); transform-origin:0 100%}
+.ctt .ttl span:last-child{padding-left:4cqw}
+.ctt .ttl.arm{font-size:calc(6.4cqw * var(--fit,1)); font-weight:500}
+.ctt .lead-b{position:absolute; z-index:1; left:6cqw; top:85cqw; width:36cqw; text-align:center; transform:rotate(-13deg)}
+.ctt .lead{font-family:var(--script); font-size:4.4cqw; line-height:1.25; max-width:28cqw; margin:0 auto}
+.ctt .lead.arm{font-size:3.3cqw; line-height:1.4}
+.ctt .ev{display:flex; flex-direction:column; margin-top:1cqw; font-family:var(--script); font-size:9.4cqw; line-height:1.05; color:var(--red)}
+.ctt .ev.arm{font-size:6.6cqw; font-weight:500}
+.ctt .host-b{position:absolute; z-index:1; left:56.5cqw; top:76cqw; width:40cqw; text-align:center; transform:rotate(-15deg)}
+.ctt .hb{font-family:var(--script); font-size:5cqw; color:var(--red)}
+.ctt .hb.arm{font-size:3.6cqw}
+.ctt .co{font-family:var(--script); font-size:6.6cqw; line-height:1.15; color:var(--ink)}
+.ctt .co.arm{font-size:4.6cqw; font-weight:500}
+.ctt .det{margin-top:2cqw; display:grid; gap:.4cqw; font-family:var(--hand); font-weight:500; font-size:4.2cqw; line-height:1.15; color:var(--red); font-variant-numeric:lining-nums}
+.ctt .det.arm{font-size:3.2cqw; line-height:1.35}
+.ctt .sp{position:absolute; translate:-50% -50%; width:4.4cqw; height:4.4cqw}
+.ctt .sp1{left:64cqw; top:8cqw; width:5.4cqw; height:5.4cqw}
+.ctt .sp2{left:86cqw; top:22cqw; width:3.6cqw; height:3.6cqw}
+.ctt .sp3{left:90.2cqw; top:62.3cqw}
+.ctt .sp4{left:9.6cqw; top:74cqw; width:3.6cqw; height:3.6cqw}
+.ctt .sp5{left:12cqw; top:127.6cqw; width:5.6cqw; height:5.6cqw}
+.ctt .sp6{left:90.6cqw; top:128.8cqw; width:3.6cqw; height:3.6cqw}
+
+/* phone: the same pieces, stacked */
+@container (max-width:520px){
+  .ctt .hero{aspect-ratio:auto; padding:16cqw 5cqw 14cqw; display:flex; flex-direction:column; align-items:center}
+  .ctt .ttl{position:relative; left:auto; top:auto; align-self:flex-start; margin-left:4cqw; font-size:calc(12.6cqw * var(--fit,1)); transform:rotate(-10deg)}
+  .ctt .ttl.arm{font-size:calc(9.2cqw * var(--fit,1))}
+  .ctt .stage{position:relative; left:auto; top:auto; width:94cqw; margin:-6cqw 0 0}
+  .ctt .lead-b{position:relative; left:auto; top:auto; width:82cqw; margin-top:4cqw; transform:rotate(-6deg)}
+  .ctt .lead{font-size:6.6cqw; max-width:none}
+  .ctt .lead.arm{font-size:5cqw}
+  .ctt .ev{font-size:14cqw}
+  .ctt .ev.arm{font-size:9.6cqw}
+  .ctt .host-b{position:relative; left:auto; top:auto; width:84cqw; margin-top:10cqw; transform:rotate(-6deg)}
+  .ctt .hb{font-size:7.4cqw}
+  .ctt .hb.arm{font-size:5.4cqw}
+  .ctt .co{font-size:10cqw}
+  .ctt .co.arm{font-size:7cqw}
+  .ctt .det{font-size:6.6cqw}
+  .ctt .det.arm{font-size:4.8cqw}
+  .ctt .sp1{left:80cqw; top:12cqw; width:7cqw; height:7cqw}
+  .ctt .sp2{left:92cqw; top:36cqw; width:5cqw; height:5cqw}
+  .ctt .sp3, .ctt .sp5{display:none}
+  .ctt .sp4{left:6cqw; top:34%; width:5cqw; height:5cqw}
+  .ctt .sp6{left:92cqw; top:auto; bottom:6cqw; width:5cqw; height:5cqw}
+}
+
+/* ---------- the evening, part by part ---------- */
+.ctt .blk:not(.hero){position:relative; padding:4px 9cqw 58px; text-align:center}
+.ctt .divider{display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom:16px}
+.ctt .divider .sparkle{width:14px; height:14px}
+.ctt .divider .d2{width:24px; height:24px}
+.ctt .title2{font-family:var(--script); font-weight:400; font-size:clamp(34px,9.4cqw,48px); line-height:1.15; color:var(--ink); transform:rotate(-3deg); margin-bottom:14px}
+.ctt .title2.red{color:var(--red)}
+.ctt .title2.arm{font-size:clamp(24px,6.6cqw,32px); font-weight:500}
+.ctt .title2.big{font-size:clamp(40px,11cqw,56px)}
+.ctt .title2.big.arm{font-size:clamp(26px,7.4cqw,36px)}
+.ctt .body{font-family:var(--hand); font-weight:500; font-size:22px; line-height:1.4; color:var(--soft); text-wrap:pretty; font-variant-numeric:lining-nums}
+.ctt .body:has(+ *){margin-bottom:22px}
+.ctt .small{font-family:var(--hand); font-weight:600; font-size:20px; color:var(--red)}
+.ctt .vname{font-family:var(--script); font-size:30px; margin-bottom:4px}
+
+.ctt .cells{display:flex; justify-content:center; margin:12px 0 10px}
+.ctt .cells span{display:flex; flex-direction:column; align-items:center; min-width:21cqw; max-width:110px; font-family:var(--hand); font-weight:500; font-size:18px; color:var(--soft)}
+.ctt .cells span + span{border-left:1.5px dashed var(--line)}
+.ctt .cells b{font-family:var(--script); font-weight:400; font-size:clamp(36px,10cqw,52px); line-height:1.05; color:var(--red); font-variant-numeric:lining-nums tabular-nums}
+.ctt .long{font-family:var(--hand); font-weight:500; font-size:20px; color:var(--soft); margin-bottom:22px; font-variant-numeric:lining-nums}
+
+.ctt .btn{
+  display:inline-flex; align-items:center; justify-content:center; min-height:48px; padding:10px 26px; border:2px solid var(--ink);
+  border-radius:999px; color:var(--ink); background:var(--paper); box-shadow:4px 4px 0 var(--red); font:600 21px/1.1 var(--hand);
+  text-decoration:none; cursor:pointer; transition:transform .2s ease, box-shadow .2s ease;
+}
+.ctt .btn:hover{transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--red)}
+.ctt .btn:active{transform:translate(2px,2px); box-shadow:2px 2px 0 var(--red)}
+.ctt .btn.solid{background:var(--red); color:#fff; box-shadow:4px 4px 0 var(--ink)}
+.ctt .btn.solid:hover{box-shadow:6px 6px 0 var(--ink)}
+.ctt .btn:focus-visible{outline:2px solid var(--red); outline-offset:4px}
+
+.ctt .tl{list-style:none; padding:0; display:grid; max-width:400px; margin:0 auto}
+.ctt .tl li{position:relative; display:grid; grid-template-columns:70px 1fr; gap:12px; align-items:baseline; text-align:left; padding:9px 0; border-bottom:1.5px dashed var(--line); font-family:var(--hand); font-weight:500; font-size:22px; line-height:1.25}
+.ctt .tl time{font-family:var(--script); font-size:24px; color:var(--red); font-variant-numeric:lining-nums}
+
+.ctt .sw{display:flex; justify-content:center; gap:14px}
+.ctt .sw-i{position:relative; width:38px; height:38px; border-radius:50%; border:2px solid var(--ink)}
+.ctt .sw-i::before{content:""; position:absolute; inset:3px -3px -3px 3px; border-radius:50%; background:var(--c); z-index:-1}
+.ctt .sw{isolation:isolate}
+.ctt .sw-edit{width:44px; height:44px; border:0; padding:0; background:none; cursor:pointer}
+
+/* reply form */
+.ctt .form{display:grid; gap:18px; max-width:400px; margin:0 auto; text-align:left}
+.ctt .field{display:grid; gap:6px}
+.ctt .lbl{font-family:var(--hand); font-weight:600; font-size:20px; color:var(--red)}
+.ctt .form input[type=text], .ctt .form textarea{
+  width:100%; font:500 21px var(--hand); color:var(--ink); background:transparent; border:0; border-bottom:2px solid var(--ink);
+  border-radius:0; padding:6px 2px; outline:none; resize:vertical;
+}
+.ctt .form textarea{border:2px solid var(--ink); border-radius:10px; padding:8px 10px}
+.ctt .form input:focus, .ctt .form textarea:focus{border-color:var(--red)}
+.ctt .err{font-size:18px; font-weight:600; color:var(--red)}
+.ctt .choice{display:flex; flex-wrap:wrap; gap:10px}
+.ctt .choice label{
+  flex:1 1 140px; position:relative; display:flex; align-items:center; justify-content:center; min-height:46px; padding:8px 14px;
+  border:2px solid var(--ink); border-radius:999px; font-weight:600; font-size:20px; cursor:pointer; text-align:center; background:var(--paper);
+  transition:background .2s ease, color .2s ease, transform .15s ease;
+}
+.ctt .choice label.on{background:var(--ink); color:var(--paper)}
+.ctt .choice label:active{transform:scale(.97)}
+.ctt .choice input{position:absolute; opacity:0; pointer-events:none}
+.ctt .choice label:has(input:focus-visible){outline:2px solid var(--red); outline-offset:2px}
+.ctt .send{justify-self:center; margin-top:6px; min-width:200px}
+.ctt .thanks{font-family:var(--script); font-size:30px; line-height:1.3; color:var(--red); padding:10px 0}
+.ctt .thanks.arm{font-size:22px}
+
+.ctt .closing{padding-bottom:16px}
+.ctt .small-co{font-size:26px; margin-top:4px}
+.ctt .small-co.arm{font-size:19px}
+.ctt .siloona-credit{color:var(--ink)}
+
+/* ---------- motion ---------- */
+.ctt .art *{transform-box:view-box}
+/* Santa drops into the glass, then bobs */
+.ctt .santa{transform-origin:366px 445px; animation:cttDrop 1.1s cubic-bezier(.3,1.35,.55,1) .25s both, cttBob 3.2s ease-in-out 1.4s infinite alternate}
+@keyframes cttDrop{0%{opacity:0; transform:translateY(-240px) rotate(-14deg)} 35%{opacity:1} 100%{opacity:1; transform:none}}
+@keyframes cttBob{from{transform:rotate(0)}to{transform:rotate(-2deg) translateY(-3px)}}
+/* the legs kick, the olive rocks, the head nods */
+.ctt .leg1{transform-origin:352px 342px; animation:cttKick1 1.3s ease-in-out 1.3s infinite alternate}
+.ctt .leg2{transform-origin:362px 400px; animation:cttKick2 1.5s ease-in-out 1.5s infinite alternate}
+@keyframes cttKick1{from{transform:rotate(0)}to{transform:rotate(9deg)}}
+@keyframes cttKick2{from{transform:rotate(0)}to{transform:rotate(-7deg)}}
+.ctt .skewer{transform-origin:370px 200px; animation:cttRock 2.4s ease-in-out 1.3s infinite alternate}
+@keyframes cttRock{from{transform:rotate(-3deg)}to{transform:rotate(5deg)}}
+.ctt .head{transform-origin:466px 300px; animation:cttNod 2.8s ease-in-out 1.6s infinite alternate}
+@keyframes cttNod{from{transform:rotate(0)}to{transform:rotate(4deg)}}
+/* the splash flies out as he lands, then wobbles */
+.ctt .splash{transform-box:fill-box; animation:cttSplash .6s cubic-bezier(.3,1.6,.5,1) 1s both, cttWob 1.8s ease-in-out 1.6s infinite alternate}
+.ctt .splash-l{transform-origin:100% 50%}
+.ctt .splash-r{transform-origin:0 50%}
+@keyframes cttSplash{from{opacity:0; transform:scale(.2)}to{opacity:1; transform:none}}
+@keyframes cttWob{from{transform:scale(1)}to{transform:scale(1.07)}}
+/* bubbles rise and pop */
+.ctt .bub{animation:cttBub 3.4s ease-in 1.2s infinite}
+.ctt .b2{animation-delay:2.3s}
+.ctt .b3{animation-delay:1.8s}
+@keyframes cttBub{0%{opacity:0; transform:translateY(14px)} 25%{opacity:1} 80%{opacity:1} 100%{opacity:0; transform:translateY(-34px)}}
+/* sparkles twinkle */
+.ctt .sp, .ctt .divider .sparkle{animation:cttTwinkle 2.6s ease-in-out infinite alternate}
+.ctt .sp2, .ctt .divider .d2{animation-delay:-.9s}
+.ctt .sp3, .ctt .sp6, .ctt .divider .d3{animation-delay:-1.7s}
+.ctt .sp5{animation-delay:-.4s}
+@keyframes cttTwinkle{from{transform:scale(.72) rotate(0)}to{transform:scale(1.08) rotate(18deg)}}
+/* the handwritten lines write themselves in, left to right */
+.ctt .ttl span, .ctt .ev span{display:block; clip-path:inset(-30% 100% -30% -10%); animation:cttWrite 1.1s cubic-bezier(.45,.05,.35,1) forwards}
+.ctt .ttl span:first-child{animation-delay:.5s}
+.ctt .ttl span:last-child{animation-delay:1.3s}
+.ctt .ev span:first-child{animation-delay:1.9s}
+.ctt .ev span:last-child{animation-delay:2.5s}
+@keyframes cttWrite{to{clip-path:inset(-30% -10% -30% -10%)}}
+/* a countdown digit ticks in when it changes */
+.ctt .cells b{animation:cttTick .5s cubic-bezier(.2,.7,.2,1)}
+@keyframes cttTick{from{opacity:.15; transform:translateY(-7px)}to{opacity:1; transform:none}}
+.ctt .in .sw-i{animation:cttPop .6s cubic-bezier(.3,1.6,.5,1) calc(.4s + var(--k, 0) * .09s) both}
+@keyframes cttPop{from{opacity:0; transform:scale(.4)}to{opacity:1; transform:none}}
+.ctt .thanks{animation:cttFade .9s ease both}
+@keyframes cttFade{from{opacity:0; transform:translateY(10px)}to{opacity:1; transform:none}}
+
+/* reveal */
+.ctt .r{opacity:0; translate:0 14px; transition:opacity .9s ease, translate .9s cubic-bezier(.2,.7,.2,1); transition-delay:calc(var(--i,0) * 140ms)}
+.ctt .in .r{opacity:1; translate:none}
+.ctt.editing .r{opacity:1; translate:none; transition:none}
+.ctt.editing :is(.santa, .leg1, .leg2, .skewer, .head, .splash, .bub, .sp, .divider .sparkle, .cells b, .sw-i){animation:none}
+.ctt.editing .ttl span, .ctt.editing .ev span{clip-path:none; animation:none}
+
+/* edit mode */
+.ctt .wdb-editable{outline:1px dashed transparent; border-radius:3px; transition:outline-color .15s}
+.ctt .wdb-editable:hover, .ctt .wdb-editable:focus{outline-color:var(--red)}
+.ctt .wdb-edit-dt{background:#fff; padding:4px 6px; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,.08); font:400 14px system-ui, sans-serif}
+.ctt .wdb-edit-input{font:400 14px system-ui, sans-serif; color:var(--ink); background:#fff; border:1px solid var(--red); border-radius:6px; padding:3px 6px}
+
+@media (prefers-reduced-motion:reduce){
+  .ctt :is(.santa, .leg1, .leg2, .skewer, .head, .splash, .bub, .sp, .divider .sparkle, .cells b, .sw-i, .thanks){animation:none}
+  .ctt .ttl span, .ctt .ev span{clip-path:none; animation:none}
+  .ctt .r{transition:none; opacity:1; translate:none}
+}

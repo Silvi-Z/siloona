@@ -12,6 +12,7 @@ import { eventDesignContent, designSections } from '../data/designPrefill';
 import { getByPath } from '../../site/invitations/shared/pathUtils';
 import * as actions from '../data/actions';
 import { openPublicPreview } from '../modals/PublicPreviewModal';
+import { NOT_LINKED, linkedOrder } from '../data/orderLinks';
 
 // «Իմ հրավերը» — organized around what the user actually does:
 //   left   the invitation itself, live (what guests will see)
@@ -44,6 +45,20 @@ function designMessage(ev, design) {
   return (sec && data && getByPath(data.content, sec.fields[0].path)) || ev.inv.message;
 }
 
+// Which paid order this invitation is (only those open to guests), and
+// which design guests see — always the one that was paid for.
+function OrderNote({ ev }) {
+  const o = linkedOrder(ev);
+  if (!o) return <p className="small" style={{ margin: '0 0 12px', color: 'var(--terracotta, #9b4a2e)' }}>{NOT_LINKED} <a href="/invitations" target="_blank" rel="noopener noreferrer">Դիտել դիզայնները</a></p>;
+  const paid = findDesign(o.designId);
+  return (
+    <p className="small muted" style={{ margin: '0 0 12px' }}>
+      Պատվեր №{o.orderNumber}{paid ? ` · ${paid.code}` : ''}{!o.live && ' · պատվերը վճարված չէ կամ չեղարկված է, հղումը փակ է'}
+      {o.live && paid && ev.inv.design && ev.inv.design !== paid.id && <> · հյուրերը տեսնում են պատվիրված դիզայնը՝ <b>{paid.code}</b></>}
+    </p>
+  );
+}
+
 function PublishPanel({ dash, ev, design }) {
   const pub = ev.inv.status === 'published';
   const answered = ev.guests.filter((g) => g.rsvp !== 'pending').length;
@@ -51,7 +66,7 @@ function PublishPanel({ dash, ev, design }) {
   const [shareText, setShareText] = useState(() => `${ev.title}\n${fmtDay(ev.date)}${ev.time ? `, ${ev.time}` : ''}\n\n${designMessage(ev, design) || ''}\n\nՀրավիրատոմսը և RSVP-ն՝ https://${invUrl(ev)}`.replace(/\n{3,}/g, '\n\n'));
 
   const copy = (text, msg) => navigator.clipboard?.writeText(text).then(() => dash.toast(msg));
-  const publish = () => { actions.publishInvitation(ev); dash.bump(); dash.toast('Հրավիրատոմսը հրապարակվեց · հղումն ակտիվ է'); };
+  const publish = () => { const r = actions.publishInvitation(ev); if (r?.error) { dash.toast(r.error); return; } dash.bump(); dash.toast('Հրավիրատոմսը հրապարակվեց · հղումն ակտիվ է'); };
   const unpublish = () => dash.confirm('Դադարեցնե՞լ հրապարակումը', <>Հղումը <span className="mono">{invUrl(ev)}</span> կդառնա անհասանելի հյուրերի համար։ Ստացված պատասխանները կպահպանվեն։</>, 'Դադարեցնել', () => {
     actions.unpublishInvitation(ev); dash.bump(); dash.toast('Հրապարակումը դադարեցվեց');
   });
@@ -61,6 +76,7 @@ function PublishPanel({ dash, ev, design }) {
       <div className="panel-h"><h3>Հրապարակում</h3><div className="spacer" /><Badge map={INV_ST} value={ev.inv.status} /></div>
       <div className="panel-b">
         <p className="muted" style={{ margin: '0 0 12px' }}>{pub ? `Հասանելի է հղումով ${fmtDL(ev.inv.published)}-ից։` : 'Հրավերը տեսանելի է միայն Ձեզ, մինչև այն հրապարակեք։'}</p>
+        <OrderNote ev={ev} />
         <div className="url pub-url">
           <span className="mono" style={{ flex: 1 }}>https://{invUrl(ev)}</span>
           <button className="btn sm" onClick={() => copy(`https://${invUrl(ev)}`, 'Հղումը պատճենվեց')}><Icon name="copy" /> Պատճենել</button>

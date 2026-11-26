@@ -60,7 +60,7 @@ export default function Rsvp() {
       {!pub && (
         <div className="banner">
           <div><b style={{ fontWeight: 500 }}>Հրավիրատոմսը դեռ հրապարակված չէ։</b> RSVP-ն կսկսի աշխատել հրապարակումից հետո։ Մինչ այդ կարող եք պատասխանները նշել ձեռքով։</div>
-          <div className="spacer" /><button className="btn sm primary" onClick={() => { actions.publishInvitation(ev); dash.bump(); dash.toast('Հրավիրատոմսը հրապարակվեց · հղումն ակտիվ է'); }}>Հրապարակել</button>
+          <div className="spacer" /><button className="btn sm primary" onClick={() => { const r = actions.publishInvitation(ev); if (r?.error) { dash.toast(r.error); return; } dash.bump(); dash.toast('Հրավիրատոմսը հրապարակվեց · հղումն ակտիվ է'); }}>Հրապարակել</button>
         </div>
       )}
 

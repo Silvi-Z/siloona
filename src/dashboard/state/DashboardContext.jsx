@@ -3,12 +3,13 @@ import { EV, coupleEvent, orgEvents } from '../data/selectors';
 import { schedulePersist } from '../data/sync';
 import { syncReplies } from '../data/replies';
 import Icon from '../utils/icons';
+import { TODAY } from '../utils/format';
 
 const initialUi = () => ({
   g: { q: '', rsvp: 'all', gender: 'all', group: 'all', att: 'all', channel: 'all', side: 'all', view: 'table', by: 'group', sort: 'name', dir: 1, page: 1, per: 50, sel: new Set(), open: {} },
   r: { q: '', tab: 'pending', page: 1 },
   ev: { q: '', tab: 'upcoming', type: 'all', view: 'list' },
-  cal: { view: 'cal', month: new Date(2026, 11, 1), mini: new Date(2026, 10, 1) },
+  cal: { view: 'cal', month: new Date(TODAY.getFullYear(), TODAY.getMonth(), 1), mini: new Date(TODAY.getFullYear(), TODAY.getMonth(), 1) },
   set: { tab: 'profile' },
 });
 

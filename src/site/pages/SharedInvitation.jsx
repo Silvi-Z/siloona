@@ -6,6 +6,7 @@ import { deepMerge } from '../invitations/shared/pathUtils'
 import { findDesign } from '../designCatalog'
 import { prefillFromCustomization, prefillFromEvent } from '../invitationPrefill'
 import { contentFromDetails } from '../invitationDetails'
+import { defaultsFor } from '../invitationDefaults'
 
 // The invitation guests open — /i/:code[/:token]. Two kinds, the server
 // tells which (GET /api/invitations):
@@ -22,7 +23,7 @@ function Message({ title, text }) {
   return (
     <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', padding: 24, background: '#FBF7F0', color: '#211C28', textAlign: 'center' }}>
       <div style={{ maxWidth: 420 }}>
-        <p style={{ fontFamily: '"Cormorant Garamond",Georgia,serif', fontSize: 22, letterSpacing: '.12em', color: '#6B1D2C', margin: '0 0 18px' }}>SILOONA</p>
+        <p style={{ fontFamily: '"Cormorant Garamond",Georgia,serif', fontSize: 22, letterSpacing: '.12em', color: '#4A0611', margin: '0 0 18px' }}>SILOONA</p>
         <h1 style={{ fontFamily: '"Noto Serif Armenian",Georgia,serif', fontWeight: 500, fontSize: 24, margin: '0 0 10px' }}>{title}</h1>
         {text && <p style={{ fontFamily: '"Noto Sans Armenian",sans-serif', fontSize: 15, color: '#4B4256', margin: 0 }}>{text}</p>}
       </div>
@@ -46,6 +47,27 @@ async function sendRsvp(body) {
   }
 }
 
+// «Ձեր սեղանը»: asks the server for one guest's table. Resolves to
+// { status: 'found'|'ambiguous'|'not_found'|'empty', table? } or
+// { status: 'not_open' | 'busy' | 'error' }.
+async function findSeat(code, name) {
+  try {
+    const r = await fetch('/api/invitations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ seat: true, code, name }),
+    })
+    const data = await r.json().catch(() => null)
+    if (r.ok && data?.status) return data
+    if (r.status === 409) return { status: 'not_open' }
+    if (r.status === 429) return { status: 'busy' }
+    if (r.status === 422) return { status: 'empty' }
+    return { status: 'error' }
+  } catch {
+    return { status: 'error' }
+  }
+}
+
 // The event as the dashboard's prefill expects it (dates as Date objects).
 function reviveEvent(e) {
   const date = e.date ? new Date(/^\d{4}-\d{2}-\d{2}$/.test(e.date) ? `${e.date}T00:00:00` : e.date) : undefined
@@ -57,6 +79,10 @@ function reviveEvent(e) {
     inv: { ...(e.inv || {}), deadline: e.inv?.deadline ? new Date(e.inv.deadline) : undefined },
   }
 }
+
+// The invitation's language, as the order's content records it.
+const invLangOf = (data) => (data?.kind !== 'event' && INVITATION_WORD[data?.content?.lang] ? data.content.lang : 'hy')
+const INVITATION_WORD = { hy: 'Հրավեր', ru: 'Приглашение', en: 'Invitation' }
 
 export default function SharedInvitation() {
   const { code, token } = useParams()
@@ -90,16 +116,26 @@ export default function SharedInvitation() {
     }
     // Purchased: design ← checkout details ← the customer's edits. Orders
     // from before the design's own details were asked have only names / date / venue.
-    const filled = data.details ? contentFromDetails(slug, data.details) : prefillFromCustomization(slug, data.customization)
-    return deepMerge(deepMerge(entry.defaultData, filled), data.content)
+    // A Russian / English invitation starts from that language's demo.
+    const lang = invLangOf(data)
+    const filled = data.details ? contentFromDetails(slug, data.details, lang) : prefillFromCustomization(slug, data.customization, lang)
+    return deepMerge(deepMerge(defaultsFor(slug, lang), filled), data.content)
   }, [entry, slug, data])
+
+  // Only when the server says this invitation has seating.
+  const seating = useMemo(
+    () => (data?.seating ? { ...data.seating, key: code, find: (name) => findSeat(code, name) } : null),
+    [data, code],
+  )
 
   useEffect(() => {
     if (!data) return
     const names = data.kind === 'event'
       ? [data.event.person1?.first, data.event.person2?.first].filter(Boolean).join(' & ') || data.event.title
       : data.customization?.names
-    if (names) document.title = `${names} · Հրավեր`
+    const lang = invLangOf(data)
+    if (names) document.title = `${names} · ${INVITATION_WORD[lang]}`
+    document.documentElement.lang = lang
   }, [data])
 
   if (state.status === 'loading') return <div style={{ minHeight: '100vh', background: '#FBF7F0' }} />
@@ -117,7 +153,7 @@ export default function SharedInvitation() {
     ? (answer) => { sendRsvp(isEvent ? { slug: code, t: token, ...answer } : { code, ...answer }) }
     : undefined
   return (
-    <InvitationContentProvider defaultData={content} editing={false} setEditing={noop} guestName={guestName} onRsvp={onRsvp}>
+    <InvitationContentProvider defaultData={content} editing={false} setEditing={noop} guestName={guestName} onRsvp={onRsvp} seating={seating}>
       <Invitation />
     </InvitationContentProvider>
   )

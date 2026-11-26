@@ -3,7 +3,9 @@ import Kpi from '../components/Kpi';
 import RsvpBar from '../components/RsvpBar';
 import EmptyState from '../components/EmptyState';
 import EventTitle from '../components/EventTitle';
-import InvitationArt from '../components/InvitationArt';
+import { DesignThumb } from '../../site/DesignCard';
+import { findDesign } from '../../site/designCatalog';
+import { linkedOrder } from '../data/orderLinks';
 import CountdownClock from '../components/CountdownClock';
 import MilestoneRow from '../components/MilestoneRow';
 import { Badge } from '../components/Badge';
@@ -16,6 +18,13 @@ import { openGuestForm } from '../modals/GuestModal';
 import { openPublicPreview } from '../modals/PublicPreviewModal';
 import { openRef } from '../refs';
 
+// The chosen design's own artwork (its catalog picture, or the card itself).
+function DesignMini({ design }) {
+  if (design.kind === 'card' && design.Art) return <design.Art />;
+  if (design.image) return <img src={design.image} alt="" />;
+  return <div className="sil-catalog"><DesignThumb design={design} /></div>;
+}
+
 export default function EventDashboard({ ev }) {
   const dash = useDashboard();
   const { mode, go } = dash;
@@ -24,10 +33,13 @@ export default function EventDashboard({ ev }) {
   const st = evStatus(ev);
   const d = dayDiff(ev.date, TODAY);
   const pub = ev.inv.status === 'published';
+  // what guests actually get: the paid design once an order is linked
+  const live = linkedOrder(ev);
+  const design = findDesign((live?.live && live.designId) || ev.inv.design);
 
   const guestsBy = (filter = {}) => { dash.patchUi('g', { rsvp: filter.rsvp || 'all', gender: filter.gender || 'all', group: filter.group || 'all', q: '', att: 'all', page: 1, view: 'table' }); go('guests'); };
   const copyLink = () => navigator.clipboard?.writeText(`https://${invUrl(ev)}`).then(() => dash.toast('Հղումը պատճենվեց'));
-  const publish = () => { actions.publishInvitation(ev); dash.bump(); dash.toast('Հրավիրատոմսը հրապարակվեց · հղումն ակտիվ է'); };
+  const publish = () => { const r = actions.publishInvitation(ev); if (r?.error) { dash.toast(r.error); return; } dash.bump(); dash.toast('Հրավիրատոմսը հրապարակվեց · հղումն ակտիվ է'); };
   const remindAll = () => dash.confirm('Ուղարկե՞լ հիշեցում', `Հիշեցում կուղարկվի ${ev.guests.filter(g => g.rsvp === 'pending').length} հյուրի, ովքեր դեռ չեն պատասխանել «${ev.title}» հրավերին։`, 'Ուղարկել', () => {
     const n = actions.remindAll(ev); dash.bump(); dash.toast(`Հիշեցումն ուղարկվեց ${n} հյուրի`);
   }, false);
@@ -118,7 +130,9 @@ export default function EventDashboard({ ev }) {
           <div className="panel-h"><h3>Հրավիրատոմս</h3><div className="spacer" /><Badge map={INV_ST} value={ev.inv.status} /></div>
           <div className="panel-b">
             <div className="inv-mini">
-              <div className="thumb" style={{ width: 96, cursor: 'pointer' }} onClick={() => openPublicPreview(dash, ev)}><InvitationArt ev={ev} /></div>
+              {design
+                ? <figure className="inv-fig"><button type="button" className="thumb inv-thumb" onClick={() => openPublicPreview(dash, ev)} aria-label={`Բացել՝ ${design.code}`}><DesignMini design={design} /></button><figcaption>{design.code}</figcaption></figure>
+                : <button type="button" className="thumb inv-thumb empty" onClick={() => go('designs')}><Icon name="plus" /><span>Ընտրել դիզայն</span></button>}
               <dl className="kv" style={{ gridTemplateColumns: '112px 1fr', fontSize: 12.5, gap: '8px 12px' }}>
                 <dt>Դիտումներ</dt><dd>{num(ev.inv.views)}</dd>
                 <dt>Հրապարակվել է</dt><dd>{ev.inv.published && pub ? fmtD(ev.inv.published) : '—'}</dd>

@@ -1,33 +1,124 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { DesignThumb } from '../DesignCard'
-import { CATEGORY_LABELS, findDesign } from '../designCatalog'
+import { findDesign } from '../designCatalog'
+import { CATEGORY_LABELS_I18N, designTitle } from '../designI18n'
 import { formatPrice } from '../pricing'
+import { legalTitle } from '../legal'
+import { LANG_NAMES_IN, stripLang, useLang, useText, withLang } from '../i18n'
 import PaymentMethods, { SecureNote } from './PaymentMethods'
 import TimeSelect from '../invitations/shared/TimeSelect'
 import { DateField } from '../invitations/shared/ArmenianDate'
 import { loadOverride } from '../invitations/shared/storage'
 import {
-  OPTION_INFO, createOrder, getCheckoutConfig, goToProvider, orderLink, rememberOrder, startPayment, uploadPhotos,
+  createOrder, getCheckoutConfig, goToProvider, isTestChoice, optionInfo, orderLink, paymentChoices, rememberOrder, startPayment, uploadPhotos,
 } from './checkoutApi'
 import './checkout.css'
 
 const EMPTY = { name: '', phone: '', email: '', contact: '', names: '', eventDate: '', eventTime: '', venue: '', notes: '', website: '' }
 const CONTACT_FIELDS = ['name', 'phone', 'email', 'contact', 'names', 'eventDate']
 
+const TEXT = {
+  hy: {
+    errName: 'Նշեք Ձեր անունը։', errPhone: 'Նշեք ճիշտ հեռախոսահամար, օրինակ՝ +374 99 123456։', errEmail: 'Էլ. հասցեն սխալ է։',
+    errNames: 'Նշեք անունները, որոնք կերևան հրավերում։', errDate: 'Նշեք միջոցառման ամսաթիվը։', errFill: 'Լրացրեք այս դաշտը։',
+    errConsent: 'Անհրաժեշտ է համաձայնել։', errMethod: 'Ընտրեք վճարման եղանակը։',
+    order: 'Պատվեր', notFound: 'Այս դիզայնը չի գտնվել', viewCollection: 'Դիտել հավաքածուն',
+    change: 'Փոխել', schedWhat: 'Ինչ է տեղի ունենում', remove: 'Հեռացնել', addItem: '+ Ավելացնել կետ', checkMap: 'Ստուգել քարտեզում →',
+    pay: (a) => `Վճարել ${a}`, sendRequest: 'Ուղարկել հայտը', sendOrder: 'Ուղարկել պատվերը',
+    crumbs: 'Ուղի', collection: 'Հավաքածու', title: 'Պատվերի ձևակերպում', step1: 'Ձեր ընտրությունը', option: 'Տարբերակ',
+    attach: 'Կցել իմ խմբագրած տարբերակը պատվերին',
+    edited: 'Դուք խմբագրել եք այս հրավերը կայքում․ Ձեր փոփոխությունները կերևան պատրաստի հրավերում։',
+    continueEdit: 'Շարունակել խմբագրումը →', editOnSite: 'Խմբագրել հրավերը կայքում →', viewDemo: 'Դիտել դեմոն', continue: 'Շարունակել',
+    step2: 'Ձեր տվյալները', fName: 'Անուն, ազգանուն', fPhone: 'Հեռախոս', fEmail: 'Էլ. փոստ', fContact: 'Telegram կամ Instagram', fContactHint: 'Եթե նախընտրում եք կապ այնտեղ',
+    details: 'Հրավերի մանրամասներ', detailsNote: 'սրանք կերևան Ձեր հրավերում', fromEdit: 'Վերցված է Ձեր խմբագրած հրավերից',
+    changeInInvitation: 'Փոխել հրավերում →', fNotes: 'Ցանկություններ',
+    notesHint1: 'Ոչ պարտադիր․ այն, ինչ ցանկանում եք մեզ հայտնել հրավերի մասին',
+    notesHint2: 'Ոչ պարտադիր․ գույներ, լուսանկարներ, տեքստ՝ այն ամենը, ինչ ցանկանում եք ավելացնել կամ փոխել',
+    notesHint3: 'Գույներ, տեքստ, լուսանկարներ, ծրագիր՝ այն ամենը, ինչ ցանկանում եք տեսնել հրավերում',
+    fNames: 'Անուններ հրավերի վրա', namesHint: 'Օրինակ՝ «Աննա & Միքայել» կամ «Նարե»', fDate: 'Միջոցառման ամսաթիվ', fTime: 'Ժամ', fVenue: 'Վայր',
+    step3Request: 'Հայտի ուղարկում', step3Pay: 'Վճարում', customer: 'Պատվիրատու', onInvitation: 'Հրավերի վրա', date: 'Ամսաթիվ',
+    loading: 'Բեռնվում է…',
+    ordersOff: (code, opt) => `Առցանց պատվերը դեռ միացված չէ։ Գրեք մեզ Instagram կամ Telegram-ում (տես՝ կայքի ստորին մասում)՝ նշելով «${code}» և «${opt}» տարբերակը։`,
+    noPrice: 'Այս դիզայնի գինը դեռ ճշտվում է։ Ուղարկեք հայտը, և մենք կկապվենք Ձեզ հետ՝ գինն ու մանրամասները հաստատելու համար։ Վճարումը կկատարվի դրանից հետո։',
+    noMethods: 'Առցանց վճարումը շուտով հասանելի կլինի։ Ուղարկեք պատվերը, և մենք կկապվենք Ձեզ հետ վճարման մանրամասների համար։',
+    // [before, link to /privacy, after]
+    consent: ['Համաձայն եմ, որ Siloona-ն օգտագործի իմ տվյալները՝ այս պատվերը կատարելու և ինձ հետ կապվելու համար՝ համաձայն ', 'Գաղտնիության քաղաքականության', '։'],
+    redirecting: 'Ուղղորդում ենք վճարման էջ…', sending: 'Ուղարկում ենք…',
+    invLang: 'Հրավերի լեզուն', invOnlyHy: 'Այս դիզայնը դեռ միայն հայերեն է։',
+    summary: 'Պատվերի ամփոփում', cardKind: 'Քարտային հրավիրատոմս', webKind: 'Վեբ հրավիրատոմս', total: 'Ընդամենը', currency: 'Գինը՝ ՀՀ դրամով (AMD)',
+  },
+  ru: {
+    errName: 'Укажите Ваше имя.', errPhone: 'Укажите правильный номер телефона, например +374 99 123456.', errEmail: 'Неверный адрес эл. почты.',
+    errNames: 'Укажите имена, которые будут в приглашении.', errDate: 'Укажите дату события.', errFill: 'Заполните это поле.',
+    errConsent: 'Необходимо Ваше согласие.', errMethod: 'Выберите способ оплаты.',
+    order: 'Заказ', notFound: 'Этот дизайн не найден', viewCollection: 'Смотреть коллекцию',
+    change: 'Изменить', schedWhat: 'Что происходит', remove: 'Удалить', addItem: '+ Добавить пункт', checkMap: 'Проверить на карте →',
+    pay: (a) => `Оплатить ${a}`, sendRequest: 'Отправить заявку', sendOrder: 'Отправить заказ',
+    crumbs: 'Навигация', collection: 'Коллекция', title: 'Оформление заказа', step1: 'Ваш выбор', option: 'Вариант',
+    attach: 'Приложить мою отредактированную версию к заказу',
+    edited: 'Вы отредактировали это приглашение на сайте — Ваши изменения будут в готовом приглашении.',
+    continueEdit: 'Продолжить редактирование →', editOnSite: 'Отредактировать приглашение на сайте →', viewDemo: 'Смотреть демо', continue: 'Продолжить',
+    step2: 'Ваши данные', fName: 'Имя и фамилия', fPhone: 'Телефон', fEmail: 'Эл. почта', fContact: 'Telegram или Instagram', fContactHint: 'Если Вам удобнее связь там',
+    details: 'Детали приглашения', detailsNote: 'они будут в Вашем приглашении', fromEdit: 'Взято из Вашего отредактированного приглашения',
+    changeInInvitation: 'Изменить в приглашении →', fNotes: 'Пожелания',
+    notesHint1: 'Необязательно: всё, что Вы хотите сообщить нам о приглашении',
+    notesHint2: 'Необязательно: цвета, фотографии, текст — всё, что Вы хотите добавить или изменить',
+    notesHint3: 'Цвета, текст, фотографии, программа — всё, что Вы хотите видеть в приглашении',
+    fNames: 'Имена в приглашении', namesHint: 'Например: «Анна и Микаэл» или «Наре»', fDate: 'Дата события', fTime: 'Время', fVenue: 'Место',
+    step3Request: 'Отправка заявки', step3Pay: 'Оплата', customer: 'Заказчик', onInvitation: 'В приглашении', date: 'Дата',
+    loading: 'Загрузка…',
+    ordersOff: (code, opt) => `Онлайн-заказ пока не подключён. Напишите нам в Instagram или Telegram (ссылки внизу сайта) и укажите дизайн «${code}» и вариант «${opt}».`,
+    noPrice: 'Цена этого дизайна ещё уточняется. Отправьте заявку, и мы свяжемся с Вами, чтобы согласовать цену и детали. Оплата — после этого.',
+    noMethods: 'Онлайн-оплата скоро будет доступна. Отправьте заказ, и мы свяжемся с Вами, чтобы обсудить детали оплаты.',
+    consent: ['Я согласен(на), чтобы Siloona использовала мои данные для выполнения этого заказа и связи со мной в соответствии с ', 'Политикой конфиденциальности', '.'],
+    redirecting: 'Переходим на страницу оплаты…', sending: 'Отправляем…',
+    invLang: 'Язык приглашения', invOnlyHy: 'Этот дизайн пока доступен только на армянском.',
+    summary: 'Сводка заказа', cardKind: 'Приглашение-открытка', webKind: 'Веб-приглашение', total: 'Итого', currency: 'Цена в армянских драмах (AMD)',
+  },
+  en: {
+    errName: 'Please enter your name.', errPhone: 'Please enter a valid phone number, e.g. +374 99 123456.', errEmail: 'The email address is not valid.',
+    errNames: 'Please enter the names to show on the invitation.', errDate: 'Please enter the event date.', errFill: 'Please fill in this field.',
+    errConsent: 'Your consent is required.', errMethod: 'Please choose a payment method.',
+    order: 'Order', notFound: 'This design wasn’t found', viewCollection: 'View the collection',
+    change: 'Change', schedWhat: 'What happens', remove: 'Remove', addItem: '+ Add an item', checkMap: 'Check on the map →',
+    pay: (a) => `Pay ${a}`, sendRequest: 'Send the request', sendOrder: 'Send the order',
+    crumbs: 'Breadcrumb', collection: 'Collection', title: 'Checkout', step1: 'Your choice', option: 'Option',
+    attach: 'Attach my edited version to the order',
+    edited: 'You’ve edited this invitation on the site — your changes will appear in the finished invitation.',
+    continueEdit: 'Continue editing →', editOnSite: 'Edit the invitation on the site →', viewDemo: 'View the demo', continue: 'Continue',
+    step2: 'Your details', fName: 'Full name', fPhone: 'Phone', fEmail: 'Email', fContact: 'Telegram or Instagram', fContactHint: 'If you prefer to talk there',
+    details: 'Invitation details', detailsNote: 'these will appear on your invitation', fromEdit: 'Taken from the invitation you edited',
+    changeInInvitation: 'Change in the invitation →', fNotes: 'Wishes',
+    notesHint1: 'Optional: anything you’d like to tell us about the invitation',
+    notesHint2: 'Optional: colours, photos, text — anything you’d like to add or change',
+    notesHint3: 'Colours, text, photos, programme — everything you’d like to see in the invitation',
+    fNames: 'Names on the invitation', namesHint: 'For example, “Anna & Mikayel” or “Nare”', fDate: 'Event date', fTime: 'Time', fVenue: 'Venue',
+    step3Request: 'Send the request', step3Pay: 'Payment', customer: 'Customer', onInvitation: 'On the invitation', date: 'Date',
+    loading: 'Loading…',
+    ordersOff: (code, opt) => `Online ordering isn’t switched on yet. Write to us on Instagram or Telegram (links at the bottom of the site), mentioning design “${code}” and the “${opt}” option.`,
+    noPrice: 'The price of this design is still being confirmed. Send the request and we’ll be in touch to agree the price and details. You pay after that.',
+    noMethods: 'Online payment is coming soon. Send the order and we’ll be in touch about the payment details.',
+    consent: ['I agree that Siloona may use my details to fulfil this order and to contact me, in line with the ', 'Privacy Policy', '.'],
+    redirecting: 'Taking you to the payment page…', sending: 'Sending…',
+    invLang: 'Invitation language', invOnlyHy: 'This design is available in Armenian only for now.',
+    summary: 'Order summary', cardKind: 'Card invitation', webKind: 'Web invitation', total: 'Total', currency: 'Price in Armenian drams (AMD)',
+  },
+}
+
 const uuid = () => (crypto.randomUUID ? crypto.randomUUID()
   : '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, (c) => (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)))
 
 // Same rules the server applies (api/_lib/orders.js) — checked here first
 // only so the customer gets instant feedback.
-function validateContact(f, hasDetails) {
+function validateContact(f, hasDetails, t) {
   const e = {}
-  if (f.name.trim().length < 2) e.name = 'Նշեք Ձեր անունը։'
-  if (!/^\+?\d{8,15}$/.test(f.phone.replace(/[\s()-]/g, ''))) e.phone = 'Նշեք ճիշտ հեռախոսահամար, օրինակ՝ +374 99 123456։'
-  if (f.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email.trim())) e.email = 'Էլ. հասցեն սխալ է։'
+  if (f.name.trim().length < 2) e.name = t.errName
+  if (!/^\+?\d{8,15}$/.test(f.phone.replace(/[\s()-]/g, ''))) e.phone = t.errPhone
+  if (f.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email.trim())) e.email = t.errEmail
   if (hasDetails) return e // the design's own fields are checked instead
-  if (f.names.trim().length < 2) e.names = 'Նշեք անունները, որոնք կերևան հրավերում։'
-  if (!f.eventDate) e.eventDate = 'Նշեք միջոցառման ամսաթիվը։'
+  if (f.names.trim().length < 2) e.names = t.errNames
+  if (!f.eventDate) e.eventDate = t.errDate
   return e
 }
 
@@ -35,6 +126,10 @@ export default function Checkout() {
   const { designId } = useParams()
   const [params] = useSearchParams()
   const navigate = useNavigate()
+  const { lang, to } = useLang()
+  const { pathname, search } = useLocation()
+  const t = useText(TEXT)
+  const OPTION_INFO = optionInfo(lang)
   const design = findDesign(designId)
 
   const [option, setOption] = useState(params.get('option') === 'assisted' ? 'assisted' : 'diy')
@@ -55,6 +150,8 @@ export default function Checkout() {
   // Everything this design needs (invitationDetails.js): its field groups,
   // the customer's answers and the demo's values as placeholders.
   const [spec, setSpec] = useState(null)
+  const [invLang, setInvLang] = useState('hy')
+  const [invLangs, setInvLangs] = useState(['hy'])
   const [det, setDet] = useState({ extra: {} })
   const [error, setError] = useState('')
   const idem = useRef({ key: null, ref: null })
@@ -64,7 +161,7 @@ export default function Checkout() {
 
   useEffect(() => {
     getCheckoutConfig()
-      .then((c) => { setConfig(c); setMethod((m) => m || c.methods[0] || null) })
+      .then((c) => { setConfig(c); setMethod((m) => m || paymentChoices(c.methods)[0] || null) })
       .catch(() => setConfig({ ordersEnabled: false, methods: [] }))
   }, [])
 
@@ -85,17 +182,23 @@ export default function Checkout() {
     if (!slug) return
     let alive = true
     Promise.all([import('../invitationDefaults'), import('../invitations/shared/pathUtils'), import('../invitationDetails')]).then(([d, u, m]) => {
-      const defaults = d.INVITATION_DEFAULTS[slug]
-      if (!alive || !defaults || !m.detailFields(slug)) return
+      // The invitation is in the page's language if the design has it.
+      const inv = d.invitationLang(slug, lang)
+      setInvLang(inv)
+      setInvLangs(d.invitationLangs(slug))
+      const defaults = d.defaultsFor(slug, inv)
+      if (!alive || !defaults || !m.detailFields(slug, lang)) return
       const demo = m.detailsFromContent(slug, defaults)
-      setSpec({ m, groups: m.detailGroups(slug), demo })
+      setSpec({ m, groups: m.detailGroups(slug, lang), demo })
       // The demo's programme to start from — easier to adjust than to type.
       setDet((x) => ({ ...x, schedule: x.schedule || demo.schedule }))
 
-      const saved = loadOverride(slug)
+      const saved = loadOverride(slug, inv)
       const diff = saved && u.diffData(defaults, saved)
+      // (switching the language drops the other language's edits)
+      setEdits(diff || null)
+      setFromEditor(null)
       if (!diff) return
-      setEdits(diff)
       const got = m.detailsFromContent(slug, u.deepMerge(defaults, saved))
       // Fill what's empty; never overwrite something the customer typed.
       setDet((x) => {
@@ -104,18 +207,18 @@ export default function Checkout() {
         out.schedule = got.schedule
         return out
       })
-      if (!m.missingDetails(slug, got).length) setFromEditor(got)
+      if (!m.missingDetails(slug, got, lang).length) setFromEditor(got)
     })
     return () => { alive = false }
-  }, [design?.previewSlug])
+  }, [design?.previewSlug, lang])
 
   if (!design || design.available === false) {
     return (
       <main className="co">
         <div className="wrap co-empty">
-          <p className="eyebrow">Պատվեր</p>
-          <h1>Այս դիզայնը չի գտնվել</h1>
-          <Link className="btn btn-primary" to="/invitations">Դիտել հավաքածուն</Link>
+          <p className="eyebrow">{t.order}</p>
+          <h1>{t.notFound}</h1>
+          <Link className="btn btn-primary" to={to('/invitations')}>{t.viewCollection}</Link>
         </div>
       </main>
     )
@@ -123,7 +226,7 @@ export default function Checkout() {
 
   const price = design.pricing[option]
   const ordersEnabled = config?.ordersEnabled
-  const methods = config?.methods || []
+  const methods = paymentChoices(config?.methods || [])
   const payable = price != null && methods.length > 0
   const set = (k) => (e) => { setForm((f) => ({ ...f, [k]: e.target.value })); setErrors((x) => ({ ...x, [k]: undefined })) }
 
@@ -135,9 +238,9 @@ export default function Checkout() {
   }
 
   const toPayment = () => {
-    const e = validateContact(form, !!spec)
+    const e = validateContact(form, !!spec, t)
     if (spec && !useEditor) {
-      for (const k of spec.m.missingDetails(design.previewSlug, det)) e[detKey(k)] = 'Լրացրեք այս դաշտը։'
+      for (const k of spec.m.missingDetails(design.previewSlug, det, lang)) e[detKey(k)] = t.errFill
     }
     setErrors(e)
     if (Object.keys(e).length) {
@@ -149,12 +252,15 @@ export default function Checkout() {
 
   async function submit() {
     setError('')
-    if (!consent) { setErrors((x) => ({ ...x, consent: 'Անհրաժեշտ է համաձայնել։' })); return }
-    if (payable && !method) { setError('Ընտրեք վճարման եղանակը։'); return }
+    if (!consent) { setErrors((x) => ({ ...x, consent: t.errConsent })); return }
+    if (payable && !method) { setError(t.errMethod); return }
 
     setBusy(true)
     // The customer's own photos go up first; the order then carries their addresses.
     let content = edits && attachEdits ? edits : null
+    // A Russian / English invitation says so in its content, which is what
+    // the guest's page reads (Armenian needs nothing).
+    if (invLang !== 'hy') content = { ...(content || {}), lang: invLang }
     try {
       if (content) content = await uploadPhotos(content, photoCache.current)
     } catch (e) {
@@ -191,9 +297,9 @@ export default function Checkout() {
         rememberOrder(r.orderId, r.token)
       }
       const { orderId, token } = created.current
-      if (!payable) { navigate(orderLink(orderId, token)); return }
+      if (!payable) { navigate(to(orderLink(orderId, token))); return }
       const r = await startPayment(orderId, token, method)
-      if (r.alreadyPaid || !goToProvider(r)) navigate(orderLink(orderId, token))
+      if (r.alreadyPaid || !goToProvider(r)) navigate(to(orderLink(orderId, token)))
       // else: the browser is leaving for the payment page — keep the spinner.
     } catch (e) {
       setBusy(false)
@@ -212,7 +318,7 @@ export default function Checkout() {
         <h2>{title}</h2>
         {step > n && summary && <p className="co-step-sum">{summary}</p>}
       </div>
-      {step > n && !busy && <button type="button" className="co-edit" onClick={() => setStep(n)}>Փոխել</button>}
+      {step > n && !busy && <button type="button" className="co-edit" onClick={() => setStep(n)}>{t.change}</button>}
     </header>
   )
 
@@ -250,11 +356,11 @@ export default function Checkout() {
           {rows.map((r, i) => (
             <div className="co-sched-row" key={i}>
               <TimeSelect className="co-sel" value={r.time} allowEmpty onChange={(v) => setRows(rows.map((x, j) => (j === i ? { ...x, time: v } : x)))} />
-              <input type="text" aria-label="Ինչ է տեղի ունենում" maxLength={120} value={r.title} onChange={(e) => setRows(rows.map((x, j) => (j === i ? { ...x, title: e.target.value } : x)))} />
-              <button type="button" className="co-sched-x" aria-label="Հեռացնել" onClick={() => setRows(rows.filter((_, j) => j !== i))}>×</button>
+              <input type="text" aria-label={t.schedWhat} maxLength={120} value={r.title} onChange={(e) => setRows(rows.map((x, j) => (j === i ? { ...x, title: e.target.value } : x)))} />
+              <button type="button" className="co-sched-x" aria-label={t.remove} onClick={() => setRows(rows.filter((_, j) => j !== i))}>×</button>
             </div>
           ))}
-          <button type="button" className="co-sched-add" onClick={() => setRows([...rows, { time: '', title: '' }])}>+ Ավելացնել կետ</button>
+          <button type="button" className="co-sched-add" onClick={() => setRows([...rows, { time: '', title: '' }])}>{t.addItem}</button>
         </div>
       )
     }
@@ -289,7 +395,7 @@ export default function Checkout() {
           aria-invalid={!!err} aria-describedby={err ? `${id}-err` : undefined}
         />
         {err ? <span className="co-err" id={`${id}-err`}>{err}</span> : mapQ && (
-          <a className="co-maplink" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQ)}`} target="_blank" rel="noopener noreferrer">Ստուգել քարտեզում →</a>
+          <a className="co-maplink" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQ)}`} target="_blank" rel="noopener noreferrer">{t.checkMap}</a>
         )}
       </label>
     )
@@ -314,31 +420,32 @@ export default function Checkout() {
     ) : null
   })
 
-  let payLabel = `Վճարել ${formatPrice(price)}`
-  if (price == null) payLabel = 'Ուղարկել հայտը'
-  else if (!methods.length) payLabel = 'Ուղարկել պատվերը'
+  let payLabel = t.pay(formatPrice(price, lang))
+  if (price == null) payLabel = t.sendRequest
+  else if (!methods.length) payLabel = t.sendOrder
+  const title = designTitle(design, lang)
 
   return (
     <main className="co">
       <div className="wrap co-grid">
         <div className="co-main">
-          <nav className="co-crumbs" aria-label="Ուղի">
-            <Link to="/invitations">Հավաքածու</Link><span aria-hidden="true">/</span><span>{design.code}</span>
+          <nav className="co-crumbs" aria-label={t.crumbs}>
+            <Link to={to('/invitations')}>{t.collection}</Link><span aria-hidden="true">/</span><span>{design.code}</span>
           </nav>
-          <h1 className="co-title">Պատվերի ձևակերպում</h1>
+          <h1 className="co-title">{t.title}</h1>
 
           {/* 01 — the design and option */}
           <section className={`co-step ${step === 1 ? 'on' : 'done'}`} ref={(el) => { stepRefs.current[1] = el }}>
-            {stepHead(1, 'Ձեր ընտրությունը', `${design.code} · ${OPTION_INFO[option].label} · ${formatPrice(price)}`)}
+            {stepHead(1, t.step1, `${design.code} · ${OPTION_INFO[option].label} · ${formatPrice(price, lang)}`)}
             {step === 1 && (
               <div className="co-step-b">
-                <div className="co-options" role="radiogroup" aria-label="Տարբերակ">
+                <div className="co-options" role="radiogroup" aria-label={t.option}>
                   {Object.entries(OPTION_INFO).map(([k, o]) => (
                     <label key={k} className={`co-opt ${option === k ? 'on' : ''}`}>
                       <input type="radio" name="option" value={k} checked={option === k} onChange={() => setOption(k)} />
                       <span className="co-opt-top">
                         <span className="co-opt-name">{o.label}</span>
-                        <span className="co-opt-price">{formatPrice(design.pricing[k])}</span>
+                        <span className="co-opt-price">{formatPrice(design.pricing[k], lang)}</span>
                       </span>
                       <span className="co-opt-text">{o.text}</span>
                     </label>
@@ -348,19 +455,19 @@ export default function Checkout() {
                   <div className="co-edits">
                     <label className="co-consent">
                       <input type="checkbox" checked={attachEdits} onChange={(e) => setAttachEdits(e.target.checked)} />
-                      <span>Կցել իմ խմբագրած տարբերակը պատվերին</span>
+                      <span>{t.attach}</span>
                     </label>
-                    <p>Դուք խմբագրել եք այս հրավերը կայքում․ Ձեր փոփոխությունները կերևան պատրաստի հրավերում։ <Link to={`${design.previewRoute}?edit=1`}>Շարունակել խմբագրումը →</Link></p>
+                    <p>{t.edited} <Link to={to(`${design.previewRoute}?edit=1`)}>{t.continueEdit}</Link></p>
                   </div>
                 ) : design.previewRoute && (
                   <p className="co-demo">
-                    <Link to={`${design.previewRoute}?edit=1`}>Խմբագրել հրավերը կայքում →</Link>
+                    <Link to={to(`${design.previewRoute}?edit=1`)}>{t.editOnSite}</Link>
                     <span className="co-demo-sep" aria-hidden="true">·</span>
-                    <Link to={design.previewRoute}>Դիտել դեմոն</Link>
+                    <Link to={to(design.previewRoute)}>{t.viewDemo}</Link>
                   </p>
                 )}
                 <div className="co-actions">
-                  <button type="button" className="btn btn-primary" onClick={() => setStep(2)}>Շարունակել</button>
+                  <button type="button" className="btn btn-primary" onClick={() => setStep(2)}>{t.continue}</button>
                 </div>
               </div>
             )}
@@ -368,25 +475,25 @@ export default function Checkout() {
 
           {/* 02 — contact + what goes on the invitation */}
           <section className={`co-step ${step === 2 ? 'on' : step > 2 ? 'done' : 'todo'}`} ref={(el) => { stepRefs.current[2] = el }}>
-            {stepHead(2, 'Ձեր տվյալները', [form.name, form.phone].filter(Boolean).join(' · '))}
+            {stepHead(2, t.step2, [form.name, form.phone].filter(Boolean).join(' · '))}
             {step === 2 && (
               <form className="co-step-b" noValidate onSubmit={(e) => { e.preventDefault(); toPayment() }}>
                 <div className="co-fields">
-                  {field('name', 'Անուն, ազգանուն', { required: true, autoComplete: 'name', maxLength: 120 })}
-                  {field('phone', 'Հեռախոս', { required: true, type: 'tel', autoComplete: 'tel', inputMode: 'tel', placeholder: '+374 __ ______', maxLength: 32 })}
-                  {field('email', 'Էլ. փոստ', { type: 'email', autoComplete: 'email', inputMode: 'email', maxLength: 200 })}
-                  {field('contact', 'Telegram կամ Instagram', { placeholder: '@', maxLength: 120 }, 'Եթե նախընտրում եք կապ այնտեղ')}
+                  {field('name', t.fName, { required: true, autoComplete: 'name', maxLength: 120 })}
+                  {field('phone', t.fPhone, { required: true, type: 'tel', autoComplete: 'tel', inputMode: 'tel', placeholder: '+374 __ ______', maxLength: 32 })}
+                  {field('email', t.fEmail, { type: 'email', autoComplete: 'email', inputMode: 'email', maxLength: 200 })}
+                  {field('contact', t.fContact, { placeholder: '@', maxLength: 120 }, t.fContactHint)}
                 </div>
 
-                <h3 className="co-sub">Հրավերի մանրամասներ <span>սրանք կերևան Ձեր հրավերում</span></h3>
+                <h3 className="co-sub">{t.details} <span>{t.detailsNote}</span></h3>
                 {useEditor && spec ? (
                   // Already on the invitation they edited — show it, don't ask again.
                   <div className="co-fromedit">
-                    <p className="co-fromedit-lead">Վերցված է Ձեր խմբագրած հրավերից</p>
+                    <p className="co-fromedit-lead">{t.fromEdit}</p>
                     {detRecap()}
-                    <p className="co-fromedit-edit"><Link to={`${design.previewRoute}?edit=1`}>Փոխել հրավերում →</Link></p>
+                    <p className="co-fromedit-edit"><Link to={to(`${design.previewRoute}?edit=1`)}>{t.changeInInvitation}</Link></p>
                     <div className="co-fields">
-                      {field('notes', 'Ցանկություններ', { wide: true, textarea: true, maxLength: 2000 }, 'Ոչ պարտադիր․ այն, ինչ ցանկանում եք մեզ հայտնել հրավերի մասին')}
+                      {field('notes', t.fNotes, { wide: true, textarea: true, maxLength: 2000 }, t.notesHint1)}
                     </div>
                   </div>
                 ) : spec ? (
@@ -398,23 +505,23 @@ export default function Checkout() {
                       </fieldset>
                     ))}
                     <div className="co-fields">
-                      {field('notes', 'Ցանկություններ', { wide: true, textarea: true, maxLength: 2000 }, 'Ոչ պարտադիր․ գույներ, լուսանկարներ, տեքստ՝ այն ամենը, ինչ ցանկանում եք ավելացնել կամ փոխել')}
+                      {field('notes', t.fNotes, { wide: true, textarea: true, maxLength: 2000 }, t.notesHint2)}
                     </div>
                   </>
                 ) : (
                   <div className="co-fields">
-                    {field('names', 'Անուններ հրավերի վրա', { wide: true, required: true, maxLength: 160, placeholder: design.title }, 'Օրինակ՝ «Աննա & Միքայել» կամ «Նարե»')}
-                    {field('eventDate', 'Միջոցառման ամսաթիվ', { type: 'date', required: true })}
-                    {field('eventTime', 'Ժամ', { type: 'time' })}
-                    {field('venue', 'Վայր', { wide: true, maxLength: 300 })}
-                    {field('notes', 'Ցանկություններ', { wide: true, textarea: true, maxLength: 2000 }, 'Գույներ, տեքստ, լուսանկարներ, ծրագիր՝ այն ամենը, ինչ ցանկանում եք տեսնել հրավերում')}
+                    {field('names', t.fNames, { wide: true, required: true, maxLength: 160, placeholder: title }, t.namesHint)}
+                    {field('eventDate', t.fDate, { type: 'date', required: true })}
+                    {field('eventTime', t.fTime, { type: 'time' })}
+                    {field('venue', t.fVenue, { wide: true, maxLength: 300 })}
+                    {field('notes', t.fNotes, { wide: true, textarea: true, maxLength: 2000 }, t.notesHint3)}
                   </div>
                 )}
                 {/* Honeypot — hidden from people, filled in by bots. */}
                 <input className="co-hp" tabIndex={-1} autoComplete="off" aria-hidden="true" value={form.website} onChange={set('website')} name="website" />
 
                 <div className="co-actions">
-                  <button type="submit" className="btn btn-primary">Շարունակել</button>
+                  <button type="submit" className="btn btn-primary">{t.continue}</button>
                 </div>
               </form>
             )}
@@ -422,37 +529,36 @@ export default function Checkout() {
 
           {/* 03 — summary + payment */}
           <section className={`co-step ${step === 3 ? 'on' : 'todo'}`} ref={(el) => { stepRefs.current[3] = el }}>
-            {stepHead(3, price == null ? 'Հայտի ուղարկում' : 'Վճարում')}
+            {stepHead(3, price == null ? t.step3Request : t.step3Pay)}
             {step === 3 && (
               <div className="co-step-b">
                 <dl className="co-recap">
-                  <div><dt>Պատվիրատու</dt><dd>{form.name}</dd></div>
-                  <div><dt>Հեռախոս</dt><dd>{form.phone}</dd></div>
-                  {form.email && <div><dt>Էլ. փոստ</dt><dd>{form.email}</dd></div>}
+                  <div><dt>{t.customer}</dt><dd>{form.name}</dd></div>
+                  <div><dt>{t.fPhone}</dt><dd>{form.phone}</dd></div>
+                  {form.email && <div><dt>{t.fEmail}</dt><dd>{form.email}</dd></div>}
                   {(() => {
                     const names = spec ? spec.m.namesFromDetails(det) : form.names
                     const date = spec ? det.eventDate : form.eventDate
                     const time = spec ? det.eventTime : form.eventTime
                     return (
                       <>
-                        {names && <div><dt>Հրավերի վրա</dt><dd>{names}</dd></div>}
-                        {date && <div><dt>Ամսաթիվ</dt><dd>{date.split('-').reverse().join('.')}{time && `, ${time}`}</dd></div>}
+                        {names && <div><dt>{t.onInvitation}</dt><dd>{names}</dd></div>}
+                        {date && <div><dt>{t.date}</dt><dd>{date.split('-').reverse().join('.')}{time && `, ${time}`}</dd></div>}
                       </>
                     )
                   })()}
                 </dl>
 
                 {config === null ? (
-                  <p className="co-note">Բեռնվում է…</p>
+                  <p className="co-note">{t.loading}</p>
                 ) : !ordersEnabled ? (
                   <div className="co-note">
-                    Առցանց պատվերը դեռ միացված չէ։ Գրեք մեզ Instagram կամ Telegram-ում (տես՝ կայքի ստորին մասում)՝
-                    նշելով «{design.code}» և «{OPTION_INFO[option].label}» տարբերակը։
+                    {t.ordersOff(design.code, OPTION_INFO[option].label)}
                   </div>
                 ) : price == null ? (
-                  <p className="co-note">Այս դիզայնի գինը դեռ ճշտվում է։ Ուղարկեք հայտը, և մենք կկապվենք Ձեզ հետ՝ գինն ու մանրամասները հաստատելու համար։ Վճարումը կկատարվի դրանից հետո։</p>
+                  <p className="co-note">{t.noPrice}</p>
                 ) : !methods.length ? (
-                  <p className="co-note">Առցանց վճարումը շուտով հասանելի կլինի։ Ուղարկեք պատվերը, և մենք կկապվենք Ձեզ հետ վճարման մանրամասների համար։</p>
+                  <p className="co-note">{t.noMethods}</p>
                 ) : (
                   <PaymentMethods methods={methods} value={method} onChange={setMethod} disabled={busy} />
                 )}
@@ -461,16 +567,20 @@ export default function Checkout() {
                   <>
                     <label className="co-consent">
                       <input type="checkbox" checked={consent} onChange={(e) => { setConsent(e.target.checked); setErrors((x) => ({ ...x, consent: undefined })) }} />
-                      <span>Համաձայն եմ, որ Siloona-ն օգտագործի իմ տվյալները՝ այս պատվերը կատարելու և ինձ հետ կապվելու համար։</span>
+                      <span>{t.consent[0]}<Link to={to('/privacy')} target="_blank" rel="noopener">{t.consent[1]}</Link>{t.consent[2]}</span>
                     </label>
+                    <p className="co-legal">
+                      <Link to={to('/terms')} target="_blank" rel="noopener">{legalTitle('terms', lang)}</Link>
+                      <Link to={to('/refund')} target="_blank" rel="noopener">{legalTitle('refund', lang)}</Link>
+                    </p>
                     {errors.consent && <p className="co-err">{errors.consent}</p>}
 
                     {error && <p className="co-alert" role="alert">{error}</p>}
 
                     <button type="button" className={`btn btn-primary co-pay ${busy ? 'busy' : ''}`} onClick={submit} disabled={busy} aria-busy={busy}>
-                      {busy ? <><span className="co-spin" aria-hidden="true" />{payable ? 'Ուղղորդում ենք վճարման էջ…' : 'Ուղարկում ենք…'}</> : payLabel}
+                      {busy ? <><span className="co-spin" aria-hidden="true" />{payable ? t.redirecting : t.sending}</> : payLabel}
                     </button>
-                    {payable && <SecureNote test={method === 'test'} />}
+                    {payable && <SecureNote test={isTestChoice(method)} />}
                   </>
                 )}
               </div>
@@ -478,18 +588,31 @@ export default function Checkout() {
           </section>
         </div>
 
-        <aside className="co-aside" aria-label="Պատվերի ամփոփում">
+        <aside className="co-aside" aria-label={t.summary}>
           <div className="co-sum">
             <div className="co-sum-thumb"><DesignThumb design={design} /></div>
             <div className="co-sum-body">
-              <p className="eyebrow">{CATEGORY_LABELS[design.category]} · {design.code}</p>
-              <h3 className="co-sum-title">{design.title}</h3>
-              <p className="co-sum-type">{design.kind === 'card' ? 'Քարտային հրավիրատոմս' : 'Վեբ հրավիրատոմս'} · {OPTION_INFO[option].label}</p>
+              <p className="eyebrow">{CATEGORY_LABELS_I18N[lang][design.category]} · {design.code}</p>
+              <h3 className="co-sum-title">{title}</h3>
+              <p className="co-sum-type">{design.kind === 'card' ? t.cardKind : t.webKind} · {OPTION_INFO[option].label}</p>
               <div className="co-sum-total">
-                <span>Ընդամենը</span>
-                <strong>{formatPrice(price)}</strong>
+                <span>{t.total}</span>
+                <strong>{formatPrice(price, lang)}</strong>
               </div>
-              {price != null && <p className="co-sum-cur">Գինը՝ ՀՀ դրամով (AMD)</p>}
+              {price != null && <p className="co-sum-cur">{t.currency}</p>}
+              {design.kind === 'web' && (
+                <div className="co-sum-lang">
+                  <span>{t.invLang}: <b>{LANG_NAMES_IN[lang][invLang]}</b></span>
+                  {invLangs.length > 1 ? (
+                    // another language = the same checkout in that language
+                    <span className="co-sum-langs">
+                      {invLangs.filter((l) => l !== invLang).map((l) => (
+                        <Link key={l} to={withLang(l, stripLang(pathname) + search)} hrefLang={l}>{LANG_NAMES_IN[lang][l]}</Link>
+                      ))}
+                    </span>
+                  ) : lang !== 'hy' && <small>{t.invOnlyHy}</small>}
+                </div>
+              )}
             </div>
           </div>
         </aside>

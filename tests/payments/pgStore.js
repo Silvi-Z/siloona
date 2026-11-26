@@ -27,6 +27,8 @@ export async function createPgStore() {
   await db.exec(fs.readFileSync(new URL('schema.sql', root), 'utf8').replace(/create extension[^;]*;/i, ''))
   await db.exec(fs.readFileSync(new URL('payments.sql', root), 'utf8'))
   await db.exec(fs.readFileSync(new URL('guest-links.sql', root), 'utf8'))
+  await db.exec(fs.readFileSync(new URL('seating.sql', root), 'utf8'))
+  await db.exec(fs.readFileSync(new URL('order-events.sql', root), 'utf8'))
   for (const u of Object.values(USERS)) {
     await db.query(`insert into auth.users (id, email, raw_user_meta_data) values ($1, $2, '{"mode":"org"}')`, [u.id, u.email])
   }
@@ -89,10 +91,20 @@ export async function createPgStore() {
 
     // Dashboard events (published invitations) and what guests do with them
     async getEventBySlug(slug) {
-      return fix(await one(`select id, type, title, event_date, data from events where id = $1 or data -> 'inv' ->> 'slug' = $1 order by (id = $1) desc limit 1`, [slug]))
+      return fix(await one(`select id, owner_id, type, title, event_date, data from events where id = $1 or data -> 'inv' ->> 'slug' = $1 order by (id = $1) desc limit 1`, [slug]))
     },
+    getOrderByEvent: async (eventId) => fix(await one('select * from orders where event_id = $1', [eventId])),
     insertReply: async (r) => fix(await one('insert into event_replies (event_id, guest_token, kind, guest_name, status, plus, note) values ($1, $2, $3, $4, $5, $6, $7) returning *', [r.event_id, r.guest_token ?? null, r.kind, r.guest_name ?? null, r.status ?? null, r.plus ?? null, r.note ?? null])),
     replies: async (eventId) => many('select guest_token, kind, guest_name, status, plus, note from event_replies where event_id = $1 order by id', [eventId]),
+    getSeatingPlan: async (target) => {
+      const [col, val] = Object.entries(target)[0]
+      if (!['invitation_id', 'event_id'].includes(col)) throw new Error('bad seating target')
+      return fix(await one(`select id, enabled, reveal_at from seating_plans where ${col} = $1`, [val]))
+    },
+    listSeats: async (planId) => many('select guest_name, table_label from seating where plan_id = $1', [planId]),
+    // what scripts/import-seating.js does through Supabase's rpc()
+    importSeating: async ({ invitation = null, event = null, revealAt = null, enabled = null, rows = null }) =>
+      (await one('select import_seating($1, $2, $3, $4, $5::jsonb) as r', [invitation, event, revealAt, enabled, rows ? JSON.stringify(rows) : null])).r,
     rateLimit: async (key, windowSeconds, max) => (await one('select hit_rate_limit($1, $2, $3) as ok', [key, windowSeconds, max])).ok,
 
     // Photos kept in memory, served back by GET /api/uploads?id=…

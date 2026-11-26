@@ -89,6 +89,7 @@ before(async () => {
     IDRAM_ACCOUNT_ID: IDRAM.account, IDRAM_SECRET_KEY: IDRAM.secret,
     PUBLIC_SITE_URL: base, SUPABASE_URL: 'http://unused', SUPABASE_SERVICE_ROLE_KEY: 'unused',
     RATE_LIMITS: 'off', // one test below turns it back on
+    EVENT_LINKS: 'on', // one test below turns it off
   })
   const { setStore } = await import(pathToFileURL(path.join(ROOT, 'api/_lib/store.js')).href)
   setStore(store)
@@ -379,6 +380,49 @@ test('simulator: off by default, then paid / declined / cancelled through the st
   assert.equal((await start(off, 'test')).status, 400, 'switched off again')
 })
 
+test('simulator page: only test cards, masked card kept, Idram and decline reasons', async () => {
+  process.env.PAYMENTS_SIMULATION = '1'
+  try {
+    const S = '/api/payments/simulator/complete'
+    const begin = async (o) => new URL((await start(o, 'test')).json.redirectUrl, base).searchParams.get('tx')
+    const o = await newOrder()
+
+    let tx = await begin(o)
+    const info = await call('GET', `${S}?tx=${tx}&k=${o.token}`)
+    assert.ok(info.json.cards.some((c) => c.number === '4111111111111111' && c.result === 'paid'), 'lists its test cards')
+
+    // a card that isn't a test card is refused, and nothing changes
+    const real = await call('POST', S, { body: { tx, k: o.token, outcome: 'paid', card: '4242424242424242' } })
+    assert.equal(real.status, 422)
+    assert.equal((await status(o)).json.paymentStatus, 'pending')
+    assert.equal((await call('POST', S, { body: { tx, k: o.token, outcome: 'failed', reason: 'nonsense' } })).status, 422)
+    assert.equal((await call('POST', S, { body: { tx, k: o.token, outcome: 'paid', via: 'bitcoin' } })).status, 422)
+
+    // decline reasons are kept on the attempt
+    for (const [reason, code] of [['funds', 'SIM-116'], ['declined', 'SIM-05'], ['3ds', 'SIM-3DS']]) {
+      if (reason !== 'funds') tx = await begin(o)
+      await call('POST', S, { body: { tx, k: o.token, outcome: 'failed', reason, card: '4000000000000002' } })
+      assert.equal((await status(o)).json.paymentStatus, 'failed')
+      assert.equal((await store.getTransaction(tx)).error_code, code)
+    }
+
+    // paid on the Mastercard test card: only its masked number is stored
+    tx = await begin(o)
+    await call('POST', S, { body: { tx, k: o.token, outcome: 'paid', via: 'card', card: '5555555555554444' } })
+    assert.equal((await status(o)).json.cardMask, '555555**4444')
+    assert.ok(!JSON.stringify(await store.getTransaction(tx)).includes('5555555555554444'), 'the full test number is not kept')
+
+    // Idram: paid with no card on it
+    const w = await newOrder()
+    const wtx = await begin(w)
+    await call('POST', S, { body: { tx: wtx, k: w.token, outcome: 'paid', via: 'idram' } })
+    assert.equal((await status(w)).json.paymentStatus, 'paid')
+    assert.ok(!(await status(w)).json.cardMask)
+  } finally {
+    delete process.env.PAYMENTS_SIMULATION
+  }
+})
+
 test('shareable invitation: created on payment, public page data, RSVP, disabled on refund', async () => {
   const o = await newOrder({ customization: { names: 'Աննա & Միքայել', eventDate: '2027-06-12', eventTime: '16:00', venue: 'Արարատ դահլիճ', notes: 'գաղտնի ցանկություն' } })
   assert.equal((await status(o)).json.invitationCode, null, 'no link before payment')
@@ -470,7 +514,7 @@ test('the design\'s own details are stored, served to the invitation, and replac
     'place0.name': 'Սուրբ Գայանե', 'place0.time': '13:00', 'place1.name': 'Իմ սրահ', 'place1.address': 'javascript:alert(1)',
     schedule: [{ time: '13:00', title: 'Պսակադրություն' }], extra: {},
   }
-  const o = await newOrder({ designId: 'wd-tulip', customization: { names: 'Աննա & Միքայել', eventDate: '2027-06-12', details } })
+  const o = await newOrder({ designId: 'wd-cherry', customization: { names: 'Աննա & Միքայել', eventDate: '2027-06-12', details } })
   const s = await start(o, 'arca')
   await payOnBank(s.json.redirectUrl, 'pay')
   const code = (await status(o)).json.invitationCode
@@ -496,14 +540,14 @@ test('custom-design request: stored with no price, then priced by the admin and 
   assert.equal(bad.status, 422)
   assert.ok(bad.json.fields.eventType && bad.json.fields.notes)
 
-  const r = await call('POST', '/api/orders', { body: body({ eventType: 'wedding', kind: 'adapt', basedOn: 'wd-tulip', notes: 'Ուզում ենք կանաչ գույներով, պարզ ու նուրբ', references: 'https://pin.it/x' }) })
+  const r = await call('POST', '/api/orders', { body: body({ eventType: 'wedding', kind: 'adapt', basedOn: 'wd-cherry', notes: 'Ուզում ենք կանաչ գույներով, պարզ ու նուրբ', references: 'https://pin.it/x' }) })
   assert.equal(r.status, 201, JSON.stringify(r.json))
   assert.equal(r.json.amount, null)
   const st = await status({ orderId: r.json.orderId, token: r.json.token })
   assert.equal(st.json.paymentStatus, 'unpaid')
   const row = await store.getOrder(r.json.orderId)
   assert.equal(row.design_option, 'assisted', 'always prepared by Siloona')
-  assert.equal(row.customization.basedOn, 'wd-tulip')
+  assert.equal(row.customization.basedOn, 'wd-cherry')
   assert.equal(row.customization.request, 'custom')
 
   const priced = await call('POST', '/api/admin/orders', { token: USERS.admin.token, body: { orderId: r.json.orderId, action: 'set_amount', amount: 45000 } })
@@ -540,9 +584,20 @@ test('photo uploads: real images only, size-limited, served back', async () => {
 // Dashboard events: guests' links, replies, limits, notifications
 // ---------------------------------------------------------------------------
 
-async function addEvent(id, { status = 'published', rsvp = true } = {}) {
+// A paid order (customer USERS.customer, secret link token 'tok-<tag>'),
+// optionally linked to an event the way the dashboard links it.
+async function paidOrder(tag, { eventId = null, design = 'wd-cherry', payment = 'paid', orderStatus = 'new' } = {}) {
+  const { rows: [o] } = await store.db.query(
+    `insert into orders (access_token, customer_name, customer_phone, design_id, design_option, customization, amount, payment_status, order_status, event_id)
+     values ($1, 'Աննա Պետրոսյան', '+37499000000', $2, 'diy', $3::jsonb, 15000, $4, $5, $6) returning id, order_number`,
+    ['tok-' + tag, design, JSON.stringify({ names: 'Աննա & Արամ', eventDate: '2027-09-18', eventTime: '16:00', venue: 'Երևան', content: { hero: { line: 'մեր օրը' } } }), payment, orderStatus, eventId])
+  return { id: o.id, token: 'tok-' + tag, number: Number(o.order_number) }
+}
+
+// A dashboard event; by default with a paid order linked, as only those open.
+async function addEvent(id, { status = 'published', rsvp = true, paid = true } = {}) {
   const data = {
-    inv: { slug: `event-${id}`, status, design: 'wd-tulip', rsvp, personalize: true, greeting: 'Սիրով, {name}', message: 'Հրավիրում ենք', deadline: '2027-08-01T00:00:00.000Z', designContent: { 'wd-tulip': { hero: { kicker: 'Մեր օրը' } } } },
+    inv: { slug: `event-${id}`, status, design: 'wd-cherry', rsvp, personalize: true, greeting: 'Սիրով, {name}', message: 'Հրավիրում ենք', deadline: '2027-08-01T00:00:00.000Z', designContent: { 'wd-cherry': { hero: { kicker: 'Մեր օրը' } } } },
     person1: { first: 'Աննա', last: 'Պետրոսյան', phone: '+37499000001' },
     person2: { first: 'Արամ', last: 'Սարգսյան' },
     locations: [{ id: 'l1', kind: 'Եկեղեցի', name: 'Սուրբ Գայանե', address: 'Էջմիածին', time: '15:00', notes: 'գաղտնի' }],
@@ -551,6 +606,7 @@ async function addEvent(id, { status = 'published', rsvp = true } = {}) {
     guests: [{ id: 'g1', first: 'Լուսինե', last: 'Հակոբյան', phone: '+37491111111', notes: 'մասնավոր', inviteToken: 'AbCdEfGhJk23mnPq', rsvp: 'pending' }],
   }
   await store.db.query(`insert into events (id, owner_id, owner_mode, type, title, event_date, data) values ($1, $2, 'org', 'wedding', 'Հարսանիք', '2027-09-18', $3::jsonb)`, [id, USERS.customer.id, JSON.stringify(data)])
+  if (paid) await paidOrder('ev-' + id, { eventId: id })
   return data
 }
 
@@ -559,10 +615,10 @@ test('guest links: published event, personal token, nothing private leaks', asyn
   const r = await call('GET', '/api/invitations?code=event-E1&t=AbCdEfGhJk23mnPq')
   assert.equal(r.status, 200, r.text)
   assert.equal(r.json.kind, 'event')
-  assert.equal(r.json.designId, 'wd-tulip')
+  assert.equal(r.json.designId, 'wd-cherry')
   assert.equal(r.json.guest.first, 'Լուսինե')
   assert.equal(r.json.event.person1.first, 'Աննա')
-  assert.equal(r.json.designContent['wd-tulip'].hero.kicker, 'Մեր օրը')
+  assert.equal(r.json.designContent['wd-cherry'].hero.kicker, 'Մեր օրը')
   const raw = JSON.stringify(r.json)
   for (const secret of ['+37491111111', 'մասնավոր', '+37499000001', 'գաղտնի', 'parking']) assert.ok(!raw.includes(secret), `leaked ${secret}`)
   assert.equal(raw.includes('guests'), false, 'no guest list')
@@ -599,6 +655,102 @@ test('guest links: RSVP is stored as a reply, companions capped by the event', a
   assert.equal((await call('POST', '/api/invitations', { body: { slug: 'event-E4', name: 'Աննա Ա', status: 'confirmed' } })).status, 409)
 })
 
+test('guest links open only for an event with a paid order linked', async () => {
+  // published in the dashboard, but never paid for
+  await addEvent('F1', { paid: false })
+  assert.equal((await call('GET', '/api/invitations?code=event-F1&t=AbCdEfGhJk23mnPq')).status, 410)
+  assert.equal((await call('POST', '/api/invitations', { body: { slug: 'event-F1', name: 'Աննա Ա', status: 'confirmed' } })).status, 410)
+  // the order is cancelled / refunded later: the links close
+  await addEvent('F2', { paid: false })
+  const o = await paidOrder('F2', { eventId: 'F2', orderStatus: 'cancelled' })
+  assert.equal((await call('GET', '/api/invitations?code=event-F2')).status, 410)
+  await store.db.query("update orders set order_status = 'new', payment_status = 'refunded' where id = $1", [o.id])
+  assert.equal((await call('GET', '/api/invitations?code=event-F2')).status, 410)
+  await store.db.query("update orders set payment_status = 'paid' where id = $1", [o.id])
+  assert.equal((await call('GET', '/api/invitations?code=event-F2')).status, 200)
+  // the design shown is the one paid for, whatever the event says
+  await addEvent('F3', { paid: false })
+  await paidOrder('F3', { eventId: 'F3', design: 'wd-portrait' })
+  assert.equal((await call('GET', '/api/invitations?code=event-F3')).json.designId, 'wd-portrait')
+})
+
+test('claiming a paid order into the dashboard', async () => {
+  const claim = (body, token = USERS.customer.token) => call('POST', '/api/orders/status', { body: { action: 'claim', ...body }, token })
+  const o = await paidOrder('C1')
+  await store.db.query("insert into invitations (code, order_id, design_id) values ('c1c1c1c1c1c1', $1, 'wd-cherry')", [o.id])
+  await addEvent('G1', { paid: false })
+
+  // signed in, with the order's secret link
+  assert.equal((await claim({ id: o.id, t: o.token }, null)).status, 401)
+  assert.equal((await claim({ id: o.id, t: 'wrong' })).status, 404)
+  const info = await claim({ id: o.id, t: o.token })
+  assert.equal(info.status, 200, info.text)
+  assert.equal(info.json.linked, false)
+  assert.equal(info.json.designId, 'wd-cherry')
+  assert.equal(info.json.customization.names, 'Աննա & Արամ')
+  assert.equal(info.json.content.hero.line, 'մեր օրը')
+  assert.equal(JSON.stringify(info.json).includes('+37499000000'), false)
+
+  // only into one's own event
+  await store.db.query("insert into events (id, owner_id, owner_mode, type, title, data) values ('G2', $1, 'org', 'wedding', 'x', '{}')", [USERS.admin.id])
+  assert.equal((await claim({ id: o.id, t: o.token, eventId: 'G2' })).status, 404)
+  assert.equal((await claim({ id: o.id, t: o.token, eventId: 'nope' })).status, 404)
+
+  // before linking, the order's link shows the order; the event is closed
+  assert.equal((await call('GET', '/api/invitations?code=c1c1c1c1c1c1')).json.kind, 'order')
+  assert.equal((await call('GET', '/api/invitations?code=event-G1')).status, 410)
+
+  const linked = await claim({ id: o.id, t: o.token, eventId: 'G1' })
+  assert.equal(linked.status, 200, linked.text)
+  assert.deepEqual([linked.json.linked, linked.json.eventId], [true, 'G1'])
+  const row = (await store.db.query('select event_id, owner_id from orders where id = $1', [o.id])).rows[0]
+  assert.deepEqual([row.event_id, row.owner_id], ['G1', USERS.customer.id])
+  // again: the same answer; the order page knows
+  assert.deepEqual((await claim({ id: o.id, t: o.token })).json, { linked: true, eventId: 'G1', orderNumber: o.number })
+  assert.equal((await status({ orderId: o.id, token: o.token })).json.linked, true)
+
+  // now the event opens, and the order's own link shows the event's version
+  assert.equal((await call('GET', '/api/invitations?code=event-G1')).status, 200)
+  const page = await call('GET', '/api/invitations?code=c1c1c1c1c1c1')
+  assert.equal(page.json.kind, 'event')
+  assert.equal(page.json.event.person1.first, 'Աննա')
+  // and an RSVP through it reaches the dashboard's replies
+  assert.equal((await call('POST', '/api/invitations', { body: { slug: 'c1c1c1c1c1c1', name: 'Կարեն Մուրադյան', status: 'confirmed' } })).status, 201)
+  assert.deepEqual((await store.replies('G1')).filter((x) => x.kind === 'rsvp').map((x) => x.guest_name), ['Կարեն Մուրադյան'])
+
+  // another account can't take it; another order can't take the event
+  assert.equal((await claim({ id: o.id, t: o.token }, USERS.admin.token)).status, 409)
+  const o2 = await paidOrder('C2')
+  assert.equal((await claim({ id: o2.id, t: o2.token, eventId: 'G1' })).status, 409)
+
+  // unpaid orders can't be claimed
+  const o3 = await paidOrder('C3', { payment: 'unpaid' })
+  assert.equal((await claim({ id: o3.id, t: o3.token })).status, 409)
+})
+
+test('with event links off, a published dashboard event is not public', async () => {
+  await addEvent('E6')
+  delete process.env.EVENT_LINKS
+  try {
+    assert.equal((await call('GET', '/api/invitations?code=event-E6')).status, 404)
+    assert.equal((await call('POST', '/api/invitations', { body: { slug: 'event-E6', name: 'Աննա Ա', status: 'confirmed' } })).status, 404)
+  } finally {
+    process.env.EVENT_LINKS = 'on'
+  }
+})
+
+test('the payment simulator never runs on Vercel production', async () => {
+  Object.assign(process.env, { PAYMENTS_SIMULATION: '1', VERCEL_ENV: 'production' })
+  try {
+    assert.ok(!(await call('GET', '/api/checkout/config')).json.methods.includes('test'))
+    process.env.VERCEL_ENV = 'preview'
+    assert.ok((await call('GET', '/api/checkout/config')).json.methods.includes('test'))
+  } finally {
+    delete process.env.PAYMENTS_SIMULATION
+    delete process.env.VERCEL_ENV
+  }
+})
+
 test('rate limits refuse a flood from one address', async () => {
   process.env.RATE_LIMITS = 'on'
   try {
@@ -621,7 +773,7 @@ test('Telegram: told about new orders and real payments only, when configured', 
   }
   Object.assign(process.env, { TELEGRAM_BOT_TOKEN: 'test-bot', TELEGRAM_CHAT_ID: '42' })
   try {
-    const o = await newOrder({ designId: 'wd-tulip', customization: { names: 'Աննա & Արամ', eventDate: '2027-06-12' } })
+    const o = await newOrder({ designId: 'wd-cherry', customization: { names: 'Աննա & Արամ', eventDate: '2027-06-12' } })
     assert.ok(sent.some((t) => t.includes(`№ ${o.orderNumber}`) && t.includes('Նոր պատվեր')), sent.join('|'))
     const s = await start(o, 'arca')
     await payOnBank(s.json.redirectUrl, 'pay')
@@ -637,7 +789,7 @@ test('Telegram: told about new orders and real payments only, when configured', 
 })
 
 test('the customer sees the guests answers on the order page', async () => {
-  const o = await newOrder({ designId: 'wd-tulip', customization: { names: 'Աննա & Արամ', eventDate: '2027-06-12' } })
+  const o = await newOrder({ designId: 'wd-cherry', customization: { names: 'Աննա & Արամ', eventDate: '2027-06-12' } })
   assert.deepEqual((await status(o)).json.rsvps, [], 'none before payment')
   const s = await start(o, 'arca')
   await payOnBank(s.json.redirectUrl, 'pay')

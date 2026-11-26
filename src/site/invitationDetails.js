@@ -10,7 +10,7 @@
 // the event shape doesn't cover (godparents, contact phone, city) are taken
 // from the sections directly ("extras").
 import { PREFILL, prefillFromEvent } from './invitationPrefill'
-import { INVITATION_DEFAULTS, INVITATION_SECTIONS } from './invitationDefaults'
+import { INVITATION_SECTIONS, defaultsFor, invitationLang } from './invitationDefaults'
 import { deepMerge, diffData, getByPath, setByPath } from './invitations/shared/pathUtils'
 
 const M = (k) => `⟦${k}⟧`
@@ -58,14 +58,115 @@ const isExtra = (path) => !path.startsWith('title.') && (EXTRA_LAST.has(path.spl
 
 const cache = {}
 
+// Russian and English for the labels and group titles the questions show
+// (the fallbacks above, and the designs' own editor labels in sections.js).
+// A label not listed stays Armenian. The invitation's content itself stays
+// Armenian until the designs get their own languages.
+const LABELS = {
+  'Անուն': ['Имя', 'Name'],
+  'Անունը': ['Имя', 'Name'],
+  'Երեխայի անունը': ['Имя ребёнка', 'Child’s name'],
+  'Տարիքը': ['Возраст', 'Age'],
+  'Ծնող 1': ['Родитель 1', 'Parent 1'],
+  'Ծնող 2': ['Родитель 2', 'Parent 2'],
+  'Ընկերությունը': ['Компания', 'Company'],
+  'Հյուրընկալողները': ['Хозяева', 'Hosts'],
+  'Փեսայի ծնողները': ['Родители жениха', 'The groom’s parents'],
+  'Հարսի ծնողները': ['Родители невесты', 'The bride’s parents'],
+  'Ավարտի ժամը': ['Время окончания', 'End time'],
+  'Միջոցառման անվանումը': ['Название события', 'Event name'],
+  'Ամսաթիվ': ['Дата', 'Date'],
+  'Ժամ': ['Время', 'Time'],
+  'Վայրը': ['Место', 'Venue'],
+  'Ծրագիր': ['Программа', 'Schedule'],
+  'Պատասխանել մինչև': ['Ответить до', 'Reply by'],
+  'Ժամը': ['Время', 'Time'],
+  'Ամսաթիվ և ժամ': ['Дата и время', 'Date and time'],
+  'Հարսնացու': ['Невеста', 'Bride'],
+  'Փեսացու': ['Жених', 'Groom'],
+  'Կնքահայր': ['Крёстный', 'Godfather'],
+  'Կնքամայր': ['Крёстная', 'Godmother'],
+  'Կոնտակտային անձ': ['Контактное лицо', 'Contact person'],
+  'Հեռախոս': ['Телефон', 'Phone'],
+  'Հեռախոս 1': ['Телефон 1', 'Phone 1'],
+  'Հեռախոս 2': ['Телефон 2', 'Phone 2'],
+  'Կազմակերպչի հեռախոսը': ['Телефон организатора', 'Organiser’s phone'],
+  'Քաղաք': ['Город', 'City'],
+  'Քաղաքը': ['Город', 'City'],
+  'Հասցե': ['Адрес', 'Address'],
+  'Հասցե (քարտեզի հղման համար)': ['Адрес (для ссылки на карту)', 'Address (for the map link)'],
+  'Հասցե / քաղաք': ['Адрес / город', 'Address / city'],
+  'Վայրի անվանումը': ['Название места', 'Venue name'],
+  'Անվանում': ['Название', 'Name'],
+  'Միջոցառման անվանումը (ամեն բառ՝ նոր տողում)': ['Название события (каждое слово — с новой строки)', 'Event name (each word on a new line)'],
+  'Երեխայի անունը (սեռական հոլովով՝ «Սամվելի»)': ['Имя ребёнка (в армянском родительном падеже: «Սամվելի»)', 'Child’s name (in the Armenian genitive: «Սամվելի»)'],
+  'Տարիքը (թիվը թագի տակ)': ['Возраст (число под короной)', 'Age (the number under the crown)'],
+  'Տարիքը (թիվը կարկատանի վրա)': ['Возраст (число на нашивке)', 'Age (the number on the patch)'],
+  'Տարիքը (թիվը մոլորակի վրա)': ['Возраст (число на планете)', 'Age (the number on the planet)'],
+  'Տարիքը (թիվը փուչիկի վրա)': ['Возраст (число на шарике)', 'Age (the number on the balloon)'],
+  'Տարիքը (մեծ թիվը շապիկին)': ['Возраст (большая цифра на футболке)', 'Age (the big number on the T-shirt)'],
+  'Տարիքը (մրցարշավային համարը)': ['Возраст (гоночный номер)', 'Age (the racing number)'],
+  'Տարիքը (օր.՝ «1 տարեկան»)': ['Возраст (напр. «1 տարեկան»)', 'Age (e.g. «1 տարեկան»)'],
+  'Պատասխանելու վերջնաժամկետ': ['Ответить до', 'RSVP deadline'],
+  'Ամսաթիվ և հետհաշվարկ': ['Дата и обратный отсчёт', 'Date and countdown'],
+  'Ամսաթիվ և վայր': ['Дата и место', 'Date and venue'],
+  'Ամսաթիվ և օրացույց': ['Дата и календарь', 'Date and calendar'],
+  'Գլխավոր էկրան': ['Главный экран', 'Main screen'],
+  'Բացման էկրան': ['Заставка', 'Opening screen'],
+  'Երեխան և վերնագիրը': ['Ребёнок и заголовок', 'The child and the title'],
+  'Երեկոյի ծրագիր': ['Программа вечера', 'Evening schedule'],
+  'Երեկոյի ծրագիրը': ['Программа вечера', 'Evening schedule'],
+  'Զույգը և ամսաթիվը': ['Пара и дата', 'The couple and the date'],
+  'Ժամանակացույց': ['Расписание', 'Timeline'],
+  'Խնջույք': ['Банкет', 'Reception'],
+  'Ծնողները': ['Родители', 'Parents'],
+  'Կազմակերպիչ': ['Организатор', 'Organiser'],
+  'Կնքահայր և կնքամայր': ['Крёстные', 'Godparents'],
+  'Հաստատում (RSVP)': ['Подтверждение (RSVP)', 'RSVP'],
+  'Հաստատում հեռախոսով': ['Подтверждение по телефону', 'RSVP by phone'],
+  'Հարցաթերթիկ (RSVP)': ['Анкета (RSVP)', 'RSVP form'],
+  'Մանրամասներ և հաստատում (RSVP)': ['Детали и подтверждение (RSVP)', 'Details and RSVP'],
+  'Մանրամասներ': ['Детали', 'Details'],
+  'Հետհաշվարկ': ['Обратный отсчёт', 'Countdown'],
+  'Մեծ ամսաթիվ': ['Крупная дата', 'Big date'],
+  'Պատարագ': ['Литургия', 'Liturgy'],
+  'Պսակադրություն': ['Венчание', 'Wedding ceremony'],
+  'Հանդիսություն': ['Торжество', 'Reception'],
+  'Ստորագրություն': ['Подпись', 'Signature'],
+  'Վայրերը': ['Места', 'Venues'],
+  'Տոնակատարություն': ['Торжество', 'Celebration'],
+  'Տոնի ծրագիրը': ['Программа праздника', 'Party schedule'],
+  'Տոնի հերոսը և ամսաթիվը': ['Виновник торжества и дата', 'The guest of honour and the date'],
+  'Տոնի հերոսը': ['Виновник торжества', 'Guest of honour'],
+  'Օրացույց': ['Календарь', 'Calendar'],
+  'Օրվա ծրագիր': ['Программа дня', 'Day schedule'],
+  'Եզրափակում': ['Завершение', 'Closing'],
+  'Ավարտ': ['Финал', 'Ending'],
+}
+const tr = (text, lang) => (text && LABELS[text]?.[lang === 'ru' ? 0 : 1]) || text
+
 // { fields: [{ key, path, label, type, required, group, groupTitle, re? }] }
 // in the design's own section order, or null for an unknown design.
-export function detailFields(slug) {
-  if (slug in cache) return cache[slug]
-  const fn = PREFILL[slug]
+// `lang` ('hy' | 'ru' | 'en') is the page's language: the labels and group
+// titles are in it, and the invitation is in it too when the design has
+// that language (otherwise Armenian — see invitationLang).
+export function detailFields(slug, lang = 'hy') {
+  const key = `${slug}|${lang}`
+  if (key in cache) return cache[key]
+  const spec = buildFields(slug, invitationLang(slug, lang))
+  return (cache[key] = lang === 'hy' || !spec ? spec
+    : { ...spec, fields: spec.fields.map((f) => ({ ...f, label: tr(f.label, lang), groupTitle: tr(f.groupTitle, lang) })) })
+}
+
+// The invitation's language, as its content records it.
+const langOfContent = (content) => content?.lang || 'hy'
+
+function buildFields(slug, inv) {
+  const prefill = PREFILL[slug]
   const sections = INVITATION_SECTIONS[slug]
-  if (!fn || !sections) return (cache[slug] = null)
-  const defaults = INVITATION_DEFAULTS[slug]
+  if (!prefill || !sections) return null
+  const fn = (ev) => prefill(ev, inv)
+  const defaults = defaultsFor(slug, inv)
 
   const out = leaves(fn(probeEvent(true)))
   const withoutDeadline = new Set(leaves(fn(probeEvent(false))).map(([p]) => p))
@@ -163,12 +264,12 @@ export function detailFields(slug) {
   })
 
   fields.sort((a, b) => a.order - b.order)
-  return (cache[slug] = { fields, derived, direct, phraseAll })
+  return { fields, derived, direct, phraseAll }
 }
 
 // The fields grouped as the design's editor groups them, for display.
-export function detailGroups(slug) {
-  const spec = detailFields(slug)
+export function detailGroups(slug, lang = 'hy') {
+  const spec = detailFields(slug, lang)
   if (!spec) return []
   const groups = []
   for (const f of spec.fields) {
@@ -184,8 +285,8 @@ export const detailValue = (d, f) => (f.key.startsWith('x:') ? str(d?.extra?.[f.
 const hasSchedule = (d) => (d?.schedule || []).some((r) => str(r.title))
 
 // Required fields still empty (keys), for validation.
-export function missingDetails(slug, d) {
-  const spec = detailFields(slug)
+export function missingDetails(slug, d, lang = 'hy') {
+  const spec = detailFields(slug, lang)
   return spec ? spec.fields.filter((f) => f.required && !detailValue(d, f)).map((f) => f.key) : []
 }
 
@@ -216,13 +317,15 @@ export function eventFromDetails(d = {}) {
 // cleared rather than left showing the demo's (a demo phone number or
 // godparent on a real invitation) — except for details read back from the
 // customer's own edited invitation, where the edits already decide.
-export function contentFromDetails(slug, d = {}) {
-  const spec = detailFields(slug)
+// `lang`: the invitation's language; the result is the changes to that
+// language's demo content (defaultsFor).
+export function contentFromDetails(slug, d = {}, lang = 'hy') {
+  const spec = detailFields(slug, lang)
   if (!spec) return {}
   // Worked on the full content (so a path into a list — a phone in
   // rsvp.contacts.0 — keeps the list), then reduced back to the changes.
-  const defaults = INVITATION_DEFAULTS[slug]
-  let c = deepMerge(defaults, prefillFromEvent(slug, eventFromDetails(d)))
+  const defaults = defaultsFor(slug, lang)
+  let c = deepMerge(defaults, prefillFromEvent(slug, eventFromDetails(d), lang))
   const clearEmpty = d.source !== 'editor'
   const dropItems = [] // list items whose only detail was left empty (a 2nd «call» button with no number)
   for (const f of spec.fields) {
@@ -247,7 +350,7 @@ export function contentFromDetails(slug, d = {}) {
 // The reverse: the details as they stand in a design's content — the demo
 // (for placeholders) or what the customer edited on the site.
 export function detailsFromContent(slug, content) {
-  const spec = detailFields(slug)
+  const spec = detailFields(slug, langOfContent(content))
   if (!spec || !content) return null
   const d = { extra: {} }
   for (const f of spec.fields) {
@@ -291,7 +394,8 @@ export function venueFromDetails(d = {}) {
 // Armenian ending. A sentence the customer has written themselves (no
 // longer what the old name would give) is left alone.
 export function syncNames(slug, prev, next) {
-  const spec = detailFields(slug)
+  const lang = langOfContent(next)
+  const spec = detailFields(slug, lang)
   if (!spec || !Object.keys(spec.derived).length) return next
   // A sentence with the name was edited («Աննան դառնում է»): take the new
   // name from it, so the name itself (and the rest below) follows.
@@ -309,8 +413,8 @@ export function syncNames(slug, prev, next) {
   const b = detailsFromContent(slug, next)
   const changed = Object.keys(spec.derived).filter((k) => str(a[k]) !== str(b[k]) && str(b[k]))
   if (!changed.length) return next
-  const was = prefillFromEvent(slug, eventFromDetails(a))
-  const now = prefillFromEvent(slug, eventFromDetails(b))
+  const was = prefillFromEvent(slug, eventFromDetails(a), lang)
+  const now = prefillFromEvent(slug, eventFromDetails(b), lang)
   let out = next
   for (const k of changed) {
     for (const p of spec.derived[k]) {
@@ -325,16 +429,17 @@ export function syncNames(slug, prev, next) {
 // The editing wizard's answers applied to the content being edited: only
 // what the details decide is replaced, the customer's other edits stay.
 export function applyDetails(slug, content, d) {
-  const spec = detailFields(slug)
+  const lang = langOfContent(content)
+  const spec = detailFields(slug, lang)
   if (!spec) return content
-  const gen = deepMerge(INVITATION_DEFAULTS[slug], contentFromDetails(slug, d))
+  const gen = deepMerge(defaultsFor(slug, lang), contentFromDetails(slug, d, lang))
   const paths = new Set(spec.fields.map((f) => f.path))
   // everything the prefill writes (sentences, monograms, place lists…)
   const walk = (v, path) => {
     if (v && typeof v === 'object' && !Array.isArray(v)) for (const [k, x] of Object.entries(v)) walk(x, [...path, k])
     else if (path.length) paths.add(path.join('.'))
   }
-  walk(prefillFromEvent(slug, eventFromDetails(d)), [])
+  walk(prefillFromEvent(slug, eventFromDetails(d), lang), [])
   let out = content
   for (const p of paths) {
     const v = getByPath(gen, p)

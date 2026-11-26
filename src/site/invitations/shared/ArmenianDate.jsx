@@ -1,15 +1,35 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { useText } from '../../i18n'
 
-// Siloona's own date picker: Armenian month and weekday names, weeks from
+// Siloona's own date picker: month and weekday names in the site's language, weeks from
 // Monday, and the day always shown as 12.06.2027 — the same on every phone
 // (a native date input follows the phone's language: 06/12/2027, English
 // months…). Styled inline so it looks the same inside any design and on
 // the site. Value: "YYYY-MM-DD" or "".
 
-const MONTHS = ['Հունվար', 'Փետրվար', 'Մարտ', 'Ապրիլ', 'Մայիս', 'Հունիս', 'Հուլիս', 'Օգոստոս', 'Սեպտեմբեր', 'Հոկտեմբեր', 'Նոյեմբեր', 'Դեկտեմբեր']
-const MONTHS_G = ['հունվարի', 'փետրվարի', 'մարտի', 'ապրիլի', 'մայիսի', 'հունիսի', 'հուլիսի', 'օգոստոսի', 'սեպտեմբերի', 'հոկտեմբերի', 'նոյեմբերի', 'դեկտեմբերի']
-const WEEKDAYS = ['Երկ', 'Երք', 'Չրք', 'Հնգ', 'Ուր', 'Շբթ', 'Կիր']
+// The picker's own words follow the site's language (/ru, /en); the
+// format of the chosen day doesn't.
+const TEXT = {
+  hy: {
+    months: ['Հունվար', 'Փետրվար', 'Մարտ', 'Ապրիլ', 'Մայիս', 'Հունիս', 'Հուլիս', 'Օգոստոս', 'Սեպտեմբեր', 'Հոկտեմբեր', 'Նոյեմբեր', 'Դեկտեմբեր'],
+    monthsG: ['հունվարի', 'փետրվարի', 'մարտի', 'ապրիլի', 'մայիսի', 'հունիսի', 'հուլիսի', 'օգոստոսի', 'սեպտեմբերի', 'հոկտեմբերի', 'նոյեմբերի', 'դեկտեմբերի'],
+    weekdays: ['Երկ', 'Երք', 'Չրք', 'Հնգ', 'Ուր', 'Շբթ', 'Կիր'],
+    prev: 'Նախորդ ամիս', next: 'Հաջորդ ամիս', pick: 'Ընտրել ամսաթիվը', date: 'Ամսաթիվ', dialog: 'Ընտրեք ամսաթիվը', close: 'Փակել', sep: '՝ ',
+  },
+  ru: {
+    months: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+    monthsG: ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'],
+    weekdays: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
+    prev: 'Предыдущий месяц', next: 'Следующий месяц', pick: 'Выбрать дату', date: 'Дата', dialog: 'Выберите дату', close: 'Закрыть', sep: ': ',
+  },
+  en: {
+    months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    monthsG: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    weekdays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    prev: 'Previous month', next: 'Next month', pick: 'Choose a date', date: 'Date', dialog: 'Choose a date', close: 'Close', sep: ': ',
+  },
+}
 const FONT = '"Noto Sans Armenian","Noto Sans",-apple-system,"Segoe UI",Roboto,sans-serif'
 
 const pad = (n) => String(n).padStart(2, '0')
@@ -21,7 +41,8 @@ const parse = (v) => {
 }
 export const formatDay = (v) => { const p = parse(v); return p ? `${pad(p.d)}.${pad(p.m + 1)}.${p.y}` : '' }
 
-export function Calendar({ value, onChange, min = todayIso(), accent = '#6B1D2C' }) {
+export function Calendar({ value, onChange, min = todayIso(), accent = '#4A0611' }) {
+  const t = useText(TEXT)
   const sel = parse(value)
   const start = sel || parse(min) || parse(todayIso())
   const [view, setView] = useState({ y: start.y, m: start.m })
@@ -35,12 +56,12 @@ export function Calendar({ value, onChange, min = todayIso(), accent = '#6B1D2C'
   return (
     <div style={{ fontFamily: FONT, color: '#211C28', width: '100%', maxWidth: 340, userSelect: 'none' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-        <button type="button" style={navBtn} onClick={() => move(-1)} aria-label="Նախորդ ամիս">‹</button>
-        <strong style={{ fontWeight: 600, fontSize: 15.5, letterSpacing: '.01em' }} aria-live="polite">{MONTHS[view.m]} {view.y}</strong>
-        <button type="button" style={navBtn} onClick={() => move(1)} aria-label="Հաջորդ ամիս">›</button>
+        <button type="button" style={navBtn} onClick={() => move(-1)} aria-label={t.prev}>‹</button>
+        <strong style={{ fontWeight: 600, fontSize: 15.5, letterSpacing: '.01em' }} aria-live="polite">{t.months[view.m]} {view.y}</strong>
+        <button type="button" style={navBtn} onClick={() => move(1)} aria-label={t.next}>›</button>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 2, textAlign: 'center' }}>
-        {WEEKDAYS.map((w, i) => (
+        {t.weekdays.map((w, i) => (
           <span key={w} style={{ fontSize: 11.5, color: i > 4 ? accent : '#7A7080', padding: '4px 0 6px', fontWeight: 500 }}>{w}</span>
         ))}
         {Array.from({ length: lead }, (_, i) => <span key={`b${i}`} />)}
@@ -53,7 +74,7 @@ export function Calendar({ value, onChange, min = todayIso(), accent = '#6B1D2C'
           return (
             <button
               key={d} type="button" disabled={off}
-              aria-label={`${d} ${MONTHS_G[view.m]} ${view.y}`} aria-pressed={!!on}
+              aria-label={`${d} ${t.monthsG[view.m]} ${view.y}`} aria-pressed={!!on}
               onClick={() => onChange(v)}
               style={{
                 height: 40, border: 0, borderRadius: '50%', fontFamily: FONT, fontSize: 15, cursor: off ? 'default' : 'pointer',
@@ -72,7 +93,10 @@ export function Calendar({ value, onChange, min = todayIso(), accent = '#6B1D2C'
 
 // A field that shows the chosen day (12.06.2027) and opens the calendar
 // over the page. `className` styles the button like the surrounding inputs.
-export function DateField({ value, onChange, className, style, placeholder = 'Ընտրել ամսաթիվը', id, invalid, accent, min, ariaLabel = 'Ամսաթիվ' }) {
+export function DateField({ value, onChange, className, style, placeholder, id, invalid, accent, min, ariaLabel }) {
+  const t = useText(TEXT)
+  placeholder ??= t.pick
+  ariaLabel ??= t.date
   const [open, setOpen] = useState(false)
   const btn = useRef(null)
   useEffect(() => {
@@ -86,7 +110,7 @@ export function DateField({ value, onChange, className, style, placeholder = 'Ը
     <>
       <button
         ref={btn} id={id} type="button" className={className} aria-invalid={invalid || undefined} aria-haspopup="dialog"
-        aria-label={value ? `${ariaLabel}՝ ${formatDay(value)}` : ariaLabel}
+        aria-label={value ? `${ariaLabel}${t.sep}${formatDay(value)}` : ariaLabel}
         onClick={() => setOpen(true)}
         style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, textAlign: 'left', cursor: 'pointer', ...style }}
       >
@@ -100,9 +124,9 @@ export function DateField({ value, onChange, className, style, placeholder = 'Ը
           onMouseDown={(e) => { if (e.target === e.currentTarget) close() }}
           style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(25,23,22,.42)', display: 'grid', placeItems: 'center', padding: 16 }}
         >
-          <div role="dialog" aria-modal="true" aria-label="Ընտրեք ամսաթիվը" style={{ boxSizing: 'border-box', background: '#FFFDF9', borderRadius: 14, padding: '18px 16px 14px', width: '100%', maxWidth: 360, boxShadow: '0 20px 60px rgba(0,0,0,.25)', display: 'grid', justifyItems: 'center' }}>
+          <div role="dialog" aria-modal="true" aria-label={t.dialog} style={{ boxSizing: 'border-box', background: '#FFFDF9', borderRadius: 14, padding: '18px 16px 14px', width: '100%', maxWidth: 360, boxShadow: '0 20px 60px rgba(0,0,0,.25)', display: 'grid', justifyItems: 'center' }}>
             <Calendar value={value} min={min} accent={accent} onChange={(v) => { onChange(v); close() }} />
-            <button type="button" onClick={close} style={{ marginTop: 10, border: 0, background: 'none', color: '#4B4256', fontFamily: FONT, fontSize: 14, padding: '10px 16px', cursor: 'pointer' }}>Փակել</button>
+            <button type="button" onClick={close} style={{ marginTop: 10, border: 0, background: 'none', color: '#4B4256', fontFamily: FONT, fontSize: 14, padding: '10px 16px', cursor: 'pointer' }}>{t.close}</button>
           </div>
         </div>,
         document.body,

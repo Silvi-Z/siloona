@@ -3,6 +3,7 @@ import Section from '../shared/Section'
 import { useInvitationContent } from '../shared/EditableContext'
 import { useDesignFonts } from '../shared/useDesignFonts'
 import { Closing, Countdown, Hero, Program, Rsvp, Venue, Welcome } from './components/Sections'
+import SiloonaCredit from '../shared/SiloonaCredit'
 
 // The heavy weights for the titles and the felt number aren't in the
 // site-wide font link.
@@ -26,6 +27,7 @@ export default function BdBuildInvitation() {
         <Section id="venue"><Venue /></Section>
         <Section id="rsvp"><Rsvp /></Section>
         <Section id="closing"><Closing /></Section>
+        <SiloonaCredit design="bd-build" />
       </main>
     </div>
   )

@@ -5,6 +5,7 @@
 // without Supabase keys or bank credentials. Everything is lost on exit.
 // (The admin dashboard still needs the real Supabase login, so it isn't
 // part of this demo.)
+import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createServer } from 'vite'
@@ -42,10 +43,31 @@ await store.db.query(
     ],
     schedule: [{ id: 's1', time: '15:00', title: 'Պսակադրություն' }, { id: 's2', time: '18:00', title: 'Խնջույք' }],
     info: { maxPlus: 2 },
-    inv: { slug: 'demo-event', status: 'published', design: 'wd-tulip', rsvp: true, personalize: true, greeting: 'Սիրով հրավիրում ենք Ձեզ, {name}', message: 'Սիրով հրավիրում ենք Ձեզ', deadline: '2027-08-18T00:00:00.000Z', designContent: {} },
+    inv: { slug: 'demo-event', status: 'published', design: 'wd-cherry', rsvp: true, personalize: true, greeting: 'Սիրով հրավիրում ենք Ձեզ, {name}', message: 'Սիրով հրավիրում ենք Ձեզ', deadline: '2027-08-18T00:00:00.000Z', designContent: {} },
     guests: GUESTS,
   })],
 )
+// «Ձեր սեղանը»: paid wd-portrait invitations in each state of the seating
+// section (supabase/seating.sql), filled the way the import script does.
+const { prepareSeating } = await import('../../scripts/seating-csv.js')
+const SEATS = prepareSeating(fs.readFileSync(path.join(ROOT, 'scripts/seating.example.csv'), 'utf8')).rows
+const HOUR = 3600 * 1000
+const SEATING_DEMOS = [
+  { code: 'd0000000000a', what: 'առանց սեղանների (ինչպես մինչ այժմ)' },
+  { code: 'd0000000000b', what: 'մինչև բացումը (3 օր հետո)', revealAt: Date.now() + 72 * HOUR },
+  { code: 'd0000000000c', what: 'բացված, հայերեն', revealAt: Date.now() - HOUR },
+  { code: 'd0000000000d', what: 'բացված, ռուսերեն', revealAt: Date.now() - HOUR, lang: 'ru' },
+  { code: 'd0000000000e', what: 'բացված, անգլերեն', revealAt: Date.now() - HOUR, lang: 'en' },
+]
+for (const d of SEATING_DEMOS) {
+  const customization = { names: 'Լիլիթ & Արման', eventDate: '2027-09-18', eventTime: '17:00', venue: 'Երևան', ...(d.lang ? { content: { lang: d.lang } } : {}) }
+  const { rows: [o] } = await store.db.query(
+    `insert into orders (access_token, customer_name, customer_phone, design_id, design_option, customization, amount, payment_status)
+     values ('demo', 'Demo', '+37499000000', 'wd-portrait', 'diy', $1::jsonb, 15000, 'paid') returning id`, [JSON.stringify(customization)])
+  const { rows: [inv] } = await store.db.query(`insert into invitations (code, order_id, design_id) values ($1, $2, 'wd-portrait') returning id`, [d.code, o.id])
+  if (d.revealAt) await store.importSeating({ invitation: inv.id, revealAt: new Date(d.revealAt).toISOString(), rows: SEATS })
+}
+
 const vite = await createServer({ root: ROOT, configFile: path.join(ROOT, 'vite.config.js'), server: { port: PORT, strictPort: true } })
 await vite.listen()
 ;(await vite.ssrLoadModule('/api/_lib/store.js')).setStore(store)
@@ -55,4 +77,6 @@ console.log(`  → http://localhost:${PORT}/invitations  — pick a design and p
 console.log(`  → guests' links of a sample dashboard event:`)
 console.log(`      http://localhost:${PORT}/i/demo-event               (general)`)
 for (const g of GUESTS) console.log(`      http://localhost:${PORT}/i/demo-event/${g.inviteToken}   (${g.first})`)
+console.log(`  → «Ձեր սեղանը» (wd-portrait; names from scripts/seating.example.csv):`)
+for (const d of SEATING_DEMOS) console.log(`      http://localhost:${PORT}/i/${d.code}   ${d.what}`)
 console.log('')

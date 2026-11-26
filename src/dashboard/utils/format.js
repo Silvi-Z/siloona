@@ -1,12 +1,12 @@
-// Fixed "demo clock" — the prototype pins today's date so the seeded mock
-// data (RSVP stats, event statuses, countdowns) is always the same on load.
+// The real clock (the prototype pinned a fixed demo date, which made every
+// countdown and "N days" wrong on real events). TODAY/NOW are taken when
+// the dashboard loads; the countdown ticks on the live time.
 export const MS_DAY = 864e5;
-export const TODAY = new Date(2026, 10, 6);
-export const NOW = new Date(2026, 10, 6, 17, 30);
-const T0 = Date.now();
-export const nowX = () => new Date(NOW.getTime() + (Date.now() - T0));
-
 export const strip = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+export const NOW = new Date();
+export const TODAY = strip(NOW);
+export const nowX = () => new Date();
+
 export const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
 export const dayDiff = (a, b) => Math.round((strip(a) - strip(b)) / MS_DAY);
 export const sameDay = (a, b) => a && b && dayDiff(a, b) === 0;

@@ -7,6 +7,7 @@ import mouse from './assets/mouse.webp'
 import cloud1 from './assets/cloud1.webp'
 import cloud2 from './assets/cloud2.webp'
 import stars from './assets/stars.webp'
+import SiloonaCredit from '../shared/SiloonaCredit'
 
 const WEEKDAYS = ['Կիրակի', 'Երկուշաբթի', 'Երեքշաբթի', 'Չորեքշաբթի', 'Հինգշաբթի', 'Ուրբաթ', 'Շաբաթ']
 const MONTHS_GEN = ['հունվարի', 'փետրվարի', 'մարտի', 'ապրիլի', 'մայիսի', 'հունիսի', 'հուլիսի', 'օգոստոսի', 'սեպտեմբերի', 'հոկտեմբերի', 'նոյեմբերի', 'դեկտեմբերի']
@@ -56,6 +57,7 @@ export default function CardMouseInvitation() {
   return (
     <div className="cmo">
       <div className="cmo-sheet"><Card /></div>
+      <SiloonaCredit design="card-mouse" />
     </div>
   )
 }
