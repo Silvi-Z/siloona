@@ -23,7 +23,7 @@ function Message({ title, text }) {
   return (
     <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', padding: 24, background: '#FBF7F0', color: '#211C28', textAlign: 'center' }}>
       <div style={{ maxWidth: 420 }}>
-        <p style={{ fontFamily: '"Cormorant Garamond",Georgia,serif', fontSize: 22, letterSpacing: '.12em', color: '#6B1D2C', margin: '0 0 18px' }}>SILOONA</p>
+        <p style={{ fontFamily: '"Cormorant Garamond",Georgia,serif', fontSize: 22, letterSpacing: '.12em', color: '#4A0611', margin: '0 0 18px' }}>SILOONA</p>
         <h1 style={{ fontFamily: '"Noto Serif Armenian",Georgia,serif', fontWeight: 500, fontSize: 24, margin: '0 0 10px' }}>{title}</h1>
         {text && <p style={{ fontFamily: '"Noto Sans Armenian",sans-serif', fontSize: 15, color: '#4B4256', margin: 0 }}>{text}</p>}
       </div>
@@ -44,6 +44,27 @@ async function sendRsvp(body) {
       if (r.ok || r.status < 500) return
     } catch { /* network — retry */ }
     await new Promise((res) => setTimeout(res, 1500 * (i + 1)))
+  }
+}
+
+// «Ձեր սեղանը»: asks the server for one guest's table. Resolves to
+// { status: 'found'|'ambiguous'|'not_found'|'empty', table? } or
+// { status: 'not_open' | 'busy' | 'error' }.
+async function findSeat(code, name) {
+  try {
+    const r = await fetch('/api/invitations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ seat: true, code, name }),
+    })
+    const data = await r.json().catch(() => null)
+    if (r.ok && data?.status) return data
+    if (r.status === 409) return { status: 'not_open' }
+    if (r.status === 429) return { status: 'busy' }
+    if (r.status === 422) return { status: 'empty' }
+    return { status: 'error' }
+  } catch {
+    return { status: 'error' }
   }
 }
 
@@ -101,6 +122,12 @@ export default function SharedInvitation() {
     return deepMerge(deepMerge(defaultsFor(slug, lang), filled), data.content)
   }, [entry, slug, data])
 
+  // Only when the server says this invitation has seating.
+  const seating = useMemo(
+    () => (data?.seating ? { ...data.seating, key: code, find: (name) => findSeat(code, name) } : null),
+    [data, code],
+  )
+
   useEffect(() => {
     if (!data) return
     const names = data.kind === 'event'
@@ -126,7 +153,7 @@ export default function SharedInvitation() {
     ? (answer) => { sendRsvp(isEvent ? { slug: code, t: token, ...answer } : { code, ...answer }) }
     : undefined
   return (
-    <InvitationContentProvider defaultData={content} editing={false} setEditing={noop} guestName={guestName} onRsvp={onRsvp}>
+    <InvitationContentProvider defaultData={content} editing={false} setEditing={noop} guestName={guestName} onRsvp={onRsvp} seating={seating}>
       <Invitation />
     </InvitationContentProvider>
   )

@@ -26,8 +26,12 @@ import CeTruckInvitation from './invitations/ce-truck/CeTruckInvitation'
 import CeToastInvitation from './invitations/ce-toast/CeToastInvitation'
 import CeHollyInvitation from './invitations/ce-holly/CeHollyInvitation'
 import WdChateauInvitation from './invitations/wd-chateau/WdChateauInvitation'
+import WdNoirInvitation from './invitations/wd-noir/WdNoirInvitation'
+import WdNoirLiteInvitation from './invitations/wd-noir-lite/WdNoirLiteInvitation'
 import CeGroovyInvitation from './invitations/ce-groovy/CeGroovyInvitation'
 import CeJingleInvitation from './invitations/ce-jingle/CeJingleInvitation'
+import CeSparkleInvitation from './invitations/ce-sparkle/CeSparkleInvitation'
+import CeCozyInvitation from './invitations/ce-cozy/CeCozyInvitation'
 import CardMouseInvitation from './invitations/card-mouse/CardMouse'
 import { INVITATION_DEFAULTS } from './invitationDefaults'
 
@@ -63,7 +67,11 @@ export const INVITATION_PREVIEWS = {
   'bd-dots': { component: BdDotsInvitation, title: 'Սոնայի 6-րդ ծննդյան տոնը', defaultData: INVITATION_DEFAULTS['bd-dots'] },
   'ce-pine': { component: CePineInvitation, title: 'Ամանորյա երեկույթ', defaultData: INVITATION_DEFAULTS['ce-pine'] },
   'wd-chateau': { component: WdChateauInvitation, title: 'Դավիթ & Մարիամ', defaultData: INVITATION_DEFAULTS['wd-chateau'] },
+  'wd-noir': { component: WdNoirInvitation, title: 'Ալեն & Միլենա', defaultData: INVITATION_DEFAULTS['wd-noir'] },
+  'wd-noir-lite': { component: WdNoirLiteInvitation, title: 'Էդգար & Ալիսա', defaultData: INVITATION_DEFAULTS['wd-noir-lite'] },
   'ce-jingle': { component: CeJingleInvitation, title: 'Զնգոց ու ծիծաղ', defaultData: INVITATION_DEFAULTS['ce-jingle'] },
+  'ce-sparkle': { component: CeSparkleInvitation, title: 'Կայծերի երեկո', defaultData: INVITATION_DEFAULTS['ce-sparkle'] },
+  'ce-cozy': { component: CeCozyInvitation, title: 'Ձմեռային տոն', defaultData: INVITATION_DEFAULTS['ce-cozy'] },
   'ce-groovy': { component: CeGroovyInvitation, title: 'Զնգ-զնգ ու պար', defaultData: INVITATION_DEFAULTS['ce-groovy'] },
   'ce-holly': { component: CeHollyInvitation, title: 'Ամանորյա երեկույթ · ընկերություն', defaultData: INVITATION_DEFAULTS['ce-holly'] },
   'ce-toast': { component: CeToastInvitation, title: 'Ձմեռ Պապի կենացը', defaultData: INVITATION_DEFAULTS['ce-toast'] },

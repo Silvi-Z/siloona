@@ -61,7 +61,7 @@ export default function EditBar({ orderTo, onWizard, onGuide }) {
         {editing ? t.done : t.edit}
       </button>
       {orderTo && !editing && (
-        <Link to={orderTo} style={{ ...btnStyle(false), background: '#6B1D2C', textDecoration: 'none' }}>{t.order}</Link>
+        <Link to={orderTo} style={{ ...btnStyle(false), background: '#4A0611', textDecoration: 'none' }}>{t.order}</Link>
       )}
     </div>
   )

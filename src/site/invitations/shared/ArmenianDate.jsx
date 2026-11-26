@@ -41,7 +41,7 @@ const parse = (v) => {
 }
 export const formatDay = (v) => { const p = parse(v); return p ? `${pad(p.d)}.${pad(p.m + 1)}.${p.y}` : '' }
 
-export function Calendar({ value, onChange, min = todayIso(), accent = '#6B1D2C' }) {
+export function Calendar({ value, onChange, min = todayIso(), accent = '#4A0611' }) {
   const t = useText(TEXT)
   const sel = parse(value)
   const start = sel || parse(min) || parse(todayIso())

@@ -54,10 +54,18 @@ import { ceHollyDefaultData } from './invitations/ce-holly/data'
 import { ceHollySections } from './invitations/ce-holly/sections'
 import { wdChateauDefaultData } from './invitations/wd-chateau/data'
 import { wdChateauSections } from './invitations/wd-chateau/sections'
+import { wdNoirDefaultData } from './invitations/wd-noir/data'
+import { wdNoirSections } from './invitations/wd-noir/sections'
+import { wdNoirLiteDefaultData } from './invitations/wd-noir-lite/data'
+import { wdNoirLiteSections } from './invitations/wd-noir-lite/sections'
 import { ceGroovyDefaultData } from './invitations/ce-groovy/data'
 import { ceGroovySections } from './invitations/ce-groovy/sections'
 import { ceJingleDefaultData } from './invitations/ce-jingle/data'
 import { ceJingleSections } from './invitations/ce-jingle/sections'
+import { ceSparkleDefaultData } from './invitations/ce-sparkle/data'
+import { ceSparkleSections } from './invitations/ce-sparkle/sections'
+import { ceCozyDefaultData } from './invitations/ce-cozy/data'
+import { ceCozySections } from './invitations/ce-cozy/sections'
 import { cardMouseDefaultData } from './invitations/card-mouse/data'
 import { cardMouseSections } from './invitations/card-mouse/sections'
 import { bdCastleRu, bdCastleEn } from './invitations/bd-castle/data.i18n'
@@ -104,8 +112,12 @@ export const INVITATION_DEFAULTS = {
   'ce-toast': ceToastDefaultData,
   'ce-holly': ceHollyDefaultData,
   'wd-chateau': wdChateauDefaultData,
+  'wd-noir': wdNoirDefaultData,
+  'wd-noir-lite': wdNoirLiteDefaultData,
   'ce-groovy': ceGroovyDefaultData,
   'ce-jingle': ceJingleDefaultData,
+  'ce-sparkle': ceSparkleDefaultData,
+  'ce-cozy': ceCozyDefaultData,
   'card-mouse': cardMouseDefaultData,
 }
 
@@ -138,8 +150,12 @@ export const INVITATION_SECTIONS = {
   'ce-toast': ceToastSections,
   'ce-holly': ceHollySections,
   'wd-chateau': wdChateauSections,
+  'wd-noir': wdNoirSections,
+  'wd-noir-lite': wdNoirLiteSections,
   'ce-groovy': ceGroovySections,
   'ce-jingle': ceJingleSections,
+  'ce-sparkle': ceSparkleSections,
+  'ce-cozy': ceCozySections,
   'card-mouse': cardMouseSections,
 }
 

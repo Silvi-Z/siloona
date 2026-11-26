@@ -58,7 +58,7 @@ export default function Header() {
   const links = [
     { to: to('/'), label: t.home, end: true },
     { to: to('/invitations'), label: t.invitations },
-    { to: to('/#prices'), label: t.prices, anchor: true },
+    { to: to('/prices'), label: t.prices },
     { to: to('/about'), label: t.about },
     ...(hasOrders ? [{ to: to('/my-orders'), label: t.orders }] : []),
   ]
@@ -79,11 +79,7 @@ export default function Header() {
     return () => { document.body.style.overflow = '' }
   }, [menuOpen])
 
-  // «Գներ» is a place on the home page, not a page — a plain Link, so it
-  // never shows as the current page.
-  const item = (l) => (l.anchor
-    ? <Link key={l.to} to={l.to}>{l.label}</Link>
-    : <NavLink key={l.to} to={l.to} end={l.end}>{l.label}</NavLink>)
+  const item = (l) => <NavLink key={l.to} to={l.to} end={l.end}>{l.label}</NavLink>
 
   return (
     <header className={`site-header${scrolled ? ' scrolled' : ''}`}>

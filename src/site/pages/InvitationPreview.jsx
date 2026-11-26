@@ -106,7 +106,7 @@ function GuideHost({ slug, hasWizard, wizardOpen, open, setOpen }) {
 //                   siloona:rsvp {name, status, plus, note}  (if `rsvp`)
 // Editing uses the same InvitationContentProvider + <Editable> stack as
 // every other host; the parent owns persistence.
-const FOCUS_CSS = '.sil-sec-focus{outline:2px solid rgba(107,29,44,.6);outline-offset:8px;border-radius:6px;transition:outline-color .6s}'
+const FOCUS_CSS = '.sil-sec-focus{outline:2px solid rgba(74,6,17,.6);outline-offset:8px;border-radius:6px;transition:outline-color .6s}'
 const hiddenKey = (data) => JSON.stringify(data?.hidden || {})
 
 function EmbeddedInvitation({ slug, Invitation, defaultData }) {

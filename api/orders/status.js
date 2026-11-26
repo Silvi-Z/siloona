@@ -1,14 +1,25 @@
-import { allow, getQuery, handler, sendJson } from '../_lib/http.js'
+import { allow, bearerToken, getQuery, handler, readBody, sendJson } from '../_lib/http.js'
 import { getStore } from '../_lib/store.js'
 import { customerView, invitationForOrder, loadOrderForCustomer, settleOpenAttempts } from '../_lib/orders.js'
+import { claimOrder } from '../_lib/orderEvents.js'
 
 // GET /api/orders/status?id=…&t=… — the customer's order page.
 // While a card payment is still open it re-asks ArCa (at most every few
 // seconds per attempt), so the page settles even if the redirect back
 // from the bank was lost.
+// POST { action: 'claim', id, t[, eventId] } + the signed-in customer's
+// token — links the paid order to their dashboard event (orderEvents.js).
+// (Here rather than in a file of its own: the free Vercel plan allows 12.)
 export default handler(async (req, res) => {
-  allow(req, ['GET'])
+  allow(req, ['GET', 'POST'])
   const store = getStore()
+  if (req.method === 'POST') {
+    const body = await readBody(req)
+    if (body.action !== 'claim') return sendJson(res, 400, { error: 'bad_action', message: 'Սխալ հարցում։' })
+    const token = bearerToken(req)
+    const user = token ? await store.getUser(token) : null
+    return sendJson(res, 200, await claimOrder(store, user, body))
+  }
   const q = getQuery(req)
   let order = await loadOrderForCustomer(store, q.id, q.t)
   let txs = await store.listTransactions(order.id)

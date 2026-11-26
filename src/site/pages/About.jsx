@@ -1,4 +1,6 @@
 import Reveal from '../Reveal'
+import '../home.css'
+import '../about.css'
 import { useText } from '../i18n'
 
 const TEXT = {
@@ -34,38 +36,38 @@ const TEXT = {
   },
 }
 
+// Built like the prices page: the title and the quote on a burgundy band,
+// the three values as panels across its lower edge (home.css .hm classes
+// plus about.css). The texts are unchanged.
 export default function About() {
   const t = useText(TEXT)
   return (
-    <>
-      <section className="page-hero">
-        <div className="wrap">
-          <p className="eyebrow">{t.eyebrow}</p>
-          <h1>{t.h1}</h1>
-          <p>{t.p}</p>
-        </div>
-      </section>
+    <main className="hm ab">
+      <section className="ab-top" aria-labelledby="ab-h">
+        <div className="hm-wrap">
+          {/* the burgundy band hangs from this (not animated) wrapper */}
+          <div className="ab-band">
+            <Reveal className="ab-head">
+              <p className="hm-eyebrow">{t.eyebrow}</p>
+              <h1 className="hm-h2" id="ab-h">{t.h1}</h1>
+              <p className="ab-lede">{t.p}</p>
+            </Reveal>
+            <Reveal>
+              <blockquote className="ab-quote">{t.quote}</blockquote>
+            </Reveal>
+          </div>
 
-      <section className="block">
-        <div className="wrap">
-          <Reveal>
-            <p className="pull-quote">{t.quote}</p>
-          </Reveal>
-        </div>
-      </section>
-
-      <section className="block tight">
-        <div className="wrap">
-          <Reveal as="div" className="values">
-            {t.values.map((v) => (
-              <div key={v.title}>
-                <h4>{v.title}</h4>
+          <Reveal as="ul" className="ab-values">
+            {t.values.map((v, i) => (
+              <li key={v.title}>
+                <span className="ab-n" aria-hidden="true">0{i + 1}</span>
+                <h2>{v.title}</h2>
                 <p>{v.desc}</p>
-              </div>
+              </li>
             ))}
           </Reveal>
         </div>
       </section>
-    </>
+    </main>
   )
 }

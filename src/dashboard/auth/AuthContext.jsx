@@ -4,6 +4,7 @@ import { EVENTS } from '../data/mockEvents';
 import { SETTINGS } from '../data/mockMeta';
 import { setSyncOwner, markSaved } from '../data/sync';
 import { syncReplies } from '../data/replies';
+import { loadLinks } from '../data/orderLinks';
 import { fromISO, addDays } from '../utils/format';
 
 const AuthCtx = createContext(null);
@@ -96,6 +97,8 @@ export function AuthProvider({ children }) {
       }
       setSyncOwner(sess.user.id);
       await loadEvents(sess.user.id);
+      // which events have a paid order behind them (only those open to guests)
+      await loadLinks(sess.user.id);
       // Guests' answers from their invitation links since the last visit.
       await syncReplies();
       // A missing admin_users table (payments.sql not run yet) just means no admins.

@@ -12,7 +12,7 @@ import planetShot from '../invitations/bd-planet/assets/catalog-thumb.webp'
 // The «Անհատական դիզայն» request form, loaded only when opened. It opens
 // for the #custom-design link, so any page can link straight to it.
 const CustomRequestDialog = lazy(() => import('../custom/CustomRequestDialog'))
-const CUSTOM_HASH = '#custom-design'
+export const CUSTOM_HASH = '#custom-design'
 
 // Home page — an editorial spread: asymmetric columns, hairlines instead
 // of cards, ivory pages interrupted by burgundy, charcoal and pale-rose
@@ -65,11 +65,13 @@ const lowest = (opt) => {
   const all = onSale.map((d) => d.pricing?.[opt]).filter((v) => v != null)
   return all.length ? Math.min(...all) : null
 }
-const DIY_FROM = lowest('diy')
-const ASSISTED_FROM = lowest('assisted')
-const amt = (v) => `${formatAmount(v)} ֏`
+// Prices differ by design: these are the lowest, always shown as «from».
+export const DIY_FROM = lowest('diy')
+export const ASSISTED_FROM = lowest('assisted')
+export const amt = (v) => `${formatAmount(v)} ֏`
 
-const TEXT = {
+// Also read by the prices page (pages/Prices.jsx): tiers, benefits, FAQ.
+export const TEXT = {
   hy: {
     eyebrow: 'Թվային հրավիրատոմսերի ատելիե',
     h1: ['Ամեն տոն', 'սկսվում է', 'հրավերից'],
@@ -105,6 +107,7 @@ const TEXT = {
     choose: 'Ընտրել հրավիրատոմս',
 
     prEyebrow: 'Գներ',
+    allPrices: 'Բոլոր գները',
     prH: 'Ընտրեք ձեզ հարմար տարբերակը',
     prP: 'Յուրաքանչյուր տարբերակում ստանում եք հրավերի հղումը, որը կարող եք ուղարկել բոլոր հյուրերին։',
     customPrice: 'Գինը՝ ըստ գաղափարի',
@@ -157,7 +160,7 @@ const TEXT = {
     faqEyebrow: 'Հարցեր',
     faqH: 'Հաճախակի տրվող հարցեր',
     faq: [
-      { q: 'Որքա՞ն արժե հրավիրատոմսը', a: `Պատրաստի ձևանմուշը՝ ${amt(DIY_FROM)}․ այն լրացնում եք ինքներդ։ Եթե ուզում եք, որ մենք պատրաստենք հրավերը ձեր տվյալներով՝ ${amt(ASSISTED_FROM)}։ Անհատական դիզայնի գինը կախված է գաղափարից, և այն համաձայնեցնում ենք հայտից հետո։` },
+      { q: 'Որքա՞ն արժե հրավիրատոմսը', a: `Պատրաստի ձևանմուշը՝ սկսած ${amt(DIY_FROM)}․ այն լրացնում եք ինքներդ։ Եթե ուզում եք, որ մենք պատրաստենք հրավերը ձեր տվյալներով՝ սկսած ${amt(ASSISTED_FROM)}։ Անհատական դիզայնի գինը կախված է գաղափարից, և այն համաձայնեցնում ենք հայտից հետո։` },
       { q: 'Ինչպե՞ս վճարել', a: 'Վճարումը կատարվում է կայքում՝ բանկային քարտով (ArCa, Visa, Mastercard) կամ Idram-ով։ Անհատական դիզայնի դեպքում վճարման մանրամասները համաձայնեցնում ենք ձեզ հետ։' },
       { q: 'Կարո՞ղ եմ փոփոխել հրավերը ուղարկելուց հետո', a: 'Այո։ Գրեք մեզ, և մենք կթարմացնենք հրավերը։ Հղումը կմնա նույնը, ուստի հյուրերին նորից ուղարկել պետք չէ։' },
       { q: 'Որքա՞ն ժամանակ է հղումն ակտիվ', a: 'Հղումը ժամկետային սահմանափակում չունի․ այն գործում է թե՛ միջոցառումից առաջ, թե՛ դրանից հետո։' },
@@ -212,6 +215,7 @@ const TEXT = {
     choose: 'Выбрать приглашение',
 
     prEyebrow: 'Цены',
+    allPrices: 'Все цены',
     prH: 'Выберите подходящий вариант',
     prP: 'В любом варианте вы получаете ссылку на приглашение, которую можно отправить всем гостям.',
     customPrice: 'Цена — по вашей идее',
@@ -264,7 +268,7 @@ const TEXT = {
     faqEyebrow: 'Вопросы',
     faqH: 'Частые вопросы',
     faq: [
-      { q: 'Сколько стоит приглашение?', a: `Готовый шаблон — ${amt(DIY_FROM)}, его вы заполняете сами. Если хотите, чтобы мы подготовили приглашение по вашим данным, — ${amt(ASSISTED_FROM)}. Цена индивидуального дизайна зависит от идеи, её мы согласуем после заявки.` },
+      { q: 'Сколько стоит приглашение?', a: `Готовый шаблон — от ${amt(DIY_FROM)}, его вы заполняете сами. Если хотите, чтобы мы подготовили приглашение по вашим данным, — от ${amt(ASSISTED_FROM)}. Цена индивидуального дизайна зависит от идеи, её мы согласуем после заявки.` },
       { q: 'Как оплатить?', a: 'Оплата проходит на сайте — банковской картой (ArCa, Visa, Mastercard) или через Idram. Для индивидуального дизайна детали оплаты согласуем с вами.' },
       { q: 'Можно ли изменить приглашение после отправки?', a: 'Да. Напишите нам, и мы обновим приглашение. Ссылка останется прежней, поэтому отправлять её гостям заново не нужно.' },
       { q: 'Как долго действует ссылка?', a: 'У ссылки нет ограничения по сроку: она работает и до события, и после него.' },
@@ -317,6 +321,7 @@ const TEXT = {
     choose: 'Choose an invitation',
 
     prEyebrow: 'Prices',
+    allPrices: 'All prices',
     prH: 'Choose what suits you',
     prP: 'Every option includes the invitation link you can send to all your guests.',
     customPrice: 'Priced to your idea',
@@ -369,7 +374,7 @@ const TEXT = {
     faqEyebrow: 'Questions',
     faqH: 'Frequently asked questions',
     faq: [
-      { q: 'How much does an invitation cost?', a: `A ready-made template is ${amt(DIY_FROM)}, and you fill it in yourself. If you’d like us to prepare the invitation with your details, it’s ${amt(ASSISTED_FROM)}. The price of a custom design depends on the idea; we agree it after your request.` },
+      { q: 'How much does an invitation cost?', a: `A ready-made template starts at ${amt(DIY_FROM)}, and you fill it in yourself. If you’d like us to prepare the invitation with your details, it starts at ${amt(ASSISTED_FROM)}. The price of a custom design depends on the idea; we agree it after your request.` },
       { q: 'How do I pay?', a: 'You pay on the site, by bank card (ArCa, Visa, Mastercard) or with Idram. For a custom design, we agree the payment details with you.' },
       { q: 'Can I change the invitation after sending it?', a: 'Yes. Write to us and we’ll update the invitation. The link stays the same, so there’s no need to send it to your guests again.' },
       { q: 'How long does the link stay active?', a: 'The link has no time limit: it works before the event and after it.' },
@@ -441,7 +446,7 @@ const SAMPLE_GUESTS = [
 
 const byId = (id) => WEB_DESIGNS.find((d) => d.id === id && d.available !== false)
 
-function Arrow() {
+export function Arrow() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M4 12h16M14 6l6 6-6 6" />
@@ -561,8 +566,8 @@ export default function Home() {
 
   const examples = EXAMPLE_IDS.map(byId).filter(Boolean)
   const tierPrices = [
-    DIY_FROM != null ? amt(DIY_FROM) : null,
-    ASSISTED_FROM != null ? amt(ASSISTED_FROM) : null,
+    DIY_FROM != null ? t.from(amt(DIY_FROM)) : null,
+    ASSISTED_FROM != null ? t.from(amt(ASSISTED_FROM)) : null,
     CUSTOM_FROM != null ? t.from(amt(CUSTOM_FROM)) : t.customPrice,
   ]
   const tierLinks = [to('/invitations'), to('/invitations'), CUSTOM_HASH]
@@ -683,6 +688,7 @@ export default function Home() {
               </li>
             ))}
           </Reveal>
+          <p className="hm-prices-all"><Link className="hm-link" to={to('/prices')}>{t.allPrices} <Arrow /></Link></p>
         </div>
       </section>
 

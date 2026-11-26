@@ -15,6 +15,8 @@ const TITLES = {
   'wd-cherry': { ru: 'Ани и Давид', en: 'Ani & Davit' },
   'wd-portrait': { ru: 'Лилит и Арман', en: 'Lilit & Arman' },
   'wd-chateau': { ru: 'Давид и Мариам', en: 'Davit & Mariam' },
+  'wd-noir': { ru: 'Ален и Милена', en: 'Alen & Milena' },
+  'wd-noir-lite': { ru: 'Эдгар и Алиса', en: 'Edgar & Alisa' },
   'bd-animals': { ru: 'Наре 1 год', en: 'Nare turns 1' },
   'bd-planet': { ru: 'Арсену 5 лет', en: 'Arsen turns 5' },
   'bd-balloons': { ru: 'Леону 3 года', en: 'Leon turns 3' },
@@ -32,6 +34,8 @@ const TITLES = {
   'ce-holly': { ru: 'Новогодний вечер компании', en: 'Company Christmas party' },
   'ce-groovy': { ru: 'Дзинь-дзинь и танцы', en: 'Jingle & mingle' },
   'ce-jingle': { ru: 'Звон и веселье', en: 'Jingle & Mingle · watercolour' },
+  'ce-sparkle': { ru: 'Вечер бенгальских огней', en: 'An evening of sparklers' },
+  'ce-cozy': { ru: 'Зимний праздник', en: 'A winter celebration' },
   'bp-blue': { ru: 'Крещение Самвела', en: 'Samvel’s christening' },
   'card-mouse': { ru: 'Эрику 1 год', en: 'Erik turns 1' },
 }

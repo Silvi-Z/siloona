@@ -22,6 +22,7 @@ export const DESIGN_PRICES = {
   'wd-mono': { diy: 15000, assisted: 20000 },
   'wd-rouge': { diy: 15000, assisted: 20000 },
   'wd-cherry': { diy: 15000, assisted: 20000 },
+  'wd-portrait': { diy: 15000, assisted: 20000 }, // temporary, the owner will set the final price
   'bd-animals': { diy: 15000, assisted: 20000 },
   'bd-planet': { diy: 15000, assisted: 20000 },
   'bd-balloons': { diy: 15000, assisted: 20000 },
@@ -37,8 +38,12 @@ export const DESIGN_PRICES = {
   'ce-toast': { diy: 15000, assisted: 20000 },
   'ce-holly': { diy: 15000, assisted: 20000 },
   'wd-chateau': { diy: 15000, assisted: 20000 },
+  'wd-noir': { diy: 35000, assisted: 45000 }, // temporary, the owner will set the final price
+  'wd-noir-lite': { diy: 15000, assisted: 20000 }, // temporary, the owner will set the final price
   'ce-groovy': { diy: 15000, assisted: 20000 },
   'ce-jingle': { diy: 15000, assisted: 20000 },
+  'ce-sparkle': { diy: 15000, assisted: 20000 }, // temporary, the owner will set the final price
+  'ce-cozy': { diy: 15000, assisted: 20000 }, // temporary, the owner will set the final price
   'bp-blue': { diy: 15000, assisted: 20000 },
   'card-mouse': { diy: 15000, assisted: 20000 },
 }

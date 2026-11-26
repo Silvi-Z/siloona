@@ -11,7 +11,7 @@ body{margin:0}
 .siloona-site{
   --cream:#FBF7F0; --cream-2:#F6F0E6; --ink:#211C28; --ink-2:#4B4256; --muted:#8A8094;
   --line:rgba(33,28,40,.1); --line-2:rgba(33,28,40,.16);
-  --violet:#6B1D2C; --violet-2:#83303F; --rose:#C2639B; --gold:#B0893F;
+  --violet:#4A0611; --violet-2:#6B1726; --rose:#C2639B; --gold:#B0893F;
   --wash: linear-gradient(135deg,#FBF3E8 0%,#F5E4E3 45%,#F6ECE9 100%);
   /* Noto Serif / Noto Sans carry the Cyrillic (and any Latin) the Armenian
      faces lack, so Russian and English set in the same family. */
@@ -119,7 +119,7 @@ body{margin:0}
 }
 .siloona-site .hero::before{
   content:""; position:absolute; inset:-30% -10% auto -10%; height:140%;
-  background:radial-gradient(60% 60% at 30% 20%, rgba(107,29,44,.13), transparent),
+  background:radial-gradient(60% 60% at 30% 20%, rgba(74,6,17,.13), transparent),
              radial-gradient(50% 50% at 85% 10%, rgba(176,137,63,.14), transparent);
   pointer-events:none;
 }
@@ -134,8 +134,8 @@ body{margin:0}
   display:inline-flex; align-items:center; gap:8px; padding:14px 30px; border-radius:999px;
   font-size:14.5px; font-weight:600; letter-spacing:.01em; transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
 }
-.siloona-site .btn-primary{background:var(--violet); color:#fff; box-shadow:0 14px 17px -10px rgba(107,29,44,.5)}
-.siloona-site .btn-primary:hover{transform:translateY(-2px); box-shadow:0 18px 34px -10px rgba(107,29,44,.55)}
+.siloona-site .btn-primary{background:var(--violet); color:#fff; box-shadow:0 14px 17px -10px rgba(74,6,17,.5)}
+.siloona-site .btn-primary:hover{transform:translateY(-2px); box-shadow:0 18px 34px -10px rgba(74,6,17,.55)}
 .siloona-site .btn-ghost{border:1px solid var(--line-2); color:var(--ink)}
 .siloona-site .btn-ghost:hover{border-color:var(--ink); background:rgba(33,28,40,.03)}
 
@@ -176,7 +176,7 @@ body{margin:0}
 }
 .siloona-site .split .art::after{
   content:"SILOONA"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-  font-family:var(--latin); font-size:15px; letter-spacing:.3em; color:rgba(107,29,44,.35);
+  font-family:var(--latin); font-size:15px; letter-spacing:.3em; color:rgba(74,6,17,.35);
 }
 .siloona-site .pill-list{list-style:none; margin:28px 0 0; padding:0; display:flex; flex-direction:column; gap:14px}
 .siloona-site .pill-list li{display:flex; align-items:baseline; gap:12px; font-size:15px; color:var(--ink-2)}
@@ -261,7 +261,7 @@ body{margin:0}
 }
 .siloona-site .mode-switch button:hover{color:var(--ink)}
 .siloona-site .mode-switch button.active{
-  background:var(--violet); color:#fff; box-shadow:0 10px 22px -10px rgba(107,29,44,.55);
+  background:var(--violet); color:#fff; box-shadow:0 10px 22px -10px rgba(74,6,17,.55);
 }
 
 .siloona-site .category-tabs{display:flex; flex-wrap:wrap; justify-content:center; gap:30px}
@@ -308,6 +308,16 @@ body{margin:0}
 .siloona-site .price-row-label{font-size:12.5px; font-weight:600; color:var(--ink)}
 .siloona-site .price-row-amount{font-size:12.5px; color:var(--violet); white-space:nowrap}
 .siloona-site .price-row-note{font-size:11px; color:var(--muted); line-height:1.4}
+
+/* phones: two cards per row (catalog.css) — compact prices and buttons */
+@media (max-width:680px){
+  .siloona-site .price-options{gap:6px; margin-top:10px}
+  .siloona-site .price-row{padding:7px 8px; border-radius:7px}
+  .siloona-site .price-row-main{flex-direction:column; gap:1px}
+  .siloona-site .price-row-label,.siloona-site .price-row-amount{font-size:12px}
+  .siloona-site .price-row-note{display:none}
+  .siloona-site .catalog-card .card-actions .btn{flex:1 1 0; width:auto; min-width:0; padding:9px 6px; font-size:12.5px}
+}
 
 /* Sample invitation preview (ported from the original placeholder, kept as a real working demo) */
 .siloona-site .sample-stage{padding:48px; display:flex; justify-content:center}
@@ -357,7 +367,7 @@ body{margin:0}
   height:46px; border:1px solid var(--line-2); border-radius:3px; padding:0 14px; font:inherit; outline:none;
   transition:border-color .2s ease, box-shadow .2s ease;
 }
-.siloona-site .field input:focus{border-color:var(--violet); box-shadow:0 0 0 3px rgba(107,29,44,.12)}
+.siloona-site .field input:focus{border-color:var(--violet); box-shadow:0 0 0 3px rgba(74,6,17,.12)}
 .siloona-site .auth-card .btn-primary{width:100%; justify-content:center; margin-top:6px}
 .siloona-site .auth-note{text-align:center; font-size:12.5px; color:var(--muted); margin-top:22px}
 .siloona-site .form-msg{

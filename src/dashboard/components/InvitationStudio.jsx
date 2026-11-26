@@ -8,7 +8,7 @@ import { floatingBtnStyle, floatingTopLeft } from '../../site/invitations/shared
 import { eventDesignContent } from '../data/designPrefill';
 import * as actions from '../data/actions';
 
-const selectedStyle = { ...floatingBtnStyle, background: 'rgba(107,29,44,.85)', cursor: 'default' };
+const selectedStyle = { ...floatingBtnStyle, background: 'rgba(74,6,17,.85)', cursor: 'default' };
 
 // Full-page view/edit of one invitation design for one event — the
 // dashboard host for the exact same editing stack the public

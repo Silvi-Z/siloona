@@ -11,6 +11,7 @@ import { grp, fullName, ppl } from './selectors';
 import { logActivity, SETTINGS } from './mockMeta';
 import { nowX, fromISO, addDays } from '../utils/format';
 import { genInviteToken } from '../utils/inviteToken';
+import { NOT_LINKED, isLive } from './orderLinks';
 import { deleteRemote, persistProfile, persistNow } from './sync';
 import { supabase, isSupabaseConfigured } from '../../lib/supabaseClient';
 
@@ -171,7 +172,11 @@ export function toggleMilestone(ev, id) {
 }
 
 /* ---------- Invitation ---------- */
+// Guests can open an event only with a paid order behind it (the server
+// checks that, see api/_lib/orderEvents.js) — so without one, publishing
+// is refused here with the reason instead of pretending the link works.
 export function publishInvitation(ev) {
+  if (!isLive(ev)) return { error: NOT_LINKED };
   ev.inv.status = 'published';
   ev.inv.published = ev.inv.published || new Date();
   logActivity(ev, 'Հրապարակվեց հրավիրատոմսը', 'page:invitation', 'var(--sage)');

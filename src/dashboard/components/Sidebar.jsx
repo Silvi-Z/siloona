@@ -90,6 +90,8 @@ export default function Sidebar() {
           )}
           {!gated && <div className="nav-group">{navLink('account', 'Կարգավորումներ')}</div>}
         </nav>
+        {/* back to the public site (siloona.am) — the dashboard is its own app at /dashboard */}
+        <a className="sb-site" href="/"><Icon name="ext" /><span>Siloona-ի կայքը</span></a>
         <div className="sb-foot">
           <b>{mode === 'couple' ? 'Իմ հաշիվ' : SETTINGS.org.profile.company}</b><br />
           {mode === 'couple' ? 'Իմ միջոցառումը · siloona.am' : `${orgEvents().length} միջոցառում · siloona.am`}<br />

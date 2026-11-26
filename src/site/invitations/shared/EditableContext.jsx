@@ -25,13 +25,15 @@ const Ctx = createContext(null)
 //                their personalized greeting with it (see GuestGreeting.jsx)
 //   onRsvp       called with {name, status, plus, note} when a guest
 //                submits the design's RSVP form, if the host records RSVPs
+//   seating      «Ձեր սեղանը» on this copy — { revealAt, open, key, find(name) }
+//                from the published page only (see Seating.jsx); null elsewhere
 //   skipIntro    open straight to the content (no envelope/curtain)
 //   live         keep following `defaultData` when the host replaces it
 //                (the dashboard preview while settings change)
 //   transform(prev, next)  optional: adjusts content after each edit — the
 //                public preview uses it to carry a renamed person into the
 //                sentences built from their name (invitationDetails.js)
-export function InvitationContentProvider({ defaultData, saved, onSave, onReset, editing, setEditing, guestName = null, onRsvp, skipIntro = false, live = false, transform, children }) {
+export function InvitationContentProvider({ defaultData, saved, onSave, onReset, editing, setEditing, guestName = null, onRsvp, seating = null, skipIntro = false, live = false, transform, children }) {
   const [data, setData] = useState(() => deepMerge(defaultData, saved))
   const [dirty, setDirty] = useState(() => saved != null)
   // Latest content, read synchronously so onSave (which may update the
@@ -72,9 +74,9 @@ export function InvitationContentProvider({ defaultData, saved, onSave, onReset,
   }
 
   const value = useMemo(
-    () => ({ data, editing, setEditing, setField, replaceData, reset, dirty, guestName, onRsvp, skipIntro }),
+    () => ({ data, editing, setEditing, setField, replaceData, reset, dirty, guestName, onRsvp, seating, skipIntro }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [data, editing, dirty, guestName, onRsvp, skipIntro],
+    [data, editing, dirty, guestName, onRsvp, seating, skipIntro],
   )
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>

@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "test:payments": "node --test tests/payments/payments.test.js",
-    "demo:payments": "node tests/payments/demo.js"
+    "demo:payments": "node tests/payments/demo.js",
+    "test:seating": "node --test tests/seating/seating.test.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.119.0",

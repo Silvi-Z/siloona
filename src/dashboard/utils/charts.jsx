@@ -62,11 +62,11 @@ export function LineChart({ labels, values, h = 250, fmt = v => v, axis = moneyS
     <div className="chart">
       <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} onMouseMove={show} onMouseLeave={hide} onTouchStart={show}>
         <Frame labels={labels} max={max} axis={axis} W={W} H={H} pl={pl} pr={pr} pt={pt} pb={pb} xs={xs} />
-        <path d={`${line} L${xs(n - 1)} ${ys(0)} L${xs(0)} ${ys(0)}Z`} fill="#6B1D2C" opacity=".05" />
-        <path d={line} fill="none" stroke="#6B1D2C" strokeWidth="1.7" />
-        <circle cx={pts[n - 1][0]} cy={pts[n - 1][1]} r="3" fill="#6B1D2C" />
+        <path d={`${line} L${xs(n - 1)} ${ys(0)} L${xs(0)} ${ys(0)}Z`} fill="#4A0611" opacity=".05" />
+        <path d={line} fill="none" stroke="#4A0611" strokeWidth="1.7" />
+        <circle cx={pts[n - 1][0]} cy={pts[n - 1][1]} r="3" fill="#4A0611" />
         {tip && <line x1={tip.px} x2={tip.px} y1={pt} y2={H - pb} stroke="#2A2526" strokeOpacity=".25" strokeDasharray="3 3" />}
-        {tip && <circle cx={tip.px} cy={tip.py} r="4.5" fill="#FFFDFA" stroke="#6B1D2C" strokeWidth="1.6" />}
+        {tip && <circle cx={tip.px} cy={tip.py} r="4.5" fill="#FFFDFA" stroke="#4A0611" strokeWidth="1.6" />}
       </svg>
       {tip && (
         <div className="tip" style={{ left: tip.px * tip.scale, top: tip.py * tip.scale, opacity: 1 }}>
@@ -91,7 +91,7 @@ export function BarChart({ labels, values, h = 250, fmt = v => v, axis = v => Ma
         <Frame labels={labels} max={max} axis={axis} W={W} H={H} pl={pl} pr={pr} pt={pt} pb={pb} xs={xs} />
         {values.map((v, i) => {
           const y = ys(v), hgt = ys(0) - y, isLast = i === n - 1 && partialLast;
-          return <rect key={i} x={xs(i) - bw / 2} y={y} width={bw} height={Math.max(hgt, .5)} rx="1.5" fill={isLast ? '#C9A7A8' : '#6B1D2C'} opacity={tip && tip.i !== i ? .35 : isLast ? 1 : .88} />;
+          return <rect key={i} x={xs(i) - bw / 2} y={y} width={bw} height={Math.max(hgt, .5)} rx="1.5" fill={isLast ? '#C9A7A8' : '#4A0611'} opacity={tip && tip.i !== i ? .35 : isLast ? 1 : .88} />;
         })}
       </svg>
       {tip && (

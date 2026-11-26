@@ -10,7 +10,7 @@
   --co-err:#A3322B;
   background:
     radial-gradient(60% 40% at 85% 0%, rgba(176,137,63,.08), transparent 70%),
-    radial-gradient(50% 40% at 0% 10%, rgba(107,29,44,.06), transparent 70%),
+    radial-gradient(50% 40% at 0% 10%, rgba(74,6,17,.06), transparent 70%),
     var(--cream);
   padding:28px 0 96px;
   min-height:70vh;
@@ -43,7 +43,7 @@
 .siloona-site .co-step-sum{margin:4px 0 0; font-size:13.5px; color:var(--ink-2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
 .siloona-site .co-edit{
   background:none; border:0; padding:4px 0; font-size:13px; color:var(--violet);
-  border-bottom:1px solid rgba(107,29,44,.35); align-self:center;
+  border-bottom:1px solid rgba(74,6,17,.35); align-self:center;
 }
 .siloona-site .co-step-b{padding:22px 0 4px 0; animation:co-in .45s ease both}
 @keyframes co-in{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
@@ -68,7 +68,7 @@
 .siloona-site .co-opt-price{font-size:14px; color:var(--ink-2); white-space:nowrap; font-variant-numeric:tabular-nums}
 .siloona-site .co-opt-text{display:block; font-size:13.5px; color:var(--muted); margin-top:4px; line-height:1.5}
 .siloona-site .co-demo{margin:16px 0 0; font-size:14px}
-.siloona-site .co-demo a{color:var(--violet); border-bottom:1px solid rgba(107,29,44,.3)}
+.siloona-site .co-demo a{color:var(--violet); border-bottom:1px solid rgba(74,6,17,.3)}
 
 /* ---------- 02 fields ---------- */
 .siloona-site .co-fields{display:grid; gap:16px}
@@ -82,7 +82,7 @@
 }
 .siloona-site .co-field input[type=date], .siloona-site .co-field input[type=time]{min-height:48px}
 .siloona-site .co-field textarea{resize:vertical; min-height:110px; line-height:1.5}
-.siloona-site .co-field input:focus, .siloona-site .co-field textarea:focus{outline:none; border-color:var(--violet); box-shadow:0 0 0 3px rgba(107,29,44,.1)}
+.siloona-site .co-field input:focus, .siloona-site .co-field textarea:focus{outline:none; border-color:var(--violet); box-shadow:0 0 0 3px rgba(74,6,17,.1)}
 .siloona-site .co-field [aria-invalid=true]{border-color:var(--co-err)}
 .siloona-site .co-hint{font-size:12px; color:var(--muted)}
 .siloona-site .co-err{font-size:12.5px; color:var(--co-err); margin:0}
@@ -313,14 +313,14 @@
 .siloona-site .co-edits{margin:18px 0 0; padding:14px 16px; background:var(--cream-2); border-left:2px solid var(--gold)}
 .siloona-site .co-edits .co-consent{margin:0 0 6px; font-weight:500; color:var(--ink)}
 .siloona-site .co-edits p{margin:0 0 0 30px; font-size:13px; color:var(--ink-2); line-height:1.55}
-.siloona-site .co-edits a, .siloona-site .co-demo a{color:var(--violet); border-bottom:1px solid rgba(107,29,44,.3)}
+.siloona-site .co-edits a, .siloona-site .co-demo a{color:var(--violet); border-bottom:1px solid rgba(74,6,17,.3)}
 .siloona-site .co-demo-sep{margin:0 10px; color:var(--muted)}
 
 /* Details taken from the customer's edited invitation */
 .siloona-site .co-fromedit-lead{margin:0 0 6px; font-size:12.5px; color:var(--gold); font-weight:600; letter-spacing:.02em}
 .siloona-site .co-fromedit .co-recap{margin-bottom:10px}
 .siloona-site .co-fromedit-edit{margin:0 0 18px; font-size:13.5px}
-.siloona-site .co-fromedit-edit a{color:var(--violet); border-bottom:1px solid rgba(107,29,44,.3)}
+.siloona-site .co-fromedit-edit a{color:var(--violet); border-bottom:1px solid rgba(74,6,17,.3)}
 
 /* The design's own details, grouped as its editor groups them */
 .siloona-site .co-group{border:0; margin:0 0 22px; padding:0; min-width:0}
@@ -330,7 +330,7 @@
 .siloona-site .co-recap-g .co-recap{margin-bottom:8px}
 .siloona-site .co-sched-row{display:grid; grid-template-columns:auto 1fr 40px; gap:8px; align-items:center}
 .siloona-site .co-sched-row input{width:100%; font:inherit; font-size:16px; color:var(--ink); background:var(--co-paper); border:1px solid var(--line-2); border-radius:6px; padding:10px 10px; min-height:46px; -webkit-appearance:none; appearance:none; min-width:0}
-.siloona-site .co-sched-row input:focus{outline:none; border-color:var(--violet); box-shadow:0 0 0 3px rgba(107,29,44,.1)}
+.siloona-site .co-sched-row input:focus{outline:none; border-color:var(--violet); box-shadow:0 0 0 3px rgba(74,6,17,.1)}
 .siloona-site .co-sched-x{width:40px; height:40px; border:1px solid var(--line-2); border-radius:50%; background:transparent; color:var(--muted); font-size:20px; line-height:1; cursor:pointer}
 .siloona-site .co-sched-x:hover{color:var(--violet); border-color:var(--violet)}
 .siloona-site .co-sched-add{align-self:flex-start; margin-top:2px; padding:8px 0; border:0; background:none; color:var(--violet); font:inherit; font-size:13.5px; font-weight:500; cursor:pointer}
@@ -342,7 +342,7 @@
   background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);
   background-position:calc(100% - 13px) 52%,calc(100% - 9px) 52%; background-size:4px 4px; background-repeat:no-repeat;
 }
-.siloona-site .co-sel:focus{outline:none; border-color:var(--violet); box-shadow:0 0 0 3px rgba(107,29,44,.1)}
+.siloona-site .co-sel:focus{outline:none; border-color:var(--violet); box-shadow:0 0 0 3px rgba(74,6,17,.1)}
 .siloona-site .co-sel[aria-invalid=true]{border-color:var(--co-err)}
 
 /* Armenian calendar field (ArmenianDate.jsx) */
@@ -350,9 +350,9 @@
   width:100%; min-height:48px; font:inherit; font-size:16px; color:var(--ink); background:var(--co-paper,#FFFDF9);
   border:1px solid var(--line-2); border-radius:6px; padding:12px 14px;
 }
-.siloona-site .co-datebtn:focus{outline:none; border-color:var(--violet); box-shadow:0 0 0 3px rgba(107,29,44,.1)}
+.siloona-site .co-datebtn:focus{outline:none; border-color:var(--violet); box-shadow:0 0 0 3px rgba(74,6,17,.1)}
 .siloona-site .co-datebtn[aria-invalid=true]{border-color:var(--co-err)}
-.siloona-site .co-maplink{align-self:flex-start; font-size:13px; color:var(--violet); border-bottom:1px solid rgba(107,29,44,.3); margin-top:2px}
+.siloona-site .co-maplink{align-self:flex-start; font-size:13px; color:var(--violet); border-bottom:1px solid rgba(74,6,17,.3); margin-top:2px}
 
 /* guests' answers on the order page */
 .siloona-site .co-answers{margin:26px 0 6px; padding-top:22px; border-top:1px dashed var(--line-2); text-align:left}
@@ -380,7 +380,7 @@
 .siloona-site .mo-meta,.siloona-site .mo-ans{font-size:14px; color:var(--ink-2); margin:0}
 .siloona-site .mo-ans b{color:var(--violet)}
 .siloona-site .mo-link{margin:10px 0 4px; font-size:14px; overflow-wrap:anywhere}
-.siloona-site .mo-link a{color:var(--violet); border-bottom:1px solid rgba(107,29,44,.3)}
+.siloona-site .mo-link a{color:var(--violet); border-bottom:1px solid rgba(74,6,17,.3)}
 .siloona-site .mo-actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:14px}
 .siloona-site .mo-add{margin-top:30px; padding-top:20px; border-top:1px dashed var(--line-2); display:grid; gap:8px; font-size:14px; color:var(--ink-2)}
 .siloona-site .mo-add-row{display:flex; gap:8px}

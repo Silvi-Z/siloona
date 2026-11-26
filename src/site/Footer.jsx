@@ -46,7 +46,7 @@ export default function Footer() {
           <h5>{t.nav}</h5>
           <Link to={to('/invitations')}>{t.invitations}</Link>
           <Link to={to('/invitation-cards')}>{t.cards}</Link>
-          <Link to={to('/#prices')}>{t.prices}</Link>
+          <Link to={to('/prices')}>{t.prices}</Link>
           <Link to={to('/about')}>{t.about}</Link>
           <Link to={to('/my-orders')}>{t.orders}</Link>
           {CUSTOMER_DASHBOARD && (session ? <a href="/dashboard">{t.dashboard}</a> : <Link to={to('/login')}>{t.login}</Link>)}

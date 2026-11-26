@@ -9,6 +9,7 @@ import {
   getOrderStatus, goToProvider, isTestChoice, methodInfo, paymentChoices, optionInfo, orderLink, recallOrder, rememberOrder, startPayment,
 } from './checkoutApi'
 import './checkout.css'
+import { CUSTOMER_DASHBOARD } from '../features'
 
 // The customer's order page. Everything shown comes from the server
 // (/api/orders/status), which reads the payment state from the provider —
@@ -44,6 +45,9 @@ const TEXT = {
     keepLink: 'Պահպանեք այս էջի հղումը՝ պատվերի կարգավիճակը ցանկացած պահի տեսնելու համար։',
     onlyYou: ' Այն միայն Ձեզ համար է․ հյուրերին ուղարկեք հրավերի հղումը։',
     copyOrder: 'Պատճենել պատվերի հղումը', refresh: 'Թարմացնել', home: 'Գլխավոր էջ', custom: 'Անհատական դիզայն',
+    manageEyebrow: 'Անձնական հրավերներ', manageTitle: 'Ուղարկեք յուրաքանչյուր հյուրին իր հրավերը',
+    manageText: 'Ձեր վահանակում ավելացրեք հյուրերին․ յուրաքանչյուրը կստանա իր անունով հրավեր, իսկ Դուք կտեսնեք, թե ով է բացել և ինչ է պատասխանել։',
+    manageBtn: 'Բացել վահանակը', linkedText: 'Պատվերը կապված է Ձեր վահանակի հետ․ հյուրերի նոր պատասխանները այնտեղ են։',
   },
   ru: {
     invitation: 'Приглашение', linkLabel: 'Ссылка на приглашение', yourInvitation: 'Ваше приглашение', sendLink: 'Отправьте эту ссылку гостям',
@@ -74,6 +78,9 @@ const TEXT = {
     keepLink: 'Сохраните ссылку на эту страницу, чтобы в любой момент видеть статус заказа.',
     onlyYou: ' Она только для Вас — гостям отправляйте ссылку на приглашение.',
     copyOrder: 'Копировать ссылку на заказ', refresh: 'Обновить', home: 'На главную', custom: 'Индивидуальный дизайн',
+    manageEyebrow: 'Личные приглашения', manageTitle: 'Отправьте каждому гостю его приглашение',
+    manageText: 'Добавьте гостей в личном кабинете: каждый получит приглашение со своим именем, а Вы увидите, кто открыл его и что ответил.',
+    manageBtn: 'Открыть кабинет', linkedText: 'Заказ связан с Вашим кабинетом — новые ответы гостей теперь там.',
   },
   en: {
     invitation: 'Invitation', linkLabel: 'Invitation link', yourInvitation: 'Your invitation', sendLink: 'Send this link to your guests',
@@ -104,6 +111,9 @@ const TEXT = {
     keepLink: 'Keep the link to this page to check your order status at any time.',
     onlyYou: ' It’s for you only — send your guests the invitation link.',
     copyOrder: 'Copy order link', refresh: 'Refresh', home: 'Home page', custom: 'Custom design',
+    manageEyebrow: 'Personal invitations', manageTitle: 'Send each guest their own invitation',
+    manageText: 'Add your guests in your dashboard: each one gets an invitation with their name, and you see who opened it and what they answered.',
+    manageBtn: 'Open your dashboard', linkedText: 'This order is linked to your dashboard — new answers from guests are there now.',
   },
 }
 
@@ -141,6 +151,23 @@ ${url}`)}`} target="_blank" rel="noopener noreferrer">WhatsApp</a>
         <a className="btn btn-ghost" href={url} target="_blank" rel="noopener noreferrer">{t.openInvitation}</a>
       </div>
       <p className="co-share-note">{t.shareNote}</p>
+    </section>
+  )
+}
+
+// Paid: bring the order into the customer's dashboard (guest list,
+// personal links, answers) — /dashboard?claim=… links it once they sign in.
+function ManageGuests({ id, token, linked }) {
+  const t = useText(TEXT)
+  const href = linked ? '/dashboard' : `/dashboard?claim=${encodeURIComponent(id)}&t=${encodeURIComponent(token)}`
+  return (
+    <section className="co-share" aria-label={t.manageEyebrow}>
+      <p className="eyebrow">{t.manageEyebrow}</p>
+      <h2>{t.manageTitle}</h2>
+      <p className="co-share-note" style={{ marginTop: 0 }}>{linked ? t.linkedText : t.manageText}</p>
+      <div className="co-share-btns">
+        <a className="btn btn-primary" href={href}>{t.manageBtn}</a>
+      </div>
     </section>
   )
 }
@@ -344,6 +371,7 @@ export default function CheckoutResult() {
           )}
 
           {data.invitationCode && design?.previewSlug && <ShareInvitation code={data.invitationCode} />}
+          {CUSTOMER_DASHBOARD && data.invitationCode && design?.previewSlug && <ManageGuests id={id} token={token} linked={data.linked} />}
           {data.invitationCode && design?.previewSlug && <GuestAnswers rsvps={data.rsvps || []} orderNumber={data.orderNumber} />}
 
           <dl className="co-details">

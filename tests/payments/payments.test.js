@@ -584,7 +584,18 @@ test('photo uploads: real images only, size-limited, served back', async () => {
 // Dashboard events: guests' links, replies, limits, notifications
 // ---------------------------------------------------------------------------
 
-async function addEvent(id, { status = 'published', rsvp = true } = {}) {
+// A paid order (customer USERS.customer, secret link token 'tok-<tag>'),
+// optionally linked to an event the way the dashboard links it.
+async function paidOrder(tag, { eventId = null, design = 'wd-cherry', payment = 'paid', orderStatus = 'new' } = {}) {
+  const { rows: [o] } = await store.db.query(
+    `insert into orders (access_token, customer_name, customer_phone, design_id, design_option, customization, amount, payment_status, order_status, event_id)
+     values ($1, 'Աննա Պետրոսյան', '+37499000000', $2, 'diy', $3::jsonb, 15000, $4, $5, $6) returning id, order_number`,
+    ['tok-' + tag, design, JSON.stringify({ names: 'Աննա & Արամ', eventDate: '2027-09-18', eventTime: '16:00', venue: 'Երևան', content: { hero: { line: 'մեր օրը' } } }), payment, orderStatus, eventId])
+  return { id: o.id, token: 'tok-' + tag, number: Number(o.order_number) }
+}
+
+// A dashboard event; by default with a paid order linked, as only those open.
+async function addEvent(id, { status = 'published', rsvp = true, paid = true } = {}) {
   const data = {
     inv: { slug: `event-${id}`, status, design: 'wd-cherry', rsvp, personalize: true, greeting: 'Սիրով, {name}', message: 'Հրավիրում ենք', deadline: '2027-08-01T00:00:00.000Z', designContent: { 'wd-cherry': { hero: { kicker: 'Մեր օրը' } } } },
     person1: { first: 'Աննա', last: 'Պետրոսյան', phone: '+37499000001' },
@@ -595,6 +606,7 @@ async function addEvent(id, { status = 'published', rsvp = true } = {}) {
     guests: [{ id: 'g1', first: 'Լուսինե', last: 'Հակոբյան', phone: '+37491111111', notes: 'մասնավոր', inviteToken: 'AbCdEfGhJk23mnPq', rsvp: 'pending' }],
   }
   await store.db.query(`insert into events (id, owner_id, owner_mode, type, title, event_date, data) values ($1, $2, 'org', 'wedding', 'Հարսանիք', '2027-09-18', $3::jsonb)`, [id, USERS.customer.id, JSON.stringify(data)])
+  if (paid) await paidOrder('ev-' + id, { eventId: id })
   return data
 }
 
@@ -641,6 +653,79 @@ test('guest links: RSVP is stored as a reply, companions capped by the event', a
   assert.equal((await call('POST', '/api/invitations', { body: { slug: 'event-E3', name: 'Աննա Ա', status: 'maybe' } })).status, 422)
   await addEvent('E4', { rsvp: false })
   assert.equal((await call('POST', '/api/invitations', { body: { slug: 'event-E4', name: 'Աննա Ա', status: 'confirmed' } })).status, 409)
+})
+
+test('guest links open only for an event with a paid order linked', async () => {
+  // published in the dashboard, but never paid for
+  await addEvent('F1', { paid: false })
+  assert.equal((await call('GET', '/api/invitations?code=event-F1&t=AbCdEfGhJk23mnPq')).status, 410)
+  assert.equal((await call('POST', '/api/invitations', { body: { slug: 'event-F1', name: 'Աննա Ա', status: 'confirmed' } })).status, 410)
+  // the order is cancelled / refunded later: the links close
+  await addEvent('F2', { paid: false })
+  const o = await paidOrder('F2', { eventId: 'F2', orderStatus: 'cancelled' })
+  assert.equal((await call('GET', '/api/invitations?code=event-F2')).status, 410)
+  await store.db.query("update orders set order_status = 'new', payment_status = 'refunded' where id = $1", [o.id])
+  assert.equal((await call('GET', '/api/invitations?code=event-F2')).status, 410)
+  await store.db.query("update orders set payment_status = 'paid' where id = $1", [o.id])
+  assert.equal((await call('GET', '/api/invitations?code=event-F2')).status, 200)
+  // the design shown is the one paid for, whatever the event says
+  await addEvent('F3', { paid: false })
+  await paidOrder('F3', { eventId: 'F3', design: 'wd-portrait' })
+  assert.equal((await call('GET', '/api/invitations?code=event-F3')).json.designId, 'wd-portrait')
+})
+
+test('claiming a paid order into the dashboard', async () => {
+  const claim = (body, token = USERS.customer.token) => call('POST', '/api/orders/status', { body: { action: 'claim', ...body }, token })
+  const o = await paidOrder('C1')
+  await store.db.query("insert into invitations (code, order_id, design_id) values ('c1c1c1c1c1c1', $1, 'wd-cherry')", [o.id])
+  await addEvent('G1', { paid: false })
+
+  // signed in, with the order's secret link
+  assert.equal((await claim({ id: o.id, t: o.token }, null)).status, 401)
+  assert.equal((await claim({ id: o.id, t: 'wrong' })).status, 404)
+  const info = await claim({ id: o.id, t: o.token })
+  assert.equal(info.status, 200, info.text)
+  assert.equal(info.json.linked, false)
+  assert.equal(info.json.designId, 'wd-cherry')
+  assert.equal(info.json.customization.names, 'Աննա & Արամ')
+  assert.equal(info.json.content.hero.line, 'մեր օրը')
+  assert.equal(JSON.stringify(info.json).includes('+37499000000'), false)
+
+  // only into one's own event
+  await store.db.query("insert into events (id, owner_id, owner_mode, type, title, data) values ('G2', $1, 'org', 'wedding', 'x', '{}')", [USERS.admin.id])
+  assert.equal((await claim({ id: o.id, t: o.token, eventId: 'G2' })).status, 404)
+  assert.equal((await claim({ id: o.id, t: o.token, eventId: 'nope' })).status, 404)
+
+  // before linking, the order's link shows the order; the event is closed
+  assert.equal((await call('GET', '/api/invitations?code=c1c1c1c1c1c1')).json.kind, 'order')
+  assert.equal((await call('GET', '/api/invitations?code=event-G1')).status, 410)
+
+  const linked = await claim({ id: o.id, t: o.token, eventId: 'G1' })
+  assert.equal(linked.status, 200, linked.text)
+  assert.deepEqual([linked.json.linked, linked.json.eventId], [true, 'G1'])
+  const row = (await store.db.query('select event_id, owner_id from orders where id = $1', [o.id])).rows[0]
+  assert.deepEqual([row.event_id, row.owner_id], ['G1', USERS.customer.id])
+  // again: the same answer; the order page knows
+  assert.deepEqual((await claim({ id: o.id, t: o.token })).json, { linked: true, eventId: 'G1', orderNumber: o.number })
+  assert.equal((await status({ orderId: o.id, token: o.token })).json.linked, true)
+
+  // now the event opens, and the order's own link shows the event's version
+  assert.equal((await call('GET', '/api/invitations?code=event-G1')).status, 200)
+  const page = await call('GET', '/api/invitations?code=c1c1c1c1c1c1')
+  assert.equal(page.json.kind, 'event')
+  assert.equal(page.json.event.person1.first, 'Աննա')
+  // and an RSVP through it reaches the dashboard's replies
+  assert.equal((await call('POST', '/api/invitations', { body: { slug: 'c1c1c1c1c1c1', name: 'Կարեն Մուրադյան', status: 'confirmed' } })).status, 201)
+  assert.deepEqual((await store.replies('G1')).filter((x) => x.kind === 'rsvp').map((x) => x.guest_name), ['Կարեն Մուրադյան'])
+
+  // another account can't take it; another order can't take the event
+  assert.equal((await claim({ id: o.id, t: o.token }, USERS.admin.token)).status, 409)
+  const o2 = await paidOrder('C2')
+  assert.equal((await claim({ id: o2.id, t: o2.token, eventId: 'G1' })).status, 409)
+
+  // unpaid orders can't be claimed
+  const o3 = await paidOrder('C3', { payment: 'unpaid' })
+  assert.equal((await claim({ id: o3.id, t: o3.token })).status, 409)
 })
 
 test('with event links off, a published dashboard event is not public', async () => {

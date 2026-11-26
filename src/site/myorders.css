@@ -1,0 +1,62 @@
+/* =========================================================
+   My orders (pages/MyOrders.jsx). Same build as the prices and
+   about pages: the title on a burgundy band, the orders as
+   panels across its lower edge, each with its design's picture.
+   Uses the home page's tokens and classes (home.css, .hm …).
+   ========================================================= */
+.hm.mor{--pt:clamp(40px,5vw,76px); --overlap:clamp(70px,7vw,110px); --gap:clamp(28px,3.4vw,48px)}
+
+.mor-top-sec{position:relative; isolation:isolate; padding-top:var(--pt); padding-bottom:clamp(64px,7vw,112px)}
+.mor-band{position:relative; margin-bottom:var(--gap)}
+.mor-band::before{content:""; position:absolute; z-index:-1; left:-100vw; right:-100vw; top:calc(var(--pt) * -1); bottom:calc((var(--overlap) + var(--gap)) * -1); background:var(--burgundy)}
+.mor .mor-band .hm-eyebrow{color:var(--champagne)}
+.mor .mor-band .hm-h2{color:var(--ivory); font-size:clamp(34px,4.4vw,60px)}
+
+/* panels */
+.mor-panel{background:var(--paper); border:1px solid var(--line); padding:clamp(20px,2.4vw,32px)}
+.mor-note{color:var(--ink-soft); border-top:3px solid var(--burgundy)}
+.mor-note a{color:var(--burgundy); border-bottom:1px solid currentColor}
+.mor-alert{margin-top:16px!important}
+
+/* the orders: two per row on wide screens */
+.mor-list{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:clamp(12px,1.6vw,22px)}
+.mor-card{display:grid; grid-template-columns:clamp(96px,10vw,132px) minmax(0,1fr); gap:clamp(18px,2vw,28px); padding:clamp(20px,2.2vw,30px); background:var(--paper); border:1px solid var(--line); border-top:3px solid var(--burgundy)}
+.mor-thumb{align-self:start; aspect-ratio:3/4; overflow:hidden; background:var(--ivory); border:1px solid var(--line); display:grid; place-items:center}
+.mor-thumb img{width:100%; height:100%; object-fit:cover; object-position:top center; display:block}
+.mor-thumb span{font-family:var(--serif); font-style:italic; font-size:28px; color:var(--burgundy)}
+.mor-body{min-width:0; display:flex; flex-direction:column}
+.mor-top{display:flex; justify-content:space-between; align-items:center; gap:10px}
+.mor-num{font-family:var(--serif); font-style:italic; font-size:17px; color:var(--burgundy)}
+.mor-st{padding:4px 10px; font-size:12px; letter-spacing:.04em; font-weight:400; background:rgba(25,23,22,.06); color:var(--ink-soft); white-space:nowrap}
+.mor-st.tone-ok{background:rgba(85,101,74,.14); color:#3F4F33}
+.mor-st.tone-wait{background:rgba(176,137,63,.16); color:#6E5016}
+.mor-st.tone-bad{background:rgba(74,6,17,.1); color:var(--burgundy)}
+.mor-name{margin-top:10px; font-family:var(--serif); font-weight:300; font-size:clamp(21px,2vw,26px); line-height:1.25; overflow-wrap:anywhere}
+.mor-meta{margin-top:6px!important; font-size:15px; color:var(--ink-soft)}
+.mor-meta b{font-family:var(--serif); font-weight:400; font-size:18px; color:var(--burgundy)}
+.mor-link{margin-top:14px!important; padding-top:14px; border-top:1px solid var(--line); font-size:14px; overflow-wrap:anywhere}
+.mor-link a{color:var(--burgundy); border-bottom:1px solid rgba(74,6,17,.3)}
+.mor-ans{margin-top:6px!important; font-size:14.5px; color:var(--ink-soft)}
+.mor-ans b{font-family:var(--serif); font-weight:400; font-size:17px; color:var(--burgundy)}
+.mor-actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:auto; padding-top:20px}
+.mor-actions .hm-btn{flex:1 1 auto; justify-content:center; padding:12px 18px; font-size:13.5px}
+.mor button.hm-btn-line{background:transparent; color:var(--ink); cursor:pointer; font-family:inherit}
+.mor button.hm-btn-line:hover{background:var(--ink); color:var(--ivory)}
+
+/* adding an order from another device */
+.mor-add{display:grid; gap:12px; margin-top:clamp(24px,3vw,40px); font-size:15px; color:var(--ink-soft)}
+.mor-add-row{display:flex; gap:10px}
+.mor-add input{flex:1; min-width:0; font:inherit; font-size:16px; padding:12px 14px; border:1px solid var(--line); background:var(--ivory); color:var(--ink); border-radius:0}
+.mor-add input:focus{outline:none; border-color:var(--burgundy); box-shadow:0 0 0 3px rgba(74,6,17,.1)}
+.mor-add .hm-btn{padding:12px 22px}
+
+@media (max-width:900px){
+  .mor-list{grid-template-columns:1fr}
+  .hm.mor{--overlap:56px}
+}
+@media (max-width:520px){
+  .mor-card{grid-template-columns:84px minmax(0,1fr); gap:16px}
+  .mor-actions{flex-direction:column; align-items:stretch}
+  .mor-actions .hm-btn{width:100%; padding-block:15px}
+  .mor-add-row{flex-direction:column}
+}

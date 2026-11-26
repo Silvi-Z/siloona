@@ -1,5 +1,7 @@
 import { createHash } from 'node:crypto'
 import { HttpError } from './http.js'
+import { seatingPlan, seatingView } from './seating.js'
+import { eventIdForInvitationCode, liveOrderForEvent } from './orderEvents.js'
 
 // Guests' links to a dashboard event's invitation:
 //   siloona.am/i/<event slug>             the general link
@@ -32,6 +34,7 @@ export const LIMITS = {
   upload: [3600, 40], // photos, per hour
   rsvp: [600, 20], // RSVP answers, per 10 minutes
   open: [600, 120], // invitation page loads, per 10 minutes
+  seat: [600, 60], // «Ձեր սեղանը» name lookups, per 10 minutes (guests on the venue Wi-Fi share one address)
 }
 
 // RATE_LIMITS=off turns it off (the local test suite and demo, which make
@@ -47,18 +50,34 @@ export async function rateLimit(store, req, scope) {
 // The public invitation of a dashboard event
 // ---------------------------------------------------------------------------
 
-// Dashboard events are not offered yet (src/site/features.js), and anyone
-// could otherwise publish one without an order. EVENT_LINKS=on turns them on.
+// EVENT_LINKS=on turns dashboard events' links on (off = every event link
+// is "not found", a kill switch). Even then an event opens only when a
+// paid order is linked to it (orderEvents.js) — publishing in the
+// dashboard alone is not enough, since the browser can write its own
+// event. `slug` is the event's id / link slug, or the 12-character code
+// of a purchased invitation whose order was linked to an event.
 const eventLinksEnabled = () => process.env.EVENT_LINKS === 'on'
+const ORDER_CODE = /^[0-9a-f]{12}$/
 
-async function loadPublished(store, slug) {
+export async function loadPublished(store, slug) {
   if (!eventLinksEnabled() || !SLUG.test(slug || '')) throw notFound()
-  const row = await store.getEventBySlug(slug)
+  const id = (ORDER_CODE.test(slug) && await eventIdForInvitationCode(store, slug)) || slug
+  const row = await store.getEventBySlug(id)
   if (!row) throw notFound()
-  if (row.data?.inv?.status !== 'published') {
+  const order = await liveOrderForEvent(store, row.id)
+  if (!order || row.data?.inv?.status !== 'published') {
     throw new HttpError(410, 'not_published', 'Հրավերը դեռ հրապարակված չէ կամ այլևս հասանելի չէ։')
   }
-  return row
+  return { ...row, order }
+}
+
+// «Ձեր սեղանը» for an event: its own list, or the one imported for the
+// purchased invitation of its order.
+export async function seatingPlanForEvent(store, row) {
+  const own = await seatingPlan(store, { event_id: row.id })
+  if (own || !row.order) return own
+  const inv = await store.getInvitationByOrder(row.order.id)
+  return inv ? seatingPlan(store, { invitation_id: inv.id }) : null
 }
 
 function findGuest(row, token) {
@@ -80,7 +99,8 @@ export async function publicEventInvitation(store, slug, token) {
   try { await store.insertReply({ event_id: row.id, guest_token: guest ? token : null, kind: 'open' }) } catch (e) { console.error('[invitations] open not logged:', e.message) }
   return {
     kind: 'event',
-    designId: inv.design || null,
+    // always the design that was paid for
+    designId: row.order.design_id,
     // the user's edits per design (keyed by the design's page slug)
     designContent: inv.designContent || {},
     event: {
@@ -98,6 +118,7 @@ export async function publicEventInvitation(store, slug, token) {
       inv: pick(inv, ['deadline', 'personalize', 'greeting', 'message', 'rsvp']),
     },
     guest: guest ? { first: guest.first || '', last: guest.last || '', companions: guest.companions || 0 } : null,
+    seating: seatingView(await seatingPlanForEvent(store, row)),
   }
 }
 

@@ -10,6 +10,8 @@ import ceToastThumb from './invitations/ce-toast/assets/catalog-thumb.webp'
 import ceHollyThumb from './invitations/ce-holly/assets/catalog-thumb.webp'
 import ceGroovyThumb from './invitations/ce-groovy/assets/catalog-thumb.webp'
 import ceJingleThumb from './invitations/ce-jingle/assets/catalog-thumb.webp'
+import ceSparkleThumb from './invitations/ce-sparkle/assets/catalog-thumb.webp'
+import ceCozyThumb from './invitations/ce-cozy/assets/catalog-thumb.webp'
 import bpBlueThumb from './invitations/bp-blue/assets/catalog-thumb.webp'
 import wdGreenThumb from './invitations/wd-green/assets/catalog-thumb.webp'
 import wdGardenThumb from './invitations/wd-garden/assets/catalog-thumb.webp'
@@ -18,6 +20,8 @@ import wdRougeThumb from './invitations/wd-rouge/assets/catalog-thumb.webp'
 import wdCherryThumb from './invitations/wd-cherry/assets/catalog-thumb.webp'
 import wdChateauThumb from './invitations/wd-chateau/assets/catalog-thumb.webp'
 import wdPortraitThumb from './invitations/wd-portrait/assets/catalog-thumb.webp'
+import wdNoirThumb from './invitations/wd-noir/assets/catalog-thumb.webp'
+import wdNoirLiteThumb from './invitations/wd-noir-lite/assets/catalog-thumb.webp'
 import wdVelvetThumb from './invitations/wd-velvet/assets/catalog-thumb.webp'
 import wdLineThumb from './invitations/wd-line/assets/catalog-thumb.webp'
 import wdCallaThumb from './invitations/wd-calla/assets/catalog-thumb.webp'
@@ -204,6 +208,32 @@ export const WEB_DESIGNS = [
     previewSlug: 'wd-chateau',
     previewRoute: '/invitations/preview/wd-chateau',
     image: wdChateauThumb,
+  },
+  {
+    id: 'wd-noir',
+    kind: 'web',
+    title: 'Ալեն & Միլենա',
+    code: 'WEB-WED-17',
+    type: 'Հարսանիք',
+    category: 'wedding',
+    eventTypes: ['wedding'],
+    available: true,
+    previewSlug: 'wd-noir',
+    previewRoute: '/invitations/preview/wd-noir',
+    image: wdNoirThumb,
+  },
+  {
+    id: 'wd-noir-lite',
+    kind: 'web',
+    title: 'Էդգար & Ալիսա',
+    code: 'WEB-WED-18',
+    type: 'Հարսանիք',
+    category: 'wedding',
+    eventTypes: ['wedding'],
+    available: true,
+    previewSlug: 'wd-noir-lite',
+    previewRoute: '/invitations/preview/wd-noir-lite',
+    image: wdNoirLiteThumb,
   },
   {
     id: 'bd-animals',
@@ -430,6 +460,32 @@ export const WEB_DESIGNS = [
     previewSlug: 'ce-jingle',
     previewRoute: '/invitations/preview/ce-jingle',
     image: ceJingleThumb,
+  },
+  {
+    id: 'ce-sparkle',
+    kind: 'web',
+    title: 'Կայծերի երեկո',
+    code: 'WEB-CORP-09',
+    type: 'Կորպորատիվ միջոցառում',
+    category: 'corporate',
+    eventTypes: ['corporate', 'other'],
+    available: true,
+    previewSlug: 'ce-sparkle',
+    previewRoute: '/invitations/preview/ce-sparkle',
+    image: ceSparkleThumb,
+  },
+  {
+    id: 'ce-cozy',
+    kind: 'web',
+    title: 'Ձմեռային տոն',
+    code: 'WEB-CORP-10',
+    type: 'Կորպորատիվ միջոցառում',
+    category: 'corporate',
+    eventTypes: ['corporate', 'other'],
+    available: true,
+    previewSlug: 'ce-cozy',
+    previewRoute: '/invitations/preview/ce-cozy',
+    image: ceCozyThumb,
   },
   {
     id: 'bp-blue',

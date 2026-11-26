@@ -5,8 +5,11 @@ import { designTitle } from '../designI18n'
 import { CUSTOM_DESIGN_ID, CUSTOM_DESIGN_LABEL } from '../customRequest'
 import { formatPrice } from '../pricing'
 import { useLang, useText } from '../i18n'
+import { Arrow } from './Home'
 import { getOrderStatus, listOrders, orderLink, rememberOrder } from '../checkout/checkoutApi'
 import '../checkout/checkout.css'
+import '../home.css'
+import '../myorders.css'
 
 // «Իմ պատվերները» — the orders placed (or opened by their link) on this
 // device. Checkout needs no account, so the order link is the customer's
@@ -79,26 +82,32 @@ function OrderCard({ o }) {
   const people = coming.reduce((n, r) => n + 1 + (r.plus || 0), 0)
   const [copied, setCopied] = useState(false)
   return (
-    <li className="mo-card">
-      <div className="mo-top">
-        <span className="mo-num">№ {d.orderNumber}</span>
-        <span className={`mo-st tone-${tone}`}>{label}</span>
+    <li className="mor-card">
+      {/* the ordered design, so the order is recognised at a glance */}
+      <div className="mor-thumb" aria-hidden="true">
+        {design?.image ? <img src={design.image} alt="" loading="lazy" decoding="async" /> : <span>{design?.code?.split('-').pop() || '✦'}</span>}
       </div>
-      <h2 className="mo-name">{name}</h2>
-      <p className="mo-meta">{formatPrice(d.amount, lang)} · {new Date(d.createdAt).toLocaleDateString(t.locale)}</p>
-      {link && (
-        <>
-          <p className="mo-link"><a href={link} target="_blank" rel="noopener noreferrer">{link.replace(/^https?:\/\//, '')}</a></p>
-          <p className="mo-ans">{d.rsvps?.length ? t.answers(d.rsvps.length, people) : t.noAnswers}</p>
-        </>
-      )}
-      <div className="mo-actions">
-        <Link className="btn btn-primary" to={to(orderLink(o.orderId, o.token))}>{t.open}</Link>
+      <div className="mor-body">
+        <div className="mor-top">
+          <span className="mor-num">№ {d.orderNumber}</span>
+          <span className={`mor-st tone-${tone}`}>{label}</span>
+        </div>
+        <h2 className="mor-name">{name}</h2>
+        <p className="mor-meta"><b>{formatPrice(d.amount, lang)}</b> · {new Date(d.createdAt).toLocaleDateString(t.locale)}</p>
         {link && (
-          <button type="button" className="btn btn-ghost" onClick={() => navigator.clipboard?.writeText(link).then(() => { setCopied(true); setTimeout(() => setCopied(false), 1800) })}>
-            {copied ? t.copied : t.copyLink}
-          </button>
+          <>
+            <p className="mor-link"><a href={link} target="_blank" rel="noopener noreferrer">{link.replace(/^https?:\/\//, '')}</a></p>
+            <p className="mor-ans">{d.rsvps?.length ? t.answers(d.rsvps.length, people) : t.noAnswers}</p>
+          </>
         )}
+        <div className="mor-actions">
+          <Link className="hm-btn hm-btn-solid" to={to(orderLink(o.orderId, o.token))}>{t.open} <Arrow /></Link>
+          {link && (
+            <button type="button" className="hm-btn hm-btn-line" onClick={() => navigator.clipboard?.writeText(link).then(() => { setCopied(true); setTimeout(() => setCopied(false), 1800) })}>
+              {copied ? t.copied : t.copyLink}
+            </button>
+          )}
+        </div>
       </div>
     </li>
   )
@@ -134,30 +143,36 @@ export default function MyOrders() {
 
   const shown = (orders || []).filter((o) => o.data)
   return (
-    <main className="co mo">
-      <div className="wrap">
-        <p className="eyebrow">Siloona</p>
-        <h1 className="co-title">{t.title}</h1>
-        {orders === null ? (
-          <p className="co-note">{t.loading}</p>
-        ) : shown.length ? (
-          <ul className="mo-list">{shown.map((o) => <OrderCard key={o.orderId} o={o} />)}</ul>
-        ) : (
-          <div className="co-note">
-            {t.empty} <Link to={to('/invitations')}>{t.choose}</Link>
+    <main className="hm mor">
+      <section className="mor-top-sec" aria-labelledby="mor-h">
+        <div className="hm-wrap">
+          {/* the burgundy band hangs from this wrapper (as on the prices page) */}
+          <div className="mor-band">
+            <p className="hm-eyebrow">Siloona</p>
+            <h1 className="hm-h2" id="mor-h">{t.title}</h1>
           </div>
-        )}
-        {orders?.some((o) => o.error === 'error') && <p className="co-alert">{t.loadErr}</p>}
 
-        <form className="mo-add" onSubmit={add}>
-          <label htmlFor="mo-paste">{t.pasteLabel}</label>
-          <div className="mo-add-row">
-            <input id="mo-paste" value={paste} onChange={(e) => { setPaste(e.target.value); setPasteErr('') }} placeholder="https://…/checkout/result?order=…" />
-            <button type="submit" className="btn btn-ghost">{t.add}</button>
-          </div>
-          {pasteErr && <p className="co-err">{pasteErr}</p>}
-        </form>
-      </div>
+          {orders === null ? (
+            <p className="mor-panel mor-note">{t.loading}</p>
+          ) : shown.length ? (
+            <ul className="mor-list">{shown.map((o) => <OrderCard key={o.orderId} o={o} />)}</ul>
+          ) : (
+            <div className="mor-panel mor-note">
+              {t.empty} <Link to={to('/invitations')}>{t.choose}</Link>
+            </div>
+          )}
+          {orders?.some((o) => o.error === 'error') && <p className="co-alert mor-alert">{t.loadErr}</p>}
+
+          <form className="mor-panel mor-add" onSubmit={add}>
+            <label htmlFor="mo-paste">{t.pasteLabel}</label>
+            <div className="mor-add-row">
+              <input id="mo-paste" value={paste} onChange={(e) => { setPaste(e.target.value); setPasteErr('') }} placeholder="https://…/checkout/result?order=…" />
+              <button type="submit" className="hm-btn hm-btn-line">{t.add}</button>
+            </div>
+            {pasteErr && <p className="co-err">{pasteErr}</p>}
+          </form>
+        </div>
+      </section>
     </main>
   )
 }

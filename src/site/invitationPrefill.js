@@ -31,6 +31,26 @@ const VOWEL_END = /[աեէիոօ]$|ու$/;
 const withArticle = (n) => n && `${n}${VOWEL_END.test(n) ? 'ն' : 'ը'}`;
 const genitive = (n) => n && (n.endsWith('ա') ? `${n}յի` : `${n}ի`);
 
+// wd-noir and wd-noir-lite. The day's places in order: a location's kind
+// names it; without one the places line up with the last of the demo's
+// (a church and a hall → «Պսակադրություն», «Հարսանյաց երեկո»). Fields the
+// event leaves empty stay empty — never the demo's addresses.
+const NOIR_KIND = { 'Եկեղեցի': 'Պսակադրություն', 'Ռեստորան': 'Հարսանյաց երեկո', 'Սրահ': 'Հարսանյաց երեկո', 'Բացօթյա վայր': 'Հարսանյաց երեկո', 'Հարսի տուն': 'Հարսի տուն', 'Փեսայի տուն': 'Փեսայի տուն' };
+function noirPrefill(ev, defaults) {
+  const locs = (ev.locations || []).slice(0, 6);
+  const tail = defaults.slice(Math.max(0, defaults.length - locs.length));
+  return {
+    // Groom first, as on the cover (person1 is the bride).
+    couple: { first: ev.person2?.first?.trim(), second: ev.person1?.first?.trim() },
+    eventDate: eventDateTime(ev),
+    places: locs.length ? locs.map((l, i) => ({
+      label: NOIR_KIND[l.kind] || tail[i]?.label || defaults[defaults.length - 1].label,
+      time: l.time || '', name: l.name || '', address: l.address || '',
+    })) : undefined,
+    schedule: ev.schedule?.length ? [...ev.schedule].sort((a, b) => (a.time || '').localeCompare(b.time || '')).map(x => ({ time: x.time, label: x.title })) : undefined,
+  };
+}
+
 function venue(ev) {
   const l = ev.locations?.[0];
   return l ? { name: l.name, address: l.address } : {};
@@ -190,6 +210,8 @@ export const PREFILL = {
       schedule: ev.schedule?.length ? [...ev.schedule].sort((a, b) => (a.time || '').localeCompare(b.time || '')).map(x => ({ time: x.time, label: x.title })) : undefined,
     };
   },
+  'wd-noir': (ev) => noirPrefill(ev, INVITATION_DEFAULTS['wd-noir'].places),
+  'wd-noir-lite': (ev) => noirPrefill(ev, INVITATION_DEFAULTS['wd-noir-lite'].places),
   'wd-portrait': (ev) => {
     // Two places: [0] the ceremony, [1] the celebration.
     const places = (ev.locations || []).slice(0, 2).map((l) => compact({ time: l.time, name: l.name, address: l.address }));
@@ -375,6 +397,18 @@ export const PREFILL = {
       schedule: ev.schedule?.length ? [...ev.schedule].sort((x, y) => (x.time || '').localeCompare(y.time || '')).map(x => ({ time: x.time, label: x.title })) : undefined,
     };
   },
+  'ce-sparkle': (ev) => ({
+    company: ev.company?.trim() || ev.title?.trim(),
+    eventDate: eventDateTime(ev),
+    venue: venue(ev),
+    schedule: ev.schedule?.length ? [...ev.schedule].sort((x, y) => (x.time || '').localeCompare(y.time || '')).map(x => ({ time: x.time, label: x.title })) : undefined,
+  }),
+  'ce-cozy': (ev) => ({
+    company: ev.company?.trim() || ev.title?.trim(),
+    eventDate: eventDateTime(ev),
+    venue: venue(ev),
+    schedule: ev.schedule?.length ? [...ev.schedule].sort((x, y) => (x.time || '').localeCompare(y.time || '')).map(x => ({ time: x.time, label: x.title })) : undefined,
+  }),
   'ce-toast': (ev) => ({
     company: ev.company?.trim(),
     eventDate: eventDateTime(ev),

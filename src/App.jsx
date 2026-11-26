@@ -7,13 +7,18 @@ import Home from './site/pages/Home'
 import Invitations from './site/pages/Invitations'
 import InvitationCards from './site/pages/InvitationCards'
 import About from './site/pages/About'
-import Login from './site/pages/Login'
+import Prices from './site/pages/Prices'
 import Legal from './site/pages/Legal'
 import { CUSTOMER_DASHBOARD } from './site/features'
 
 // Lazy-loaded: each invitation design can be its own heavy, self-styled
 // bundle (fonts, animation, generated SVG). Without this, visiting any
 // ordinary site page would download every invitation's JS/CSS up front.
+function ToDashboard() {
+  useLayoutEffect(() => { window.location.replace('/dashboard') }, [])
+  return null
+}
+
 const InvitationPreview = lazy(() => import('./site/pages/InvitationPreview'))
 const Checkout = lazy(() => import('./site/checkout/Checkout'))
 const CheckoutResult = lazy(() => import('./site/checkout/CheckoutResult'))
@@ -57,11 +62,13 @@ const SITE_PAGES = [
   ['/', <Home />],
   ['/invitations', <Invitations />],
   ['/invitation-cards', <InvitationCards />],
+  ['/prices', <Prices />],
   ['/about', <About />],
   ['/terms', <Legal doc="terms" />],
   ['/privacy', <Legal doc="privacy" />],
   ['/refund', <Legal doc="refund" />],
-  ['/login', CUSTOMER_DASHBOARD ? <Login /> : <Navigate to="/" replace />],
+  // sign-in and sign-up live in the dashboard itself (a page of its own)
+  ['/login', CUSTOMER_DASHBOARD ? <ToDashboard /> : <Navigate to="/" replace />],
   ['/my-orders', <Suspense fallback={null}><MyOrders /></Suspense>],
   ['/checkout/result', <Suspense fallback={null}><CheckoutResult /></Suspense>],
   ['/checkout/:designId', <Suspense fallback={null}><Checkout /></Suspense>],
