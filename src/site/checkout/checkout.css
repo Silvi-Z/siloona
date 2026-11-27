@@ -460,3 +460,28 @@
 .siloona-site .co-preview-screen{width:auto; height:auto}
 /* checkout summary: the invitation as it is being filled in (InvitationLive.jsx) */
 .siloona-site .co-sum-thumb .inv-live{border-radius:10px; box-shadow:0 10px 24px -14px rgba(33,20,40,.45)}
+
+/* The couple's own data for add-ons on the order page (CoupleSetup.jsx) */
+.siloona-site .co-setup{text-align:left}
+.siloona-site .co-setup .eyebrow,.siloona-site .co-setup h2,.siloona-site .co-setup > .co-share-note{text-align:center}
+.siloona-site .co-setup-state{margin:0 0 16px; padding:10px 14px; border-radius:8px; font-size:14px; line-height:1.5; text-align:center}
+.siloona-site .co-setup-state.todo{background:#FFF4E2; color:#6A4A12}
+.siloona-site .co-setup-state.on{background:#EEF5EC; color:#2f5d33}
+.siloona-site .co-setup input[type=datetime-local],.siloona-site .co-setup textarea{width:100%; font:inherit; font-size:16px; min-height:46px; padding:8px 12px; border:1px solid var(--line-2); border-radius:6px; background:var(--co-paper)}
+.siloona-site .co-seat-rows{display:grid; gap:6px; margin-top:16px}
+.siloona-site .co-seat-row{display:grid; grid-template-columns:minmax(0,1fr) 84px 36px; gap:6px; align-items:center}
+.siloona-site .co-seat-row.head span{font-size:12.5px; color:var(--muted)}
+.siloona-site .co-seat-row input{min-width:0; width:100%; font:inherit; font-size:16px; min-height:44px; padding:8px 10px; border:1px solid var(--line-2); border-radius:6px; background:var(--co-paper)}
+.siloona-site .co-seat-x{width:36px; height:36px; border:0; border-radius:50%; background:none; color:var(--muted); font-size:20px; cursor:pointer}
+.siloona-site .co-setup-tools{display:flex; flex-wrap:wrap; gap:8px 18px; margin:12px 0 4px}
+.siloona-site .co-file{position:relative; cursor:pointer}
+.siloona-site .co-file input{position:absolute; width:1px; height:1px; opacity:0}
+.siloona-site .co-file:focus-within{outline:2px solid var(--violet); outline-offset:2px}
+.siloona-site .co-setup-ok{margin:10px 0 0; font-size:14px; color:#2f5d33; text-align:center}
+.siloona-site .co-guests-n{display:block; margin:22px 0 8px}
+.siloona-site .co-guests{list-style:none; margin:0; padding:0; display:grid; gap:6px}
+.siloona-site .co-guests li{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:2px 10px; align-items:center; padding:10px 12px; border:1px solid var(--line-2); border-radius:8px; background:var(--co-paper)}
+.siloona-site .co-guest-name{font-size:15px; color:var(--ink)}
+.siloona-site .co-guest-link{grid-column:1; font-size:12px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.siloona-site .co-guest-copy{grid-column:2; grid-row:1 / span 2; min-width:112px; min-height:40px; padding:6px 12px; border:1px solid var(--violet); border-radius:999px; background:none; color:var(--violet); font:inherit; font-size:13px; white-space:nowrap; cursor:pointer}
+.siloona-site .co-live-list{margin:10px 0 0; padding-left:20px; font-size:14.5px; color:var(--ink-2)}

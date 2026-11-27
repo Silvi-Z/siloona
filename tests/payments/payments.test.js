@@ -1225,3 +1225,53 @@ test('order page: «checking the payment» only while a payment is really going 
   assert.equal(later.payingNow, false, 'left on the bank page: no longer «in progress»')
   assert.equal(later.canPay, true, 'and it can be paid again')
 })
+
+test('add-ons: a paid add-on is on whatever the option — diy or assisted', async () => {
+  for (const option of ['diy', 'assisted']) {
+    const o = await newOrder({ designId: 'wd-noir', option, addons: ['seating', 'personal_greeting', 'live_schedule'] })
+    await call('POST', '/api/admin/orders', { token: USERS.admin.token, body: { orderId: o.orderId, action: 'manual_payment', method: 'cash', reference: `O-${o.orderNumber}` } })
+    const page = await call('GET', `/api/invitations?code=${(await status(o)).json.invitationCode}`)
+    for (const f of ['seating', 'personal_greeting', 'live_schedule']) assert.ok(page.json.features.includes(f), `${option}: ${f}`)
+    assert.equal(page.json.seating, null, `${option}: the section waits for its list`)
+  }
+})
+
+test('the couple fills in seating and guests themselves on the order page (diy and assisted)', async () => {
+  for (const option of ['diy', 'assisted']) {
+    const o = await newOrder({ designId: 'wd-noir', option, addons: ['seating', 'personal_greeting'] })
+    const act = (action, extra = {}) => call('POST', '/api/orders/status', { body: { action, id: o.orderId, t: o.token, ...extra } })
+    assert.equal((await act('seating_get')).status, 409, 'not before payment')
+    await call('POST', '/api/admin/orders', { token: USERS.admin.token, body: { orderId: o.orderId, action: 'manual_payment', method: 'cash', reference: `S-${o.orderNumber}` } })
+    const st = await status(o)
+    assert.deepEqual(st.json.setup, { seating: true, guests: true, liveSchedule: false })
+    const code = st.json.invitationCode
+
+    // seating: an empty list first, then a table typed on the page
+    assert.deepEqual((await act('seating_get')).json.rows, [])
+    assert.equal((await act('seating_save', { rows: [{ name: 'Անի Պետրոսյան', table: '7' }], revealAt: 'nope' })).status, 422, 'a bad reveal time')
+    const saved = await act('seating_save', { rows: [{ name: 'Անի Պետրոսյան', table: '7' }, { name: 'Կարեն Մուրադյան', table: '3' }, { name: '', table: '1' }], revealAt: '2020-01-01 10:00' })
+    assert.equal(saved.status, 200, JSON.stringify(saved.json))
+    assert.equal(saved.json.rows.length, 2)
+    assert.equal(saved.json.skipped.length, 1, 'the empty row is reported')
+    assert.equal((await call('GET', `/api/invitations?code=${code}`)).json.seating.open, true, 'the section is there now')
+    assert.deepEqual((await call('POST', '/api/invitations', { body: { seat: true, code, name: 'Ani Petrosyan' } })).json, { status: 'found', table: '7' })
+    // a CSV replaces the list, like the import
+    const csv = await act('seating_save', { csv: 'guest_name;table_label\nԳոհար;VIP\n', revealAt: '2020-01-01 10:00' })
+    assert.deepEqual(csv.json.rows, [{ name: 'Գոհար', table: 'VIP' }])
+
+    // personal links: names, then more names — nobody duplicated
+    const first = await act('guests_add', { names: 'Արամ և Անի\nԼիլիթ' })
+    assert.equal(first.json.guests.length, 2)
+    const again = await act('guests_add', { names: 'Լիլիթ\nԿարեն' })
+    assert.equal(again.json.guests.length, 3)
+    assert.equal(again.json.guests.find((g) => g.name === 'Լիլիթ').token, first.json.guests.find((g) => g.name === 'Լիլիթ').token, 'an existing guest keeps the link')
+    const aram = again.json.guests.find((g) => g.name === 'Արամ և Անի')
+    assert.deepEqual((await call('GET', `/api/invitations?code=${code}&t=${aram.token}`)).json.personal, { name: 'Արամ և Անի' })
+    assert.equal((await act('guests_get', { t: 'wrong' })).status, 404)
+  }
+  // without the add-ons: refused
+  const plain = await newOrder({ designId: 'wd-noir' })
+  await call('POST', '/api/admin/orders', { token: USERS.admin.token, body: { orderId: plain.orderId, action: 'manual_payment', method: 'cash', reference: `S-${plain.orderNumber}` } })
+  assert.equal((await call('POST', '/api/orders/status', { body: { action: 'seating_get', id: plain.orderId, t: plain.token } })).status, 403)
+  assert.equal((await call('POST', '/api/orders/status', { body: { action: 'guests_add', id: plain.orderId, t: plain.token, names: 'Ա Բ' } })).status, 403)
+})

@@ -82,6 +82,12 @@ export function createSupabaseStore(db) {
     },
     insertRsvp: async (row) => must(await db.from('invitation_rsvps').insert(row).select().single()),
     // a guest's personal link (supabase/personal-links.sql)
+    listInvitationGuests: async (invitationId) =>
+      must(await db.from('invitation_guests').select('display_name, name_key, token').eq('invitation_id', invitationId).order('created_at').limit(5000)),
+    addInvitationGuest: async (row) => must(await db.from('invitation_guests').insert(row).select('id').single()),
+    // what scripts/import-seating.js does (supabase/seating.sql)
+    importSeating: async ({ invitation = null, event = null, revealAt = null, enabled = null, rows = null }) =>
+      must(await db.rpc('import_seating', { p_invitation: invitation, p_event: event, p_reveal_at: revealAt, p_enabled: enabled, p_rows: rows })),
     getInvitationGuest: async (invitationId, token) =>
       must(await db.from('invitation_guests').select('id, display_name').eq('invitation_id', invitationId).eq('token', token).maybeSingle()),
     // (all columns: `answers` exists once supabase/rsvp-questions.sql has run)

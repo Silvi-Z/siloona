@@ -4,6 +4,7 @@ import { customerView, invitationForOrder, loadOrderForCustomer, saveRsvpQuestio
 import { claimOrder } from '../_lib/orderEvents.js'
 import { coupleWishes } from '../_lib/wishes.js'
 import { saveThankYou } from '../_lib/thankYou.js'
+import { SETUP_ACTIONS } from '../_lib/coupleSetup.js'
 
 // GET /api/orders/status?id=…&t=… — the customer's order page.
 // While a card payment is still open it re-asks ArCa (at most every few
@@ -23,6 +24,8 @@ export default handler(async (req, res) => {
     if (['wishes', 'wish_hide', 'wishes_close'].includes(body.action)) return sendJson(res, 200, await coupleWishes(store, body))
     // «Շնորհակալական էջ» (thankYou.js)
     if (body.action === 'thank_you') return sendJson(res, 200, await saveThankYou(store, body))
+    // the couple's own seating list and guests' links (coupleSetup.js)
+    if (Object.hasOwn(SETUP_ACTIONS, body.action)) return sendJson(res, 200, await SETUP_ACTIONS[body.action](store, body))
     if (body.action !== 'claim') return sendJson(res, 400, { error: 'bad_action', message: 'Սխալ հարցում։' })
     const token = bearerToken(req)
     const user = token ? await store.getUser(token) : null

@@ -89,6 +89,7 @@ export async function createPgStore() {
     insertWish: async (w) => fix(await one('insert into invitation_wishes (invitation_id, guest_id, guest_name, body) values ($1, $2, $3, $4) returning id', [w.invitation_id, w.guest_id ?? null, w.guest_name, w.body])),
     listWishes: async (invitationId) => (await many('select id, guest_name, body, hidden, created_at from invitation_wishes where invitation_id = $1 order by created_at, id', [invitationId])).map(fix),
     hideWish: async (invitationId, id, hidden) => (await many('update invitation_wishes set hidden = $3 where invitation_id = $1 and id = $2 returning id', [invitationId, id, hidden])).length > 0,
+    listInvitationGuests: async (invitationId) => many('select display_name, name_key, token from invitation_guests where invitation_id = $1 order by created_at, id', [invitationId]),
     getInvitationGuest: async (invitationId, token) => fix(await one('select id, display_name from invitation_guests where invitation_id = $1 and token = $2', [invitationId, token])),
     // what scripts/import-guests.js writes through Supabase
     addInvitationGuest: async (g) => fix(await one('insert into invitation_guests (invitation_id, token, display_name, name_key, phone, note) values ($1, $2, $3, $4, $5, $6) returning *', [g.invitation_id, g.token, g.display_name, g.name_key, g.phone ?? null, g.note ?? null])),

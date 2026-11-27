@@ -10,6 +10,7 @@ import { CONTACTS, opensTab } from '../contacts'
 import ContactIcon from '../ContactIcon'
 import RsvpQuestions from './RsvpQuestions'
 import ThankYouEditor from './ThankYouEditor'
+import { GuestsSetup, LiveHint, SeatingSetup } from './CoupleSetup'
 import { addonName } from '../addons'
 import {
   getOrderStatus, goToProvider, isTestChoice, methodInfo, paymentChoices, optionInfo, orderLink, recallOrder, rememberOrder, startPayment,
@@ -412,6 +413,10 @@ export default function CheckoutResult() {
             <OrderPreview slug={design.previewSlug} preview={data.preview} paid={data.paymentStatus === 'paid'} />
           )}
           {CUSTOMER_DASHBOARD && data.invitationCode && design?.previewSlug && <ManageGuests id={id} token={token} linked={data.linked} />}
+          {/* add-ons whose data the couple fills in here (CoupleSetup.jsx) */}
+          {data.invitationCode && data.setup?.seating && <SeatingSetup id={id} token={token} eventDate={data.preview?.customization?.eventDate} />}
+          {data.invitationCode && data.setup?.guests && <GuestsSetup id={id} token={token} code={data.invitationCode} />}
+          {data.invitationCode && data.setup?.liveSchedule && design?.previewSlug && <LiveHint slug={design.previewSlug} preview={data.preview} />}
           {data.invitationCode && Array.isArray(data.rsvpQuestions) && (
             <RsvpQuestions id={id} token={token} questions={data.rsvpQuestions} onSaved={(qs) => setData((d) => ({ ...d, rsvpQuestions: qs }))} />
           )}

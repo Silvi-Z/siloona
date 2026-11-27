@@ -256,6 +256,8 @@ export function customerView(order, txs, invitation = null, now = Date.now()) {
     wishesBook: !!invitation && featuresOf(order, invitation).includes('wishes'),
     // «Շնորհակալական էջ»: what the couple has set (null without the add-on)
     thankYou: thankYouSettings(order, invitation),
+    // add-ons whose data the couple fills in on this page (coupleSetup.js)
+    setup: invitation ? setupOf(featuresOf(order, invitation)) : null,
     canPay: order.amount != null && order.order_status !== 'cancelled' && !['paid', 'refunded'].includes(order.payment_status),
     // What the invitation will show, for the preview on the order page
     // (with a «Նախադիտում» mark until it's paid). The customer's own data;
@@ -263,6 +265,8 @@ export function customerView(order, txs, invitation = null, now = Date.now()) {
     preview: order.customization?.request === 'custom' ? null : previewOf(order),
   }
 }
+
+const setupOf = (f) => ({ seating: f.includes('seating'), guests: f.includes('personal_greeting'), liveSchedule: f.includes('live_schedule') })
 
 function previewOf(order) {
   const { names, eventDate, eventTime, venue, details, content } = order.customization || {}
