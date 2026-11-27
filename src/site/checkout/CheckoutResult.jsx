@@ -5,6 +5,7 @@ import { CUSTOM_DESIGN_ID, CUSTOM_DESIGN_LABEL } from '../customRequest'
 import { formatPrice } from '../pricing'
 import { useLang, useText } from '../i18n'
 import PaymentMethods, { SecureNote } from './PaymentMethods'
+import OrderPreview from './OrderPreview'
 import {
   getOrderStatus, goToProvider, isTestChoice, methodInfo, paymentChoices, optionInfo, orderLink, recallOrder, rememberOrder, startPayment,
 } from './checkoutApi'
@@ -371,6 +372,9 @@ export default function CheckoutResult() {
           )}
 
           {data.invitationCode && design?.previewSlug && <ShareInvitation code={data.invitationCode} />}
+          {design?.previewSlug && data.preview && data.paymentStatus !== 'refunded' && data.orderStatus !== 'cancelled' && (
+            <OrderPreview slug={design.previewSlug} preview={data.preview} paid={data.paymentStatus === 'paid'} />
+          )}
           {CUSTOMER_DASHBOARD && data.invitationCode && design?.previewSlug && <ManageGuests id={id} token={token} linked={data.linked} />}
           {data.invitationCode && design?.previewSlug && <GuestAnswers rsvps={data.rsvps || []} orderNumber={data.orderNumber} />}
 

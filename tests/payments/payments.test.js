@@ -827,3 +827,21 @@ test('checkout: how to contact the customer is required, and written by the serv
   const plainTg = await newOrder({ customer: cust({ contactVia: 'telegram' }) })
   assert.equal((await store.getOrder(plainTg.orderId)).customer_contact, 'Telegram')
 })
+
+test('order page: a preview of the invitation before payment; guests only after it', async () => {
+  const o = await newOrder({ customization: { names: 'Լիանա & Դավիթ', eventDate: '2027-06-12', eventTime: '16:00', venue: 'Երևան', notes: 'գաղտնի նշում' } })
+  const st = await status(o)
+  assert.deepEqual(st.json.preview.customization, { names: 'Լիանա & Դավիթ', eventDate: '2027-06-12', eventTime: '16:00', venue: 'Երևան' })
+  assert.equal(st.json.invitationCode, null, 'no guest link before payment')
+  assert.equal(JSON.stringify(st.json.preview).includes('գաղտնի'), false, 'notes stay out of the preview')
+  const req = await newOrder({ designId: 'custom', option: 'diy', customization: { eventType: 'wedding', notes: 'Ուզում ենք կանաչ գույներով, պարզ ու նուրբ' } })
+  assert.equal((await status(req)).json.preview, null, 'a custom request has nothing to preview')
+
+  await call('POST', '/api/admin/orders', { token: USERS.admin.token, body: { orderId: o.orderId, action: 'manual_payment', method: 'cash', reference: 'R-77' } })
+  const paid = await status(o)
+  assert.equal(paid.json.paymentStatus, 'paid')
+  assert.ok(paid.json.preview, 'still shown after payment (without the mark)')
+  const guest = await call('GET', `/api/invitations?code=${paid.json.invitationCode}`)
+  assert.equal(guest.status, 200)
+  assert.equal(guest.json.customization.names, 'Լիանա & Դավիթ')
+})

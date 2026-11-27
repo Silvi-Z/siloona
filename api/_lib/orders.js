@@ -220,7 +220,16 @@ export function customerView(order, txs, invitation = null) {
       ? invitation.rsvps.map((r) => ({ name: r.guest_name, status: r.status, plus: r.plus, note: r.note, at: r.created_at }))
       : [],
     canPay: order.amount != null && order.order_status !== 'cancelled' && !['paid', 'refunded'].includes(order.payment_status),
+    // What the invitation will show, for the preview on the order page
+    // (with a «Նախադիտում» mark until it's paid). The customer's own data;
+    // guests can't open the invitation before payment (loadInvitation).
+    preview: order.customization?.request === 'custom' ? null : previewOf(order),
   }
+}
+
+function previewOf(order) {
+  const { names, eventDate, eventTime, venue, details, content } = order.customization || {}
+  return { customization: { names, eventDate, eventTime, venue }, details: details || null, content: content || null }
 }
 
 // The paid order's shareable invitation. The database creates it when the

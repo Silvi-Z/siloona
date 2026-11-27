@@ -4,9 +4,8 @@ import { INVITATION_PREVIEWS } from '../invitationRegistry'
 import { InvitationContentProvider } from '../invitations/shared/EditableContext'
 import { deepMerge } from '../invitations/shared/pathUtils'
 import { findDesign } from '../designCatalog'
-import { prefillFromCustomization, prefillFromEvent } from '../invitationPrefill'
-import { contentFromDetails } from '../invitationDetails'
-import { defaultsFor } from '../invitationDefaults'
+import { prefillFromEvent } from '../invitationPrefill'
+import { orderInvitationContent } from '../orderContent'
 
 // The invitation guests open — /i/:code[/:token]. Two kinds, the server
 // tells which (GET /api/invitations):
@@ -114,12 +113,8 @@ export default function SharedInvitation() {
       const base = deepMerge(entry.defaultData, prefillFromEvent(slug, reviveEvent(data.event)))
       return deepMerge(base, data.designContent?.[slug])
     }
-    // Purchased: design ← checkout details ← the customer's edits. Orders
-    // from before the design's own details were asked have only names / date / venue.
-    // A Russian / English invitation starts from that language's demo.
-    const lang = invLangOf(data)
-    const filled = data.details ? contentFromDetails(slug, data.details, lang) : prefillFromCustomization(slug, data.customization, lang)
-    return deepMerge(deepMerge(defaultsFor(slug, lang), filled), data.content)
+    // Purchased: design ← checkout details ← the customer's edits (orderContent.js).
+    return orderInvitationContent(slug, data)
   }, [entry, slug, data])
 
   // Only when the server says this invitation has seating.

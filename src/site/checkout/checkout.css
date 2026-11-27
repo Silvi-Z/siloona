@@ -395,3 +395,20 @@
 .siloona-site .co-via-opt.on{border-color:var(--violet); background:#FFFBF6; color:var(--violet)}
 .siloona-site .co-via-opt:has(input:focus-visible){outline:2px solid var(--violet); outline-offset:2px}
 .siloona-site .co-via[aria-invalid=true] .co-via-opt{border-color:var(--co-err)}
+
+/* The invitation preview on the order page (OrderPreview.jsx): the real
+   design at a phone's width (390px), scaled into a phone outline. Until
+   payment a faint «Նախադիտում» mark lies across it. */
+.siloona-site .co-preview{margin:30px 0 6px; text-align:center}
+.siloona-site .co-preview .eyebrow{margin-bottom:14px}
+.siloona-site .co-preview-phone{width:300px; max-width:100%; margin:0 auto; padding:10px; border-radius:34px; background:#1E1A1B; box-shadow:0 30px 50px -28px rgba(40,10,10,.55)}
+.siloona-site .co-preview-screen{position:relative; width:280px; height:560px; border-radius:24px; overflow:hidden; background:#FBF7F0}
+.siloona-site .co-preview-screen iframe{display:block; width:390px; height:780px; border:0; transform:scale(.71795); transform-origin:0 0}
+.siloona-site .co-preview-mark{position:absolute; inset:0; display:flex; flex-direction:column; justify-content:space-around; align-items:center; pointer-events:none; overflow:hidden}
+.siloona-site .co-preview-mark span{transform:rotate(-28deg); font-family:var(--serif); font-size:30px; letter-spacing:.14em; white-space:nowrap; color:rgba(255,255,255,.55); text-shadow:0 0 1px rgba(40,10,10,.55), 0 1px 10px rgba(40,10,10,.25); user-select:none}
+.siloona-site .co-preview-note{font-size:13px; color:var(--muted); max-width:40ch; margin:14px auto 0; line-height:1.55}
+@media (max-width:360px){
+  .siloona-site .co-preview-phone{width:260px}
+  .siloona-site .co-preview-screen{width:240px; height:480px}
+  .siloona-site .co-preview-screen iframe{transform:scale(.61538)}
+}
