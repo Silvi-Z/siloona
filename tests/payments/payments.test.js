@@ -1196,3 +1196,17 @@ test('thank-you page: set by the couple, sent to the page only with the add-on a
   assert.equal((await status(plain.o)).json.thankYou, null)
   assert.equal((await save(plain.o, { text: 'x', from: '2027-06-13T10:00' })).status, 403)
 })
+
+test('print interest: a note on the order, never in the price, in Telegram only when ticked', async () => {
+  const { orderText } = await import(pathToFileURL(path.join(ROOT, 'api/_lib/notify.js')).href)
+  const yes = await newOrder({ printInterest: true })
+  const no = await newOrder({})
+  const odd = await newOrder({ printInterest: 'yes', amount: 1 })
+  assert.equal(yes.amount, P.diy, 'the price does not change')
+  assert.equal(no.amount, P.diy)
+  assert.equal((await store.getOrder(yes.orderId)).print_interest, true)
+  assert.equal((await store.getOrder(no.orderId)).print_interest, false, 'not ticked by default')
+  assert.equal((await store.getOrder(odd.orderId)).print_interest, false, 'only a real true counts')
+  assert.match(orderText(await store.getOrder(yes.orderId), ''), /🖨 Հետաքրքրված է տպագրով և տարոսիկներով/)
+  assert.doesNotMatch(orderText(await store.getOrder(no.orderId), ''), /🖨/)
+})

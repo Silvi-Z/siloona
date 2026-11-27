@@ -33,6 +33,7 @@ export async function createPgStore() {
   await db.exec(fs.readFileSync(new URL('personal-links.sql', root), 'utf8'))
   await db.exec(fs.readFileSync(new URL('rsvp-questions.sql', root), 'utf8'))
   await db.exec(fs.readFileSync(new URL('wishes.sql', root), 'utf8'))
+  await db.exec(fs.readFileSync(new URL('print-interest.sql', root), 'utf8'))
   for (const u of Object.values(USERS)) {
     await db.query(`insert into auth.users (id, email, raw_user_meta_data) values ($1, $2, '{"mode":"org"}')`, [u.id, u.email])
   }

@@ -74,7 +74,9 @@ export function validateOrderInput(body) {
   if (Object.keys(fields).length) throw new HttpError(422, 'invalid', 'Խնդրում ենք ստուգել նշված դաշտերը։', fields)
 
   const clientRef = isUuid(body.clientRef) ? body.clientRef : null
-  return { designId, option: custom ? 'assisted' : option, name, phone, email: email || null, contact: contact || null, customization, clientRef, addons }
+  // «Ինձ հետաքրքրում են նաև տպագիր…» — a note only, never a price
+  const printInterest = !custom && body.printInterest === true
+  return { designId, option: custom ? 'assisted' : option, name, phone, email: email || null, contact: contact || null, customization, clientRef, addons, printInterest }
 }
 
 // The customer's own edits from the design's web editor: only the fields
@@ -175,6 +177,8 @@ export async function createOrder(store, body, user) {
     design_option: v.option,
     customization: v.customization,
     addons: v.addons.items,
+    // only when ticked, so databases without print-interest.sql keep working for everyone else
+    ...(v.printInterest ? { print_interest: true } : {}),
     amount,
     currency: 'AMD',
   }

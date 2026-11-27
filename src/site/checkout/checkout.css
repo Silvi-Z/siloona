@@ -443,3 +443,7 @@
 .siloona-site .co-ty-add{display:grid; place-items:center; aspect-ratio:1; border:1px dashed var(--line-2); border-radius:6px; cursor:pointer; text-align:center; font-size:13px; color:var(--violet); padding:6px}
 .siloona-site .co-ty-add input{position:absolute; width:1px; height:1px; opacity:0}
 .siloona-site .co-ty-add:focus-within{outline:2px solid var(--violet); outline-offset:2px}
+
+/* «Ինձ հետաքրքրում են նաև տպագիր…» under the add-ons (the consent checkbox's look) */
+.siloona-site .co-print{margin-top:20px}
+.siloona-site .co-print small{display:block; margin-top:2px}

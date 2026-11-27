@@ -149,7 +149,7 @@ export default function Orders() {
             <tbody>
               {rows.map(o => (
                 <tr key={o.id} onClick={() => open(o)}>
-                  <td className="strong nowrap">{o.order_number}{o.payment_provider === 'test' && <TestTag />}</td>
+                  <td className="strong nowrap">{o.order_number}{o.payment_provider === 'test' && <TestTag />}{o.print_interest && <span title="Հետաքրքրված է տպագրով և տարոսիկներով" aria-label="Հետաքրքրված է տպագրով"> 🖨</span>}</td>
                   <td><div className="cell-2"><span className="strong">{o.customer_name}</span><small>{o.customer_phone}</small></div></td>
                   <td className="c-sm"><div className="cell-2"><span>{designLabel(o.design_id)}</span><small>{OPTION[o.design_option]}</small></div></td>
                   <td className="num">{o.amount == null ? <span className="muted">Գինը՝ հայտով</span> : amd(o.amount)}</td>
@@ -357,6 +357,7 @@ function OrderDrawer({ orderId, onChanged }) {
           <dl className="kv">
             <dt>Գումար</dt><dd>{amd(o.amount)} {o.amount != null && 'AMD'}{catalogPrice == null && <span className="muted"> · կատալոգում գին չկա</span>}</dd>
             <dt>Հավելումներ</dt><dd>{Array.isArray(o.addons) && o.addons.length ? o.addons.map(a => `${addonName(a.id)} (${amd(a.price)})`).join(', ') : '—'}</dd>
+            <dt>Տպագիր</dt><dd>{o.print_interest ? '🖨 Հետաքրքրված է տպագրով և տարոսիկներով' : '—'}</dd>
             <dt>Եղանակ</dt><dd>{PROVIDER[o.payment_provider] || '—'}</dd>
             <dt>Գործարքի համար</dt><dd style={{ wordBreak: 'break-all' }}>{o.transaction_id || '—'}</dd>
             <dt>Ստեղծված</dt><dd>{dt(o.created_at)}</dd>

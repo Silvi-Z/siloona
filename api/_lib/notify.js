@@ -51,6 +51,7 @@ export function orderText(order, siteUrl) {
     order.customization?.eventDate ? `Ամսաթիվ՝ ${order.customization.eventDate}` : '',
     custom && order.customization.notes ? `Գաղափարը՝ ${order.customization.notes.slice(0, 300)}` : '',
     ...addonLines(order.addons),
+    order.print_interest ? '🖨 Հետաքրքրված է տպագրով և տարոսիկներով' : '',
     `Գումար՝ ${amd(order.amount)}`,
     siteUrl ? `${siteUrl}/dashboard#orders` : '',
   ]

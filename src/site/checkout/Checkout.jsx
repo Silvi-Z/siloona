@@ -32,6 +32,7 @@ const TEXT = {
     change: 'Փոխել', schedWhat: 'Ինչ է տեղի ունենում', remove: 'Հեռացնել', addItem: '+ Ավելացնել կետ', checkMap: 'Ստուգել քարտեզում →',
     pay: (a) => `Վճարել ${a}`, sendRequest: 'Ուղարկել հայտը', sendOrder: 'Ուղարկել պատվերը',
     crumbs: 'Ուղի', collection: 'Հավաքածու', title: 'Պատվերի ձևակերպում', step1: 'Ձեր ընտրությունը', option: 'Տարբերակ', addons: 'Հավելումներ', addonsNote: 'ըստ ցանկության', addonsLabel: 'Հավելումներ',
+    print: 'Ինձ հետաքրքրում են նաև տպագիր հրավերներ, շնորհակալական քարտեր և տարոսիկներ նույն ոճով', printNote: 'Կապ հաստատելիս կպատմենք մանրամասները',
     attach: 'Կցել իմ խմբագրած տարբերակը պատվերին',
     edited: 'Դուք խմբագրել եք այս հրավերը կայքում․ Ձեր փոփոխությունները կերևան պատրաստի հրավերում։',
     continueEdit: 'Շարունակել խմբագրումը →', editOnSite: 'Խմբագրել հրավերը կայքում →', viewDemo: 'Դիտել դեմոն', continue: 'Շարունակել',
@@ -61,6 +62,7 @@ const TEXT = {
     change: 'Изменить', schedWhat: 'Что происходит', remove: 'Удалить', addItem: '+ Добавить пункт', checkMap: 'Проверить на карте →',
     pay: (a) => `Оплатить ${a}`, sendRequest: 'Отправить заявку', sendOrder: 'Отправить заказ',
     crumbs: 'Навигация', collection: 'Коллекция', title: 'Оформление заказа', step1: 'Ваш выбор', option: 'Вариант', addons: 'Дополнения', addonsNote: 'по желанию', addonsLabel: 'Дополнения',
+    print: 'Мне также интересны печатные приглашения, благодарственные открытки и бонбоньерки в том же стиле', printNote: 'Расскажем подробности, когда свяжемся с вами',
     attach: 'Приложить мою отредактированную версию к заказу',
     edited: 'Вы отредактировали это приглашение на сайте — Ваши изменения будут в готовом приглашении.',
     continueEdit: 'Продолжить редактирование →', editOnSite: 'Отредактировать приглашение на сайте →', viewDemo: 'Смотреть демо', continue: 'Продолжить',
@@ -89,6 +91,7 @@ const TEXT = {
     change: 'Change', schedWhat: 'What happens', remove: 'Remove', addItem: '+ Add an item', checkMap: 'Check on the map →',
     pay: (a) => `Pay ${a}`, sendRequest: 'Send the request', sendOrder: 'Send the order',
     crumbs: 'Breadcrumb', collection: 'Collection', title: 'Checkout', step1: 'Your choice', option: 'Option', addons: 'Add-ons', addonsNote: 'optional', addonsLabel: 'Add-ons',
+    print: 'I’m also interested in printed invitations, thank-you cards and favour boxes in the same style', printNote: 'We’ll tell you more when we get in touch',
     attach: 'Attach my edited version to the order',
     edited: 'You’ve edited this invitation on the site — your changes will appear in the finished invitation.',
     continueEdit: 'Continue editing →', editOnSite: 'Edit the invitation on the site →', viewDemo: 'View the demo', continue: 'Continue',
@@ -151,6 +154,8 @@ export default function Checkout() {
   const [option, setOption] = useState(params.get('option') === 'assisted' ? 'assisted' : 'diy')
   // chosen add-on ids (src/site/addons.js); the server prices them again
   const [addons, setAddons] = useState([])
+  // «Ինձ հետաքրքրում են նաև տպագիր…» — a note for Siloona, not a price
+  const [printInterest, setPrintInterest] = useState(false)
   const [step, setStep] = useState(1)
   const [form, setForm] = useState(EMPTY)
   const [errors, setErrors] = useState({})
@@ -299,6 +304,7 @@ export default function Checkout() {
       consent: true,
       website: form.website,
       addons: chosen.map((a) => a.id),
+      printInterest,
       // the server writes the contact line itself from these two
       customer: { name: form.name, phone: form.phone, email: form.email, contactVia: form.contactVia, tg: form.contactVia === 'telegram' ? form.tg.trim() : '' },
       customization: spec ? {
@@ -514,6 +520,10 @@ export default function Checkout() {
                     </div>
                   </>
                 )}
+                <label className="co-consent co-print">
+                  <input type="checkbox" checked={printInterest} onChange={(e) => setPrintInterest(e.target.checked)} />
+                  <span>{t.print}<small className="co-hint">{t.printNote}</small></span>
+                </label>
                 {edits ? (
                   <div className="co-edits">
                     <label className="co-consent">
