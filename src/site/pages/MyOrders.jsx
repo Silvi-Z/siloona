@@ -10,6 +10,9 @@ import { getOrderStatus, listOrders, orderLink, rememberOrder } from '../checkou
 import '../checkout/checkout.css'
 import '../home.css'
 import '../myorders.css'
+import InvitationLive from '../checkout/InvitationLive'
+import '../checkout/invitationLive.css'
+import { PREVIEW_TEXT, useOrderContent } from '../checkout/OrderPreview'
 
 // «Իմ պատվերները» — the orders placed (or opened by their link) on this
 // device. Checkout needs no account, so the order link is the customer's
@@ -83,11 +86,16 @@ function OrderCard({ o }) {
   const coming = (d.rsvps || []).filter((r) => r.status === 'confirmed')
   const people = coming.reduce((n, r) => n + 1 + (r.plus || 0), 0)
   const [copied, setCopied] = useState(false)
+  const pv = useText(PREVIEW_TEXT)
+  const live = useOrderContent(design?.kind === 'web' ? design?.previewSlug : null, d.preview)
   return (
     <li className="mor-card">
       {/* the ordered design, so the order is recognised at a glance */}
-      <div className="mor-thumb" aria-hidden="true">
-        {design?.image ? <img src={design.image} alt="" loading="lazy" decoding="async" /> : <span>{design?.code?.split('-').pop() || '✦'}</span>}
+      <div className={`mor-thumb${live ? ' is-live' : ''}`} aria-hidden="true">
+        {live ? (
+          // the customer's own invitation, as the order has it (not the catalog's demo)
+          <InvitationLive slug={design.previewSlug} content={live} width="fill" still mark={d.paymentStatus === 'paid' ? null : pv.mark} title={pv.frame} />
+        ) : design?.image ? <img src={design.image} alt="" loading="lazy" decoding="async" /> : <span>{design?.code?.split('-').pop() || '✦'}</span>}
       </div>
       <div className="mor-body">
         <div className="mor-top">

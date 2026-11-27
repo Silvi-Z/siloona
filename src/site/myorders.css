@@ -60,3 +60,6 @@
   .mor-actions .hm-btn{width:100%; padding-block:15px}
   .mor-add-row{flex-direction:column}
 }
+
+/* the customer's own invitation, live (InvitationLive.jsx), in place of the catalog picture */
+.mor-thumb.is-live{display:block; aspect-ratio:auto; place-items:initial}

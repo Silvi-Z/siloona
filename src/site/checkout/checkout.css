@@ -455,3 +455,8 @@
 .siloona-site .co-contact-btn{display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:8px 16px; border:1px solid var(--line-2); border-radius:999px; background:#fff; color:var(--ink); font-size:14px; text-decoration:none}
 .siloona-site .co-contact-btn:hover{border-color:var(--violet); color:var(--violet)}
 .siloona-site .co-contact-btn svg{width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.5}
+
+/* the preview box now takes the size of InvitationLive inside it */
+.siloona-site .co-preview-screen{width:auto; height:auto}
+/* checkout summary: the invitation as it is being filled in (InvitationLive.jsx) */
+.siloona-site .co-sum-thumb .inv-live{border-radius:10px; box-shadow:0 10px 24px -14px rgba(33,20,40,.45)}

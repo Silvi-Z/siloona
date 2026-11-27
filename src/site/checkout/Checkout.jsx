@@ -1,6 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { DesignThumb } from '../DesignCard'
+import InvitationLive from './InvitationLive'
+import './invitationLive.css'
+import { PREVIEW_TEXT, useOrderContent } from './OrderPreview'
+
+// The checkout's summary picture (a hook of its own: built lazily).
+function SummaryLive({ slug, input }) {
+  const pv = useText(PREVIEW_TEXT)
+  const content = useOrderContent(slug, input)
+  return <InvitationLive slug={slug} content={content} width="fill" still mark={pv.mark} title={pv.frame} />
+}
 import { findDesign } from '../designCatalog'
 import { CATEGORY_LABELS_I18N, designTitle } from '../designI18n'
 import { formatPrice } from '../pricing'
@@ -472,6 +482,16 @@ export default function Checkout() {
     ) : null
   })
 
+  // The summary's picture: the invitation as it will be — the customer's
+  // edits and what they've typed so far (the demo's values where nothing
+  // is typed yet), built the same way as the order's (orderContent.js).
+  const filled = (o) => Object.fromEntries(Object.entries(o || {}).filter(([, v]) => v !== '' && v != null))
+  const previewInput = design.kind === 'web' && design.previewSlug ? {
+    details: spec ? (useEditor ? { ...det, source: 'editor' } : { ...spec.demo, ...filled(det), extra: { ...spec.demo.extra, ...filled(det.extra) } }) : null,
+    customization: { names: form.names, eventDate: form.eventDate, eventTime: form.eventTime, venue: form.venue },
+    content: edits && attachEdits ? (invLang !== 'hy' ? { ...edits, lang: invLang } : edits) : invLang !== 'hy' ? { lang: invLang } : null,
+  } : null
+
   let payLabel = t.pay(formatPrice(price, lang))
   if (price == null) payLabel = t.sendRequest
   else if (!methods.length) payLabel = t.sendOrder
@@ -666,7 +686,11 @@ export default function Checkout() {
 
         <aside className="co-aside" aria-label={t.summary}>
           <div className="co-sum">
-            <div className="co-sum-thumb"><DesignThumb design={design} /></div>
+            <div className="co-sum-thumb">
+              {previewInput ? (
+                <SummaryLive slug={design.previewSlug} input={previewInput} />
+              ) : <DesignThumb design={design} />}
+            </div>
             <div className="co-sum-body">
               <p className="eyebrow">{CATEGORY_LABELS_I18N[lang][design.category]} · {design.code}</p>
               <h3 className="co-sum-title">{title}</h3>

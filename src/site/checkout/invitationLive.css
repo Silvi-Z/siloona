@@ -1,0 +1,6 @@
+/* InvitationLive.jsx: the real invitation, scaled into a phone-sized box. */
+.inv-live{position:relative; overflow:hidden; background:#FBF7F0}
+.inv-live iframe{display:block; border:0; transform-origin:0 0}
+.inv-live.still iframe{pointer-events:none}
+.inv-live-mark{position:absolute; inset:0; display:flex; flex-direction:column; justify-content:space-around; align-items:center; pointer-events:none; overflow:hidden}
+.inv-live-mark span{transform:rotate(-28deg); font-family:"Cormorant Garamond","Noto Serif Armenian",Georgia,serif; letter-spacing:.14em; white-space:nowrap; color:rgba(255,255,255,.55); text-shadow:0 0 1px rgba(40,10,10,.55), 0 1px 10px rgba(40,10,10,.25); user-select:none}
