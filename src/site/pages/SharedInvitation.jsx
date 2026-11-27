@@ -46,6 +46,17 @@ async function sendRsvp(body) {
   }
 }
 
+// «Թողեք մաղթանք»: a wish for the couple. → { ok, status, message }
+async function sendWish(body) {
+  try {
+    const r = await fetch('/api/invitations', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ wish: true, ...body }) })
+    const data = await r.json().catch(() => null)
+    return { ok: r.ok, status: r.status, message: r.ok ? '' : data?.message }
+  } catch {
+    return { ok: false, status: 0 }
+  }
+}
+
 // «Ձեր սեղանը»: asks the server for one guest's table. Resolves to
 // { status: 'found'|'ambiguous'|'not_found'|'empty', table? } or
 // { status: 'not_open' | 'busy' | 'error' }.
@@ -158,7 +169,8 @@ export default function SharedInvitation() {
     }
     : undefined
   return (
-    <InvitationContentProvider defaultData={content} editing={false} setEditing={noop} guestName={guestName} onRsvp={onRsvp} seating={seating} features={features} rsvpQuestions={data.rsvpQuestions || null} rsvpAnswers={rsvpAnswers}>
+    <InvitationContentProvider defaultData={content} editing={false} setEditing={noop} guestName={guestName} onRsvp={onRsvp} seating={seating} features={features} rsvpQuestions={data.rsvpQuestions || null} rsvpAnswers={rsvpAnswers}
+      wishes={data.wishes || null} onWish={(w) => sendWish({ code, t: token, ...w })}>
       <Invitation />
     </InvitationContentProvider>
   )

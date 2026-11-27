@@ -36,6 +36,7 @@ export const LIMITS = {
   rsvp: [600, 20], // RSVP answers, per 10 minutes
   open: [600, 120], // invitation page loads, per 10 minutes
   seat: [600, 60], // «Ձեր սեղանը» name lookups, per 10 minutes (guests on the venue Wi-Fi share one address)
+  wish: [600, 5], // wishes for the couple, per 10 minutes
 }
 
 // RATE_LIMITS=off turns it off (the local test suite and demo, which make

@@ -2,7 +2,7 @@ import './wd-portrait.css'
 import Section from '../shared/Section'
 import { useInvitationContent } from '../shared/EditableContext'
 import { useDesignFonts } from '../shared/useDesignFonts'
-import { Calendar, Closing, DressCode, Hero, Program, Rsvp, Seating, Story, Venue, Welcome } from './components/Sections'
+import { Calendar, Closing, DressCode, Hero, Program, Rsvp, Seating, Story, Venue, Welcome, WishBook } from './components/Sections'
 import SiloonaCredit from '../shared/SiloonaCredit'
 
 // A thin handwritten script for «Save the Date» (Latin only), Alegreya for
@@ -27,6 +27,8 @@ export default function WdPortraitInvitation() {
         <Seating />
         <Section id="dresscode"><DressCode /></Section>
         <Section id="rsvp"><Rsvp /></Section>
+        {/* only where the couple ordered the wishes book */}
+        <WishBook />
         <Section id="closing"><Closing /></Section>
         <SiloonaCredit design="wd-portrait" />
       </main>

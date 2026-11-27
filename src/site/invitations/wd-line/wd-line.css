@@ -175,3 +175,7 @@
 .wln-seat .seat-box{border:1px solid rgba(168,138,98,.42); outline:1px solid rgba(168,138,98,.2); outline-offset:-8px}
 .wln-seat .seat-go,.wln-seat .seat-ok{font-size:12px; letter-spacing:.24em; text-transform:uppercase}
 @media (prefers-reduced-motion:reduce){.wln .seat-res .seat-table{animation:none}}
+
+/* «Թողեք մաղթանք» (the wishes book): the gilt link as a <button> */
+.wln .wish .link{border-left:0; border-right:0; border-top:0; background:none; cursor:pointer}
+.wln .wish-in{margin-top:6cqw}

@@ -2,7 +2,7 @@ import './wd-velvet.css'
 import Section from '../shared/Section'
 import { useInvitationContent } from '../shared/EditableContext'
 import { useDesignFonts } from '../shared/useDesignFonts'
-import { Closing, DateArch, DressCode, Hero, Program, Rsvp, Seating, Venue, Welcome } from './components/Sections'
+import { Closing, DateArch, DressCode, Hero, Program, Rsvp, Seating, Venue, Welcome, WishBook } from './components/Sections'
 import SiloonaCredit from '../shared/SiloonaCredit'
 
 // Light weights of Cormorant (for the ampersand and numerals) aren't in
@@ -28,6 +28,8 @@ export default function WdVelvetInvitation() {
         {/* only where the couple ordered seating — renders nothing otherwise */}
         <Seating />
         <Section id="rsvp"><Rsvp /></Section>
+        {/* only where the couple ordered the wishes book */}
+        <WishBook />
         <Section id="closing"><Closing /></Section>
         <SiloonaCredit design="wd-velvet" />
       </main>

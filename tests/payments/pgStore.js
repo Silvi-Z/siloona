@@ -32,6 +32,7 @@ export async function createPgStore() {
   await db.exec(fs.readFileSync(new URL('addons.sql', root), 'utf8'))
   await db.exec(fs.readFileSync(new URL('personal-links.sql', root), 'utf8'))
   await db.exec(fs.readFileSync(new URL('rsvp-questions.sql', root), 'utf8'))
+  await db.exec(fs.readFileSync(new URL('wishes.sql', root), 'utf8'))
   for (const u of Object.values(USERS)) {
     await db.query(`insert into auth.users (id, email, raw_user_meta_data) values ($1, $2, '{"mode":"org"}')`, [u.id, u.email])
   }
@@ -84,6 +85,9 @@ export async function createPgStore() {
     },
     insertRsvp: async (r) => fix(await one('insert into invitation_rsvps (invitation_id, guest_name, status, plus, note, guest_id, answers) values ($1, $2, $3, $4, $5, $6, $7::jsonb) returning *', [r.invitation_id, r.guest_name, r.status, r.plus, r.note, r.guest_id ?? null, r.answers ? JSON.stringify(r.answers) : null])),
     updateInvitationSettings: (id, settings) => update('invitations', id, { settings }),
+    insertWish: async (w) => fix(await one('insert into invitation_wishes (invitation_id, guest_id, guest_name, body) values ($1, $2, $3, $4) returning id', [w.invitation_id, w.guest_id ?? null, w.guest_name, w.body])),
+    listWishes: async (invitationId) => (await many('select id, guest_name, body, hidden, created_at from invitation_wishes where invitation_id = $1 order by created_at, id', [invitationId])).map(fix),
+    hideWish: async (invitationId, id, hidden) => (await many('update invitation_wishes set hidden = $3 where invitation_id = $1 and id = $2 returning id', [invitationId, id, hidden])).length > 0,
     getInvitationGuest: async (invitationId, token) => fix(await one('select id, display_name from invitation_guests where invitation_id = $1 and token = $2', [invitationId, token])),
     // what scripts/import-guests.js writes through Supabase
     addInvitationGuest: async (g) => fix(await one('insert into invitation_guests (invitation_id, token, display_name, name_key, phone, note) values ($1, $2, $3, $4, $5, $6) returning *', [g.invitation_id, g.token, g.display_name, g.name_key, g.phone ?? null, g.note ?? null])),

@@ -208,3 +208,7 @@
 .wpt .wdb-edit-input{font:400 15px var(--serif); color:var(--ink); background:#fff; border:1px solid var(--line); border-radius:6px; padding:6px 8px}
 /* «Ավելացնել օրացույցում» under the countdown */
 .wpt .cal-add{text-align:center}
+
+/* «Թողեք մաղթանք» (the wishes book) */
+.wpt .wish{text-align:center}
+.wpt .wish .wish-txt{font:italic 500 4.4cqw/1.5 var(--serif); color:var(--ink)}

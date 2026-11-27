@@ -3,6 +3,7 @@ import { DESIGN_PRICES, PRICE_OPTIONS, pricesFor } from '../../src/site/prices.j
 import { CUSTOM_DESIGN_ID, CUSTOM_EVENT_TYPES, CUSTOM_KINDS } from '../../src/site/customRequest.js'
 import { invitationFeatures, priceAddons } from '../../src/site/addons.js'
 import { cleanAnswers, cleanQuestions } from '../../src/site/rsvpQuestions.js'
+import { wishesView } from './wishes.js'
 import { HttpError, siteUrl } from './http.js'
 import { notify, orderText, paymentText } from './notify.js'
 import { availableMethods, getProvider } from './providers/index.js'
@@ -237,6 +238,8 @@ export function customerView(order, txs, invitation = null) {
       : [],
     // «Լրացուցիչ հարց RSVP-ում»: the couple sets their questions on this page
     rsvpQuestions: invitation && featuresOf(order, invitation).includes('extra_rsvp_question') ? rsvpQuestionsOf(invitation) : null,
+    // «Մաղթանքների գիրք»: a link to the couple's own page with the wishes
+    wishesBook: !!invitation && featuresOf(order, invitation).includes('wishes'),
     canPay: order.amount != null && order.order_status !== 'cancelled' && !['paid', 'refunded'].includes(order.payment_status),
     // What the invitation will show, for the preview on the order page
     // (with a «Նախադիտում» mark until it's paid). The customer's own data;
@@ -288,9 +291,11 @@ export async function publicInvitation(store, code) {
   const { names, eventDate, eventTime, venue, details, content } = order.customization || {}
   const features = featuresOf(order, inv)
   const rsvpQuestions = features.includes('extra_rsvp_question') ? rsvpQuestionsOf(inv) : []
+  // «Մաղթանքների գիրք»: only whether it's there and open — never the wishes
+  const wishes = wishesView(order, inv)
   // «Ձեր սեղանը»: only whether / from when — the table itself is asked separately
   const seating = seatingView(await invitationSeatingPlan(store, inv, order))
-  return { designId: order.design_id, customization: { names, eventDate, eventTime, venue }, details: details || null, content: content || null, seating, features, ...(rsvpQuestions.length ? { rsvpQuestions } : {}) }
+  return { designId: order.design_id, customization: { names, eventDate, eventTime, venue }, details: details || null, content: content || null, seating, features, ...(rsvpQuestions.length ? { rsvpQuestions } : {}), ...(wishes ? { wishes } : {}) }
 }
 
 // «Անհատական դիմում հյուրին» (supabase/personal-links.sql): the guest a

@@ -152,3 +152,7 @@
 .wrg-seat .seat-title{color:var(--sd-ink)}
 .wrg-seat .seat-table{font-weight:200; font-size:100px}
 @media (prefers-reduced-motion:reduce){.wrg .seat-res .seat-table{animation:none}}
+
+/* «Թողեք մաղթանք» (the wishes book) */
+.wrg .wish{text-align:center}
+.wrg .wish .btn-line{background:none; cursor:pointer}

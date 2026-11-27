@@ -188,3 +188,7 @@
   --sd-title-size:25px; --sd-title-weight:300; --sd-radius:22px; --sd-btn-radius:999px; --sd-backdrop:rgba(59,70,55,.4);
 }
 @media (prefers-reduced-motion:reduce){.wmd .seat-res .seat-table{animation:none}}
+
+/* «Թողեք մաղթանք» (the wishes book) */
+.wmd .wish .btn{background:none; cursor:pointer}
+.wmd .wish-in{margin-top:6cqw}

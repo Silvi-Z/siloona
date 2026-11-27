@@ -51,7 +51,7 @@ export const ADDONS = [
     text: { hy: 'Մինչև 3 Ձեր հարցը պատասխանի ձևում, օրինակ՝ ուտեստի ընտրություն։', ru: 'До 3 Ваших вопросов в форме ответа — например, выбор блюда.', en: 'Up to 3 questions of your own in the reply form, such as a meal choice.' },
   },
   {
-    id: 'wishes', type: 'feature', enabled: false, designs: wedding,
+    id: 'wishes', type: 'feature', enabled: true, designs: wedding,
     name: { hy: 'Մաղթանքների գիրք', ru: 'Книга пожеланий', en: 'Wishes book' },
     text: { hy: 'Հյուրերը թողնում են մաղթանքներ, որոնք տեսնում եք միայն Դուք։', ru: 'Гости оставляют пожелания, которые видите только Вы.', en: 'Guests leave wishes that only you can see.' },
   },

@@ -163,3 +163,10 @@
 }
 .wcl-seat .seat-go,.wcl-seat .seat-ok{font-size:12.5px; letter-spacing:.22em; text-transform:uppercase}
 @media (prefers-reduced-motion:reduce){.wcl .seat-res .seat-table{animation:none}}
+
+/* «Թողեք մաղթանք» (the wishes book): the design's outline button on a <button> */
+.wcl .wish .btn{background:none; cursor:pointer}
+.wcl .wish-in{margin-top:6cqw}
+.wcl .wish .wf{margin:0}
+.wcl .wish .wf-lead,.wcl .wish .wf-thanks{text-align:left}
+.wcl .wish .wf button[type=submit],.wcl .wish .wf-done{justify-self:start; justify-items:start}

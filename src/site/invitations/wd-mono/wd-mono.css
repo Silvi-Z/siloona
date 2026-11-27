@@ -150,3 +150,6 @@
 }
 .wmn-seat .seat-go,.wmn-seat .seat-ok{font-size:13px; letter-spacing:.12em}
 @media (prefers-reduced-motion:reduce){.wmn .seat-res .seat-table{animation:none}}
+
+/* «Թողեք մաղթանք» (the wishes book) */
+.wmn .wish{text-align:center}

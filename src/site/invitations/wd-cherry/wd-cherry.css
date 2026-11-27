@@ -186,3 +186,7 @@
 .wch-seat .seat-table{font-size:96px}
 .wch-seat .seat-go,.wch-seat .seat-ok{font-style:italic; font-size:17px; letter-spacing:.01em}
 @media (prefers-reduced-motion:reduce){.wch .seat-res .seat-table{animation:none}}
+
+/* «Թողեք մաղթանք» (the wishes book) */
+.wch .wish .btn-wine{margin-top:0}
+.wch .wf-again.btn-wine{margin-top:2cqw}

@@ -2,7 +2,7 @@ import './wd-mono.css'
 import Section from '../shared/Section'
 import { useInvitationContent } from '../shared/EditableContext'
 import { useDesignFonts } from '../shared/useDesignFonts'
-import { Closing, Countdown, Hero, Instagram, PhotoBand, Places, Playlist, Program, Rsvp, Seating } from './components/Sections'
+import { Closing, Countdown, Hero, Instagram, PhotoBand, Places, Playlist, Program, Rsvp, Seating, WishBook } from './components/Sections'
 import SiloonaCredit from '../shared/SiloonaCredit'
 
 // Light Noto Serif Armenian weights, Cormorant for figures, and a script
@@ -31,6 +31,8 @@ export default function WdMonoInvitation() {
         {/* only where the couple ordered seating — renders nothing otherwise */}
         <Seating />
         <Section id="rsvp"><Rsvp /></Section>
+        {/* only where the couple ordered the wishes book */}
+        <WishBook />
         <Section id="closing"><Closing /></Section>
         <SiloonaCredit design="wd-mono" />
       </main>

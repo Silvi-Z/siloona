@@ -12,6 +12,7 @@ import AddToCalendar from '../../shared/AddToCalendar'
 import { SeatDialog, SeatForm, useSeatFinder } from '../../shared/Seating'
 import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
 import RsvpExtra from '../../shared/RsvpExtra'
+import WishForm, { useWishBook, useWishWords } from '../../shared/WishForm'
 
 // The design's own fixed words, in the invitation's language.
 const WORDS = {
@@ -464,6 +465,23 @@ export function Gift() {
         <span className="sr">{w.open}</span>
       </button>
       <p id="wdc-gift" className={`gift-text${shown ? ' shown' : ''}`} hidden={!shown}><Editable path="gift.text" /></p>
+    </Block>
+  )
+}
+
+// ---------- «Թողեք մաղթանք» (only on invitations with the wishes book) ----------
+// Guests write a wish for the couple (shared/WishForm.jsx); nobody but the
+// couple ever reads them. Nothing renders without the book.
+export function WishBook() {
+  const on = useWishBook()
+  const t = useWishWords()
+  if (!on) return null
+  return (
+    <Block className="wish" label={t.title}>
+      <h2 className="hd r">{t.title}</h2>
+      <div className="wish-in r" style={{ '--i': 2 }}>
+        <WishForm btnClass="btn" bodyClass="body" />
+      </div>
     </Block>
   )
 }

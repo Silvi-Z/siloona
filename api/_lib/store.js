@@ -87,6 +87,10 @@ export function createSupabaseStore(db) {
     // (all columns: `answers` exists once supabase/rsvp-questions.sql has run)
     listRsvps: async (invitationId) => must(await db.from('invitation_rsvps').select('*').eq('invitation_id', invitationId).order('created_at', { ascending: false }).limit(1000)),
     updateInvitationSettings: async (id, settings) => must(await db.from('invitations').update({ settings }).eq('id', id).select('id').single()),
+    // the wishes book (supabase/wishes.sql)
+    insertWish: async (row) => must(await db.from('invitation_wishes').insert(row).select('id').single()),
+    listWishes: async (invitationId) => must(await db.from('invitation_wishes').select('id, guest_name, body, hidden, created_at').eq('invitation_id', invitationId).order('created_at').limit(2000)),
+    hideWish: async (invitationId, id, hidden) => (must(await db.from('invitation_wishes').update({ hidden }).eq('invitation_id', invitationId).eq('id', id).select('id')) || []).length > 0,
 
     // A dashboard event by its invitation link slug (the event id, or the
     // slug saved in its invitation settings).

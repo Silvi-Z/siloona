@@ -4,9 +4,7 @@ import Section from '../shared/Section'
 import { useInvitationContent } from '../shared/EditableContext'
 import { useDesignFonts } from '../shared/useDesignFonts'
 import SiloonaCredit from '../shared/SiloonaCredit'
-import {
-  Closing, Countdown, DateCard, Details, DressCode, Gallery, Gate, Hero, Program, Rsvp, Seating, Story, Venue, Welcome,
-} from './components/Sections'
+import { Closing, Countdown, DateCard, Details, DressCode, Gallery, Gate, Hero, Program, Rsvp, Seating, Story, Venue, Welcome, WishBook } from './components/Sections'
 
 // Cormorant Garamond for Latin, numerals and the ampersand; Noto Serif
 // Armenian (light weights) for every Armenian letter.
@@ -45,6 +43,8 @@ export default function WdNoirInvitation() {
         <Section id="dressCode"><DressCode /></Section>
         <Section id="details"><Details /></Section>
         <Section id="rsvp"><Rsvp /></Section>
+        {/* only where the couple ordered the wishes book */}
+        <WishBook />
         <Section id="closing"><Closing /></Section>
         <SiloonaCredit design="wd-noir" className="wnr-credit" />
       </main>

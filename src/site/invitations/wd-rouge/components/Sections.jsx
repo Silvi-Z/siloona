@@ -10,6 +10,7 @@ import AddToCalendar from '../../shared/AddToCalendar'
 import { SeatDialog, SeatForm, useSeatFinder } from '../../shared/Seating'
 import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
 import RsvpExtra from '../../shared/RsvpExtra'
+import WishForm, { useWishBook, useWishWords } from '../../shared/WishForm'
 
 // the calendar entry's place: the celebration (the second place), else the first
 const calendarPlace = (places = []) => { const p = places[1] || places[0] || {}; return [p.name, p.address].filter(Boolean).join(', ') }
@@ -333,6 +334,23 @@ export function Rsvp() {
           <button className="btn-fill" type="submit"><Editable path="rsvp.button" /></button>
         </form>
       )}
+    </Block>
+  )
+}
+
+// ---------- «Թողեք մաղթանք» (only on invitations with the wishes book) ----------
+// Guests write a wish for the couple (shared/WishForm.jsx); nobody but the
+// couple ever reads them. Nothing renders without the book.
+export function WishBook() {
+  const on = useWishBook()
+  const t = useWishWords()
+  if (!on) return null
+  return (
+    <Block className="wish" label={t.title}>
+      <div className="head r"><h2 className="ht">{t.title}</h2></div>
+      <div className="wish-in r" style={{ '--i': 2 }}>
+        <WishForm btnClass="btn-line" bodyClass="body" />
+      </div>
     </Block>
   )
 }

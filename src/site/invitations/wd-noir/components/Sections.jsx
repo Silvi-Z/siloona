@@ -11,6 +11,7 @@ import { WEEK_SHORT, caps, formatEventDate, initial } from '../lib/date'
 import AddToCalendar from '../../shared/AddToCalendar'
 import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
 import RsvpExtra from '../../shared/RsvpExtra'
+import WishForm, { useWishBook, useWishWords } from '../../shared/WishForm'
 
 // One part of the page. Gets `.in` once it scrolls into view; its `.r`
 // children rise in from that, staggered by --i. `tone` is the part's
@@ -530,6 +531,23 @@ export function Rsvp() {
           <button className="btn-gold" type="submit"><Editable path="rsvp.button" /></button>
         </form>
       )}
+    </Block>
+  )
+}
+
+// ---------- «Թողեք մաղթանք» (only on invitations with the wishes book) ----------
+// Guests write a wish for the couple (shared/WishForm.jsx); nobody but the
+// couple ever reads them. Nothing renders without the book.
+export function WishBook() {
+  const on = useWishBook()
+  const t = useWishWords()
+  if (!on) return null
+  return (
+    <Block tone="ivory" className="wish" label={t.title}>
+      <div className="hd r"><i aria-hidden="true" /><h2>{caps(t.title)}</h2><i aria-hidden="true" /></div>
+      <div className="wish-in r" style={{ '--i': 2 }}>
+        <WishForm btnClass="btn-gold" bodyClass="wish-txt" />
+      </div>
     </Block>
   )
 }

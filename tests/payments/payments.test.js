@@ -879,8 +879,8 @@ test('add-ons: priced on the server from prices.js, stored with the order, charg
   assert.deepEqual((await store.getOrder(plain.orderId)).addons, [])
 
   // forged or unavailable add-ons are refused, never priced
-  for (const addons of [['free_money'], ['rush'], ['wishes'], ['calendar']]) {
-    const bad = await call('POST', '/api/orders', { body: orderBody({ designId: 'wd-portrait', option: 'diy', addons }) })
+  for (const [designId, addons] of [['wd-portrait', ['free_money']], ['wd-portrait', ['rush']], ['bd-animals', ['wishes']], ['wd-portrait', ['calendar']]]) {
+    const bad = await call('POST', '/api/orders', { body: orderBody({ designId, option: 'diy', addons }) })
     assert.equal(bad.status, 422, JSON.stringify(addons))
     assert.ok(bad.json.fields.addons)
   }
@@ -1113,4 +1113,58 @@ test('RSVP questions: the couple sets them on the order page, guests answer, ans
   assert.equal((await status(plain.o)).json.rsvpQuestions, null)
   assert.equal((await save(plain.o, [{ text: 'Հարց' }])).status, 403)
   assert.equal((await call('GET', `/api/invitations?code=${plain.code}`)).json.rsvpQuestions, undefined)
+})
+
+test('wishes book: guests write, only the couple reads, hides and closes it', async () => {
+  const paid = async (addons, customization) => {
+    const o = await newOrder({ designId: 'wd-noir', addons, ...(customization ? { customization } : {}) })
+    await call('POST', '/api/admin/orders', { token: USERS.admin.token, body: { orderId: o.orderId, action: 'manual_payment', method: 'cash', reference: `W-${o.orderNumber}` } })
+    return { o, code: (await status(o)).json.invitationCode }
+  }
+  const wish = (code, w) => call('POST', '/api/invitations', { body: { wish: true, code, ...w } })
+  const book = (o, extra = {}) => call('POST', '/api/orders/status', { body: { action: 'wishes', id: o.orderId, t: o.token, ...extra } })
+  const { o, code } = await paid(['wishes'], { names: 'Միլենա & Ալեն', eventDate: '2020-06-12', eventTime: '16:00', venue: 'Երևան' })
+
+  const page = await call('GET', `/api/invitations?code=${code}`)
+  assert.deepEqual(page.json.wishes, { open: true }, 'the page knows only that the book is open')
+  assert.equal((await wish(code, { name: 'Գոհար', text: 'Երջանկություն <script>alert(1)</script>ձեզ\n\n\n\nսիրով' })).status, 201)
+  assert.equal((await wish(code, { name: 'Արամ', text: 'Շնորհավոր' })).status, 201)
+  assert.equal((await wish(code, { name: '', text: '' })).status, 422, 'empty fields')
+  assert.equal((await wish(code, { name: 'Ա Բ', text: 'x'.repeat(501) })).status, 422, 'too long')
+  assert.equal((await wish(code, { name: 'Bot', text: 'spam', website: 'http://x' })).status, 400, 'honeypot')
+  assert.ok(!JSON.stringify((await call('GET', `/api/invitations?code=${code}`)).json).includes('Երջանկություն'), 'other guests never see a wish')
+
+  const b = await book(o)
+  assert.equal(b.status, 200)
+  assert.deepEqual(b.json.wishes.map((w) => w.name), ['Գոհար', 'Արամ'])
+  assert.equal(b.json.wishes[0].text, 'Երջանկություն alert(1)ձեզ\n\nսիրով', 'no HTML; line breaks kept')
+  assert.equal((await book({ ...o, token: 'nope' })).status, 404)
+  const hidden = await book(o, { action: 'wish_hide', wishId: b.json.wishes[1].id, hidden: true })
+  assert.equal(hidden.json.wishes[1].hidden, true)
+
+  // closing N days after the event (2020-06-12 is long past)
+  const closed = await book(o, { action: 'wishes_close', days: 30 })
+  assert.equal(closed.json.open, false)
+  assert.equal((await wish(code, { name: 'Ուշացած', text: 'Ներողություն' })).status, 409)
+  assert.deepEqual((await call('GET', `/api/invitations?code=${code}`)).json.wishes, { open: false })
+  assert.equal((await book(o, { action: 'wishes_close', days: null })).json.open, true, 'never close')
+
+  // without the add-on: no book at all
+  const plain = await paid([])
+  assert.equal((await call('GET', `/api/invitations?code=${plain.code}`)).json.wishes, undefined)
+  assert.equal((await wish(plain.code, { name: 'Գոհար', text: 'Բարև' })).status, 404)
+  assert.equal((await book(plain.o)).status, 404)
+})
+
+test('wishes book: a fast flood from one address is refused', async () => {
+  const o = await newOrder({ designId: 'wd-noir', addons: ['wishes'] })
+  await call('POST', '/api/admin/orders', { token: USERS.admin.token, body: { orderId: o.orderId, action: 'manual_payment', method: 'cash', reference: `F-${o.orderNumber}` } })
+  const code = (await status(o)).json.invitationCode
+  process.env.RATE_LIMITS = 'on'
+  try {
+    const codes = []
+    for (let i = 0; i < 7; i++) codes.push((await call('POST', '/api/invitations', { body: { wish: true, code, name: 'Արագ', text: `Մաղթանք ${i}` } })).status)
+    assert.deepEqual(codes.slice(0, 5), [201, 201, 201, 201, 201])
+    assert.equal(codes[6], 429)
+  } finally { process.env.RATE_LIMITS = 'off' }
 })

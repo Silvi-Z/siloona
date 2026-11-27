@@ -183,3 +183,7 @@
 .wvl-seat .seat-x{top:46px; right:22px}
 .wvl-seat .seat-go,.wvl-seat .seat-ok{font-size:12px; letter-spacing:.24em; text-transform:uppercase}
 @media (prefers-reduced-motion:reduce){.wvl .seat-res .seat-table{animation:none}}
+
+/* «Թողեք մաղթանք» (the wishes book), on the plaster like the venue */
+.wvl .wish{padding-top:6cqw; color:var(--ink)}
+.wvl .wish .btn{background:none; cursor:pointer}

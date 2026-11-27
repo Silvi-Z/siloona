@@ -16,6 +16,7 @@ import { caps, formatEventDate } from '../wd-noir/lib/date'
 import AddToCalendar from '../shared/AddToCalendar'
 import { LiveStep, useLiveSchedule } from '../shared/LiveSchedule'
 import RsvpExtra from '../shared/RsvpExtra'
+import WishForm, { useWishBook, useWishWords } from '../shared/WishForm'
 
 // Same type as wd-noir.
 const FONTS_HREF = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Noto+Serif+Armenian:wght@200;300;400;500&display=swap'
@@ -42,6 +43,8 @@ export default function WdNoirLiteInvitation() {
         <Section id="schedule"><Program /></Section>
         <Section id="dressCode"><DressCode /></Section>
         <Section id="rsvp"><Rsvp /></Section>
+        {/* only where the couple ordered the wishes book */}
+        <WishBook />
         <Section id="closing"><Closing /></Section>
         <SiloonaCredit design="wd-noir-lite" className="wnl-credit" />
       </main>
@@ -280,6 +283,23 @@ function Rsvp() {
           <button className="btn-gold" type="submit"><Editable path="rsvp.button" /></button>
         </form>
       )}
+    </Panel>
+  )
+}
+
+// ---------- «Թողեք մաղթանք» (only on invitations with the wishes book) ----------
+// Guests write a wish for the couple (shared/WishForm.jsx); nobody but the
+// couple ever reads them. Nothing renders without the book.
+function WishBook() {
+  const on = useWishBook()
+  const t = useWishWords()
+  if (!on) return null
+  return (
+    <Panel className="wish" label={t.title}>
+      <h2 className="hd">{caps(t.title)}</h2>
+      <div className="wish-in r" style={{ '--i': 2 }}>
+        <WishForm btnClass="btn-gold" bodyClass="body" />
+      </div>
     </Panel>
   )
 }

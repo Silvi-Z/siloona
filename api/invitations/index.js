@@ -4,6 +4,7 @@ import { getStore } from '../_lib/store.js'
 import { invitationSeatingPlan, loadInvitation, personalGreeting, publicInvitation, submitRsvp } from '../_lib/orders.js'
 import { loadPublished, publicEventInvitation, rateLimit, seatingPlanForEvent, submitEventRsvp } from '../_lib/guestLinks.js'
 import { findSeat } from '../_lib/seating.js'
+import { submitWish } from '../_lib/wishes.js'
 
 // Public invitation pages, /i/…:
 //   /i/<12-hex code>            a purchased invitation (orders); once its
@@ -19,6 +20,8 @@ import { findSeat } from '../_lib/seating.js'
 //   POST { slug, t?, name, status, plus, note }    RSVP to a dashboard event
 //   GET  ?ics=1&t=…&d=…&h=…     «Ավելացնել օրացույցում»: the event as an
 //                               .ics file (Apple / other calendars)
+//   POST { wish: true, code, t?, name, text, website }  a wish for the
+//        couple's wishes book (wishes.js); never read back by guests
 //   POST { seat: true, code, name }                «Ձեր սեղանը»: the guest's
 //        table (seating.js) — { status: found|ambiguous|not_found|empty, table? }
 // (One function for all of it: the free Vercel plan allows 12.)
@@ -91,6 +94,12 @@ export default handler(async (req, res) => {
     return sendJson(res, 200, await publicEventInvitation(store, code, q.t ? String(q.t) : null))
   }
   const body = await readBody(req)
+  if (body.wish) {
+    // «Մաղթանքների գիրք» (wishes.js)
+    await rateLimit(store, req, 'wish')
+    await submitWish(store, body)
+    return sendJson(res, 201, { ok: true })
+  }
   if (body.seat) {
     await rateLimit(store, req, 'seat')
     const plan = await planForLink(store, String(body.code || ''))

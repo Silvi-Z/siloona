@@ -22,6 +22,7 @@ function ToDashboard() {
 const InvitationPreview = lazy(() => import('./site/pages/InvitationPreview'))
 const Checkout = lazy(() => import('./site/checkout/Checkout'))
 const CheckoutResult = lazy(() => import('./site/checkout/CheckoutResult'))
+const WishesBook = lazy(() => import('./site/checkout/WishesBook'))
 const SimulatedGateway = lazy(() => import('./site/checkout/SimulatedGateway'))
 const SharedInvitation = lazy(() => import('./site/pages/SharedInvitation'))
 const MyOrders = lazy(() => import('./site/pages/MyOrders'))
@@ -71,6 +72,7 @@ const SITE_PAGES = [
   ['/login', CUSTOMER_DASHBOARD ? <ToDashboard /> : <Navigate to="/" replace />],
   ['/my-orders', <Suspense fallback={null}><MyOrders /></Suspense>],
   ['/checkout/result', <Suspense fallback={null}><CheckoutResult /></Suspense>],
+  ['/checkout/wishes', <Suspense fallback={null}><WishesBook /></Suspense>],
   ['/checkout/:designId', <Suspense fallback={null}><Checkout /></Suspense>],
 ]
 const PREFIXES = ['', '/ru', '/en']

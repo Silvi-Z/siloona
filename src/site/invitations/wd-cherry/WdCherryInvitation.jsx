@@ -2,7 +2,7 @@ import './wd-cherry.css'
 import Section from '../shared/Section'
 import { useInvitationContent } from '../shared/EditableContext'
 import { useDesignFonts } from '../shared/useDesignFonts'
-import { CalendarCard, Closing, DressCode, Hero, Plan, Rsvp, Seating, Venue, Welcome, Wishes } from './components/Sections'
+import { CalendarCard, Closing, DressCode, Hero, Plan, Rsvp, Seating, Venue, Welcome, WishBook, Wishes } from './components/Sections'
 import SiloonaCredit from '../shared/SiloonaCredit'
 
 // No handwriting font draws Armenian, so Armenian text uses Noto Serif
@@ -28,6 +28,8 @@ export default function WdCherryInvitation() {
         {/* only where the couple ordered seating — renders nothing otherwise */}
         <Seating />
         <Section id="rsvp"><Rsvp /></Section>
+        {/* only where the couple ordered the wishes book */}
+        <WishBook />
         <Section id="closing"><Closing /></Section>
         <SiloonaCredit design="wd-cherry" />
       </main>

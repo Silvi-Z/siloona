@@ -35,13 +35,16 @@ const Ctx = createContext(null)
 //   rsvpQuestions  the couple's own RSVP questions (published page only, with
 //                the extra_rsvp_question add-on) and rsvpAnswers, a ref
 //                the form's answers go into (RsvpExtra.jsx)
+//   wishes       the wishes book on this copy — { open } (published page with
+//                the add-on only) and onWish({ name, text, website }) →
+//                { ok, status, message } (WishForm.jsx)
 //   skipIntro    open straight to the content (no envelope/curtain)
 //   live         keep following `defaultData` when the host replaces it
 //                (the dashboard preview while settings change)
 //   transform(prev, next)  optional: adjusts content after each edit — the
 //                public preview uses it to carry a renamed person into the
 //                sentences built from their name (invitationDetails.js)
-export function InvitationContentProvider({ defaultData, saved, onSave, onReset, editing, setEditing, guestName = null, onRsvp, seating = null, features = null, rsvpQuestions = null, rsvpAnswers = null, skipIntro = false, live = false, transform, children }) {
+export function InvitationContentProvider({ defaultData, saved, onSave, onReset, editing, setEditing, guestName = null, onRsvp, seating = null, features = null, rsvpQuestions = null, rsvpAnswers = null, wishes = null, onWish, skipIntro = false, live = false, transform, children }) {
   const [data, setData] = useState(() => deepMerge(defaultData, saved))
   const [dirty, setDirty] = useState(() => saved != null)
   // Latest content, read synchronously so onSave (which may update the
@@ -82,9 +85,9 @@ export function InvitationContentProvider({ defaultData, saved, onSave, onReset,
   }
 
   const value = useMemo(
-    () => ({ data, editing, setEditing, setField, replaceData, reset, dirty, guestName, onRsvp, seating, features, rsvpQuestions, rsvpAnswers, skipIntro }),
+    () => ({ data, editing, setEditing, setField, replaceData, reset, dirty, guestName, onRsvp, seating, features, rsvpQuestions, rsvpAnswers, wishes, onWish, skipIntro }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [data, editing, dirty, guestName, onRsvp, seating, features, rsvpQuestions, rsvpAnswers, skipIntro],
+    [data, editing, dirty, guestName, onRsvp, seating, features, rsvpQuestions, rsvpAnswers, wishes, onWish, skipIntro],
   )
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>

@@ -1,0 +1,51 @@
+/* «Մաղթանքների գիրք» — the couple's page (WishesBook.jsx). On screen a
+   quiet book page in the site's colours; printed, an A5 book: the names,
+   then one wish after another, never split across pages, no controls. */
+.siloona-site .wb{padding:clamp(28px,6vw,64px) 0 80px; background:#FBF8F3}
+.siloona-site .wb-wrap{width:min(100% - 40px, 680px); margin:0 auto}
+.siloona-site .wb-back a{font-size:14px; color:var(--ink-2); text-decoration:none}
+.siloona-site .wb-head{text-align:center; padding:clamp(24px,5vw,48px) 0 clamp(20px,4vw,36px); border-bottom:1px solid rgba(74,6,17,.18)}
+.siloona-site .wb-eyebrow{margin:0; font-size:12px; letter-spacing:.24em; color:#4A0611}
+.siloona-site .wb-names{margin:14px 0 6px; font-family:var(--serif); font-weight:400; font-style:italic; font-size:clamp(32px,7vw,52px); line-height:1.1; color:#2A1A1D}
+.siloona-site .wb-date{margin:0; font-family:var(--serif); font-size:17px; color:var(--ink-2)}
+.siloona-site .wb-count{margin:14px 0 0; font-size:13.5px; letter-spacing:.06em; color:var(--muted)}
+.siloona-site .wb-tools{display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:10px 12px; margin:24px 0 8px}
+.siloona-site .wb-btn{min-height:44px; padding:10px 22px; border:1px solid #4A0611; border-radius:999px; background:#4A0611; color:#fff; font:inherit; font-size:14px; cursor:pointer}
+.siloona-site .wb-btn.ghost{background:transparent; color:#4A0611}
+.siloona-site .wb-btn.small{min-height:38px; padding:6px 16px}
+.siloona-site .wb-btn[disabled]{opacity:.45; cursor:default}
+.siloona-site .wb-close{display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:center; gap:8px 10px; width:100%; margin-top:8px; font-size:13.5px; color:var(--ink-2)}
+.siloona-site .wb-close label{display:grid; gap:4px}
+.siloona-site .wb-close input{width:110px; min-height:38px; padding:6px 10px; border:1px solid var(--line-2); border-radius:6px; background:#fff; font:inherit; font-size:16px}
+.siloona-site .wb-state{flex-basis:100%; text-align:center; font-size:13px}
+.siloona-site .wb-state.on{color:#3d6b3d}
+.siloona-site .wb-state.off{color:#8a2a31}
+.siloona-site .wb-err{text-align:center; color:#8a2a31}
+.siloona-site .wb-note{text-align:center; color:var(--muted); margin:36px auto; max-width:36em; line-height:1.6}
+.siloona-site .wb-list{list-style:none; margin:0; padding:0}
+.siloona-site .wb-wish{position:relative; padding:clamp(26px,5vw,38px) 0; border-bottom:1px solid rgba(74,6,17,.12); break-inside:avoid}
+.siloona-site .wb-wish blockquote{margin:0; font-family:var(--serif); font-size:clamp(19px,3.6vw,22px); line-height:1.55; color:#2A1A1D; white-space:pre-line}
+.siloona-site .wb-wish blockquote::before{content:"«"; color:#4A0611; margin-right:.1em}
+.siloona-site .wb-wish blockquote::after{content:"»"; color:#4A0611; margin-left:.1em}
+.siloona-site .wb-who{margin:12px 0 0; font-size:14.5px; color:#4A0611}
+.siloona-site .wb-when{color:var(--muted)}
+.siloona-site .wb-hide{margin-top:10px; min-height:36px; padding:4px 0; border:0; background:none; color:var(--ink-2); font:inherit; font-size:13px; text-decoration:underline; text-underline-offset:3px; cursor:pointer}
+.siloona-site .wb-wish.is-hidden blockquote,.siloona-site .wb-wish.is-hidden .wb-who{opacity:.4}
+.siloona-site .wb-hidden-tag{margin-left:10px; font-size:12px; color:var(--muted)}
+
+@media print{
+  @page{size:A5; margin:16mm 14mm}
+  /* only the book: everything else on the page (header, footer, the chat button) stays out */
+  body *{visibility:hidden}
+  .siloona-site .wb,.siloona-site .wb *{visibility:visible}
+  .wb-noprint{display:none !important}
+  html,body,.siloona-site{background:#fff !important}
+  .siloona-site .wb{position:absolute; left:0; top:0; width:100%; padding:0; background:#fff}
+  .siloona-site .wb-wrap{width:100%}
+  .siloona-site .wb-head{border:0; padding:0 0 10mm; page-break-after:always; min-height:150mm; display:flex; flex-direction:column; justify-content:center}
+  .siloona-site .wb-names{font-size:30pt}
+  .siloona-site .wb-wish{padding:7mm 0; border-color:#e5dcd3; page-break-inside:avoid}
+  .siloona-site .wb-wish.is-hidden{display:none}
+  .siloona-site .wb-wish blockquote{font-size:12.5pt}
+  .siloona-site .wb-who{font-size:10pt}
+}

@@ -243,3 +243,7 @@
 .wdc-seat .seat-intro,.wdc-seat .seat-lbl,.wdc-seat .seat-field input{font-size:17px}
 .wdc-seat .seat-go,.wdc-seat .seat-ok{font-weight:700; font-size:14px; letter-spacing:.16em; text-transform:uppercase}
 @media (prefers-reduced-motion:reduce){.wdc .seat-res .seat-table{animation:none}}
+
+/* «Թողեք մաղթանք» (the wishes book) */
+.wdc .wish{text-align:center}
+.wdc .wish .body{margin-bottom:0}

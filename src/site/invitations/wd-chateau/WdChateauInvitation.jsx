@@ -2,7 +2,7 @@ import './wd-chateau.css'
 import Section from '../shared/Section'
 import { useInvitationContent } from '../shared/EditableContext'
 import { useDesignFonts } from '../shared/useDesignFonts'
-import { Ceremony, Closing, Divider, DressCode, Gallery, Gift, Hero, Reception, Rsvp, Schedule, Seating, Venue } from './components/Sections'
+import { Ceremony, Closing, Divider, DressCode, Gallery, Gift, Hero, Reception, Rsvp, Schedule, Seating, Venue, WishBook } from './components/Sections'
 import SiloonaCredit from '../shared/SiloonaCredit'
 
 // Cormorant Garamond (Latin and Cyrillic) for the names, the text and the
@@ -34,6 +34,8 @@ export default function WdChateauInvitation() {
         <Seating />
         <Section id="rsvp"><Rsvp /></Section>
         <Section id="gift"><Gift /></Section>
+        {/* only where the couple ordered the wishes book */}
+        <WishBook />
         <Section id="closing"><Closing /></Section>
         <SiloonaCredit design="wd-chateau" />
       </main>

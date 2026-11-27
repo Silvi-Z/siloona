@@ -48,6 +48,7 @@ const TEXT = {
     keepLink: 'Պահպանեք այս էջի հղումը՝ պատվերի կարգավիճակը ցանկացած պահի տեսնելու համար։',
     onlyYou: ' Այն միայն Ձեզ համար է․ հյուրերին ուղարկեք հրավերի հղումը։',
     copyOrder: 'Պատճենել պատվերի հղումը', refresh: 'Թարմացնել', home: 'Գլխավոր էջ', custom: 'Անհատական դիզայն',
+    wbEyebrow: 'Մաղթանքների գիրք', wbTitle: 'Ձեր հյուրերի մաղթանքները', wbText: 'Հյուրերի թողած մաղթանքները տեսնում եք միայն Դուք։ Կարող եք թաքցնել որևէ մեկը, ներբեռնել կամ տպել։', wbOpen: 'Բացել գիրքը',
     manageEyebrow: 'Անձնական հրավերներ', manageTitle: 'Ուղարկեք յուրաքանչյուր հյուրին իր հրավերը',
     manageText: 'Ձեր վահանակում ավելացրեք հյուրերին․ յուրաքանչյուրը կստանա իր անունով հրավեր, իսկ Դուք կտեսնեք, թե ով է բացել և ինչ է պատասխանել։',
     manageBtn: 'Բացել վահանակը', linkedText: 'Պատվերը կապված է Ձեր վահանակի հետ․ հյուրերի նոր պատասխանները այնտեղ են։',
@@ -81,6 +82,7 @@ const TEXT = {
     keepLink: 'Сохраните ссылку на эту страницу, чтобы в любой момент видеть статус заказа.',
     onlyYou: ' Она только для Вас — гостям отправляйте ссылку на приглашение.',
     copyOrder: 'Копировать ссылку на заказ', refresh: 'Обновить', home: 'На главную', custom: 'Индивидуальный дизайн',
+    wbEyebrow: 'Книга пожеланий', wbTitle: 'Пожелания ваших гостей', wbText: 'Пожелания гостей видите только вы. Можно скрыть любое, скачать или распечатать.', wbOpen: 'Открыть книгу',
     manageEyebrow: 'Личные приглашения', manageTitle: 'Отправьте каждому гостю его приглашение',
     manageText: 'Добавьте гостей в личном кабинете: каждый получит приглашение со своим именем, а Вы увидите, кто открыл его и что ответил.',
     manageBtn: 'Открыть кабинет', linkedText: 'Заказ связан с Вашим кабинетом — новые ответы гостей теперь там.',
@@ -114,6 +116,7 @@ const TEXT = {
     keepLink: 'Keep the link to this page to check your order status at any time.',
     onlyYou: ' It’s for you only — send your guests the invitation link.',
     copyOrder: 'Copy order link', refresh: 'Refresh', home: 'Home page', custom: 'Custom design',
+    wbEyebrow: 'Wishes book', wbTitle: 'Your guests’ wishes', wbText: 'Only you can see the wishes your guests leave. Hide any of them, download or print them.', wbOpen: 'Open the book',
     manageEyebrow: 'Personal invitations', manageTitle: 'Send each guest their own invitation',
     manageText: 'Add your guests in your dashboard: each one gets an invitation with their name, and you see who opened it and what they answered.',
     manageBtn: 'Open your dashboard', linkedText: 'This order is linked to your dashboard — new answers from guests are there now.',
@@ -387,6 +390,14 @@ export default function CheckoutResult() {
           {CUSTOMER_DASHBOARD && data.invitationCode && design?.previewSlug && <ManageGuests id={id} token={token} linked={data.linked} />}
           {data.invitationCode && Array.isArray(data.rsvpQuestions) && (
             <RsvpQuestions id={id} token={token} questions={data.rsvpQuestions} onSaved={(qs) => setData((d) => ({ ...d, rsvpQuestions: qs }))} />
+          )}
+          {data.invitationCode && data.wishesBook && (
+            <section className="co-share" aria-labelledby="co-wb-h">
+              <p className="eyebrow">{t.wbEyebrow}</p>
+              <h2 id="co-wb-h">{t.wbTitle}</h2>
+              <p className="co-share-note">{t.wbText}</p>
+              <div className="co-share-btns"><Link className="btn btn-primary" to={to(`/checkout/wishes?order=${id}&t=${token}`)}>{t.wbOpen}</Link></div>
+            </section>
           )}
           {data.invitationCode && design?.previewSlug && <GuestAnswers rsvps={data.rsvps || []} orderNumber={data.orderNumber} questions={data.rsvpQuestions || []} />}
 

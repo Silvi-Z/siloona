@@ -11,6 +11,7 @@ import AddToCalendar from '../../shared/AddToCalendar'
 import { SeatDialog, SeatForm, useSeatFinder } from '../../shared/Seating'
 import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
 import RsvpExtra from '../../shared/RsvpExtra'
+import WishForm, { useWishBook, useWishWords } from '../../shared/WishForm'
 
 // A page section that gets `.in` once it scrolls into view; its `.r`
 // children reveal from that, staggered by --i.
@@ -299,6 +300,23 @@ export function Rsvp() {
           <button className="send" type="submit"><Editable path="rsvp.button" /></button>
         </form>
       )}
+    </Block>
+  )
+}
+
+// ---------- «Թողեք մաղթանք» (only on invitations with the wishes book) ----------
+// Guests write a wish for the couple (shared/WishForm.jsx); nobody but the
+// couple ever reads them. Nothing renders without the book.
+export function WishBook() {
+  const on = useWishBook()
+  const t = useWishWords()
+  if (!on) return null
+  return (
+    <Block className="wish" label={t.title}>
+      <h2 className="hd r">{t.title}</h2>
+      <div className="wish-in r" style={{ '--i': 2 }}>
+        <WishForm btnClass="btn" bodyClass="body" />
+      </div>
     </Block>
   )
 }

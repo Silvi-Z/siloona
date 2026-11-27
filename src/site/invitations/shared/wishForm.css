@@ -1,0 +1,21 @@
+/* «Թողեք մաղթանք» (WishForm.jsx): fields in the design's typeface and
+   colour (currentColor); the design's own button and text classes. */
+.wf{display:grid; gap:16px; width:100%; max-width:440px; margin:0 auto; text-align:left}
+.wf-lead,.wf-thanks{text-align:center}
+.wf-field{display:grid; gap:6px}
+.wf-lbl{font-size:.9em; opacity:.75}
+.wf input,.wf textarea{
+  width:100%; padding:10px 2px; border:0; border-bottom:1px solid color-mix(in srgb, currentColor 45%, transparent); border-radius:0;
+  background:transparent; color:inherit; font:inherit; font-size:16px; line-height:1.5; -webkit-appearance:none; appearance:none; resize:vertical;
+}
+.wf textarea{min-height:110px; border:1px solid color-mix(in srgb, currentColor 35%, transparent); padding:10px 12px}
+.wf input:focus,.wf textarea:focus{outline:none; border-color:currentColor}
+.wf-count{justify-self:end; font-size:.8em; opacity:.55; font-variant-numeric:tabular-nums}
+.wf-hp{position:absolute; left:-9999px; width:1px; height:1px; opacity:0}
+.wf-err{margin:0; font-size:.9em; color:#b3403a}
+.wf button[type=submit]{justify-self:center; cursor:pointer}
+.wf button[disabled]{opacity:.7; cursor:progress}
+.wf-done{display:grid; justify-items:center; gap:14px; max-width:440px; margin:0 auto; animation:wf-in .6s ease both}
+.wf-again{cursor:pointer}
+@keyframes wf-in{from{opacity:0; transform:translateY(8px)}}
+@media (prefers-reduced-motion:reduce){ .wf-done{animation:none} }

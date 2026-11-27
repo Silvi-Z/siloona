@@ -99,7 +99,7 @@ for (const [i, id] of WEB_DESIGNS.entries()) {
   const code = `e000000000${i.toString(16).padStart(2, '0')}`
   const { rows: [o] } = await store.db.query(
     `insert into orders (access_token, customer_name, customer_phone, design_id, design_option, customization, amount, payment_status, addons)
-     values ('demo', 'Demo', '+37499000000', $1, 'diy', '{"names":"Լիանա & Դավիթ","eventDate":"2027-06-12","eventTime":"16:00","venue":"Երևան"}'::jsonb, 19000, 'paid', '[{"id":"personal_greeting","price":3000},{"id":"extra_rsvp_question","price":1000}]'::jsonb) returning id`, [id])
+     values ('demo', 'Demo', '+37499000000', $1, 'diy', '{"names":"Լիանա & Դավիթ","eventDate":"2027-06-12","eventTime":"16:00","venue":"Երևան"}'::jsonb, 19000, 'paid', '[{"id":"personal_greeting","price":3000},{"id":"extra_rsvp_question","price":1000},{"id":"wishes","price":3000}]'::jsonb) returning id`, [id])
   // with the couple's own RSVP questions too (supabase/rsvp-questions.sql)
   const { rows: [inv] } = await store.db.query('insert into invitations (code, order_id, design_id, settings) values ($1, $2, $3, $4::jsonb) returning id', [code, o.id, id, JSON.stringify({ rsvpQuestions: DEMO_QUESTIONS })])
   await store.addInvitationGuest({ invitation_id: inv.id, token: `DemoGuestToken${String(i).padStart(10, '0')}`, display_name: 'Արամ և Անի', name_key: `aram-ani-${i}` })

@@ -2,7 +2,7 @@ import './wd-line.css'
 import Section from '../shared/Section'
 import { useInvitationContent } from '../shared/EditableContext'
 import { useDesignFonts } from '../shared/useDesignFonts'
-import { Closing, DateBlock, DressCode, Hero, Program, Rsvp, Seating, Venue, Welcome } from './components/Sections'
+import { Closing, DateBlock, DressCode, Hero, Program, Rsvp, Seating, Venue, Welcome, WishBook } from './components/Sections'
 import SiloonaCredit from '../shared/SiloonaCredit'
 
 // Light weights of Cormorant (numerals, ampersand) and Noto Serif
@@ -28,6 +28,8 @@ export default function WdLineInvitation() {
         {/* only where the couple ordered seating — renders nothing otherwise */}
         <Seating />
         <Section id="rsvp"><Rsvp /></Section>
+        {/* only where the couple ordered the wishes book */}
+        <WishBook />
         <Section id="closing"><Closing /></Section>
         <SiloonaCredit design="wd-line" />
       </main>

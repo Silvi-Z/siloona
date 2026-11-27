@@ -331,3 +331,7 @@
   .wnr .cal-g .day circle{stroke-dashoffset:0; transition:none}
   .wnr-seat,.wnr-seat .seat-box,.wnr-seat .seat-table{animation:none}
 }
+
+/* «Թողեք մաղթանք» (the wishes book), on ivory */
+.wnr .wish .wish-txt{font:300 16px/1.7 var(--arm); color:var(--ink-2, #4A433D)}
+.wnr .wish-in{margin-top:22px}
