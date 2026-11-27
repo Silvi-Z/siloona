@@ -6,6 +6,8 @@ import { formatPrice } from '../pricing'
 import { useLang, useText } from '../i18n'
 import PaymentMethods, { SecureNote } from './PaymentMethods'
 import OrderPreview from './OrderPreview'
+import { CONTACTS, opensTab } from '../contacts'
+import ContactIcon from '../ContactIcon'
 import RsvpQuestions from './RsvpQuestions'
 import ThankYouEditor from './ThankYouEditor'
 import { addonName } from '../addons'
@@ -37,6 +39,7 @@ const TEXT = {
     requestEyebrow: 'Հայտը ստացված է', requestText: 'Մենք կկապվենք Ձեզ հետ՝ գինն ու մանրամասները հաստատելու համար։',
     placedEyebrow: 'Պատվերը գրանցված է', toPay: 'Մնում է վճարել', toPayText: 'Ընտրեք վճարման եղանակը՝ պատվերը հաստատելու համար։',
     contactPay: 'Մենք կկապվենք Ձեզ հետ նույն օրը՝ կճշտենք վճարումը և կուղարկենք հրավերի հղումը։',
+    accepted: 'Պատվերը ընդունված է', acceptedText: 'Նույն օրը կկապվենք Ձեզ հետ՝ վճարումը համաձայնեցնելու համար։', writeUs: 'Կամ գրեք մեզ',
     csvHead: ['Անուն', 'Պատասխան', 'Ուղեկցողներ', 'Նշում', 'Երբ'], yes: 'Կգա', no: 'Չի գա', ansYes: 'Այո', ansNo: 'Ոչ',
     answers: 'Հյուրերի պատասխանները', noAnswers: 'Պատասխաններ դեռ չկան։ Դրանք կհայտնվեն այստեղ, հենց հյուրերը լրացնեն հրավերի ձևը։',
     answersSum: (people, yes, no) => <><b>{people}</b> հոգի կգա ({yes} պատասխան) · <b>{no}</b> չի գա</>,
@@ -71,6 +74,7 @@ const TEXT = {
     requestEyebrow: 'Заявка получена', requestText: 'Мы свяжемся с Вами, чтобы согласовать цену и детали.',
     placedEyebrow: 'Заказ оформлен', toPay: 'Осталось оплатить', toPayText: 'Выберите способ оплаты, чтобы подтвердить заказ.',
     contactPay: 'Мы свяжемся с Вами в тот же день, уточним оплату и пришлём ссылку на приглашение.',
+    accepted: 'Заказ принят', acceptedText: 'Мы свяжемся с Вами в тот же день, чтобы согласовать оплату.', writeUs: 'Или напишите нам',
     csvHead: ['Имя', 'Ответ', 'Сопровождающие', 'Комментарий', 'Когда'], yes: 'Придёт', no: 'Не придёт', ansYes: 'Да', ansNo: 'Нет',
     answers: 'Ответы гостей', noAnswers: 'Ответов пока нет. Они появятся здесь, как только гости заполнят форму в приглашении.',
     answersSum: (people, yes, no) => <>Придут: <b>{people}</b> чел. (ответов: {yes}) · не придут: <b>{no}</b></>,
@@ -105,6 +109,7 @@ const TEXT = {
     requestEyebrow: 'Request received', requestText: 'We’ll be in touch to confirm the price and details.',
     placedEyebrow: 'Order placed', toPay: 'One step left: payment', toPayText: 'Choose a payment method to confirm your order.',
     contactPay: 'We’ll get in touch the same day to arrange payment and send you the invitation link.',
+    accepted: 'Order received', acceptedText: 'We’ll get in touch the same day to arrange payment.', writeUs: 'Or write to us',
     csvHead: ['Name', 'Answer', 'Plus-ones', 'Note', 'When'], yes: 'Attending', no: 'Not attending', ansYes: 'Yes', ansNo: 'No',
     answers: 'Guests’ answers', noAnswers: 'No answers yet. They’ll appear here as soon as guests fill in the form in the invitation.',
     answersSum: (people, yes, no) => <><b>{people}</b> attending ({yes} answers) · <b>{no}</b> not attending</>,
@@ -188,7 +193,10 @@ function fmtDate(iso) {
 
 function stateCopy(d, pollsDone, t) {
   const first = d.customerName.split(' ')[0]
-  switch (d.paymentStatus) {
+  // only a payment really going on now is «being checked»; one left on
+  // the bank's page is an unpaid order
+  const status = d.paymentStatus === 'pending' && !d.payingNow ? 'unpaid' : d.paymentStatus
+  switch (status) {
     case 'paid':
       return { tone: 'ok', eyebrow: t.paidEyebrow, title: t.thanks(first), text: t.paidText }
     case 'pending':
@@ -207,7 +215,8 @@ function stateCopy(d, pollsDone, t) {
       }
       return d.methods.length
         ? { tone: 'wait', eyebrow: t.placedEyebrow, title: t.toPay, text: t.toPayText }
-        : { tone: 'ok', eyebrow: t.placedEyebrow, title: t.thanks(first), text: t.contactPay }
+        // no online payment (orders as requests): we get in touch
+        : { tone: 'ok', eyebrow: t.placedEyebrow, title: t.accepted, text: t.acceptedText }
   }
 }
 
@@ -299,7 +308,7 @@ export default function CheckoutResult() {
   }, [load])
 
   useEffect(() => {
-    if (data?.paymentStatus !== 'pending' || polls >= MAX_POLLS) return
+    if (data?.paymentStatus !== 'pending' || !data.payingNow || polls >= MAX_POLLS) return
     const h = setTimeout(() => { setPolls((n) => n + 1); load() }, POLL_MS)
     return () => clearTimeout(h)
   }, [data, polls, load])
@@ -358,7 +367,9 @@ export default function CheckoutResult() {
   const copy = stateCopy(data, polls >= MAX_POLLS, t)
   const OPTION_INFO = optionInfo(lang)
   const METHOD_INFO = methodInfo(lang)
-  const pendingLive = data.paymentStatus === 'pending' && polls < MAX_POLLS
+  const pendingLive = data.paymentStatus === 'pending' && data.payingNow && polls < MAX_POLLS
+  // no online payment switched on: how to reach us, for an order still to pay
+  const contactUs = !data.methods.length && !['paid', 'refunded'].includes(data.paymentStatus) && data.orderStatus !== 'cancelled'
   const showPay = data.canPay && data.methods.length > 0 && !pendingLive
 
   return (
@@ -384,6 +395,18 @@ export default function CheckoutResult() {
             <p className="co-reason">{t.reason} {data.lastError}</p>
           )}
 
+          {contactUs && (
+            <div className="co-contact">
+              <p className="co-contact-h">{t.writeUs}</p>
+              <div className="co-contact-row">
+                {CONTACTS.map((c) => (
+                  <a key={c.id} className="co-contact-btn" href={c.href} {...(opensTab(c.href) ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+                    <ContactIcon id={c.id} /><span>{c.name}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
           {data.invitationCode && design?.previewSlug && <ShareInvitation code={data.invitationCode} />}
           {design?.previewSlug && data.preview && data.paymentStatus !== 'refunded' && data.orderStatus !== 'cancelled' && (
             <OrderPreview slug={design.previewSlug} preview={data.preview} paid={data.paymentStatus === 'paid'} />

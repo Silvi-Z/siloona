@@ -76,7 +76,9 @@ function OrderCard({ o }) {
   const d = o.data
   const design = findDesign(d.designId)
   const name = design ? `${design.code} · ${designTitle(design, lang)}` : d.designId === CUSTOM_DESIGN_ID ? t.custom : d.designId
-  const [label, tone] = d.amount == null && d.paymentStatus === 'unpaid' ? [t.priceTbd, 'wait'] : TONE[d.paymentStatus] ? [t.status[d.paymentStatus], TONE[d.paymentStatus]] : [d.paymentStatus, 'muted']
+  // a payment left on the bank's page (none going on now) is simply unpaid
+  const ps = d.paymentStatus === 'pending' && !d.payingNow ? 'unpaid' : d.paymentStatus
+  const [label, tone] = d.amount == null && ps === 'unpaid' ? [t.priceTbd, 'wait'] : TONE[ps] ? [t.status[ps], TONE[ps]] : [ps, 'muted']
   const link = d.invitationCode && design?.previewSlug ? `${window.location.origin}/i/${d.invitationCode}` : null
   const coming = (d.rsvps || []).filter((r) => r.status === 'confirmed')
   const people = coming.reduce((n, r) => n + 1 + (r.plus || 0), 0)

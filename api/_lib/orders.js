@@ -212,8 +212,15 @@ export async function loadOrderForCustomer(store, id, token) {
 
 // What the customer's order page may see. No internal ids, no other
 // customers' data, no raw provider responses.
-export function customerView(order, txs, invitation = null) {
+// An online payment counts as «being checked» only this long after its
+// attempt last changed: one left on the bank's page (the customer came
+// back without paying) is not shown as in progress forever.
+export const PAYING_FOR_MS = 15 * 60 * 1000
+
+export function customerView(order, txs, invitation = null, now = Date.now()) {
   const last = [...txs].reverse().find((t) => t.status !== 'created') || null
+  const paying = order.payment_status === 'pending' && txs.some((t) => ['created', 'pending'].includes(t.status) &&
+    now - Date.parse(t.updated_at || t.created_at) < PAYING_FOR_MS)
   const paidTx = txs.find((t) => t.status === 'paid') || null
   return {
     orderNumber: order.order_number,
@@ -224,6 +231,8 @@ export function customerView(order, txs, invitation = null) {
     addons: Array.isArray(order.addons) ? order.addons : [],
     customerName: order.customer_name,
     paymentStatus: order.payment_status,
+    // a payment really going on right now (the page shows «Ստուգում ենք» only then)
+    payingNow: paying,
     orderStatus: order.order_status,
     provider: order.payment_provider,
     transactionId: order.transaction_id,

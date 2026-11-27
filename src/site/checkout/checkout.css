@@ -447,3 +447,11 @@
 /* «Ինձ հետաքրքրում են նաև տպագիր…» under the add-ons (the consent checkbox's look) */
 .siloona-site .co-print{margin-top:20px}
 .siloona-site .co-print small{display:block; margin-top:2px}
+
+/* An order to pay with no online payment: how to reach us (contacts.js) */
+.siloona-site .co-contact{margin:22px 0 6px; text-align:center}
+.siloona-site .co-contact-h{margin:0 0 10px; font-size:13px; letter-spacing:.08em; color:var(--muted)}
+.siloona-site .co-contact-row{display:flex; flex-wrap:wrap; justify-content:center; gap:8px}
+.siloona-site .co-contact-btn{display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:8px 16px; border:1px solid var(--line-2); border-radius:999px; background:#fff; color:var(--ink); font-size:14px; text-decoration:none}
+.siloona-site .co-contact-btn:hover{border-color:var(--violet); color:var(--violet)}
+.siloona-site .co-contact-btn svg{width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.5}

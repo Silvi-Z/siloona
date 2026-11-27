@@ -1210,3 +1210,18 @@ test('print interest: a note on the order, never in the price, in Telegram only 
   assert.match(orderText(await store.getOrder(yes.orderId), ''), /🖨 Հետաքրքրված է տպագրով և տարոսիկներով/)
   assert.doesNotMatch(orderText(await store.getOrder(no.orderId), ''), /🖨/)
 })
+
+test('order page: «checking the payment» only while a payment is really going on', async () => {
+  const { customerView } = await import(pathToFileURL(path.join(ROOT, 'api/_lib/orders.js')).href)
+  const o = await newOrder()
+  assert.equal((await status(o)).json.payingNow, false, 'nothing started: not paying')
+  await start(o, 'arca')
+  const now = await status(o)
+  assert.equal(now.json.paymentStatus, 'pending')
+  assert.equal(now.json.payingNow, true, 'just sent to the bank')
+  const order = await store.getOrder(o.orderId)
+  const txs = await store.listTransactions(o.orderId)
+  const later = customerView(order, txs, null, Date.now() + 16 * 60 * 1000)
+  assert.equal(later.payingNow, false, 'left on the bank page: no longer «in progress»')
+  assert.equal(later.canPay, true, 'and it can be paid again')
+})
