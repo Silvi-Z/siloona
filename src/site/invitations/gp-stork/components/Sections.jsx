@@ -4,8 +4,9 @@ import { RowAdd, RowRemove } from '../../shared/ListEdit'
 import GuestGreeting, { fillName } from '../../shared/GuestGreeting'
 import Section, { useSectionHidden } from '../../shared/Section'
 import { useInvitationContent } from '../../shared/EditableContext'
-import { calendarUrl, formatEventDate } from '../lib/date'
+import { formatEventDate } from '../lib/date'
 import storkImg from '../assets/stork.webp'
+import AddToCalendar from '../../shared/AddToCalendar'
 
 // A page section that gets `.in` once it scrolls into view; its `.r`
 // children reveal from that, staggered by --i.
@@ -109,12 +110,6 @@ export function Countdown() {
   const { data, editing } = useInvitationContent()
   const cd = useCountdown(data.eventDate)
   const pad = (n) => String(n).padStart(2, '0')
-  const cal = calendarUrl({
-    title: `${data.parents.first} և ${data.parents.second} · գենդեր երեկույթ`,
-    iso: data.eventDate,
-    hours: 4,
-    location: [data.venue.name, data.venue.address].filter(Boolean).join(', '),
-  })
   return (
     <Block className="count">
       <Heading path="countdownTitle" />
@@ -129,11 +124,9 @@ export function Countdown() {
           <span><b>{pad(cd.s)}</b>վրկ</span>
         </div>
       ))}
-      {cal && (
-        <a className="btn r" style={{ '--i': 2 }} href={editing ? undefined : cal} target="_blank" rel="noopener noreferrer">
-          <Editable path="calendarButton" />
-        </a>
-      )}
+      <AddToCalendar slug="gp-stork" event={{ title: `${data.parents.first} և ${data.parents.second} · գենդեր երեկույթ`, location: [data.venue.name, data.venue.address].filter(Boolean).join(', ') }} className="btn r" style={{ '--i': 2 }}>
+        <Editable path="calendarButton" />
+      </AddToCalendar>
     </Block>
   )
 }

@@ -7,15 +7,10 @@ import Section from '../../shared/Section'
 import GuestGreeting from '../../shared/GuestGreeting'
 import { useInvitationContent } from '../../shared/EditableContext'
 import { formatEventDate } from '../lib/formatDate'
-import { calendarUrl } from '../lib/calendar'
+import AddToCalendar from '../../shared/AddToCalendar'
 
 export default function Hero({ data }) {
   const { editing } = useInvitationContent()
-  const cal = calendarUrl({
-    title: `${data.couple.groomFirst} և ${data.couple.brideFirst} · հարսանիք`,
-    iso: data.eventDate,
-    location: [data.venue.name, data.venue.address].filter(Boolean).join(', '),
-  })
 
   return (
     <section className="hero" id="top">
@@ -52,11 +47,9 @@ export default function Hero({ data }) {
           <Editable as="p" path="greeting.text" className="t rv" style={{ '--dl': '.1s' }} />
         </Section>
         <p className="big rv" style={{ '--dl': '.2s' }}>{formatEventDate(data.eventDate).big}</p>
-        {cal && (
-          <a className="cal rv" style={{ '--dl': '.3s' }} href={cal} target="_blank" rel="noopener noreferrer">
-            Ավելացնել օրացույցում
-          </a>
-        )}
+        <AddToCalendar slug="wd-beige" event={{ location: [data.venue.name, data.venue.address].filter(Boolean).join(', ') }} className="cal rv" style={{ '--dl': '.3s' }}>
+          Ավելացնել օրացույցում
+        </AddToCalendar>
       </div>
 
     </section>

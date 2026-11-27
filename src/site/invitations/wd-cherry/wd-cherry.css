@@ -164,3 +164,6 @@
 .wch.editing .wdb-editable{outline-color:rgba(110,20,40,.35)}
 .wch.editing .wine .wdb-editable{outline-color:rgba(246,233,222,.45)}
 .wch .wdb-edit-input{font:400 15px var(--hand); color:var(--ink); background:#fff; border:1px solid var(--line); border-radius:6px; padding:6px 8px}
+/* «Ավելացնել օրացույցում» under the calendar card (below its hand-written note) */
+.wch .cal-add{display:flex; justify-content:center; margin-top:14cqw}
+.wch .cal-add .btn-wine{text-decoration:none; margin-top:0}

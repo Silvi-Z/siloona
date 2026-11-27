@@ -8,6 +8,7 @@ import { useInvitationContent } from '../shared/EditableContext'
 import { formatEventDate } from './lib/date'
 import picture from './assets/planet.webp'
 import SiloonaCredit from '../shared/SiloonaCredit'
+import AddToCalendar from '../shared/AddToCalendar'
 
 const calm = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
@@ -140,6 +141,7 @@ function Countdown() {
       <div className="cd r" style={{ '--i': 1 }} aria-live="off">
         {units.map(([v, l], i) => <div key={l} style={{ '--k': i }}><b>{v}</b><span>{l}</span></div>)}
       </div>
+      <div className="r" style={{ '--i': 2 }}><AddToCalendar slug="bd-planet" className="btn" /></div>
     </Sec>
   )
 }

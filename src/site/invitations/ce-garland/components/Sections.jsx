@@ -5,8 +5,9 @@ import GuestGreeting, { fillName } from '../../shared/GuestGreeting'
 import Section, { useSectionHidden } from '../../shared/Section'
 import { useInvitationContent } from '../../shared/EditableContext'
 import { getByPath } from '../../shared/pathUtils'
-import { calendarUrl, caps, formatEventDate } from '../lib/date'
+import { caps, formatEventDate } from '../lib/date'
 import garlandArt from '../assets/garland.webp'
+import AddToCalendar from '../../shared/AddToCalendar'
 
 // One part of the page. Gets `.in` once it scrolls into view; its `.r`
 // children fade up from that (staggered by --i).
@@ -119,11 +120,6 @@ export function Countdown() {
   const d = formatEventDate(data.eventDate)
   const cd = useCountdown(data.eventDate)
   const pad = (n) => String(n).padStart(2, '0')
-  const cal = calendarUrl({
-    title: `${data.hero.title} · ${data.company}`,
-    iso: data.eventDate,
-    location: [data.venue.name, data.venue.address].filter(Boolean).join(', '),
-  })
   return (
     <Block className="countdown" label="Հետհաշվարկ">
       <Caps as="p" path="countdownTitle" className="lbl-caps r" />
@@ -137,11 +133,9 @@ export function Countdown() {
         </div>
       )}
       <p className="long r" style={{ '--i': 2 }}>{d.long} · {d.time}</p>
-      {cal && (
-        <a className="btn r" style={{ '--i': 3 }} href={editing ? undefined : cal} target="_blank" rel="noopener noreferrer">
-          <Editable path="calendarButton" />
-        </a>
-      )}
+      <AddToCalendar slug="ce-garland" event={{ title: `${data.hero.title} · ${data.company}`, location: [data.venue.name, data.venue.address].filter(Boolean).join(', ') }} className="btn r" style={{ '--i': 3 }}>
+        <Editable path="calendarButton" />
+      </AddToCalendar>
     </Block>
   )
 }

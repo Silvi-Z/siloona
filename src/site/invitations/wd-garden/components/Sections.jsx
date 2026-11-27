@@ -5,6 +5,7 @@ import { fillName } from '../../shared/GuestGreeting'
 import { useInvitationContent } from '../../shared/EditableContext'
 import { daysLeft, formatEventDate } from '../lib/date'
 import { Band, Heart, MaskHeading, Rv } from './parts'
+import AddToCalendar from '../../shared/AddToCalendar'
 
 const DAYS = ['Երկ', 'Երք', 'Չրք', 'Հնգ', 'Ուր', 'Շբթ', 'Կիր']
 
@@ -38,6 +39,9 @@ export function DateSection() {
               : <span key={n} style={{ '--i': n + d.lead }}>{n}</span>
           })}
         </div>
+      </Rv>
+      <Rv className="rv">
+        <AddToCalendar slug="wd-garden" event={{ location: [data.venue.name, data.venue.address].filter(Boolean).join(', ') }} className="btn" />
       </Rv>
     </section>
   )

@@ -4,7 +4,7 @@ import { RowAdd, RowRemove } from '../../shared/ListEdit'
 import GuestGreeting, { fillName } from '../../shared/GuestGreeting'
 import Section, { useSectionHidden } from '../../shared/Section'
 import { useInvitationContent } from '../../shared/EditableContext'
-import { calendarUrl, formatEventDate } from '../lib/date'
+import { formatEventDate } from '../lib/date'
 import cloudA from '../assets/cloud-a.webp'
 import cloudB from '../assets/cloud-b.webp'
 import cloudC from '../assets/cloud-c.webp'
@@ -15,6 +15,7 @@ import vest from '../assets/vest.webp' // cover only: it is cut by the artwork's
 import cone from '../assets/cone.webp'
 import crane from '../assets/crane.webp'
 import machines from '../assets/machines.webp'
+import AddToCalendar from '../../shared/AddToCalendar'
 
 // A page section that gets `.in` once it scrolls into view; its `.r`
 // children reveal from that, staggered by --i.
@@ -148,12 +149,6 @@ export function Countdown() {
   const { data, editing } = useInvitationContent()
   const cd = useCountdown(data.eventDate)
   const pad = (n) => String(n).padStart(2, '0')
-  const cal = calendarUrl({
-    title: `${data.hero.title} ${data.child.age} · ծննդյան տոն`,
-    iso: data.eventDate,
-    hours: 4,
-    location: [data.venue.name, data.venue.address].filter(Boolean).join(', '),
-  })
   return (
     <Block className="count">
       <Heading path="countdownTitle" />
@@ -166,11 +161,9 @@ export function Countdown() {
           <span><i><b>{pad(cd.s)}</b>վրկ</i></span>
         </div>
       )}
-      {cal && (
-        <a className="btn r" style={{ '--i': 2 }} href={editing ? undefined : cal} target="_blank" rel="noopener noreferrer">
-          Ավելացնել օրացույցում
-        </a>
-      )}
+      <AddToCalendar slug="bd-build" event={{ location: [data.venue.name, data.venue.address].filter(Boolean).join(', ') }} className="btn r" style={{ '--i': 2 }}>
+        Ավելացնել օրացույցում
+      </AddToCalendar>
     </Block>
   )
 }

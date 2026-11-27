@@ -7,7 +7,8 @@ import Section, { useSectionHidden } from '../../shared/Section'
 import { useInvitationContent } from '../../shared/EditableContext'
 import { getByPath } from '../../shared/pathUtils'
 import { SeatDialog, SeatForm, useSeatFinder } from '../../shared/Seating'
-import { WEEK_SHORT, calendarUrl, caps, formatEventDate, initial } from '../lib/date'
+import { WEEK_SHORT, caps, formatEventDate, initial } from '../lib/date'
+import AddToCalendar from '../../shared/AddToCalendar'
 
 // One part of the page. Gets `.in` once it scrolls into view; its `.r`
 // children rise in from that, staggered by --i. `tone` is the part's
@@ -286,11 +287,6 @@ export function DateCard() {
   const { data, editing } = useInvitationContent()
   const d = formatEventDate(data.eventDate)
   const last = data.places[data.places.length - 1] || {}
-  const cal = calendarUrl({
-    title: `${data.couple.first} & ${data.couple.second}`,
-    iso: data.eventDate,
-    location: [last.name, last.address].filter(Boolean).join(', '),
-  })
   return (
     <Block tone="ivory" className="date" label="Ամսաթիվ">
       <Heading path="dateTitle" />
@@ -307,11 +303,9 @@ export function DateCard() {
         </div>
         <p className="cal-wt">{d.weekday}, ժամը {d.time}</p>
       </div>
-      {cal && (
-        <a className="btn-line r" style={{ '--i': 2 }} href={editing ? undefined : cal} target="_blank" rel="noopener noreferrer">
-          <Editable path="calendarButton" />
-        </a>
-      )}
+      <AddToCalendar slug="wd-noir" event={{ location: [last.name, last.address].filter(Boolean).join(', ') }} className="btn-line r" style={{ '--i': 2 }}>
+        <Editable path="calendarButton" />
+      </AddToCalendar>
     </Block>
   )
 }

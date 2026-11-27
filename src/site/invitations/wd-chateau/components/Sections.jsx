@@ -5,9 +5,10 @@ import { RowAdd, RowRemove } from '../../shared/ListEdit'
 import { fillName } from '../../shared/GuestGreeting'
 import { useInvitationContent } from '../../shared/EditableContext'
 import { pick, useInvLang } from '../../shared/invLang'
-import { calendarUrl, formatEventDate } from '../lib/date'
+import { formatEventDate } from '../lib/date'
 import chateauArt from '../assets/chateau.webp'
 import floralsArt from '../assets/florals.webp'
+import AddToCalendar from '../../shared/AddToCalendar'
 
 // The design's own fixed words, in the invitation's language.
 const WORDS = {
@@ -203,11 +204,6 @@ export function Reception() {
   const cd = useCountdown(data.eventDate)
   const pad = (n) => String(n).padStart(2, '0')
   const place = data.places[1] || data.places[0]
-  const cal = calendarUrl({
-    title: `${data.couple.first} & ${data.couple.second}`,
-    iso: data.eventDate,
-    location: [place?.name, place?.address].filter(Boolean).join(', '),
-  })
   return (
     <Block className="reception">
       <Heading path="reception.title" />
@@ -239,11 +235,9 @@ export function Reception() {
           ))}
         </div>
       </div>
-      {cal && (
-        <a className="link r" style={{ '--i': 8 }} href={editing ? undefined : cal} target="_blank" rel="noopener noreferrer">
-          <Editable path="calendarButton" />
-        </a>
-      )}
+      <AddToCalendar slug="wd-chateau" event={{ location: [place?.name, place?.address].filter(Boolean).join(', ') }} className="link r" style={{ '--i': 8 }}>
+        <Editable path="calendarButton" />
+      </AddToCalendar>
       <a
         className="btn solid r" style={{ '--i': 9 }} href={editing ? undefined : '#wdc-rsvp'}
         onClick={(e) => { const el = document.getElementById('wdc-rsvp'); if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth', block: 'start' }) } }}

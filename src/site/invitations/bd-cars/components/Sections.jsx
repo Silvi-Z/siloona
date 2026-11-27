@@ -4,10 +4,11 @@ import { RowAdd, RowRemove } from '../../shared/ListEdit'
 import GuestGreeting, { fillName } from '../../shared/GuestGreeting'
 import Section, { useSectionHidden } from '../../shared/Section'
 import { useInvitationContent } from '../../shared/EditableContext'
-import { calendarUrl, formatEventDate } from '../lib/date'
+import { formatEventDate } from '../lib/date'
 import sceneImg from '../assets/scene.webp'
 import racerImg from '../assets/racer.webp'
 import towImg from '../assets/tow.webp'
+import AddToCalendar from '../../shared/AddToCalendar'
 
 // A page section that gets `.in` once it scrolls into view; its `.r`
 // children reveal from that, staggered by --i.
@@ -102,12 +103,6 @@ export function Countdown() {
   const { data, editing } = useInvitationContent()
   const cd = useCountdown(data.eventDate)
   const pad = (n) => String(n).padStart(2, '0')
-  const cal = calendarUrl({
-    title: `${data.hero.title} ${data.child.age} · ծննդյան տոն`,
-    iso: data.eventDate,
-    hours: 4,
-    location: [data.venue.name, data.venue.address].filter(Boolean).join(', '),
-  })
   return (
     <Block className="count">
       <Heading path="countdownTitle" />
@@ -120,11 +115,9 @@ export function Countdown() {
           <span><b>{pad(cd.s)}</b>վրկ</span>
         </div>
       )}
-      {cal && (
-        <a className="btn r" style={{ '--i': 2 }} href={editing ? undefined : cal} target="_blank" rel="noopener noreferrer">
-          Ավելացնել օրացույցում
-        </a>
-      )}
+      <AddToCalendar slug="bd-cars" event={{ location: [data.venue.name, data.venue.address].filter(Boolean).join(', ') }} className="btn r" style={{ '--i': 2 }}>
+        Ավելացնել օրացույցում
+      </AddToCalendar>
     </Block>
   )
 }

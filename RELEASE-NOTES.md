@@ -78,3 +78,54 @@
 
 ### Փոխված ֆայլեր
 `src/site/prices.js`, **նոր** `src/site/addons.js`, **նոր** `supabase/addons.sql`, `api/_lib/orders.js`, `api/_lib/guestLinks.js`, `api/_lib/notify.js`, `api/invitations/index.js`, `scripts/import-seating.js`, `src/site/checkout/Checkout.jsx`, `CheckoutResult.jsx`, `checkout.css`, `src/site/pages/Prices.jsx`, `src/site/prices.css`, `src/site/pages/SharedInvitation.jsx`, `src/site/invitations/shared/EditableContext.jsx`, `src/dashboard/pages/Orders.jsx`, `tests/payments/{payments.test.js,pgStore.js,demo.js}`, `tests/seating/seating.test.js`։
+
+---
+
+## Առաջադրանք 3 · Ավելացնել օրացույցում — **արված է**
+
+### Ինչ է արված
+- **Բոլոր 34 վեբ դիզայններում** կա «Ավելացնել օրացույցում» կոճակ։ Սեղմելիս բացվում է փոքր պատուհան՝ երկու տարբերակով.
+  - **Google Calendar**՝ նախապես լրացված հղում.
+  - **Apple / այլ օրացույց**՝ `.ics` ֆայլ։
+- **Միջոցառման տվյալները.**
+  - անվանում. «Աննա և Միքայելի հարսանիք», «Նարեի ծննդյան տոն», «Ամանորյա երեկույթ · «Նովա» ընկերություն» (ru/en՝ «Свадьба: Анна и Михаил», «Anna & Mike’s wedding»).
+  - սկիզբ և ավարտ Asia/Yerevan ժամով (`.ics`-ում՝ UTC-ով, ուստի հեռախոսի ժամային գոտին չի ազդում). ավարտ չլինելու դեպքում՝ սկիզբ + 5 ժամ.
+  - հիմնական վայրի անունն ու հասցեն.
+  - հրավերի հղումը նկարագրության մեջ.
+  - հիշեցում 1 օր առաջ (`.ics`)։
+- **Տեղը և տեսքը՝ ըստ դիզայնի.**
+  - 22 դիզայնում արդեն կար «Ավելացնել օրացույցում» կոճակ (միայն Google-ով). այն մնացել է նույն տեղում, նույն դասով և պիտակով (խմբագրվող պիտակը նույնպես), փոխվել է միայն գործողությունը.
+  - 11 դիզայնում (bd-animals, bd-balloons, bd-planet, bp-blue, gp-balloons, wd-cherry, wd-garden, wd-green, wd-mono, wd-portrait, wd-rouge) կոճակն ավելացրել եմ ամսաթվի կամ հետհաշվարկի տակ՝ տվյալ դիզայնի կոճակի ոճով.
+  - պատուհանն ինքն է վերցնում կոճակի տառատեսակը և էջի գույները (օր.՝ wd-noir-ում ոսկեգույն փղոսկրի վրա, ce-sparkle-ում մուգ ֆոնի վրա ոսկի)։
+- **In-app բրաուզերներ** (Instagram, Facebook, TikTok, Telegram, Android WebView, iOS WKWebView). պատուհանում հուշում «Եթե ֆայլը չբացվի, բացեք հրավերը բրաուզերում»։ Android-ում կա նաև «Բացել Chrome-ում» կոճակ։
+- **3 լեզու.** տեքստերը հրավերի լեզվով են (hy/ru/en)։
+- **Server.** `.ics`-ը տալիս է առկա `/api/invitations` function-ը (`?ics=1`), նոր function չկա (Vercel-ի 12-ի սահմանը)։ Տեքստը escape է արվում, իսկ հրավերի հղումը թույլատրվում է միայն այս կայքից։
+- **Feature.** `calendar`-ը ներառված է բոլոր հրավերներում, և `useFeature('calendar')`-ը ստուգվում է։
+
+### Ինչպես ստուգել իրական հեռախոսում
+1. Բացեք ցանկացած դիզայնի նախադիտումը (`/invitations/preview/wd-noir`) կամ վճարված հրավերի `/i/<կոդ>` հղումը։
+2. **iPhone, Safari.** «Ավելացնել օրացույցում» → «Apple / այլ օրացույց». պետք է բացվի Calendar-ի «Add to Calendar» պատուհանը՝ ճիշտ ժամով, հասցեով և 1 օր առաջ հիշեցումով։ «Google Calendar»-ը բացում է Google-ի էջը կամ հավելվածը։
+3. **Android, Chrome.** «Google Calendar»-ը բացում է հավելվածը լրացված միջոցառումով։ `.ics`-ը ներբեռնվում է. սեղմելիս բացվում է օրացույցի հավելվածը (Samsung Calendar և այլն)։
+4. **Instagram / Telegram** (ուղարկեք հղումը ինքներդ Ձեզ). պետք է երևա հուշումը, իսկ Android-ում՝ «Բացել Chrome-ում» կոճակը։
+5. Ստուգեք ժամը՝ հեռախոսի ժամային գոտին փոխելով. միջոցառումը պետք է մնա Երևանի 16:00-ին։
+
+### Ստուգված (headless Chrome)
+- 34 դիզայն՝ կոճակը կա, պատուհանը բացվում է, Google-ի հղումը (`ctz=Asia/Yerevan`, +5 ժամ կամ դիզայնի ավարտի ժամը), `.ics`-ը (VEVENT, VALARM −1 օր)։
+- ru/en (ce-holly, wd-chateau, bd-dots), in-app user agent, desktop (կենտրոնացված պատուհան), 375px։ Console-ում սխալներ չկան։
+- Թեստեր՝ անվանում, Երևանի ժամ → UTC, 5 ժամ, կեսգիշերից հետո ավարտ, տողերի ծալում ≤75 բայթ, escape, API-ն, օտար հղման մերժում։ `test:payments` 37/37, `test:seating` 27/27, build OK։
+
+### Ինչ եմ ընտրել ինքնուրույն
+- **Google-ի հիշեցումը.** Google Calendar-ի հղումով հնարավոր չէ դնել 1 օր առաջ հիշեցում. Google-ն օգտագործում է օգտատիրոջ լռելյայն հիշեցումը։ Հիշեցումը կա `.ics`-ում։
+- **Վայրը.** հարսանյաց դիզայններում պահել եմ յուրաքանչյուրի նախկին ընտրությունը (սովորաբար երկրորդ վայրը՝ ռեստորանը), մյուսներում՝ միջոցառման ժամին համապատասխանող կամ առաջին վայրը։
+- **card-mouse.** Սա տպագիր A5 քարտ է, ոչ վեբ հրավեր, ուստի կոճակ չունի (հավելումները նախատեսված են վեբ հրավերների համար)։
+- **Դիզայնների կոճակների ոճը.** այն դիզայններում, որտեղ կոճակը փոքր տեքստային հղում է (wd-chateau, wd-line, wd-beige), պահել եմ դիզայնի ոճը, թեև սեղմման տարածքը 44px-ից փոքր է։
+- **Նախկին `calendarUrl()` օգնականները** մնացել են դիզայնների `lib/date.js`-ում, բայց այլևս չեն օգտագործվում։
+
+### Փոխված ֆայլեր
+- **Նոր.** `src/site/invitations/shared/{calendarEvent.js, AddToCalendar.jsx, addToCalendar.css}`։
+- `api/invitations/index.js`։
+- 34 դիզայնի բաղադրիչ ֆայլեր (Sections.jsx / Hero.jsx / *Invitation.jsx) և 5 դիզայնի CSS (wd-cherry, wd-green, wd-mono, wd-portrait, wd-rouge՝ միայն կոճակի դիրքը)։
+- `tests/payments/payments.test.js`։
+
+### Migration / env
+Չկա։

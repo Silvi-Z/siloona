@@ -4,6 +4,7 @@ import GuestGreeting from '../../shared/GuestGreeting'
 import Section, { useSectionHidden } from '../../shared/Section'
 import { useInvitationContent } from '../../shared/EditableContext'
 import Rv from './Rv'
+import AddToCalendar from '../../shared/AddToCalendar'
 
 const pad = (n) => String(n).padStart(2, '0')
 
@@ -36,9 +37,12 @@ function Countdown() {
   if (left.done) return <Editable as="p" path="countdownDone" className="count-done" />
   const units = [['d', 'ՕՐ'], ['h', 'ԺԱՄ'], ['m', 'ՐՈՊԵ'], ['s', 'ՎԱՅՐԿՅԱՆ']]
   return (
-    <Rv className="count">
-      {units.map(([k, label]) => <div key={k}><b>{left[k]}</b><span>{label}</span></div>)}
-    </Rv>
+    <>
+      <Rv className="count">
+        {units.map(([k, label]) => <div key={k}><b>{left[k]}</b><span>{label}</span></div>)}
+      </Rv>
+      <Rv style={{ textAlign: 'center' }}><AddToCalendar slug="gp-balloons" className="btn">ԱՎԵԼԱՑՆԵԼ ՕՐԱՑՈՒՅՑՈՒՄ</AddToCalendar></Rv>
+    </>
   )
 }
 

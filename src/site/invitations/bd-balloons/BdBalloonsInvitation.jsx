@@ -11,6 +11,7 @@ import piglet from './assets/piglet.webp'
 import eeyore from './assets/eeyore.webp'
 import tigger from './assets/tigger.webp'
 import SiloonaCredit from '../shared/SiloonaCredit'
+import AddToCalendar from '../shared/AddToCalendar'
 
 // Each section reveals its `.r` children (staggered by --i) once in view.
 function Sec({ className = '', children, label }) {
@@ -119,6 +120,7 @@ function Countdown() {
           </div>
         ))}
       </div>
+      <div className="r" style={{ '--i': 2 }}><AddToCalendar slug="bd-balloons" className="btn" /></div>
     </Sec>
   )
 }

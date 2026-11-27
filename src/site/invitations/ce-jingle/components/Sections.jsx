@@ -5,7 +5,7 @@ import GuestGreeting, { fillName } from '../../shared/GuestGreeting'
 import Section, { useSectionHidden } from '../../shared/Section'
 import { useInvitationContent } from '../../shared/EditableContext'
 import { pick, useInvLang } from '../../shared/invLang'
-import { calendarUrl, formatEventDate } from '../lib/date'
+import { formatEventDate } from '../lib/date'
 import ginger from '../assets/ginger.webp'
 import cane from '../assets/cane.webp'
 import gnome from '../assets/gnome.webp'
@@ -15,6 +15,7 @@ import snowman from '../assets/snowman.webp'
 import cookie from '../assets/cookie.webp'
 import gifts from '../assets/gifts.webp'
 import deer from '../assets/deer.webp'
+import AddToCalendar from '../../shared/AddToCalendar'
 
 // The characters round the cover, in paint order; ce-jingle.css places
 // each one (`ch-<id>`) and gives it its own little movement.
@@ -146,11 +147,6 @@ export function Countdown() {
   const d = formatEventDate(data.eventDate, lang)
   const cd = useCountdown(data.eventDate)
   const pad = (n) => String(n).padStart(2, '0')
-  const cal = calendarUrl({
-    title: [data.hero.subtitle, data.company].filter(Boolean).join(' · '),
-    iso: data.eventDate,
-    location: [data.venue.name, data.venue.address].filter(Boolean).join(', '),
-  })
   return (
     <Block className="count">
       <Cookie />
@@ -163,11 +159,9 @@ export function Countdown() {
         </div>
       )}
       <p className="long r" style={{ '--i': 2 }}>{d.long}</p>
-      {cal && (
-        <a className="btn r" style={{ '--i': 3 }} href={editing ? undefined : cal} target="_blank" rel="noopener noreferrer">
-          <Editable path="calendarButton" />
-        </a>
-      )}
+      <AddToCalendar slug="ce-jingle" kind="newYear" event={{ location: [data.venue.name, data.venue.address].filter(Boolean).join(', ') }} className="btn r" style={{ '--i': 3 }}>
+        <Editable path="calendarButton" />
+      </AddToCalendar>
     </Block>
   )
 }

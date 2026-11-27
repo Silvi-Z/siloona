@@ -5,9 +5,10 @@ import GuestGreeting, { fillName } from '../../shared/GuestGreeting'
 import Section, { useSectionHidden } from '../../shared/Section'
 import { useInvitationContent } from '../../shared/EditableContext'
 import { pick, useInvLang } from '../../shared/invLang'
-import { calendarUrl, formatEventDate } from '../lib/date'
+import { formatEventDate } from '../lib/date'
 import { Crown, Flourish, Portrait } from './bits'
 import sceneImg from '../assets/scene.webp'
+import AddToCalendar from '../../shared/AddToCalendar'
 
 // A page section that gets `.in` once it scrolls into view; its `.r`
 // children reveal from that, staggered by --i.
@@ -120,12 +121,6 @@ export function Countdown() {
   const w = useWords()
   const cd = useCountdown(data.eventDate)
   const pad = (n) => String(n).padStart(2, '0')
-  const cal = calendarUrl({
-    title: `${data.hero.title} ${data.child.age} · ${w.party}`,
-    iso: data.eventDate,
-    hours: 4,
-    location: [data.venue.name, data.venue.address].filter(Boolean).join(', '),
-  })
   return (
     <Block className="count">
       <Portrait img="cinderella" />
@@ -139,11 +134,9 @@ export function Countdown() {
           <span><b>{pad(cd.s)}</b>{w.units[3]}</span>
         </div>
       )}
-      {cal && (
-        <a className="btn r" style={{ '--i': 3 }} href={editing ? undefined : cal} target="_blank" rel="noopener noreferrer">
-          {w.calendar}
-        </a>
-      )}
+      <AddToCalendar slug="bd-castle" event={{ location: [data.venue.name, data.venue.address].filter(Boolean).join(', ') }} className="btn r" style={{ '--i': 3 }}>
+        {w.calendar}
+      </AddToCalendar>
     </Block>
   )
 }

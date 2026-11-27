@@ -4,7 +4,8 @@ import { RowAdd, RowRemove } from '../../shared/ListEdit'
 import GuestGreeting, { fillName } from '../../shared/GuestGreeting'
 import Section, { useSectionHidden } from '../../shared/Section'
 import { useInvitationContent } from '../../shared/EditableContext'
-import { calendarUrl, formatEventDate } from '../lib/date'
+import { formatEventDate } from '../lib/date'
+import AddToCalendar from '../../shared/AddToCalendar'
 
 // A page section that gets `.in` once it scrolls into view; its `.r`
 // children (and ribbons) reveal from that, staggered by --i.
@@ -115,11 +116,6 @@ export function DateBlock() {
   const cd = useCountdown(data.eventDate)
   const pad = (n) => String(n).padStart(2, '0')
   const place = data.places?.[1] || data.places?.[0] || {}
-  const cal = calendarUrl({
-    title: `${data.couple.first} և ${data.couple.second} · հարսանիք`,
-    iso: data.eventDate,
-    location: [place.name, place.address].filter(Boolean).join(', '),
-  })
   return (
     <Block className="date">
       <h2 className="title r"><Editable path="dateTitle" /></h2>
@@ -144,11 +140,9 @@ export function DateBlock() {
           </div>
         </div>
       )}
-      {cal && (
-        <a className="link r" style={{ '--i': 4 }} href={editing ? undefined : cal} target="_blank" rel="noopener noreferrer">
-          <Editable path="calendarButton" />
-        </a>
-      )}
+      <AddToCalendar slug="wd-line" event={{ location: [place?.name, place?.address].filter(Boolean).join(', ') }} className="link r" style={{ '--i': 4 }}>
+        <Editable path="calendarButton" />
+      </AddToCalendar>
     </Block>
   )
 }

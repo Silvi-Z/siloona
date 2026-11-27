@@ -6,6 +6,10 @@ import GuestGreeting, { fillName } from '../../shared/GuestGreeting'
 import Section, { useSectionHidden } from '../../shared/Section'
 import { useInvitationContent } from '../../shared/EditableContext'
 import { formatEventDate } from '../lib/date'
+import AddToCalendar from '../../shared/AddToCalendar'
+
+// the calendar entry's place: the celebration (the second place), else the first
+const calendarPlace = (places = []) => { const p = places[1] || places[0] || {}; return [p.name, p.address].filter(Boolean).join(', ') }
 
 // One part of the page. Gets `.in` once it scrolls into view; its `.r`
 // children fade up from that (staggered by --i) and the programme's red
@@ -125,6 +129,9 @@ export function BigDate() {
       <Section id="countdown">
         <p className="cdl r" style={{ '--i': 4 }}><Editable path="countdownTitle" /> <b>{days}</b> օր</p>
       </Section>
+      <div className="cal-add r" style={{ '--i': 5 }}>
+        <AddToCalendar slug="wd-rouge" event={{ location: calendarPlace(data.places) }} className="btn-line" />
+      </div>
     </Block>
   )
 }

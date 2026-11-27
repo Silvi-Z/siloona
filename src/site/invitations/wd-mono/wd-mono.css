@@ -130,3 +130,5 @@
 .wmn.editing .wdb-editable{outline-color:rgba(127,120,112,.45)}
 .wmn .wdb-edit-input{font:400 15px var(--serif); color:var(--ink); background:#fff; border:1px solid var(--line); border-radius:6px; padding:6px 8px; letter-spacing:0}
 .wmn .hdate .wdb-edit-dt{margin-top:2cqw}
+/* «Ավելացնել օրացույցում» under the day */
+.wmn .cal-add{text-align:center; margin-top:6cqw}

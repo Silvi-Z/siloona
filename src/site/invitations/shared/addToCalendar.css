@@ -1,0 +1,38 @@
+/* «Ավելացնել օրացույցում» choice (AddToCalendar.jsx). Its typeface and
+   colours come from the design it opens in (--atc-* set from the trigger
+   and the page behind it), so it reads as part of that invitation. */
+.atc-backdrop{
+  position:fixed; inset:0; z-index:2147483000; display:flex; align-items:flex-end; justify-content:center;
+  background:rgba(12,8,10,.42); -webkit-backdrop-filter:blur(2px); backdrop-filter:blur(2px);
+  font-family:var(--atc-font, inherit); animation:atc-fade .2s ease both;
+}
+.atc-sheet{
+  box-sizing:border-box; width:100%; max-width:420px; margin:0 auto; padding:22px 22px calc(18px + env(safe-area-inset-bottom));
+  background:var(--atc-paper, #fff); color:var(--atc-ink, #211c1e); border-radius:16px 16px 0 0;
+  box-shadow:0 -18px 40px -24px rgba(0,0,0,.45); text-align:center; animation:atc-rise .26s cubic-bezier(.2,.7,.2,1) both;
+}
+.atc-eyebrow{margin:0 0 8px; font-size:11.5px; letter-spacing:.16em; opacity:.62}
+.atc-title{margin:0; font-size:21px; line-height:1.25}
+.atc-when{margin:6px 0 0; font-size:13.5px; line-height:1.45; opacity:.72}
+.atc-opts{display:grid; gap:10px; margin:20px 0 0}
+.atc-opt{
+  display:flex; align-items:center; justify-content:center; gap:8px; min-height:50px; padding:12px 16px; border-radius:10px;
+  border:1px solid var(--atc-accent, currentColor); color:var(--atc-accent, inherit); background:transparent;
+  font:inherit; font-size:16px; text-decoration:none; -webkit-tap-highlight-color:transparent; transition:opacity .15s ease, transform .15s ease;
+}
+.atc-opt small{font-size:12px; opacity:.7}
+.atc-opt--main{background:var(--atc-accent, #211c1e); color:var(--atc-on, #fff)}
+.atc-opt:active{transform:scale(.985)}
+.atc-opt:hover{opacity:.88}
+.atc-opt:focus-visible, .atc-close:focus-visible, .atc-hint a:focus-visible{outline:2px solid var(--atc-accent, currentColor); outline-offset:2px}
+.atc-note{margin:12px 0 0; font-size:12.5px; opacity:.6}
+.atc-hint{margin:12px 0 0; padding:10px 12px; border-radius:8px; font-size:13px; line-height:1.5; background:color-mix(in srgb, var(--atc-ink, #211c1e) 7%, transparent); text-align:left}
+.atc-hint a{color:var(--atc-accent, inherit); font-weight:600; white-space:nowrap}
+.atc-close{margin:14px auto 0; display:block; min-height:44px; padding:8px 20px; border:0; background:none; color:inherit; font:inherit; font-size:14.5px; opacity:.7; cursor:pointer}
+@media (min-width:600px){
+  .atc-backdrop{align-items:center}
+  .atc-sheet{border-radius:14px; padding-bottom:18px; box-shadow:0 24px 60px -24px rgba(0,0,0,.5)}
+}
+@keyframes atc-fade{from{opacity:0}}
+@keyframes atc-rise{from{transform:translateY(24px); opacity:0}}
+@media (prefers-reduced-motion:reduce){ .atc-backdrop, .atc-sheet{animation:none} }

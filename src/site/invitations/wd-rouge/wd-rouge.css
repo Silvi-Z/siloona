@@ -131,3 +131,5 @@
 .wrg .wdb-editable:hover,.wrg .wdb-editable:focus{outline-color:var(--red)}
 .wrg.editing .wdb-editable{outline-color:rgba(143,29,33,.35)}
 .wrg .wdb-edit-input{font:400 15px var(--serif); color:var(--ink); background:#fff; border:1px solid var(--line); border-radius:6px; padding:6px 8px}
+/* «Ավելացնել օրացույցում» under the countdown */
+.wrg .cal-add{text-align:center}

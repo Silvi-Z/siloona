@@ -7,6 +7,7 @@ import { useInvitationContent } from '../../shared/EditableContext'
 import { CLIP, DRESS, SUIT, VENUE_ART } from '../lib/art'
 import { formatEventDate } from '../lib/date'
 import { Art, Flourish, MaskHeading, Rv } from './parts'
+import AddToCalendar from '../../shared/AddToCalendar'
 
 const DAYS = ['Երկ', 'Երք', 'Չրք', 'Հնգ', 'Ուր', 'Շբթ', 'Կիր']
 
@@ -76,6 +77,9 @@ export function CalendarCountdown() {
         </Rv>
       </Section>
       <Section id="countdown"><Countdown target={d.date.getTime()} /></Section>
+      <Rv className="cal-add rv">
+        <AddToCalendar slug="wd-green" event={{ location: [data.venue?.name, data.venue?.address].filter(Boolean).join(', ') }} className="btn" />
+      </Rv>
     </section>
   )
 }

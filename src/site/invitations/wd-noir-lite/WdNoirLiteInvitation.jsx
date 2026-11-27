@@ -12,7 +12,8 @@ import { useDesignFonts } from '../shared/useDesignFonts'
 import { getByPath } from '../shared/pathUtils'
 import { SeatDialog, SeatForm, useSeatFinder } from '../shared/Seating'
 import SiloonaCredit from '../shared/SiloonaCredit'
-import { calendarUrl, caps, formatEventDate } from '../wd-noir/lib/date'
+import { caps, formatEventDate } from '../wd-noir/lib/date'
+import AddToCalendar from '../shared/AddToCalendar'
 
 // Same type as wd-noir.
 const FONTS_HREF = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Noto+Serif+Armenian:wght@200;300;400;500&display=swap'
@@ -130,7 +131,6 @@ function Countdown() {
   const c = useCountdown(data.eventDate)
   const d = formatEventDate(data.eventDate)
   const last = data.places[data.places.length - 1] || {}
-  const cal = calendarUrl({ title: `${data.couple.first} & ${data.couple.second}`, iso: data.eventDate, location: [last.name, last.address].filter(Boolean).join(', ') })
   if (!c) return null
   return (
     <Panel label="Հետհաշվարկ">
@@ -139,7 +139,7 @@ function Countdown() {
         {c.map((v, i) => <span key={i}><b>{v}</b><small>{['օր', 'ժամ', 'րոպե'][i]}</small></span>)}
       </div>
       <p className="wd">{d.weekday}, {d.long}, ժամը {d.time}</p>
-      {cal && <a className="btn-line" href={editing ? undefined : cal} target="_blank" rel="noopener noreferrer"><Editable path="calendarButton" /></a>}
+      <AddToCalendar slug="wd-noir-lite" event={{ location: [last.name, last.address].filter(Boolean).join(', ') }} className="btn-line"><Editable path="calendarButton" /></AddToCalendar>
     </Panel>
   )
 }

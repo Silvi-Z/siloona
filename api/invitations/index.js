@@ -1,4 +1,5 @@
-import { HttpError, allow, getQuery, handler, readBody, sendJson } from '../_lib/http.js'
+import { HttpError, allow, getQuery, handler, readBody, sendJson, siteUrl } from '../_lib/http.js'
+import { icsText } from '../../src/site/invitations/shared/calendarEvent.js'
 import { getStore } from '../_lib/store.js'
 import { invitationSeatingPlan, loadInvitation, publicInvitation, submitRsvp } from '../_lib/orders.js'
 import { loadPublished, publicEventInvitation, rateLimit, seatingPlanForEvent, submitEventRsvp } from '../_lib/guestLinks.js'
@@ -13,6 +14,8 @@ import { findSeat } from '../_lib/seating.js'
 //   GET  ?code=…[&t=…]          what the page renders
 //   POST { code, name, status, plus, note }        RSVP to a purchased one
 //   POST { slug, t?, name, status, plus, note }    RSVP to a dashboard event
+//   GET  ?ics=1&t=…&d=…&h=…     «Ավելացնել օրացույցում»: the event as an
+//                               .ics file (Apple / other calendars)
 //   POST { seat: true, code, name }                «Ձեր սեղանը»: the guest's
 //        table (seating.js) — { status: found|ambiguous|not_found|empty, table? }
 // (One function for all of it: the free Vercel plan allows 12.)
@@ -36,8 +39,33 @@ async function planForLink(store, code) {
 const linkedEventPage = (store, code) => publicEventInvitation(store, code, null)
   .catch((e) => { if (e instanceof HttpError && [404, 410].includes(e.status)) return null; throw e })
 
+// GET ?ics=1&t=…&d=YYYY-MM-DD&h=HH:MM[&e=HH:MM][&l=…][&u=…][&lang=…]
+// «Ավելացնել օրացույցում» → Apple / other calendar: the event as an .ics
+// file (shared/calendarEvent.js). Only plain text goes in, escaped, and
+// the invitation link only if it is on this site.
+function sendIcs(req, res, q) {
+  const s = (v, max) => String(v || '').replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, max)
+  let url = s(q.u, 300)
+  try {
+    const host = new URL(siteUrl(req)).host
+    if (url && new URL(url).host !== host) url = ''
+  } catch { url = '' }
+  const ev = { title: s(q.t, 160), date: s(q.d, 10), time: s(q.h, 5), endTime: s(q.e, 5), location: s(q.l, 300), url, lang: s(q.lang, 2) }
+  const text = ev.title ? icsText(ev) : null
+  if (!text) throw new HttpError(422, 'invalid', 'Սխալ հարցում։')
+  res.statusCode = 200
+  res.setHeader('Content-Type', 'text/calendar; charset=utf-8')
+  res.setHeader('Content-Disposition', 'inline; filename="invitation.ics"')
+  res.setHeader('Cache-Control', 'public, max-age=300')
+  res.end(text)
+}
+
 export default handler(async (req, res) => {
   allow(req, ['GET', 'POST'])
+  if (req.method === 'GET') {
+    const q = getQuery(req)
+    if (q.ics) return sendIcs(req, res, q)
+  }
   const store = getStore()
   if (req.method === 'GET') {
     await rateLimit(store, req, 'open')

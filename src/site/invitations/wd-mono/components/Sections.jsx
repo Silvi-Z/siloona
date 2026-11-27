@@ -8,6 +8,10 @@ import { useInvitationContent } from '../../shared/EditableContext'
 import Icon, { ICON_NAMES } from './Icons'
 import Torn from './Torn'
 import { formatEventDate } from '../lib/date'
+import AddToCalendar from '../../shared/AddToCalendar'
+
+// the calendar entry's place: the celebration (the second place), else the first
+const calendarPlace = (places = []) => { const p = places[1] || places[0] || {}; return [p.name, p.address].filter(Boolean).join(', ') }
 
 // One part of the paper. Gets `.in` once it scrolls into view; its `.r`
 // children fade up from that, staggered by --i.
@@ -92,6 +96,9 @@ export function Countdown() {
         <span className="side">{d.weekday}</span>
         <span className="day">{d.day}</span>
         <span className="side">{d.month}</span>
+      </div>
+      <div className="cal-add r" style={{ '--i': 4 }}>
+        <AddToCalendar slug="wd-mono" event={{ location: calendarPlace(data.places) }} className="pill" />
       </div>
     </Block>
   )

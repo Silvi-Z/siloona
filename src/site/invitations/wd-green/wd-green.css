@@ -158,3 +158,6 @@
 
 @media(max-width:560px){.wgr .story{grid-template-columns:1fr;gap:1.4rem}.wgr .cd div{min-width:3rem}}
 @media(prefers-reduced-motion:reduce){.wgr *,.wgr *::before,.wgr *::after{animation-duration:.01s!important;animation-delay:0s!important;transition-duration:.01s!important;transition-delay:0s!important}.wgr .rv,.wgr .mask>span{opacity:1;transform:none}}
+/* «Ավելացնել օրացույցում» under the countdown — the RSVP button's outline */
+.wgr .cal-add{text-align:center}
+.wgr .cal-add .btn{display:inline-block;text-decoration:none}

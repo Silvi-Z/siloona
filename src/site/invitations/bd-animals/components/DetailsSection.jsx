@@ -1,6 +1,7 @@
 import Editable from '../../shared/Editable'
 import { useInvitationContent } from '../../shared/EditableContext'
 import { formatEventDate } from '../lib/formatDate'
+import AddToCalendar from '../../shared/AddToCalendar'
 
 // The date/venue section. `eventDate` is the single editable control (the
 // day number doubles as it, matching wd-beige/components/Hero.jsx's "one
@@ -24,6 +25,9 @@ export default function DetailsSection() {
             <span className="lab">{d.year}</span>
           </div>
           <div className="s"><b>Ժամը {d.time}</b></div>
+        </div>
+        <div className="rv" style={{ '--dl': '.06s' }}>
+          <AddToCalendar slug="bd-animals" event={{ location: [data.venue.name, data.venue.address].filter(Boolean).join(', ') }} className="pill" />
         </div>
         <div className="where rv" style={{ '--dl': '.12s' }}>
           <Editable as="h2" path="venue.name" />

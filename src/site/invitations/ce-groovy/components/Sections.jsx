@@ -5,8 +5,9 @@ import GuestGreeting, { fillName } from '../../shared/GuestGreeting'
 import Section, { useSectionHidden } from '../../shared/Section'
 import { useInvitationContent } from '../../shared/EditableContext'
 import { pick, useInvLang } from '../../shared/invLang'
-import { calendarUrl, formatEventDate } from '../lib/date'
+import { formatEventDate } from '../lib/date'
 import { Bells, DiscoBall, Gifts, MiniRainbow, Sparkle } from './Art'
+import AddToCalendar from '../../shared/AddToCalendar'
 
 // The design's own fixed words, in the invitation's language.
 const WORDS = {
@@ -119,11 +120,6 @@ export function Countdown() {
   const d = formatEventDate(data.eventDate, lang)
   const cd = useCountdown(data.eventDate)
   const pad = (n) => String(n).padStart(2, '0')
-  const cal = calendarUrl({
-    title: [data.hero.subtitle, data.company].filter(Boolean).join(' · '),
-    iso: data.eventDate,
-    location: [data.venue.name, data.venue.address].filter(Boolean).join(', '),
-  })
   const tones = ['red', 'mustard', 'green', 'blue']
   return (
     <Block className="count">
@@ -137,11 +133,9 @@ export function Countdown() {
         </div>
       )}
       <p className="long r" style={{ '--i': 2 }}>{d.long}</p>
-      {cal && (
-        <a className="btn r" style={{ '--i': 3 }} href={editing ? undefined : cal} target="_blank" rel="noopener noreferrer">
-          <Editable path="calendarButton" />
-        </a>
-      )}
+      <AddToCalendar slug="ce-groovy" event={{ title: [data.hero.subtitle, data.company].filter(Boolean).join(' · '), location: [data.venue.name, data.venue.address].filter(Boolean).join(', ') }} className="btn r" style={{ '--i': 3 }}>
+        <Editable path="calendarButton" />
+      </AddToCalendar>
     </Block>
   )
 }

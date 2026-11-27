@@ -9,6 +9,7 @@ import { CROSS, CURVE, DEFS, SILHOUETTE, cluster, florets } from './lib/art'
 import { formatEventDate } from './lib/formatDate'
 import { Art, CallButton, Icon, Place, Rv, Title } from './components/parts'
 import SiloonaCredit from '../shared/SiloonaCredit'
+import AddToCalendar from '../shared/AddToCalendar'
 
 // Thin Noto Serif Armenian / Sans weights and Cormorant 300 (+ italic for
 // the city lines) — not in the site-wide font link.
@@ -148,6 +149,9 @@ function BpBlueBody({ editing }) {
             <span className="sd a"><span>{d.weekday}</span></span>
             <Editable as="span" path="eventDate" type="date" className="nu" format={(iso) => formatEventDate(iso).day} />
             <span className="sd b"><span>{d.year}</span></span>
+          </Rv>
+          <Rv className="rv cal-rv">
+            <AddToCalendar slug="bp-blue" className="bt">Ավելացնել օրացույցում<i /></AddToCalendar>
           </Rv>
 
           <Section id="church"><Place index={0} icon="chu" /></Section>

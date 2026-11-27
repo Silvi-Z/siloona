@@ -206,3 +206,5 @@
 .wpt .wdb-editable:hover,.wpt .wdb-editable:focus{outline-color:var(--brown)}
 .wpt.editing .wdb-editable{outline-color:rgba(69,48,42,.35)}
 .wpt .wdb-edit-input{font:400 15px var(--serif); color:var(--ink); background:#fff; border:1px solid var(--line); border-radius:6px; padding:6px 8px}
+/* «Ավելացնել օրացույցում» under the countdown */
+.wpt .cal-add{text-align:center}

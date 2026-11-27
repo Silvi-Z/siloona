@@ -900,3 +900,40 @@ test('Telegram: the new-order notice lists the add-ons', async () => {
   assert.match(text, /Շտապ պատրաստում/)
   assert.doesNotMatch(orderText({ order_number: 2, customer_name: 'Ա', customer_phone: '+1', design_id: 'x', design_option: 'diy', customization: {}, amount: 1, addons: [] }, ''), /Հավելումներ/)
 })
+
+test('calendar: title, Yerevan times, 5 hours by default, .ics with a reminder', async () => {
+  const c = await import(pathToFileURL(path.join(ROOT, 'src/site/invitations/shared/calendarEvent.js')).href)
+  assert.equal(c.eventTitle('wedding', { p1: 'Աննա', p2: 'Միքայել' }, 'hy'), 'Աննա և Միքայելի հարսանիք')
+  assert.equal(c.eventTitle('birthday', { one: 'Նարե' }, 'hy'), 'Նարեի ծննդյան տոն')
+  assert.equal(c.eventTitle('wedding', { p1: 'Anna', p2: 'Mike' }, 'en'), 'Anna & Mike’s wedding')
+  assert.equal(c.eventKind('wd-noir'), 'wedding')
+
+  const ev = { title: 'Աննա և Միքայելի հարսանիք', date: '2027-06-12', time: '16:00', location: 'Երևան, Աբովյան 1', url: 'https://siloona.am/i/abc', lang: 'hy' }
+  const g = new URL(c.googleCalendarUrl(ev))
+  assert.equal(g.searchParams.get('dates'), '20270612T160000/20270612T210000', 'no end time → start + 5 hours')
+  assert.equal(g.searchParams.get('ctz'), 'Asia/Yerevan')
+  assert.match(g.searchParams.get('details'), /siloona\.am\/i\/abc/)
+  assert.equal(new URL(c.googleCalendarUrl({ ...ev, endTime: '01:30' })).searchParams.get('dates'), '20270612T160000/20270613T013000', 'ends after midnight')
+
+  const ics = c.icsText(ev, { now: Date.UTC(2026, 10, 27) })
+  assert.match(ics, /DTSTART:20270612T120000Z\r\n/, '16:00 in Yerevan is 12:00 UTC, whatever the phone says')
+  assert.match(ics, /DTEND:20270612T170000Z\r\n/)
+  assert.match(ics, /TRIGGER:-P1D/)
+  assert.ok(ics.includes('LOCATION:Երևան\\, Աբովյան 1'), 'commas escaped')
+  for (const line of ics.split('\r\n')) assert.ok(Buffer.byteLength(line) <= 75, `folded: ${line}`)
+  assert.equal(c.icsText({ ...ev, date: 'nope' }), null)
+})
+
+test('calendar: the .ics file from /api/invitations, only with links to this site', async () => {
+  const q = (o) => `/api/invitations?${new URLSearchParams({ ics: '1', ...o })}`
+  const r = await fetch(base + q({ t: 'Աննա և Միքայելի հարսանիք', d: '2027-06-12', h: '16:00', l: 'Երևան', u: `${base}/i/abc`, lang: 'hy' }))
+  assert.equal(r.status, 200)
+  assert.match(r.headers.get('content-type'), /^text\/calendar/)
+  const text = await r.text()
+  assert.match(text, /SUMMARY:Աննա և Միքայելի հարսանիք/)
+  assert.match(text, /\/i\/abc/)
+  const evil = await (await fetch(base + q({ t: 'x', d: '2027-06-12', h: '16:00', u: 'https://evil.example/x' }))).text()
+  assert.doesNotMatch(evil, /evil/, 'a link to another site is dropped')
+  assert.equal((await fetch(base + q({ t: 'x', d: 'tomorrow' }))).status, 422)
+  assert.equal((await fetch(base + q({ d: '2027-06-12' }))).status, 422)
+})

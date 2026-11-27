@@ -12,7 +12,8 @@ import { useDesignFonts } from '../shared/useDesignFonts'
 import { getByPath } from '../shared/pathUtils'
 import { SeatDialog, SeatForm, useSeatFinder } from '../shared/Seating'
 import SiloonaCredit from '../shared/SiloonaCredit'
-import { calendarUrl, caps, formatEventDate } from '../wd-noir/lib/date'
+import { caps, formatEventDate } from '../wd-noir/lib/date'
+import AddToCalendar from '../shared/AddToCalendar'
 
 // Great Vibes for the handwritten Latin line, Cormorant Garamond for the
 // wide word and the figures, Noto Serif Armenian for every Armenian letter.
@@ -40,7 +41,7 @@ export function NewYearParty({ design, variant = '', twinkles = true }) {
       <main className="col">
         <Section id="cover"><Cover /></Section>
         <Welcome />
-        <Section id="venue"><DateVenue /></Section>
+        <Section id="venue"><DateVenue design={design} /></Section>
         {/* only where seating was ordered — renders nothing otherwise */}
         <Seating />
         <Section id="schedule"><Program /></Section>
@@ -133,12 +134,11 @@ const mapUrl = (q) => `https://www.google.com/maps/search/?api=1&query=${encodeU
 const pad = (n) => String(n).padStart(2, '0')
 
 // The date inside a gold ring that draws itself, a spark on top.
-function DateVenue() {
+function DateVenue({ design }) {
   const { data, editing } = useInvitationContent()
   const d = formatEventDate(data.eventDate)
   const dd = `${pad(d.date.getDate())}.${pad(d.date.getMonth() + 1)}`
   const q = [data.venue.name, data.venue.address].filter(Boolean).join(', ')
-  const cal = calendarUrl({ title: data.company || caps(data.cover.word), iso: data.eventDate, hours: 5, location: q })
   return (
     <Part className="when" label="Ամսաթիվ և վայր">
       <div className="ring">
@@ -157,7 +157,7 @@ function DateVenue() {
       <Editable as="p" path="venue.address" className="addr" />
       <div className="links">
         <a className="btn-line" href={editing ? undefined : mapUrl(data.venue.address || q)} target="_blank" rel="noopener noreferrer"><Editable path="mapButton" /></a>
-        {cal && <a className="btn-line" href={editing ? undefined : cal} target="_blank" rel="noopener noreferrer"><Editable path="calendarButton" /></a>}
+        <AddToCalendar slug={design} kind="newYear" event={{ location: q }} className="btn-line"><Editable path="calendarButton" /></AddToCalendar>
       </div>
     </Part>
   )

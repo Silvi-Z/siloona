@@ -6,6 +6,7 @@ import GuestGreeting, { fillName } from '../../shared/GuestGreeting'
 import Section, { useSectionHidden } from '../../shared/Section'
 import { useInvitationContent } from '../../shared/EditableContext'
 import { calendarWeeks, formatEventDate } from '../lib/date'
+import AddToCalendar from '../../shared/AddToCalendar'
 
 // One part of the page. Gets `.in` once it scrolls into view; its `.r`
 // children fade up from that (staggered by --i), lines draw themselves.
@@ -87,6 +88,9 @@ export function Welcome() {
 
 const WEEK = ['Երկ', 'Երք', 'Չրք', 'Հնգ', 'Ուր', 'Շբթ', 'Կիր']
 
+// the calendar entry's place: the celebration (the second place), else the first
+const calendarPlace = (places = []) => { const p = places[1] || places[0] || {}; return [p.name, p.address].filter(Boolean).join(', ') }
+
 export function CalendarCard() {
   const { data } = useInvitationContent()
   const d = formatEventDate(data.eventDate)
@@ -110,6 +114,9 @@ export function CalendarCard() {
           ))}
         </div>
         <p className="note"><Editable path="calendarNote" /><svg viewBox="0 0 40 30" aria-hidden="true"><path d="M3 4 C 12 22, 24 26, 35 20 M 35 20 l -7 -1 M 35 20 l -3 6" /></svg></p>
+      </div>
+      <div className="cal-add r" style={{ '--i': 2 }}>
+        <AddToCalendar slug="wd-cherry" event={{ location: calendarPlace(data.places) }} className="btn-wine" />
       </div>
     </Block>
   )
