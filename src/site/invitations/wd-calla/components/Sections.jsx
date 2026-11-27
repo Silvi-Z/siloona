@@ -8,6 +8,7 @@ import { formatEventDate } from '../lib/date'
 import coverImg from '../assets/cover.webp'
 import clusterImg from '../assets/cluster.webp'
 import AddToCalendar from '../../shared/AddToCalendar'
+import { SeatDialog, SeatForm, useSeatFinder } from '../../shared/Seating'
 
 // A page section that gets `.in` once it scrolls into view; its `.r`
 // children reveal from that, staggered by --i.
@@ -202,6 +203,37 @@ export function DressCode() {
           )
         ))}
       </div>
+    </Block>
+  )
+}
+
+// ---------- «Ձեր սեղանը» (only on invitations with seating) ----------
+// The guest types their name and sees their table (shared/Seating.jsx);
+// before the reveal only the date. Nothing renders without seating.
+export function Seating() {
+  const f = useSeatFinder()
+  if (!f.on) return null
+  return (
+    <Block className="seat" label={f.t.title}>
+      <h2 className="hd r">{f.t.title}</h2>
+      <div className="seat-card r" style={{ '--i': 2 }} tabIndex={f.result ? -1 : undefined} data-seat-return>
+        {!f.revealed ? (
+          <p className="seat-soon body">{f.soon}</p>
+        ) : f.result ? (
+          <div className="seat-res" role="status">
+            <p className={`seat-table${f.result.table.length > 3 ? ' long' : ''}`}>{f.result.table}</p>
+            <button type="button" className="seat-again" onClick={f.another}>{f.t.other}</button>
+          </div>
+        ) : (
+          <>
+            <p className="seat-teaser body">{f.t.teaser}</p>
+            <button type="button" className="btn seat-cta" onClick={f.open} aria-haspopup="dialog">{f.t.button}</button>
+          </>
+        )}
+      </div>
+      <SeatDialog finder={f} className="sd-seat wcl-seat">
+        {(titleId) => <SeatForm finder={f} titleId={titleId} />}
+      </SeatDialog>
     </Block>
   )
 }

@@ -2,7 +2,7 @@ import './wd-rouge.css'
 import Section from '../shared/Section'
 import { useInvitationContent } from '../shared/EditableContext'
 import { useDesignFonts } from '../shared/useDesignFonts'
-import { BigDate, Closing, Hero, Photos, Program, Rsvp, Venue, Welcome } from './components/Sections'
+import { BigDate, Closing, Hero, Photos, Program, Rsvp, Seating, Venue, Welcome } from './components/Sections'
 import SiloonaCredit from '../shared/SiloonaCredit'
 
 // Hairline Cormorant for «LOVE» and the numerals, thin Noto Serif Armenian
@@ -23,6 +23,8 @@ export default function WdRougeInvitation() {
         <Section id="photos"><Photos /></Section>
         <Section id="schedule"><Program /></Section>
         <Section id="venue"><Venue /></Section>
+        {/* only where the couple ordered seating — renders nothing otherwise */}
+        <Seating />
         <Section id="rsvp"><Rsvp /></Section>
         <Section id="closing"><Closing /></Section>
         <SiloonaCredit design="wd-rouge" />

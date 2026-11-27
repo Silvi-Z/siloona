@@ -157,3 +157,21 @@
   .wln .r{opacity:1; transform:none; filter:none}
   .wln .rib{clip-path:none!important; translate:none!important}
 }
+
+/* ---------- «Ձեր սեղանը» (only on invitations with seating) ---------- */
+.wln .seat-card{max-width:80cqw; margin:0 auto}
+.wln .seat-card:focus{outline:none}
+.wln .seat-cta{border-left:0; border-right:0; border-top:0; background:none; cursor:pointer}
+.wln .seat-res{display:grid; justify-items:center; margin-top:5cqw}
+.wln .seat-res .seat-table{font:200 22cqw/1.05 var(--arm); color:var(--gold-d); overflow-wrap:anywhere; animation:wln-seat 1s cubic-bezier(.2,.7,.2,1) both}
+.wln .seat-res .seat-table.long{font-size:9cqw; line-height:1.25}
+.wln .seat-again{margin-top:3cqw; padding:1cqw 0; border:0; background:none; color:var(--mute); font:300 max(13px,3.3cqw) var(--sans); text-decoration:underline; text-underline-offset:.25em; cursor:pointer}
+@keyframes wln-seat{from{opacity:0; letter-spacing:.2em}}
+.wln-seat{
+  --sd-paper:#fffefb; --sd-ink:#3b332c; --sd-muted:#8a7c6c; --sd-accent:#8a6d48; --sd-on-accent:#fffefb; --sd-err:#9b3b2e;
+  --sd-font:"Noto Sans Armenian","Segoe UI",system-ui,sans-serif; --sd-title:"Noto Serif Armenian","Sylfaen",Georgia,serif; --sd-num:"Noto Serif Armenian","Sylfaen",Georgia,serif;
+  --sd-title-size:25px; --sd-title-weight:200; --sd-radius:0; --sd-btn-radius:0; --sd-backdrop:rgba(59,51,44,.4);
+}
+.wln-seat .seat-box{border:1px solid rgba(168,138,98,.42); outline:1px solid rgba(168,138,98,.2); outline-offset:-8px}
+.wln-seat .seat-go,.wln-seat .seat-ok{font-size:12px; letter-spacing:.24em; text-transform:uppercase}
+@media (prefers-reduced-motion:reduce){.wln .seat-res .seat-table{animation:none}}

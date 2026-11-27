@@ -1,0 +1,50 @@
+/* «Ձեր սեղանը» dialog for designs that style it through variables
+   (className "sd-seat <design>-seat"). The dialog lives in <body>, outside
+   the design's root, so each design sets its own typefaces, colours and
+   corners on its `<design>-seat` class:
+     --sd-paper --sd-ink --sd-muted --sd-accent --sd-on-accent --sd-err
+     --sd-font (text) --sd-title (heading) --sd-num (the table number)
+     --sd-radius --sd-btn-radius --sd-title-case (none|uppercase) --sd-title-track
+   (wd-noir and wd-portrait have their own full CSS.) */
+.sd-seat{
+  position:fixed; inset:0; z-index:1000; display:flex; align-items:flex-start; justify-content:center;
+  padding:max(10vh,24px) 16px 24px; overflow-y:auto; background:var(--sd-backdrop, rgba(20,16,14,.5));
+  -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px); animation:sd-fade .3s ease both;
+}
+.sd-seat *,.sd-seat *::before,.sd-seat *::after{box-sizing:border-box}
+.sd-seat .seat-box{
+  position:relative; width:100%; max-width:400px; padding:46px 28px 30px; text-align:center;
+  background:var(--sd-paper, #fff); color:var(--sd-ink, #222); font-family:var(--sd-font, inherit);
+  border-radius:var(--sd-radius, 4px); box-shadow:0 28px 70px -20px rgba(0,0,0,.45); animation:sd-pop .42s cubic-bezier(.2,.7,.2,1) both;
+}
+.sd-seat p,.sd-seat h2{margin:0}
+.sd-seat .seat-x{position:absolute; top:12px; right:12px; width:44px; height:44px; display:grid; place-items:center; border:0; background:none; color:var(--sd-accent, currentColor); cursor:pointer}
+.sd-seat .seat-x svg{width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.5; stroke-linecap:round}
+.sd-seat .seat-title{font-family:var(--sd-title, inherit); font-size:var(--sd-title-size, 22px); font-weight:var(--sd-title-weight, 400); line-height:1.3; letter-spacing:var(--sd-title-track, .02em); text-transform:var(--sd-title-case, none); color:var(--sd-accent, inherit)}
+.sd-seat .seat-intro{font-size:15.5px; line-height:1.55; color:var(--sd-muted, inherit); margin-top:10px}
+.sd-seat .seat-field{display:grid; gap:6px; margin-top:24px; text-align:left}
+.sd-seat .seat-lbl{font-size:13.5px; color:var(--sd-muted, inherit)}
+.sd-seat .seat-field input{
+  width:100%; font:inherit; font-size:18px; color:var(--sd-ink, inherit); background:transparent;
+  border:0; border-bottom:1px solid var(--sd-accent, currentColor); border-radius:0; padding:10px 0; -webkit-appearance:none; appearance:none;
+}
+.sd-seat .seat-field input:focus{outline:none; border-bottom-width:2px; padding-bottom:9px}
+.sd-seat .seat-field input[aria-invalid=true]{border-bottom-color:var(--sd-err, #a33)}
+.sd-seat .seat-msg{min-height:1.5em; margin-top:10px; font-size:14.5px; line-height:1.5; color:var(--sd-err, #a33); text-align:left}
+.sd-seat .seat-msg:empty{min-height:0; margin-top:0}
+.sd-seat .seat-go,.sd-seat .seat-ok{
+  display:block; width:100%; margin-top:22px; min-height:50px; padding:0 20px; border:1px solid var(--sd-accent, #222);
+  border-radius:var(--sd-btn-radius, 0); background:var(--sd-accent, #222); color:var(--sd-on-accent, #fff);
+  font:inherit; font-size:15px; letter-spacing:.06em; cursor:pointer; transition:opacity .2s ease;
+}
+.sd-seat .seat-go[disabled]{opacity:.7; cursor:progress}
+.sd-seat .seat-go:hover,.sd-seat .seat-ok:hover{opacity:.9}
+.sd-seat button:focus-visible,.sd-seat input:focus-visible{outline:2px solid var(--sd-accent, currentColor); outline-offset:3px}
+.sd-seat .seat-yours{font-size:13px; letter-spacing:.14em; color:var(--sd-muted, inherit)}
+.sd-seat .seat-table{font-family:var(--sd-num, inherit); font-size:84px; font-weight:400; line-height:1.05; color:var(--sd-accent, inherit); margin-top:6px; overflow-wrap:anywhere; animation:sd-up .7s cubic-bezier(.2,.7,.2,1) .05s both}
+.sd-seat .seat-table.long{font-size:36px; line-height:1.25; margin-top:12px}
+.sd-seat .seat-done .seat-ok{margin-top:24px}
+@keyframes sd-fade{from{opacity:0}}
+@keyframes sd-pop{from{opacity:0; transform:translateY(16px)}}
+@keyframes sd-up{from{opacity:0; transform:translateY(12px)}}
+@media (prefers-reduced-motion:reduce){ .sd-seat,.sd-seat .seat-box,.sd-seat .seat-table{animation:none} }

@@ -991,3 +991,18 @@ test('personal links: the guest is greeted by name, nothing else leaks, unknown 
   assert.equal(answers.find((r) => r.guest_name === 'Արամ և Անի').guest_id, guest.id)
   assert.equal(answers.find((r) => r.guest_name === 'Գոհար').guest_id, null)
 })
+
+test('seating add-on: offered in every wedding design that has the section', async () => {
+  const { orderableAddons, SEATING_DESIGNS } = await import(pathToFileURL(path.join(ROOT, 'src/site/addons.js')).href)
+  for (const id of ['wd-calla', 'wd-chateau', 'wd-cherry', 'wd-line', 'wd-meadow', 'wd-mono', 'wd-rouge', 'wd-velvet', 'wd-portrait', 'wd-noir', 'wd-noir-lite']) {
+    assert.ok(SEATING_DESIGNS.includes(id), id)
+    assert.ok(orderableAddons(id, 'diy').some((a) => a.id === 'seating'), `${id} offers «Ձեր սեղանը»`)
+  }
+  // every design listed really renders the section
+  for (const id of SEATING_DESIGNS) {
+    const dir = path.join(ROOT, 'src/site/invitations', id)
+    const src = fs.readdirSync(dir, { recursive: true }).filter((f) => /\.jsx$/.test(f)).map((f) => fs.readFileSync(path.join(dir, f), 'utf8')).join('\n')
+    const viaShared = /NewYearParty|from '\.\.\/ce-sparkle/.test(src)
+    assert.ok(viaShared || /useSeatFinder\(\)/.test(src), `${id} has a seating section`)
+  }
+})

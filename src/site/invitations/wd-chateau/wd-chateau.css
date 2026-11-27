@@ -223,3 +223,23 @@
 }
 /* A guest's personal link: «Սիրելի Արամ և Անի» under the welcome line */
 .wdc .dear{margin:3.2cqw 0 0; font:italic 500 clamp(19px,5.4cqw,28px)/1.25 var(--serif); color:var(--navy); letter-spacing:.01em}
+
+/* ---------- «Ձեր սեղանը» (only on invitations with seating) ---------- */
+.wdc .seat{text-align:center}
+.wdc .seat-card{max-width:420px; margin:0 auto; padding:26px 20px 24px; border:1px solid var(--line); border-radius:10px; background:var(--pale)}
+.wdc .seat-card:focus{outline:none}
+.wdc .seat .body{margin-bottom:0}
+.wdc .seat .seat-cta{margin-top:18px}
+.wdc .seat-res{display:grid; justify-items:center}
+.wdc .seat-res .seat-table{font:500 84px/1.05 var(--serif); color:var(--navy); overflow-wrap:anywhere; animation:wdc-seat .9s cubic-bezier(.2,.7,.2,1) both}
+.wdc .seat-res .seat-table.long{font-size:36px; line-height:1.25}
+.wdc .seat-again{margin-top:10px; padding:6px 0; border:0; background:none; color:var(--soft); font:500 15px var(--serif); text-decoration:underline; text-underline-offset:4px; text-decoration-color:var(--blue); cursor:pointer}
+@keyframes wdc-seat{from{opacity:0; transform:translateY(12px)}}
+.wdc-seat{
+  --sd-paper:#fff; --sd-ink:#2a3550; --sd-muted:#5d6a86; --sd-accent:#1f3a6e; --sd-on-accent:#fff; --sd-err:#9b3b2e;
+  --sd-font:"Cormorant Garamond","Noto Serif Armenian",Georgia,serif; --sd-title:"Cormorant Garamond","Noto Serif Armenian",Georgia,serif; --sd-num:"Cormorant Garamond","Noto Serif Armenian",Georgia,serif;
+  --sd-title-size:20px; --sd-title-weight:700; --sd-title-case:uppercase; --sd-title-track:.16em; --sd-radius:12px; --sd-btn-radius:999px; --sd-backdrop:rgba(31,58,110,.35);
+}
+.wdc-seat .seat-intro,.wdc-seat .seat-lbl,.wdc-seat .seat-field input{font-size:17px}
+.wdc-seat .seat-go,.wdc-seat .seat-ok{font-weight:700; font-size:14px; letter-spacing:.16em; text-transform:uppercase}
+@media (prefers-reduced-motion:reduce){.wdc .seat-res .seat-table{animation:none}}

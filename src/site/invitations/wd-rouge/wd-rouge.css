@@ -133,3 +133,22 @@
 .wrg .wdb-edit-input{font:400 15px var(--serif); color:var(--ink); background:#fff; border:1px solid var(--line); border-radius:6px; padding:6px 8px}
 /* «Ավելացնել օրացույցում» under the countdown */
 .wrg .cal-add{text-align:center}
+
+/* ---------- «Ձեր սեղանը» (only on invitations with seating) ---------- */
+.wrg .seat{text-align:center}
+.wrg .seat-card{max-width:84%; margin:0 auto}
+.wrg .seat-card:focus{outline:none}
+.wrg .seat .seat-cta{background:none; cursor:pointer}
+.wrg .seat-res{display:grid; justify-items:center}
+.wrg .seat-res .seat-table{font:200 26cqw/1 var(--thin); color:var(--red); overflow-wrap:anywhere; animation:wrg-seat 1s cubic-bezier(.2,.7,.2,1) both}
+.wrg .seat-res .seat-table.long{font-size:10cqw; line-height:1.2}
+.wrg .seat-again{margin-top:3cqw; padding:1cqw 0; border:0; background:none; color:var(--muted); font:300 3.4cqw var(--serif); text-decoration:underline; text-underline-offset:.25em; cursor:pointer}
+@keyframes wrg-seat{from{opacity:0; transform:translateY(5cqw)}}
+.wrg-seat{
+  --sd-paper:#F8F4EE; --sd-ink:#2B2725; --sd-muted:#77706A; --sd-accent:#8F1D21; --sd-on-accent:#fff; --sd-err:#8F1D21;
+  --sd-font:"Noto Serif Armenian","Cormorant Garamond",Georgia,serif; --sd-title:"Cormorant Garamond","Noto Serif Armenian",Georgia,serif; --sd-num:"Cormorant Garamond","Noto Serif Armenian",Georgia,serif;
+  --sd-title-size:34px; --sd-title-weight:300; --sd-radius:0; --sd-btn-radius:999px; --sd-backdrop:rgba(43,39,37,.45);
+}
+.wrg-seat .seat-title{color:var(--sd-ink)}
+.wrg-seat .seat-table{font-weight:200; font-size:100px}
+@media (prefers-reduced-motion:reduce){.wrg .seat-res .seat-table{animation:none}}

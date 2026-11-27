@@ -2,7 +2,7 @@ import './wd-meadow.css'
 import Section from '../shared/Section'
 import { useInvitationContent } from '../shared/EditableContext'
 import { useDesignFonts } from '../shared/useDesignFonts'
-import { Closing, DateBlock, DressCode, Hero, Program, Rsvp, Venue, Welcome } from './components/Sections'
+import { Closing, DateBlock, DressCode, Hero, Program, Rsvp, Seating, Venue, Welcome } from './components/Sections'
 import SiloonaCredit from '../shared/SiloonaCredit'
 
 // Light weights of Cormorant (numerals, ampersand) and Noto Serif
@@ -26,6 +26,8 @@ export default function WdMeadowInvitation() {
         <Section id="schedule"><Program /></Section>
         <Section id="venue"><Venue /></Section>
         <Section id="dressCode"><DressCode /></Section>
+        {/* only where the couple ordered seating — renders nothing otherwise */}
+        <Seating />
         <Section id="rsvp"><Rsvp /></Section>
         <Section id="closing"><Closing /></Section>
         <SiloonaCredit design="wd-meadow" />

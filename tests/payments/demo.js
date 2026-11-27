@@ -99,6 +99,22 @@ for (const [i, id] of WEB_DESIGNS.entries()) {
   await store.addInvitationGuest({ invitation_id: inv.id, token: `DemoGuestToken${String(i).padStart(10, '0')}`, display_name: 'Արամ և Անի', name_key: `aram-ani-${i}` })
 }
 
+// «Ձեր սեղանը» in every wedding design that has it, in its three states:
+// /i/f00000000NNs — NN the design (hex), s: 0 no seating, 1 before the reveal, 2 open
+const { SEATING_DESIGNS } = await import('../../src/site/addons.js')
+const SEAT_WEDDINGS = SEATING_DESIGNS.filter((id) => id.startsWith('wd-'))
+for (const [i, id] of SEAT_WEDDINGS.entries()) {
+  for (const state of [0, 1, 2]) {
+    const code = `f00000000${i.toString(16).padStart(2, '0')}${state}`
+    const addons = state ? '[{"id":"seating","price":4000}]' : '[]'
+    const { rows: [o] } = await store.db.query(
+      `insert into orders (access_token, customer_name, customer_phone, design_id, design_option, customization, amount, payment_status, addons)
+       values ('demo', 'Demo', '+37499000000', $1, 'diy', '{"names":"Լիլիթ & Արման","eventDate":"2027-09-18","eventTime":"17:00","venue":"Երևան"}'::jsonb, 19000, 'paid', $2::jsonb) returning id`, [id, addons])
+    const { rows: [inv] } = await store.db.query('insert into invitations (code, order_id, design_id) values ($1, $2, $3) returning id', [code, o.id, id])
+    if (state) await store.importSeating({ invitation: inv.id, revealAt: new Date(Date.now() + (state === 1 ? 72 : -1) * HOUR).toISOString(), rows: SEATS })
+  }
+}
+
 const vite = await createServer({ root: ROOT, configFile: path.join(ROOT, 'vite.config.js'), server: { port: PORT, strictPort: true } })
 await vite.listen()
 ;(await vite.ssrLoadModule('/api/_lib/store.js')).setStore(store)
@@ -114,5 +130,6 @@ console.log(`  → «Անհատական դիմում հյուրին» (wd-noir):
 console.log(`      http://localhost:${PORT}/i/d0000000000f               (ընդհանուր)`)
 for (const g of PERSONAL) console.log(`      http://localhost:${PORT}/i/d0000000000f/${g.token}   (${g.name})`)
 console.log(`      http://localhost:${PORT}/i/d0000000000f/NoSuchGuestToken00000000   (գոյություն չունեցող)`)
+console.log(`  → «Ձեր սեղանը» բոլոր հարսանեկան դիզայններում՝ /i/f00000000NNs (NN = ${SEAT_WEDDINGS.map((id, i) => `${i.toString(16).padStart(2, '0')} ${id}`).join(', ')}; s = 0 առանց, 1 մինչև բացումը, 2 բացված)`)
 console.log(`      ամեն վեբ դիզայնում՝ /i/e000000000NN/DemoGuestTokenNNNNNNNNNN (NN = 00…${(WEB_DESIGNS.length - 1).toString(16)}, hex)`)
 console.log('')

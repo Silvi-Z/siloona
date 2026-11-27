@@ -19,7 +19,10 @@ const web = (id) => !isCard(id)
 // Wedding designs (there are no separate engagement designs yet).
 const wedding = (id) => id.startsWith('wd-')
 // Designs with the «Ձեր սեղանը» section built in.
-export const SEATING_DESIGNS = ['wd-portrait', 'wd-noir', 'wd-noir-lite', 'ce-sparkle', 'ce-cozy']
+export const SEATING_DESIGNS = [
+  'wd-portrait', 'wd-noir', 'wd-noir-lite', 'wd-calla', 'wd-chateau', 'wd-cherry', 'wd-line', 'wd-meadow', 'wd-mono', 'wd-rouge', 'wd-velvet',
+  'ce-sparkle', 'ce-cozy',
+]
 
 export const ADDONS = [
   {

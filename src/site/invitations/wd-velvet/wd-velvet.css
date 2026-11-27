@@ -163,3 +163,23 @@
   .wvl *,.wvl *::before,.wvl *::after{animation:none!important; transition:none!important}
   .wvl .r{opacity:1; transform:none; filter:none}
 }
+
+/* ---------- «Ձեր սեղանը» (only on invitations with seating) ---------- */
+.wvl .seat{padding-top:6cqw}
+.wvl .seat-card{max-width:80cqw; margin:0 auto}
+.wvl .seat-card:focus{outline:none}
+.wvl .seat-cta{background:none; cursor:pointer}
+.wvl .seat-res{display:grid; justify-items:center; margin-top:4cqw}
+.wvl .seat-res .seat-table{font:300 22cqw/1.05 var(--lat); color:var(--wine); overflow-wrap:anywhere; animation:wvl-seat 1s var(--ease) both}
+.wvl .seat-res .seat-table.long{font-size:9cqw; line-height:1.25}
+.wvl .seat-again{margin-top:3cqw; padding:1cqw 0; border:0; background:none; color:var(--mute); font:300 max(13px,3.3cqw) var(--sans); text-decoration:underline; text-underline-offset:.25em; cursor:pointer}
+@keyframes wvl-seat{from{opacity:0; transform:translateY(4cqw)}}
+.wvl-seat{
+  --sd-paper:#f3eadb; --sd-ink:#4a2a28; --sd-muted:#7a6658; --sd-accent:#5a1820; --sd-on-accent:#f3eadb; --sd-err:#8a2a31;
+  --sd-font:"Noto Sans Armenian","Segoe UI",system-ui,sans-serif; --sd-title:"Noto Serif Armenian","Sylfaen",Georgia,serif; --sd-num:"Cormorant Garamond","Noto Serif Armenian",Georgia,serif;
+  --sd-title-size:25px; --sd-title-weight:300; --sd-radius:130px 130px 0 0; --sd-btn-radius:0; --sd-backdrop:rgba(74,42,40,.5);
+}
+.wvl-seat .seat-box{padding-top:64px}
+.wvl-seat .seat-x{top:46px; right:22px}
+.wvl-seat .seat-go,.wvl-seat .seat-ok{font-size:12px; letter-spacing:.24em; text-transform:uppercase}
+@media (prefers-reduced-motion:reduce){.wvl .seat-res .seat-table{animation:none}}

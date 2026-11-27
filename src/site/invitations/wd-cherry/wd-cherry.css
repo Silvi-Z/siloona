@@ -167,3 +167,22 @@
 /* «Ավելացնել օրացույցում» under the calendar card (below its hand-written note) */
 .wch .cal-add{display:flex; justify-content:center; margin-top:14cqw}
 .wch .cal-add .btn-wine{text-decoration:none; margin-top:0}
+
+/* ---------- «Ձեր սեղանը» (only on invitations with seating) ---------- */
+.wch .seat-card{max-width:84%; margin:0 auto}
+.wch .seat-card:focus{outline:none}
+.wch .seat .seat-cta{margin-top:5cqw; text-decoration:none}
+.wch .seat-res{display:grid; justify-items:center}
+.wch .seat-res .seat-table{font:400 24cqw/1 var(--num); color:var(--wine); overflow-wrap:anywhere; transform:rotate(-4deg); animation:wch-seat .8s cubic-bezier(.2,.7,.2,1) both}
+.wch .seat-res .seat-table.long{font-size:11cqw; line-height:1.2}
+.wch .seat-again{margin-top:3cqw; padding:1cqw 0; border:0; background:none; color:var(--soft); font:italic 400 3.6cqw var(--hand); text-decoration:underline; text-underline-offset:.25em; cursor:pointer}
+@keyframes wch-seat{from{opacity:0; transform:rotate(-12deg) scale(.8)}}
+.wch-seat{
+  --sd-paper:#FFFDF9; --sd-ink:#3A1F25; --sd-muted:#6B4A50; --sd-accent:#6E1428; --sd-on-accent:#fff; --sd-err:#9b2a35;
+  --sd-font:"Noto Serif Armenian",Georgia,serif; --sd-title:"Noto Serif Armenian",Georgia,serif; --sd-num:"Caveat","Noto Serif Armenian",cursive;
+  --sd-title-size:28px; --sd-title-weight:500; --sd-radius:14px; --sd-btn-radius:999px; --sd-backdrop:rgba(58,31,37,.42);
+}
+.wch-seat .seat-title{font-style:italic}
+.wch-seat .seat-table{font-size:96px}
+.wch-seat .seat-go,.wch-seat .seat-ok{font-style:italic; font-size:17px; letter-spacing:.01em}
+@media (prefers-reduced-motion:reduce){.wch .seat-res .seat-table{animation:none}}

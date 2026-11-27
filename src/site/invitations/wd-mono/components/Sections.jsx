@@ -9,6 +9,7 @@ import Icon, { ICON_NAMES } from './Icons'
 import Torn from './Torn'
 import { formatEventDate } from '../lib/date'
 import AddToCalendar from '../../shared/AddToCalendar'
+import { SeatDialog, SeatForm, useSeatFinder } from '../../shared/Seating'
 
 // the calendar entry's place: the celebration (the second place), else the first
 const calendarPlace = (places = []) => { const p = places[1] || places[0] || {}; return [p.name, p.address].filter(Boolean).join(', ') }
@@ -211,6 +212,37 @@ export function Playlist() {
           <Editable path="playlist.button" />
         </button>
       )}
+    </Block>
+  )
+}
+
+// ---------- «Ձեր սեղանը» (only on invitations with seating) ----------
+// The guest types their name and sees their table (shared/Seating.jsx);
+// before the reveal only the date. Nothing renders without seating.
+export function Seating() {
+  const f = useSeatFinder()
+  if (!f.on) return null
+  return (
+    <Block className="seat" label={f.t.title}>
+      <h2 className="ttl r">{f.t.title}</h2>
+      <div className="seat-card r" style={{ '--i': 2 }} tabIndex={f.result ? -1 : undefined} data-seat-return>
+        {!f.revealed ? (
+          <p className="seat-soon body">{f.soon}</p>
+        ) : f.result ? (
+          <div className="seat-res" role="status">
+            <p className={`seat-table${f.result.table.length > 3 ? ' long' : ''}`}>{f.result.table}</p>
+            <button type="button" className="seat-again" onClick={f.another}>{f.t.other}</button>
+          </div>
+        ) : (
+          <>
+            <p className="seat-teaser body">{f.t.teaser}</p>
+            <button type="button" className="pill seat-cta" onClick={f.open} aria-haspopup="dialog">{f.t.button}</button>
+          </>
+        )}
+      </div>
+      <SeatDialog finder={f} className="sd-seat wmn-seat">
+        {(titleId) => <SeatForm finder={f} titleId={titleId} />}
+      </SeatDialog>
     </Block>
   )
 }

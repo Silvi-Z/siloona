@@ -2,6 +2,8 @@ import { useEffect, useId, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useInvitationContent } from './EditableContext'
 import { pick, useInvLang } from './invLang'
+// the dialog's look for designs that style it with variables (.sd-seat)
+import './seatDialog.css'
 
 // «Ձեր սեղանը» — the guest finds their table. The behaviour is the same in
 // every design and lives here; how it looks is each design's own (its
