@@ -7,6 +7,7 @@ import { useLang, useText } from '../i18n'
 import PaymentMethods, { SecureNote } from './PaymentMethods'
 import OrderPreview from './OrderPreview'
 import RsvpQuestions from './RsvpQuestions'
+import ThankYouEditor from './ThankYouEditor'
 import { addonName } from '../addons'
 import {
   getOrderStatus, goToProvider, isTestChoice, methodInfo, paymentChoices, optionInfo, orderLink, recallOrder, rememberOrder, startPayment,
@@ -390,6 +391,9 @@ export default function CheckoutResult() {
           {CUSTOMER_DASHBOARD && data.invitationCode && design?.previewSlug && <ManageGuests id={id} token={token} linked={data.linked} />}
           {data.invitationCode && Array.isArray(data.rsvpQuestions) && (
             <RsvpQuestions id={id} token={token} questions={data.rsvpQuestions} onSaved={(qs) => setData((d) => ({ ...d, rsvpQuestions: qs }))} />
+          )}
+          {data.invitationCode && data.thankYou && (
+            <ThankYouEditor id={id} token={token} value={data.thankYou} eventDate={data.preview?.customization?.eventDate} />
           )}
           {data.invitationCode && data.wishesBook && (
             <section className="co-share" aria-labelledby="co-wb-h">

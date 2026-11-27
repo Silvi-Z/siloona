@@ -6,6 +6,7 @@ import { deepMerge } from '../invitations/shared/pathUtils'
 import { findDesign } from '../designCatalog'
 import { prefillFromEvent } from '../invitationPrefill'
 import { orderInvitationContent } from '../orderContent'
+import ThankYouHost from '../invitations/shared/ThankYou'
 
 // The invitation guests open — /i/:code[/:token]. Two kinds, the server
 // tells which (GET /api/invitations):
@@ -171,7 +172,12 @@ export default function SharedInvitation() {
   return (
     <InvitationContentProvider defaultData={content} editing={false} setEditing={noop} guestName={guestName} onRsvp={onRsvp} seating={seating} features={features} rsvpQuestions={data.rsvpQuestions || null} rsvpAnswers={rsvpAnswers}
       wishes={data.wishes || null} onWish={(w) => sendWish({ code, t: token, ...w })}>
-      <Invitation />
+      {/* «Շնորհակալական էջ»: over the invitation from the couple's chosen moment */}
+      {data.thankYou ? (
+        <ThankYouHost thankYou={data.thankYou} names={data.customization?.names || ''} lang={invLangOf(data)}>
+          <Invitation />
+        </ThankYouHost>
+      ) : <Invitation />}
     </InvitationContentProvider>
   )
 }

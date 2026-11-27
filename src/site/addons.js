@@ -56,7 +56,7 @@ export const ADDONS = [
     text: { hy: 'Հյուրերը թողնում են մաղթանքներ, որոնք տեսնում եք միայն Դուք։', ru: 'Гости оставляют пожелания, которые видите только Вы.', en: 'Guests leave wishes that only you can see.' },
   },
   {
-    id: 'thank_you_page', type: 'feature', enabled: false, designs: web,
+    id: 'thank_you_page', type: 'feature', enabled: true, designs: web,
     name: { hy: 'Շնորհակալական էջ', ru: 'Страница благодарности', en: 'Thank-you page' },
     text: { hy: 'Միջոցառումից հետո նույն հղումը բացում է Ձեր շնորհակալական խոսքը և լուսանկարները։', ru: 'После события та же ссылка открывает Ваши слова благодарности и фотографии.', en: 'After the event, the same link opens your thank-you note and photos.' },
   },

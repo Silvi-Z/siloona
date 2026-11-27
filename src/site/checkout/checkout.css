@@ -429,3 +429,17 @@
 .siloona-site .co-rq-add{display:grid; gap:8px; margin-top:18px}
 .siloona-site .co-rq-add .co-via-opt{font:inherit; font-size:14px; text-align:left}
 .siloona-site .co-ans-list .who small + small{margin-top:2px}
+
+/* «Շնորհակալական էջ» on the order page (ThankYouEditor.jsx) */
+.siloona-site .co-ty{text-align:left}
+.siloona-site .co-ty .eyebrow,.siloona-site .co-ty h2,.siloona-site .co-ty > .co-share-note{text-align:center}
+.siloona-site .co-ty textarea{width:100%; font:inherit; font-size:16px; padding:12px; border:1px solid var(--line-2); border-radius:6px; background:var(--co-paper)}
+.siloona-site .co-ty input[type=datetime-local]{font:inherit; font-size:16px; min-height:46px; padding:8px 12px; border:1px solid var(--line-2); border-radius:6px; background:var(--co-paper)}
+.siloona-site .co-ty-ph-h{display:block; margin:18px 0 8px}
+.siloona-site .co-ty-photos{display:grid; grid-template-columns:repeat(auto-fill,minmax(86px,1fr)); gap:8px}
+.siloona-site .co-ty-photos figure{position:relative; margin:0; aspect-ratio:1; overflow:hidden; border-radius:6px; background:var(--line)}
+.siloona-site .co-ty-photos img{width:100%; height:100%; object-fit:cover; display:block}
+.siloona-site .co-ty-photos figure button{position:absolute; top:4px; right:4px; width:28px; height:28px; border:0; border-radius:50%; background:rgba(0,0,0,.55); color:#fff; font-size:18px; line-height:1; cursor:pointer}
+.siloona-site .co-ty-add{display:grid; place-items:center; aspect-ratio:1; border:1px dashed var(--line-2); border-radius:6px; cursor:pointer; text-align:center; font-size:13px; color:var(--violet); padding:6px}
+.siloona-site .co-ty-add input{position:absolute; width:1px; height:1px; opacity:0}
+.siloona-site .co-ty-add:focus-within{outline:2px solid var(--violet); outline-offset:2px}

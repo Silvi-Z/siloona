@@ -1168,3 +1168,31 @@ test('wishes book: a fast flood from one address is refused', async () => {
     assert.equal(codes[6], 429)
   } finally { process.env.RATE_LIMITS = 'off' }
 })
+
+test('thank-you page: set by the couple, sent to the page only with the add-on and a note', async () => {
+  const paid = async (addons) => {
+    const o = await newOrder({ designId: 'wd-noir', addons })
+    await call('POST', '/api/admin/orders', { token: USERS.admin.token, body: { orderId: o.orderId, action: 'manual_payment', method: 'cash', reference: `T-${o.orderNumber}` } })
+    return { o, code: (await status(o)).json.invitationCode }
+  }
+  const save = (o, body) => call('POST', '/api/orders/status', { body: { action: 'thank_you', id: o.orderId, t: o.token, ...body } })
+  const { o, code } = await paid(['thank_you_page', 'wishes'])
+  assert.deepEqual((await status(o)).json.thankYou, { from: '', text: '', photos: [] })
+  assert.equal((await call('GET', `/api/invitations?code=${code}`)).json.thankYou, undefined, 'no note yet: the invitation stays')
+
+  assert.equal((await save(o, { text: 'Շնորհակալություն', from: '' })).status, 422, 'a note needs its date')
+  assert.equal((await save(o, { text: 'x', from: '2027-06-13T10:00', photos: Array.from({ length: 11 }, (_, i) => `/api/uploads?id=a${i}`) })).status, 422, 'at most 10 photos')
+  const ok = await save(o, { from: '2027-06-13T10:00', text: 'Շնորհակալ ենք <b>բոլորիդ</b>։\n\nՍիրով՝ Միլենա և Ալեն', photos: ['/api/uploads?id=abc1', 'javascript:alert(1)', 'https://evil.example/x.jpg', '/api/uploads?id=abc1'] })
+  assert.equal(ok.status, 200, JSON.stringify(ok.json))
+  assert.deepEqual(ok.json.thankYou.photos, ['/api/uploads?id=abc1'], 'only our own uploads, once')
+  assert.equal(ok.json.thankYou.text, 'Շնորհակալ ենք բոլորիդ։\n\nՍիրով՝ Միլենա և Ալեն')
+
+  await call('POST', '/api/invitations', { body: { wish: true, code, name: 'Գոհար', text: 'Սեր' } })
+  const page = (await call('GET', `/api/invitations?code=${code}`)).json.thankYou
+  assert.deepEqual(page, { from: '2027-06-13T10:00', text: 'Շնորհակալ ենք բոլորիդ։\n\nՍիրով՝ Միլենա և Ալեն', photos: ['/api/uploads?id=abc1'], wishes: 1 })
+  assert.equal((await save({ ...o, token: 'bad' }, { text: 'x', from: '2027-06-13T10:00' })).status, 404)
+
+  const plain = await paid([])
+  assert.equal((await status(plain.o)).json.thankYou, null)
+  assert.equal((await save(plain.o, { text: 'x', from: '2027-06-13T10:00' })).status, 403)
+})

@@ -1,0 +1,43 @@
+/* «Շնորհակալական էջ» (ThankYou.jsx): over the design, in its own paper,
+   ink and typefaces (--ty-* read from the design's page). */
+.ty-host{display:contents}
+.ty{
+  position:fixed; inset:0; z-index:900; overflow-y:auto; -webkit-overflow-scrolling:touch;
+  background:var(--ty-paper, #fff); color:var(--ty-ink, #222); font-family:var(--ty-body, Georgia, serif);
+  animation:ty-in .7s ease both;
+}
+.ty-in{width:min(100% - 44px, 620px); margin:0 auto; padding:clamp(56px,12vh,110px) 0 72px; text-align:center}
+.ty-eyebrow{margin:0; font-size:12px; letter-spacing:.3em; text-transform:uppercase; color:var(--ty-accent, inherit); opacity:.8}
+.ty-names{margin:18px 0 0; font-family:var(--ty-head, inherit); font-weight:400; font-size:clamp(34px,9vw,58px); line-height:1.1; color:var(--ty-accent, inherit)}
+.ty-text{margin:clamp(26px,5vw,40px) auto 0; max-width:34em; font-size:clamp(16px,4.2vw,18px); line-height:1.75}
+.ty-text p{margin:0 0 1em; white-space:pre-line}
+.ty-wishes{margin:8px 0 0; font-family:var(--ty-head, inherit); font-style:italic; font-size:clamp(17px,4.4vw,20px); color:var(--ty-accent, inherit)}
+.ty-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin:clamp(30px,6vw,48px) 0 0}
+.ty-grid.n1{grid-template-columns:1fr}
+.ty-grid.n3 .ty-ph:first-child{grid-column:1 / -1}
+@media (min-width:700px){ .ty-grid.n4{grid-template-columns:repeat(3,1fr)} }
+.ty-ph{display:block; padding:0; border:0; background:color-mix(in srgb, var(--ty-ink, #222) 8%, transparent); cursor:zoom-in; aspect-ratio:4 / 5; overflow:hidden}
+.ty-grid.n1 .ty-ph,.ty-grid.n3 .ty-ph:first-child{aspect-ratio:3 / 2}
+.ty-ph img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .6s ease}
+.ty-ph:hover img{transform:scale(1.03)}
+.ty-ph:focus-visible{outline:2px solid var(--ty-accent, currentColor); outline-offset:2px}
+.ty-view{
+  margin:clamp(40px,8vw,64px) auto 0; display:inline-block; min-height:44px; padding:8px 4px; border:0;
+  border-bottom:1px solid color-mix(in srgb, var(--ty-ink, #222) 40%, transparent); background:none; color:inherit;
+  font:inherit; font-size:14.5px; letter-spacing:.06em; cursor:pointer; opacity:.8;
+}
+.ty-view:hover{opacity:1}
+.ty-return{
+  position:fixed; left:50%; bottom:16px; transform:translateX(-50%); z-index:800; min-height:40px; padding:8px 18px;
+  border:0; border-radius:999px; background:rgba(20,16,18,.72); color:#fff; font:inherit; font-size:13px; letter-spacing:.04em; cursor:pointer;
+  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+}
+.ty-lb{position:fixed; inset:0; z-index:2147483000; display:grid; place-items:center; background:rgba(8,6,6,.92); outline:none; animation:ty-in .25s ease both}
+.ty-lb img{max-width:94vw; max-height:84vh; object-fit:contain; box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.ty-lb button{position:absolute; width:48px; height:48px; border:0; border-radius:50%; background:rgba(255,255,255,.12); color:#fff; font-size:30px; line-height:1; cursor:pointer}
+.ty-lb-x{top:14px; right:14px}
+.ty-lb-prev{left:10px; top:50%; transform:translateY(-50%)}
+.ty-lb-next{right:10px; top:50%; transform:translateY(-50%)}
+.ty-lb-n{position:absolute; bottom:16px; left:0; right:0; margin:0; text-align:center; color:rgba(255,255,255,.7); font-size:13px}
+@keyframes ty-in{from{opacity:0}}
+@media (prefers-reduced-motion:reduce){ .ty,.ty-lb{animation:none} .ty-ph img{transition:none} }
