@@ -8,6 +8,7 @@ import { pick, useInvLang } from '../../shared/invLang'
 import { formatEventDate } from '../lib/date'
 import Art, { Sparkle } from './Art'
 import AddToCalendar from '../../shared/AddToCalendar'
+import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
 
 // The design's own fixed words, in the invitation's language.
 const WORDS = {
@@ -154,6 +155,7 @@ export function Countdown() {
 
 export function Program() {
   const { data } = useInvitationContent()
+  const live = useLiveSchedule()
   const w = useWords()
   return (
     <Block className="program">
@@ -161,9 +163,10 @@ export function Program() {
       <Title path="scheduleTitle" red />
       <ol className="tl">
         {data.schedule.map((_, i) => (
-          <li key={i} className="r" style={{ '--i': i + 1 }}>
+          <li key={i} className={live.cls(i, 'r')} style={{ '--i': i + 1 }}>
             <Editable as="time" path={`schedule.${i}.time`} />
             <Editable path={`schedule.${i}.label`} />
+            <LiveStep live={live} i={i} />
             <RowRemove list="schedule" index={i} />
           </li>
         ))}

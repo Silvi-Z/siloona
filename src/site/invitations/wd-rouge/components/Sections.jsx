@@ -8,6 +8,7 @@ import { useInvitationContent } from '../../shared/EditableContext'
 import { formatEventDate } from '../lib/date'
 import AddToCalendar from '../../shared/AddToCalendar'
 import { SeatDialog, SeatForm, useSeatFinder } from '../../shared/Seating'
+import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
 
 // the calendar entry's place: the celebration (the second place), else the first
 const calendarPlace = (places = []) => { const p = places[1] || places[0] || {}; return [p.name, p.address].filter(Boolean).join(', ') }
@@ -201,6 +202,7 @@ function ProgramLine({ listRef, count }) {
 
 export function Program() {
   const { data } = useInvitationContent()
+  const live = useLiveSchedule()
   const listRef = useRef(null)
   return (
     <Block className="program" label="Օրվա ծրագիրը">
@@ -209,9 +211,10 @@ export function Program() {
         <ProgramLine listRef={listRef} count={data.schedule.length} />
         <ol ref={listRef}>
           {data.schedule.map((_, i) => (
-            <li key={i} className={`r ${i % 2 ? 'right' : 'left'}`} style={{ '--i': Math.min(i + 1, 6) }}>
+            <li key={i} className={live.cls(i, `r ${i % 2 ? 'right' : 'left'}`)} style={{ '--i': Math.min(i + 1, 6) }}>
               <Editable as="time" path={`schedule.${i}.time`} />
               <Editable as="p" path={`schedule.${i}.label`} />
+              <LiveStep live={live} i={i} />
               <RowRemove list="schedule" index={i} />
             </li>
           ))}

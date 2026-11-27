@@ -1,0 +1,25 @@
+/* «Կենդանի ծրագիր» marks inside a design's own programme list
+   (LiveSchedule.jsx). They take the design's colour (currentColor) and
+   typeface; motion is one soft pulse, none for reduced motion. */
+/* on the children, so a design's own reveal (opacity on the row) still works */
+.live-past > *{opacity:.42; transition:opacity .6s ease}
+.live-now{position:relative}
+.ls-now,.ls-next{
+  grid-column:-2 / -1; justify-self:start; width:max-content;
+  display:inline-block; vertical-align:middle; margin-inline-start:.55em; padding:.12em .65em .16em; border:1px solid currentColor;
+  border-radius:999px; font-size:max(11px,.62em); line-height:1.4; letter-spacing:.12em; white-space:nowrap; font-weight:inherit;
+}
+/* a filled dot that breathes, then the word */
+.ls-now::before{content:""; display:inline-block; width:.5em; height:.5em; margin-inline-end:.45em; vertical-align:.08em; border-radius:50%; background:currentColor; animation:ls-pulse 2.4s ease-out infinite}
+.ls-next{opacity:.8}
+.ls-acts{display:flex; flex-wrap:wrap; align-items:center; justify-content:inherit; gap:.5em; flex-basis:100%; grid-column:-2 / -1; width:100%; margin-top:.55em}
+.ls-acts .ls-next{margin-inline-start:0}
+.live-next{flex-wrap:wrap}
+.ls-btn{
+  display:inline-flex; align-items:center; justify-content:center; min-height:38px; padding:.3em .95em; border:1px solid currentColor;
+  border-radius:999px; color:inherit; font-size:max(13px,.8em); letter-spacing:.04em; text-decoration:none; white-space:nowrap;
+}
+.ls-btn:active{transform:scale(.97)}
+.ls-btn:focus-visible{outline:2px solid currentColor; outline-offset:2px}
+@keyframes ls-pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb, currentColor 45%, transparent)} 70%,100%{box-shadow:0 0 0 8px transparent}}
+@media (prefers-reduced-motion:reduce){ .ls-now::before{animation:none} .live-past > *{transition:none} }

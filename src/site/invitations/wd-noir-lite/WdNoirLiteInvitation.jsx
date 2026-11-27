@@ -14,6 +14,7 @@ import { SeatDialog, SeatForm, useSeatFinder } from '../shared/Seating'
 import SiloonaCredit from '../shared/SiloonaCredit'
 import { caps, formatEventDate } from '../wd-noir/lib/date'
 import AddToCalendar from '../shared/AddToCalendar'
+import { LiveStep, useLiveSchedule } from '../shared/LiveSchedule'
 
 // Same type as wd-noir.
 const FONTS_HREF = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Noto+Serif+Armenian:wght@200;300;400;500&display=swap'
@@ -199,14 +200,16 @@ function Seating() {
 
 function Program() {
   const { data } = useInvitationContent()
+  const live = useLiveSchedule()
   return (
     <Panel label="Օրվա ծրագիրը">
       <Heading path="scheduleTitle" />
       <ol className="plist">
         {data.schedule.map((_, i) => (
-          <li key={i}>
+          <li key={i} className={live.cls(i)}>
             <Editable as="time" path={`schedule.${i}.time`} />
             <Editable as="p" path={`schedule.${i}.label`} />
+            <LiveStep live={live} i={i} />
             <RowRemove list="schedule" index={i} />
           </li>
         ))}

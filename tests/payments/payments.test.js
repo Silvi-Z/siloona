@@ -1006,3 +1006,58 @@ test('seating add-on: offered in every wedding design that has the section', asy
     assert.ok(viaShared || /useSeatFinder\(\)/.test(src), `${id} has a seating section`)
   }
 })
+
+test('live schedule: on the day only, Yerevan time, now / next / past, directions and Yandex Go', async () => {
+  const L = await import(pathToFileURL(path.join(ROOT, 'src/site/invitations/shared/liveTimes.js')).href)
+  const data = {
+    eventDate: '2027-06-12T13:00:00',
+    places: [
+      { label: 'Փեսայի տուն', time: '13:00', name: 'Սարգսյաններ', address: 'Երևան, Սայաթ-Նովա 10' },
+      { label: 'Պսակադրություն', time: '15:00', name: 'Սուրբ Գայանե', address: '40.1580, 44.2930' },
+      { label: 'Խնջույք', time: '18:00', name: '«Վարդենի»', address: 'https://www.google.com/maps/place/x/@40.1772,44.5035,17z' },
+    ],
+    schedule: [
+      { time: '13:00', label: 'Փեսայի տուն' },
+      { time: '15:00', label: 'Պսակադրություն', end: '16:00' },
+      { time: '18:00', label: 'Խնջույք' },
+      { time: '21:00', label: 'Տորթ' },
+    ],
+  }
+  const at = (d, t) => L.yerevanMs(d, t)
+  const s = (d, t) => { const x = L.liveState(data, at(d, t)); return { active: x.active, now: x.now, next: x.next, past: [...x.past].sort() } }
+  assert.deepEqual(s('2027-06-11', '20:00'), { active: false, now: null, next: null, past: [] }, 'the day before: as usual')
+  assert.deepEqual(s('2027-06-12', '10:00'), { active: true, now: null, next: 0, past: [] }, 'before the first part')
+  assert.deepEqual(s('2027-06-12', '13:30'), { active: true, now: 0, next: 1, past: [] }, 'during a part')
+  assert.deepEqual(s('2027-06-12', '16:30'), { active: true, now: null, next: 2, past: [0, 1] }, 'between parts (the 2nd ended at 16:00)')
+  assert.deepEqual(s('2027-06-12', '23:30'), { active: true, now: 3, next: null, past: [0, 1, 2] }, 'the last part lasts 3 hours')
+  assert.deepEqual(s('2027-06-13', '00:30'), { active: false, now: null, next: null, past: [] }, 'the next day: as usual')
+  // a phone set to another time zone changes nothing: the instant is what counts
+  assert.equal(L.yerevanMs('2027-06-12', '13:00'), Date.UTC(2027, 5, 12, 9, 0))
+
+  const parts = L.scheduleParts(data).parts
+  assert.deepEqual(parts[1].place.coords, { lat: 40.158, lng: 44.293 }, 'coordinates written as the address')
+  assert.deepEqual(parts[2].place.coords, { lat: 40.1772, lng: 44.5035 }, 'coordinates from a Google Maps link')
+  assert.equal(parts[2].place.address, '', 'a link is not shown as an address')
+  assert.equal(parts[3].place, null, 'a row without its own place and no place at its time')
+  assert.match(L.directionsUrl(parts[0].place), /^https:\/\/www\.google\.com\/maps\/dir\/\?api=1&destination=/)
+  assert.match(L.directionsUrl(parts[1].place, true), /^https:\/\/maps\.apple\.com\/\?daddr=40\.158,44\.293/)
+  const taxi = new URL(L.taxiUrl(parts[2].place, 'hy'))
+  assert.equal(taxi.origin + taxi.pathname, 'https://3.redirect.appmetrica.yandex.com/route')
+  assert.equal(taxi.searchParams.get('end-lat'), '40.1772')
+  assert.equal(taxi.searchParams.get('end-lon'), '44.5035')
+  assert.equal(taxi.searchParams.get('appmetrica_tracking_id'), '25395763362139037', 'no app → Yandex Go website')
+  assert.equal(new URL(L.taxiUrl(parts[0].place)).searchParams.get('end-lat'), null, 'no coordinates → no made-up destination')
+  // one venue for the whole event: every part is there
+  const party = { eventDate: '2027-05-15', venue: { name: '«Փուչիկ»', address: 'Երևան' }, schedule: [{ time: '12:00', label: 'a' }, { time: '13:00', label: 'b' }] }
+  assert.equal(L.scheduleParts(party).parts[1].place.name, '«Փուչիկ»')
+})
+
+test('live schedule: the ?now= test mode never runs on the live site', async () => {
+  const src = fs.readFileSync(path.join(ROOT, 'src/site/invitations/shared/LiveSchedule.jsx'), 'utf8')
+  assert.match(src, /import\.meta\.env\?\.DEV/)
+  const allowed = (host) => /^(localhost|127\.\d+\.\d+\.\d+)$/.test(host) || host.endsWith('.vercel.app')
+  assert.equal(allowed('siloona.am'), false)
+  assert.equal(allowed('www.siloona.am'), false)
+  assert.equal(allowed('invitations-git-x.vercel.app'), true)
+  assert.match(src, /host\.endsWith\('\.vercel\.app'\)/, 'the same rule as in the component')
+})

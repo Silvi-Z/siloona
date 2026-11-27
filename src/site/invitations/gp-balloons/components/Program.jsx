@@ -2,6 +2,7 @@ import Editable from '../../shared/Editable'
 import { RowAdd, RowRemove } from '../../shared/ListEdit'
 import { useInvitationContent } from '../../shared/EditableContext'
 import Rv from './Rv'
+import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
 
 // The source demo's four line icons; a longer program cycles through them.
 const ICONS = [
@@ -13,18 +14,20 @@ const ICONS = [
 
 export default function Program() {
   const { data } = useInvitationContent()
+  const live = useLiveSchedule()
   return (
     <section className="sand">
       <div className="wrap">
         <Rv as="h2">Երեկոյի ծրագիրը</Rv>
         <Rv as="ul" className="tl">
           {data.schedule.map((_, i) => (
-            <li key={i}>
+            <li key={i} className={live.cls(i)}>
               <span className="ico"><svg viewBox="0 0 24 24"><path d={ICONS[i % ICONS.length]} /></svg></span>
               <div>
                 <Editable as="time" path={`schedule.${i}.time`} />
                 <Editable as="p" path={`schedule.${i}.label`} />
               </div>
+              <LiveStep live={live} i={i} />
               <RowRemove list="schedule" index={i} />
             </li>
           ))}

@@ -6,6 +6,7 @@ import { useInvitationContent } from '../../shared/EditableContext'
 import { daysLeft, formatEventDate } from '../lib/date'
 import { Band, Heart, MaskHeading, Rv } from './parts'
 import AddToCalendar from '../../shared/AddToCalendar'
+import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
 
 const DAYS = ['Երկ', 'Երք', 'Չրք', 'Հնգ', 'Ուր', 'Շբթ', 'Կիր']
 
@@ -70,6 +71,7 @@ export function Venue() {
 // alternating sides.
 export function Program() {
   const { data } = useInvitationContent()
+  const live = useLiveSchedule()
   return (
     <div className="archwrap">
       <Band seed={45} className="bt" />
@@ -78,8 +80,8 @@ export function Program() {
         <Rv className="tl">
           <div className="ln" /><Heart className="hh h1" /><Heart className="hh h2" />
           {data.schedule.map((_, i) => (
-            <div key={i} className={`it ${i % 2 ? 'r' : 'l'}`} style={{ '--i': i }}>
-              <div><Editable as="time" path={`schedule.${i}.time`} /><Editable path={`schedule.${i}.label`} /></div>
+            <div key={i} className={live.cls(i, `it ${i % 2 ? 'r' : 'l'}`)} style={{ '--i': i }}>
+              <div><Editable as="time" path={`schedule.${i}.time`} /><Editable path={`schedule.${i}.label`} /><LiveStep live={live} i={i} /></div>
               <Heart className="m" />
               <RowRemove list="schedule" index={i} />
             </div>

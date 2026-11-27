@@ -8,6 +8,7 @@ import { getByPath } from '../../shared/pathUtils'
 import { caps, formatEventDate } from '../lib/date'
 import garlandArt from '../assets/garland.webp'
 import AddToCalendar from '../../shared/AddToCalendar'
+import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
 
 // One part of the page. Gets `.in` once it scrolls into view; its `.r`
 // children fade up from that (staggered by --i).
@@ -142,14 +143,16 @@ export function Countdown() {
 
 export function Program() {
   const { data } = useInvitationContent()
+  const live = useLiveSchedule()
   return (
     <Block className="program" label="Երեկոյի ծրագիր">
       <Heading path="scheduleTitle" />
       <ol className="plist">
         {data.schedule.map((_, i) => (
-          <li key={i} className="r" style={{ '--i': Math.min(i + 1, 6) }}>
+          <li key={i} className={live.cls(i, 'r')} style={{ '--i': Math.min(i + 1, 6) }}>
             <Editable as="time" path={`schedule.${i}.time`} />
             <Editable as="p" path={`schedule.${i}.label`} />
+            <LiveStep live={live} i={i} />
             <RowRemove list="schedule" index={i} />
           </li>
         ))}

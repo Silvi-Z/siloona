@@ -10,6 +10,7 @@ import Torn from './Torn'
 import { formatEventDate } from '../lib/date'
 import AddToCalendar from '../../shared/AddToCalendar'
 import { SeatDialog, SeatForm, useSeatFinder } from '../../shared/Seating'
+import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
 
 // the calendar entry's place: the celebration (the second place), else the first
 const calendarPlace = (places = []) => { const p = places[1] || places[0] || {}; return [p.name, p.address].filter(Boolean).join(', ') }
@@ -143,6 +144,7 @@ export function PhotoBand({ path, seed, tall }) {
 
 export function Program() {
   const { data, editing, setField } = useInvitationContent()
+  const live = useLiveSchedule()
   const cycle = (i) => {
     const cur = data.schedule[i].icon
     const next = ICON_NAMES[(ICON_NAMES.indexOf(cur) + 1) % ICON_NAMES.length]
@@ -153,7 +155,7 @@ export function Program() {
       <Editable as="h2" path="scheduleTitle" className="ttl r" />
       <ol className="tl">
         {data.schedule.map((s, i) => (
-          <li key={i} className="r" style={{ '--i': Math.min(i + 1, 6) }}>
+          <li key={i} className={live.cls(i, 'r')} style={{ '--i': Math.min(i + 1, 6) }}>
             {editing ? (
               <button type="button" className="ico-btn" onClick={() => cycle(i)} title="Փոխել պատկերակը" aria-label="Փոխել պատկերակը">
                 <Icon name={s.icon || ICON_NAMES[i % ICON_NAMES.length]} size={50} />
@@ -163,6 +165,7 @@ export function Program() {
             )}
             <Editable as="time" path={`schedule.${i}.time`} />
             <Editable path={`schedule.${i}.label`} />
+            <LiveStep live={live} i={i} />
             <RowRemove list="schedule" index={i} />
           </li>
         ))}

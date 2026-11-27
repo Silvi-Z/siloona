@@ -9,6 +9,7 @@ import sceneImg from '../assets/scene.webp'
 import racerImg from '../assets/racer.webp'
 import towImg from '../assets/tow.webp'
 import AddToCalendar from '../../shared/AddToCalendar'
+import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
 
 // A page section that gets `.in` once it scrolls into view; its `.r`
 // children reveal from that, staggered by --i.
@@ -125,14 +126,16 @@ export function Countdown() {
 // The programme along a road running down the page.
 export function Program() {
   const { data } = useInvitationContent()
+  const live = useLiveSchedule()
   return (
     <Block className="program">
       <Heading path="scheduleTitle" />
       <ol className="track">
         {data.schedule.map((_, i) => (
-          <li key={i} className="r" style={{ '--i': i + 1 }}>
+          <li key={i} className={live.cls(i, 'r')} style={{ '--i': i + 1 }}>
             <Editable as="time" path={`schedule.${i}.time`} />
             <Editable path={`schedule.${i}.label`} />
+            <LiveStep live={live} i={i} />
             <RowRemove list="schedule" index={i} />
           </li>
         ))}

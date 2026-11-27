@@ -12,6 +12,7 @@ import eeyore from './assets/eeyore.webp'
 import tigger from './assets/tigger.webp'
 import SiloonaCredit from '../shared/SiloonaCredit'
 import AddToCalendar from '../shared/AddToCalendar'
+import { LiveStep, useLiveSchedule } from '../shared/LiveSchedule'
 
 // Each section reveals its `.r` children (staggered by --i) once in view.
 function Sec({ className = '', children, label }) {
@@ -127,14 +128,16 @@ function Countdown() {
 
 function Program() {
   const { data } = useInvitationContent()
+  const live = useLiveSchedule()
   return (
     <Sec className="prog">
       <Heading path="scheduleTitle" />
       <ol>
         {data.schedule.map((_, i) => (
-          <li key={i} className="r" style={{ '--i': i + 1 }}>
+          <li key={i} className={live.cls(i, 'r')} style={{ '--i': i + 1 }}>
             <Editable as="time" path={`schedule.${i}.time`} />
             <Editable path={`schedule.${i}.label`} />
+            <LiveStep live={live} i={i} />
             <RowRemove list="schedule" index={i} />
           </li>
         ))}

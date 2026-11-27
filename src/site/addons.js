@@ -41,7 +41,7 @@ export const ADDONS = [
     text: { hy: 'Հյուրը գրում է իր անունը և տեսնում, թե որ սեղանի մոտ է նստելու։', ru: 'Гость вводит своё имя и видит, за каким столом сидит.', en: 'Guests type their name and see which table they’re at.' },
   },
   {
-    id: 'live_schedule', type: 'feature', enabled: false, designs: web,
+    id: 'live_schedule', type: 'feature', enabled: true, designs: web,
     name: { hy: 'Կենդանի ծրագիր + տաքսի', ru: 'Живая программа + такси', en: 'Live schedule + taxi' },
     text: { hy: 'Միջոցառման օրը ծրագիրը ցույց է տալիս, թե ինչ է կատարվում հիմա, և առաջարկում ճանապարհ ու տաքսի։', ru: 'В день события программа показывает, что идёт сейчас, и предлагает маршрут и такси.', en: 'On the day, the schedule shows what’s on now, with directions and a taxi.' },
   },

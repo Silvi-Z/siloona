@@ -8,6 +8,7 @@ import { useInvitationContent } from '../../shared/EditableContext'
 import { calendarWeeks, formatEventDate } from '../lib/date'
 import AddToCalendar from '../../shared/AddToCalendar'
 import { SeatDialog, SeatForm, useSeatFinder } from '../../shared/Seating'
+import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
 
 // One part of the page. Gets `.in` once it scrolls into view; its `.r`
 // children fade up from that (staggered by --i), lines draw themselves.
@@ -177,6 +178,7 @@ function PlanLine({ listRef, count }) {
 
 export function Plan() {
   const { data } = useInvitationContent()
+  const live = useLiveSchedule()
   const listRef = useRef(null)
   return (
     <Block className="plan" label="Օրվա ծրագիրը">
@@ -185,9 +187,10 @@ export function Plan() {
         <PlanLine listRef={listRef} count={data.schedule.length} />
         <ol ref={listRef}>
           {data.schedule.map((_, i) => (
-            <li key={i} className={`r ${i % 2 ? 'r-side' : 'l-side'}`} style={{ '--i': Math.min(i + 1, 6) }}>
+            <li key={i} className={live.cls(i, `r ${i % 2 ? 'r-side' : 'l-side'}`)} style={{ '--i': Math.min(i + 1, 6) }}>
               <Editable as="time" path={`schedule.${i}.time`} />
               <Editable as="p" path={`schedule.${i}.label`} />
+              <LiveStep live={live} i={i} />
               <RowRemove list="schedule" index={i} />
             </li>
           ))}

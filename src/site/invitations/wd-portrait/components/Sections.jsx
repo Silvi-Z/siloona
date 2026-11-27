@@ -10,6 +10,7 @@ import { WEEK_SHORT, caps, formatEventDate } from '../lib/date'
 import sceneArt from '../assets/scene.webp'
 import portraitArt from '../assets/portrait.webp'
 import AddToCalendar from '../../shared/AddToCalendar'
+import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
 
 // the calendar entry's place: the celebration (the second place), else the first
 const calendarPlace = (places = []) => { const p = places[1] || places[0] || {}; return [p.name, p.address].filter(Boolean).join(', ') }
@@ -145,14 +146,16 @@ export function Calendar() {
 
 export function Program() {
   const { data } = useInvitationContent()
+  const live = useLiveSchedule()
   return (
     <Block className="program" label="Օրվա ծրագիրը">
       <div className="r"><Heading path="scheduleTitle" /></div>
       <ol className="plist">
         {data.schedule.map((_, i) => (
-          <li key={i} className="r" style={{ '--i': Math.min(i + 1, 6) }}>
+          <li key={i} className={live.cls(i, 'r')} style={{ '--i': Math.min(i + 1, 6) }}>
             <Editable as="time" path={`schedule.${i}.time`} />
             <Editable as="p" path={`schedule.${i}.label`} />
+            <LiveStep live={live} i={i} />
             <RowRemove list="schedule" index={i} />
           </li>
         ))}

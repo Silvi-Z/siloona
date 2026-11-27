@@ -10,6 +10,7 @@ import chateauArt from '../assets/chateau.webp'
 import floralsArt from '../assets/florals.webp'
 import AddToCalendar from '../../shared/AddToCalendar'
 import { SeatDialog, SeatForm, useSeatFinder } from '../../shared/Seating'
+import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
 
 // The design's own fixed words, in the invitation's language.
 const WORDS = {
@@ -308,16 +309,18 @@ export function DressCode() {
 
 export function Schedule() {
   const { data } = useInvitationContent()
+  const live = useLiveSchedule()
   const w = useWords()
   return (
     <Block className="schedule">
       <Heading path="scheduleTitle" />
       <ol className="tl">
         {data.schedule.map((_, i) => (
-          <li key={i} className="r" style={{ '--i': i + 1 }}>
+          <li key={i} className={live.cls(i, 'r')} style={{ '--i': i + 1 }}>
             <Editable as="time" path={`schedule.${i}.time`} />
             <i aria-hidden="true" />
             <Editable path={`schedule.${i}.label`} />
+            <LiveStep live={live} i={i} />
             <RowRemove list="schedule" index={i} />
           </li>
         ))}

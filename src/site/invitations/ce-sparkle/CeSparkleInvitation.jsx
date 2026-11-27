@@ -14,6 +14,7 @@ import { SeatDialog, SeatForm, useSeatFinder } from '../shared/Seating'
 import SiloonaCredit from '../shared/SiloonaCredit'
 import { caps, formatEventDate } from '../wd-noir/lib/date'
 import AddToCalendar from '../shared/AddToCalendar'
+import { LiveStep, useLiveSchedule } from '../shared/LiveSchedule'
 
 // Great Vibes for the handwritten Latin line, Cormorant Garamond for the
 // wide word and the figures, Noto Serif Armenian for every Armenian letter.
@@ -193,14 +194,16 @@ function Seating() {
 
 function Program() {
   const { data } = useInvitationContent()
+  const live = useLiveSchedule()
   return (
     <Part label="Ծրագիր">
       <Heading path="scheduleTitle" />
       <ol className="plist">
         {data.schedule.map((_, i) => (
-          <li key={i}>
+          <li key={i} className={live.cls(i)}>
             <Editable as="time" path={`schedule.${i}.time`} />
             <Editable as="p" path={`schedule.${i}.label`} />
+            <LiveStep live={live} i={i} />
             <RowRemove list="schedule" index={i} />
           </li>
         ))}

@@ -9,6 +9,7 @@ import { getByPath } from '../../shared/pathUtils'
 import { SeatDialog, SeatForm, useSeatFinder } from '../../shared/Seating'
 import { WEEK_SHORT, caps, formatEventDate, initial } from '../lib/date'
 import AddToCalendar from '../../shared/AddToCalendar'
+import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
 
 // One part of the page. Gets `.in` once it scrolls into view; its `.r`
 // children rise in from that, staggered by --i. `tone` is the part's
@@ -400,15 +401,17 @@ export function Seating() {
 // ---------- programme ----------
 export function Program() {
   const { data } = useInvitationContent()
+  const live = useLiveSchedule()
   return (
     <Block tone="ivory" className="program" label="Օրվա ծրագիրը">
       <Heading path="scheduleTitle" />
       <ol className="plist">
         {data.schedule.map((_, i) => (
-          <li key={i} className="r" style={{ '--i': Math.min(i + 1, 7) }}>
+          <li key={i} className={live.cls(i, 'r')} style={{ '--i': Math.min(i + 1, 7) }}>
             <Editable as="time" path={`schedule.${i}.time`} />
             <i aria-hidden="true" />
             <Editable as="p" path={`schedule.${i}.label`} />
+            <LiveStep live={live} i={i} />
             <RowRemove list="schedule" index={i} />
           </li>
         ))}

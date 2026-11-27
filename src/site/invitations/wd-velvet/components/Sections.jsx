@@ -9,6 +9,7 @@ import flowerTop from '../assets/flower-top.webp'
 import flowerBottom from '../assets/flower-bottom.webp'
 import AddToCalendar from '../../shared/AddToCalendar'
 import { SeatDialog, SeatForm, useSeatFinder } from '../../shared/Seating'
+import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
 
 // A page section that gets `.in` once it scrolls into view; its `.r`
 // children reveal from that, staggered by --i.
@@ -167,16 +168,18 @@ export function DateArch() {
 
 export function Program() {
   const { data } = useInvitationContent()
+  const live = useLiveSchedule()
   return (
     <Block className="program">
       <h2 className="title ink r"><Editable path="scheduleTitle" /></h2>
       <span className="rule dark r" style={{ '--i': 1 }} />
       <ol className="tl">
         {data.schedule.map((_, i) => (
-          <li key={i} className="r" style={{ '--i': i + 2 }}>
+          <li key={i} className={live.cls(i, 'r')} style={{ '--i': i + 2 }}>
             <Editable as="time" path={`schedule.${i}.time`} />
             <i aria-hidden="true" />
             <Editable path={`schedule.${i}.label`} />
+            <LiveStep live={live} i={i} />
             <RowRemove list="schedule" index={i} />
           </li>
         ))}

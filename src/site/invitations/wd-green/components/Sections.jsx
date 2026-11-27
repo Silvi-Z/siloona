@@ -7,6 +7,7 @@ import { useInvitationContent } from '../../shared/EditableContext'
 import { CLIP, DRESS, SUIT, VENUE_ART } from '../lib/art'
 import { formatEventDate } from '../lib/date'
 import { Art, Flourish, MaskHeading, Rv } from './parts'
+import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
 import AddToCalendar from '../../shared/AddToCalendar'
 
 const DAYS = ['Երկ', 'Երք', 'Չրք', 'Հնգ', 'Ուր', 'Շբթ', 'Կիր']
@@ -86,6 +87,7 @@ export function CalendarCountdown() {
 
 export function Program() {
   const { data } = useInvitationContent()
+  const live = useLiveSchedule()
   return (
     <section className="sec prog">
       <MaskHeading path="scheduleTitle" />
@@ -93,7 +95,7 @@ export function Program() {
         <Art className="clip" viewBox="0 0 60 70" aria-hidden="true" svg={CLIP} />
         <ul className="paper grain" style={{ paddingLeft: '1.5rem' }}>
           {data.schedule.map((_, i) => (
-            <li key={i} style={{ '--i': i }}><Editable as="time" path={`schedule.${i}.time`} /><Editable path={`schedule.${i}.label`} /><RowRemove list="schedule" index={i} /></li>
+            <li key={i} className={live.cls(i)} style={{ '--i': i }}><Editable as="time" path={`schedule.${i}.time`} /><Editable path={`schedule.${i}.label`} /><LiveStep live={live} i={i} /><RowRemove list="schedule" index={i} /></li>
           ))}
         </ul>
         <RowAdd list="schedule" />

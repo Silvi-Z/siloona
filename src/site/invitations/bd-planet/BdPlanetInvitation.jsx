@@ -9,6 +9,7 @@ import { formatEventDate } from './lib/date'
 import picture from './assets/planet.webp'
 import SiloonaCredit from '../shared/SiloonaCredit'
 import AddToCalendar from '../shared/AddToCalendar'
+import { LiveStep, useLiveSchedule } from '../shared/LiveSchedule'
 
 const calm = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
@@ -148,15 +149,17 @@ function Countdown() {
 
 function Program() {
   const { data } = useInvitationContent()
+  const live = useLiveSchedule()
   return (
     <Sec className="prog">
       <Heading path="scheduleTitle" />
       <ol className="orbit">
         {data.schedule.map((_, i) => (
-          <li key={i} className="r" style={{ '--i': i + 1 }}>
+          <li key={i} className={live.cls(i, 'r')} style={{ '--i': i + 1 }}>
             <Star className="dot" />
             <Editable as="time" path={`schedule.${i}.time`} />
             <Editable path={`schedule.${i}.label`} />
+            <LiveStep live={live} i={i} />
             <RowRemove list="schedule" index={i} />
           </li>
         ))}
