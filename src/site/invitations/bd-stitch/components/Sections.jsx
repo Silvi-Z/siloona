@@ -11,6 +11,7 @@ import treeImg from '../assets/tree.webp'
 import flowersImg from '../assets/flowers.webp'
 import AddToCalendar from '../../shared/AddToCalendar'
 import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
+import RsvpExtra from '../../shared/RsvpExtra'
 
 // A page section that gets `.in` once it scrolls into view; its `.r`
 // children reveal from that, staggered by --i.
@@ -216,6 +217,7 @@ export function Rsvp() {
                 <select name="g">{rsvp.guestOptions.map((o) => <option key={o}>{o}</option>)}</select>
               </label>
             )}
+            <RsvpExtra />
             <button className="send" type="submit"><Editable path="rsvp.button" /></button>
           </form>
         )}

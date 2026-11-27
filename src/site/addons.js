@@ -46,7 +46,7 @@ export const ADDONS = [
     text: { hy: 'Միջոցառման օրը ծրագիրը ցույց է տալիս, թե ինչ է կատարվում հիմա, և առաջարկում ճանապարհ ու տաքսի։', ru: 'В день события программа показывает, что идёт сейчас, и предлагает маршрут и такси.', en: 'On the day, the schedule shows what’s on now, with directions and a taxi.' },
   },
   {
-    id: 'extra_rsvp_question', type: 'feature', enabled: false, designs: web,
+    id: 'extra_rsvp_question', type: 'feature', enabled: true, designs: web,
     name: { hy: 'Լրացուցիչ հարց RSVP-ում', ru: 'Дополнительный вопрос в RSVP', en: 'Extra RSVP questions' },
     text: { hy: 'Մինչև 3 Ձեր հարցը պատասխանի ձևում, օրինակ՝ ուտեստի ընտրություն։', ru: 'До 3 Ваших вопросов в форме ответа — например, выбор блюда.', en: 'Up to 3 questions of your own in the reply form, such as a meal choice.' },
   },

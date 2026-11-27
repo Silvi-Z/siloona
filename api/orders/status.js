@@ -1,6 +1,6 @@
 import { allow, bearerToken, getQuery, handler, readBody, sendJson } from '../_lib/http.js'
 import { getStore } from '../_lib/store.js'
-import { customerView, invitationForOrder, loadOrderForCustomer, settleOpenAttempts } from '../_lib/orders.js'
+import { customerView, invitationForOrder, loadOrderForCustomer, saveRsvpQuestions, settleOpenAttempts } from '../_lib/orders.js'
 import { claimOrder } from '../_lib/orderEvents.js'
 
 // GET /api/orders/status?id=…&t=… — the customer's order page.
@@ -15,6 +15,8 @@ export default handler(async (req, res) => {
   const store = getStore()
   if (req.method === 'POST') {
     const body = await readBody(req)
+    // «Լրացուցիչ հարց RSVP-ում»: the couple's questions (orders.js saveRsvpQuestions)
+    if (body.action === 'rsvp_questions') return sendJson(res, 200, await saveRsvpQuestions(store, body))
     if (body.action !== 'claim') return sendJson(res, 400, { error: 'bad_action', message: 'Սխալ հարցում։' })
     const token = bearerToken(req)
     const user = token ? await store.getUser(token) : null

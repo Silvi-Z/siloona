@@ -15,6 +15,7 @@ import SiloonaCredit from '../shared/SiloonaCredit'
 import { caps, formatEventDate } from '../wd-noir/lib/date'
 import AddToCalendar from '../shared/AddToCalendar'
 import { LiveStep, useLiveSchedule } from '../shared/LiveSchedule'
+import RsvpExtra from '../shared/RsvpExtra'
 
 // Same type as wd-noir.
 const FONTS_HREF = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Noto+Serif+Armenian:wght@200;300;400;500&display=swap'
@@ -275,6 +276,7 @@ function Rsvp() {
               <select name="g">{rsvp.guestOptions.map((o) => <option key={o}>{o}</option>)}</select>
             </label>
           )}
+          <RsvpExtra />
           <button className="btn-gold" type="submit"><Editable path="rsvp.button" /></button>
         </form>
       )}

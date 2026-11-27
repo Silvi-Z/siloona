@@ -7,6 +7,7 @@ import { daysLeft, formatEventDate } from '../lib/date'
 import { Band, Heart, MaskHeading, Rv } from './parts'
 import AddToCalendar from '../../shared/AddToCalendar'
 import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
+import RsvpExtra from '../../shared/RsvpExtra'
 
 const DAYS = ['Երկ', 'Երք', 'Չրք', 'Հնգ', 'Ուր', 'Շբթ', 'Կիր']
 
@@ -130,6 +131,7 @@ export function Rsvp() {
             <label key={x}><input type="radio" name="g" value={x} defaultChecked={i === 0} />{x}</label>
           ))}
         </fieldset>
+        <RsvpExtra />
         <button className="btn go" type="submit">{sent ? rsvp.sentButton : <Editable path="rsvp.button" />}</button>
         <p className="note" role="status">{note}</p>
       </Rv>

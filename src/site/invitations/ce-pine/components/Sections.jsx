@@ -10,6 +10,7 @@ import pineArt from '../assets/pine.webp'
 import sprigArt from '../assets/sprig.webp'
 import AddToCalendar from '../../shared/AddToCalendar'
 import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
+import RsvpExtra from '../../shared/RsvpExtra'
 
 // The design's own fixed words, in the invitation's language.
 const WORDS = {
@@ -288,6 +289,7 @@ export function Rsvp() {
             <span className="lbl"><Editable path="rsvp.noteLabel" /></span>
             <textarea name="w" rows="2" />
           </label>
+          <RsvpExtra />
           <button className="btn send" type="submit"><Editable path="rsvp.button" /></button>
         </form>
       )}

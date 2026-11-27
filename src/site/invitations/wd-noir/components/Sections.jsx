@@ -10,6 +10,7 @@ import { SeatDialog, SeatForm, useSeatFinder } from '../../shared/Seating'
 import { WEEK_SHORT, caps, formatEventDate, initial } from '../lib/date'
 import AddToCalendar from '../../shared/AddToCalendar'
 import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
+import RsvpExtra from '../../shared/RsvpExtra'
 
 // One part of the page. Gets `.in` once it scrolls into view; its `.r`
 // children rise in from that, staggered by --i. `tone` is the part's
@@ -525,6 +526,7 @@ export function Rsvp() {
             <span className="lbl"><Editable path="rsvp.wishLabel" /></span>
             <textarea name="w" rows="3" maxLength={500} />
           </label>
+          <RsvpExtra />
           <button className="btn-gold" type="submit"><Editable path="rsvp.button" /></button>
         </form>
       )}

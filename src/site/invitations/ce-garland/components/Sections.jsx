@@ -9,6 +9,7 @@ import { caps, formatEventDate } from '../lib/date'
 import garlandArt from '../assets/garland.webp'
 import AddToCalendar from '../../shared/AddToCalendar'
 import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
+import RsvpExtra from '../../shared/RsvpExtra'
 
 // One part of the page. Gets `.in` once it scrolls into view; its `.r`
 // children fade up from that (staggered by --i).
@@ -253,6 +254,7 @@ export function Rsvp() {
             <span className="lbl"><Editable path="rsvp.dietLabel" /></span>
             <textarea name="w" rows="2" />
           </label>
+          <RsvpExtra />
           <button className="send" type="submit"><Editable path="rsvp.button" /></button>
         </form>
       )}

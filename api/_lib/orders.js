@@ -2,6 +2,7 @@ import { randomBytes, timingSafeEqual } from 'node:crypto'
 import { DESIGN_PRICES, PRICE_OPTIONS, pricesFor } from '../../src/site/prices.js'
 import { CUSTOM_DESIGN_ID, CUSTOM_EVENT_TYPES, CUSTOM_KINDS } from '../../src/site/customRequest.js'
 import { invitationFeatures, priceAddons } from '../../src/site/addons.js'
+import { cleanAnswers, cleanQuestions } from '../../src/site/rsvpQuestions.js'
 import { HttpError, siteUrl } from './http.js'
 import { notify, orderText, paymentText } from './notify.js'
 import { availableMethods, getProvider } from './providers/index.js'
@@ -232,8 +233,10 @@ export function customerView(order, txs, invitation = null) {
     // Guests' answers to the shareable invitation — the order link is the
     // customer's key to them (there's no account at checkout).
     rsvps: order.payment_status === 'paid' && invitation && Array.isArray(invitation.rsvps)
-      ? invitation.rsvps.map((r) => ({ name: r.guest_name, status: r.status, plus: r.plus, note: r.note, at: r.created_at }))
+      ? invitation.rsvps.map((r) => ({ name: r.guest_name, status: r.status, plus: r.plus, note: r.note, at: r.created_at, answers: r.answers || null }))
       : [],
+    // «Լրացուցիչ հարց RSVP-ում»: the couple sets their questions on this page
+    rsvpQuestions: invitation && featuresOf(order, invitation).includes('extra_rsvp_question') ? rsvpQuestionsOf(invitation) : null,
     canPay: order.amount != null && order.order_status !== 'cancelled' && !['paid', 'refunded'].includes(order.payment_status),
     // What the invitation will show, for the preview on the order page
     // (with a «Նախադիտում» mark until it's paid). The customer's own data;
@@ -284,9 +287,10 @@ export async function publicInvitation(store, code) {
   const { inv, order } = await loadInvitation(store, code)
   const { names, eventDate, eventTime, venue, details, content } = order.customization || {}
   const features = featuresOf(order, inv)
+  const rsvpQuestions = features.includes('extra_rsvp_question') ? rsvpQuestionsOf(inv) : []
   // «Ձեր սեղանը»: only whether / from when — the table itself is asked separately
   const seating = seatingView(await invitationSeatingPlan(store, inv, order))
-  return { designId: order.design_id, customization: { names, eventDate, eventTime, venue }, details: details || null, content: content || null, seating, features }
+  return { designId: order.design_id, customization: { names, eventDate, eventTime, venue }, details: details || null, content: content || null, seating, features, ...(rsvpQuestions.length ? { rsvpQuestions } : {}) }
 }
 
 // «Անհատական դիմում հյուրին» (supabase/personal-links.sql): the guest a
@@ -322,7 +326,32 @@ export async function submitRsvp(store, code, body) {
   const plus = Number.isInteger(n) ? Math.min(20, Math.max(0, n)) : 0
   if (!name) throw new HttpError(422, 'invalid', 'Նշեք Ձեր անունը։')
   if (!status) throw new HttpError(422, 'invalid', 'Նշեք՝ կգա՞ք, թե՞ ոչ։')
-  await store.insertRsvp({ invitation_id: inv.id, guest_name: name, status, plus, note: str(body.note, 500) || null, ...(guest ? { guest_id: guest.id } : {}) })
+  // the couple's own questions (only with the add-on); unknown answers are dropped
+  const questions = featuresOf(order, inv).includes('extra_rsvp_question') ? rsvpQuestionsOf(inv) : []
+  const { answers, missing } = cleanAnswers(questions, body.answers)
+  if (missing.length) throw new HttpError(422, 'invalid', `Պատասխանեք՝ «${missing[0]}»։`)
+  await store.insertRsvp({
+    invitation_id: inv.id, guest_name: name, status, plus, note: str(body.note, 500) || null,
+    ...(guest ? { guest_id: guest.id } : {}),
+    ...(Object.keys(answers).length ? { answers } : {}),
+  })
+}
+
+// The couple's RSVP questions on an invitation (supabase/rsvp-questions.sql).
+export const rsvpQuestionsOf = (inv) => (Array.isArray(inv?.settings?.rsvpQuestions) ? inv.settings.rsvpQuestions : [])
+
+// The couple saves their questions from the order page (its secret link is
+// their key, as for the guests' answers): only on a paid order whose
+// invitation has the add-on. 1–3 questions, cleaned (src/site/rsvpQuestions.js).
+export async function saveRsvpQuestions(store, body) {
+  const order = await loadOrderForCustomer(store, body.id, body.t)
+  const inv = await invitationForOrder(store, order)
+  if (!inv) throw new HttpError(409, 'not_paid', 'Հարցերը կարելի է ավելացնել վճարումից հետո։')
+  if (!featuresOf(order, inv).includes('extra_rsvp_question')) throw new HttpError(403, 'no_addon', 'Այս հրավերը չունի «Լրացուցիչ հարց RSVP-ում» հավելումը։')
+  let questions
+  try { questions = cleanQuestions(body.questions) } catch (e) { throw new HttpError(422, 'invalid', e.message) }
+  await store.updateInvitationSettings(inv.id, { ...(inv.settings || {}), rsvpQuestions: questions })
+  return { rsvpQuestions: questions }
 }
 
 // Every payment status change goes through here: the SQL state machine

@@ -11,6 +11,7 @@ import sceneArt from '../assets/scene.webp'
 import portraitArt from '../assets/portrait.webp'
 import AddToCalendar from '../../shared/AddToCalendar'
 import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
+import RsvpExtra from '../../shared/RsvpExtra'
 
 // the calendar entry's place: the celebration (the second place), else the first
 const calendarPlace = (places = []) => { const p = places[1] || places[0] || {}; return [p.name, p.address].filter(Boolean).join(', ') }
@@ -298,6 +299,7 @@ export function Rsvp() {
               <select name="g">{rsvp.guestOptions.map((o) => <option key={o}>{o}</option>)}</select>
             </label>
           )}
+          <RsvpExtra />
           <button className="btn-fill" type="submit"><Editable path="rsvp.button" /></button>
         </form>
       )}

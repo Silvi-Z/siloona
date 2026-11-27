@@ -8,6 +8,7 @@ import { formatEventDate } from '../lib/date'
 import AddToCalendar from '../../shared/AddToCalendar'
 import { SeatDialog, SeatForm, useSeatFinder } from '../../shared/Seating'
 import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
+import RsvpExtra from '../../shared/RsvpExtra'
 
 // A page section that gets `.in` once it scrolls into view; its `.r`
 // children (and ribbons) reveal from that, staggered by --i.
@@ -300,6 +301,7 @@ export function Rsvp() {
               <span className="caps small"><Editable path="rsvp.wishLabel" /></span>
               <textarea name="w" rows="2" />
             </label>
+            <RsvpExtra />
             <button className="send" type="submit"><Editable path="rsvp.button" /></button>
           </form>
         )}

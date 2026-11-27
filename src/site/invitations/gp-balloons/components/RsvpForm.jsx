@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import Editable from '../../shared/Editable'
 import { useInvitationContent } from '../../shared/EditableContext'
 import Rv from './Rv'
+import RsvpExtra from '../../shared/RsvpExtra'
 
 const GUESS_LABEL = { boy: 'Տղա', girl: 'Աղջիկ' }
 
@@ -64,6 +65,7 @@ export default function RsvpForm({ onConfirmed }) {
               ՄԱՂԹԱՆՔ ՓՈՔՐԻԿԻՆ
               <textarea name="w" rows="3" placeholder="Մի քանի ջերմ խոսք" />
             </label>
+            <RsvpExtra />
             <button className="btn" type="submit">ՈՒՂԱՐԿԵԼ</button>
           </Rv>
         ) : (

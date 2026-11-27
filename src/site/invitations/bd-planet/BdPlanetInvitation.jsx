@@ -10,6 +10,7 @@ import picture from './assets/planet.webp'
 import SiloonaCredit from '../shared/SiloonaCredit'
 import AddToCalendar from '../shared/AddToCalendar'
 import { LiveStep, useLiveSchedule } from '../shared/LiveSchedule'
+import RsvpExtra from '../shared/RsvpExtra'
 
 const calm = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
@@ -240,6 +241,7 @@ function Rsvp() {
               <select name="g">{rsvp.guestOptions.map((o) => <option key={o}>{o}</option>)}</select>
             </label>
           )}
+          <RsvpExtra />
           <button className="btn send" type="submit"><Editable path="rsvp.button" /></button>
         </form>
       )}

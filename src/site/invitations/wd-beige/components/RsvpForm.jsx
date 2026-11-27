@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import SplitWords from './SplitWords'
 import Editable from '../../shared/Editable'
 import { useInvitationContent } from '../../shared/EditableContext'
+import RsvpExtra from '../../shared/RsvpExtra'
 
 export default function RsvpForm({ data }) {
   const rsvp = data.rsvp
@@ -86,6 +87,7 @@ export default function RsvpForm({ data }) {
                 </select>
               </label>
 
+              <RsvpExtra />
               <button className="send" type="submit">Ուղարկել</button>
             </form>
           ) : (

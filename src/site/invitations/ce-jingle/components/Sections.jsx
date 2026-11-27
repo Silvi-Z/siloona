@@ -17,6 +17,7 @@ import gifts from '../assets/gifts.webp'
 import deer from '../assets/deer.webp'
 import AddToCalendar from '../../shared/AddToCalendar'
 import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
+import RsvpExtra from '../../shared/RsvpExtra'
 
 // The characters round the cover, in paint order; ce-jingle.css places
 // each one (`ch-<id>`) and gives it its own little movement.
@@ -286,6 +287,7 @@ export function Rsvp() {
             <span className="lbl"><Editable path="rsvp.noteLabel" /></span>
             <textarea name="w" rows="2" />
           </label>
+          <RsvpExtra />
           <button className="btn solid send" type="submit"><Editable path="rsvp.button" /></button>
         </form>
       )}

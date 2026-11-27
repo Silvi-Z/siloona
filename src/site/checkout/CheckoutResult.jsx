@@ -6,6 +6,7 @@ import { formatPrice } from '../pricing'
 import { useLang, useText } from '../i18n'
 import PaymentMethods, { SecureNote } from './PaymentMethods'
 import OrderPreview from './OrderPreview'
+import RsvpQuestions from './RsvpQuestions'
 import { addonName } from '../addons'
 import {
   getOrderStatus, goToProvider, isTestChoice, methodInfo, paymentChoices, optionInfo, orderLink, recallOrder, rememberOrder, startPayment,
@@ -35,7 +36,7 @@ const TEXT = {
     requestEyebrow: 'Հայտը ստացված է', requestText: 'Մենք կկապվենք Ձեզ հետ՝ գինն ու մանրամասները հաստատելու համար։',
     placedEyebrow: 'Պատվերը գրանցված է', toPay: 'Մնում է վճարել', toPayText: 'Ընտրեք վճարման եղանակը՝ պատվերը հաստատելու համար։',
     contactPay: 'Մենք կկապվենք Ձեզ հետ նույն օրը՝ կճշտենք վճարումը և կուղարկենք հրավերի հղումը։',
-    csvHead: ['Անուն', 'Պատասխան', 'Ուղեկցողներ', 'Նշում', 'Երբ'], yes: 'Կգա', no: 'Չի գա',
+    csvHead: ['Անուն', 'Պատասխան', 'Ուղեկցողներ', 'Նշում', 'Երբ'], yes: 'Կգա', no: 'Չի գա', ansYes: 'Այո', ansNo: 'Ոչ',
     answers: 'Հյուրերի պատասխանները', noAnswers: 'Պատասխաններ դեռ չկան։ Դրանք կհայտնվեն այստեղ, հենց հյուրերը լրացնեն հրավերի ձևը։',
     answersSum: (people, yes, no) => <><b>{people}</b> հոգի կգա ({yes} պատասխան) · <b>{no}</b> չի գա</>,
     download: 'Ներբեռնել ցուցակը (CSV)',
@@ -68,7 +69,7 @@ const TEXT = {
     requestEyebrow: 'Заявка получена', requestText: 'Мы свяжемся с Вами, чтобы согласовать цену и детали.',
     placedEyebrow: 'Заказ оформлен', toPay: 'Осталось оплатить', toPayText: 'Выберите способ оплаты, чтобы подтвердить заказ.',
     contactPay: 'Мы свяжемся с Вами в тот же день, уточним оплату и пришлём ссылку на приглашение.',
-    csvHead: ['Имя', 'Ответ', 'Сопровождающие', 'Комментарий', 'Когда'], yes: 'Придёт', no: 'Не придёт',
+    csvHead: ['Имя', 'Ответ', 'Сопровождающие', 'Комментарий', 'Когда'], yes: 'Придёт', no: 'Не придёт', ansYes: 'Да', ansNo: 'Нет',
     answers: 'Ответы гостей', noAnswers: 'Ответов пока нет. Они появятся здесь, как только гости заполнят форму в приглашении.',
     answersSum: (people, yes, no) => <>Придут: <b>{people}</b> чел. (ответов: {yes}) · не придут: <b>{no}</b></>,
     download: 'Скачать список (CSV)',
@@ -101,7 +102,7 @@ const TEXT = {
     requestEyebrow: 'Request received', requestText: 'We’ll be in touch to confirm the price and details.',
     placedEyebrow: 'Order placed', toPay: 'One step left: payment', toPayText: 'Choose a payment method to confirm your order.',
     contactPay: 'We’ll get in touch the same day to arrange payment and send you the invitation link.',
-    csvHead: ['Name', 'Answer', 'Plus-ones', 'Note', 'When'], yes: 'Attending', no: 'Not attending',
+    csvHead: ['Name', 'Answer', 'Plus-ones', 'Note', 'When'], yes: 'Attending', no: 'Not attending', ansYes: 'Yes', ansNo: 'No',
     answers: 'Guests’ answers', noAnswers: 'No answers yet. They’ll appear here as soon as guests fill in the form in the invitation.',
     answersSum: (people, yes, no) => <><b>{people}</b> attending ({yes} answers) · <b>{no}</b> not attending</>,
     download: 'Download the list (CSV)',
@@ -208,13 +209,17 @@ function stateCopy(d, pollsDone, t) {
 
 // The guests' answers to the shareable invitation: totals, the list, and a
 // CSV download (opens in Excel / Google Sheets).
-function GuestAnswers({ rsvps, orderNumber }) {
+// The couple's own questions' answers as text: «Այո»/«Ոչ» for yes/no.
+const answerText = (q, v, t) => (q.type === 'yesno' ? (v === 'yes' ? t.ansYes : v === 'no' ? t.ansNo : '') : v || '')
+
+function GuestAnswers({ rsvps, orderNumber, questions = [] }) {
   const t = useText(TEXT)
   const yes = rsvps.filter((r) => r.status === 'confirmed')
   const people = yes.reduce((n, r) => n + 1 + (r.plus || 0), 0)
   const download = () => {
     const cell = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`
-    const rows = [t.csvHead, ...rsvps.map((r) => [r.name, r.status === 'confirmed' ? t.yes : t.no, r.plus || 0, r.note || '', fmtDate(r.at)])]
+    // one column per question of the couple's
+    const rows = [[...t.csvHead, ...questions.map((q) => q.text)], ...rsvps.map((r) => [r.name, r.status === 'confirmed' ? t.yes : t.no, r.plus || 0, r.note || '', fmtDate(r.at), ...questions.map((q) => answerText(q, r.answers?.[q.id], t))])]
     // BOM first, so Excel reads the Armenian text as UTF-8
     const blob = new Blob(['\ufeff' + rows.map((r) => r.map(cell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' })
     const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: `siloona-rsvp-${orderNumber}.csv` })
@@ -232,7 +237,10 @@ function GuestAnswers({ rsvps, orderNumber }) {
           <ul className="co-ans-list">
             {rsvps.map((r, i) => (
               <li key={i}>
-                <span className="who">{r.name}{r.plus ? ` +${r.plus}` : ''}{r.note && <small>{r.note}</small>}</span>
+                <span className="who">
+                  {r.name}{r.plus ? ` +${r.plus}` : ''}{r.note && <small>{r.note}</small>}
+                  {questions.filter((q) => r.answers?.[q.id]).map((q) => <small key={q.id}>{q.text}՝ {answerText(q, r.answers[q.id], t)}</small>)}
+                </span>
                 <span className={`st ${r.status}`}>{r.status === 'confirmed' ? t.yes : t.no}</span>
               </li>
             ))}
@@ -377,7 +385,10 @@ export default function CheckoutResult() {
             <OrderPreview slug={design.previewSlug} preview={data.preview} paid={data.paymentStatus === 'paid'} />
           )}
           {CUSTOMER_DASHBOARD && data.invitationCode && design?.previewSlug && <ManageGuests id={id} token={token} linked={data.linked} />}
-          {data.invitationCode && design?.previewSlug && <GuestAnswers rsvps={data.rsvps || []} orderNumber={data.orderNumber} />}
+          {data.invitationCode && Array.isArray(data.rsvpQuestions) && (
+            <RsvpQuestions id={id} token={token} questions={data.rsvpQuestions} onSaved={(qs) => setData((d) => ({ ...d, rsvpQuestions: qs }))} />
+          )}
+          {data.invitationCode && design?.previewSlug && <GuestAnswers rsvps={data.rsvps || []} orderNumber={data.orderNumber} questions={data.rsvpQuestions || []} />}
 
           <dl className="co-details">
             <div><dt>{t.orderNumber}</dt><dd>№ {data.orderNumber}</dd></div>

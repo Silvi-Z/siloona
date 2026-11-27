@@ -31,6 +31,7 @@ export async function createPgStore() {
   await db.exec(fs.readFileSync(new URL('order-events.sql', root), 'utf8'))
   await db.exec(fs.readFileSync(new URL('addons.sql', root), 'utf8'))
   await db.exec(fs.readFileSync(new URL('personal-links.sql', root), 'utf8'))
+  await db.exec(fs.readFileSync(new URL('rsvp-questions.sql', root), 'utf8'))
   for (const u of Object.values(USERS)) {
     await db.query(`insert into auth.users (id, email, raw_user_meta_data) values ($1, $2, '{"mode":"org"}')`, [u.id, u.email])
   }
@@ -39,7 +40,7 @@ export async function createPgStore() {
   const one = async (sql, params) => (await db.query(sql, params)).rows[0] || null
   const many = async (sql, params) => (await db.query(sql, params)).rows
   const fix = (r) => r && Object.fromEntries(Object.entries(r).map(([k, v]) => [k, v instanceof Date ? v.toISOString() : typeof v === 'bigint' ? Number(v) : v]))
-  const JSONB = new Set(['customization', 'raw', 'payload', 'addons', 'features'])
+  const JSONB = new Set(['customization', 'raw', 'payload', 'addons', 'features', 'settings', 'answers'])
   const update = async (table, id, patch) => {
     const keys = Object.keys(patch)
     const sets = keys.map((k, i) => `${k} = $${i + 2}${JSONB.has(k) ? '::jsonb' : ''}`).join(', ')
@@ -81,11 +82,12 @@ export async function createPgStore() {
       await db.query('insert into invitations (code, order_id, design_id) values ($1, $2, $3) on conflict do nothing', [row.code, row.order_id, row.design_id])
       return fix(await one('select * from invitations where order_id = $1', [row.order_id]))
     },
-    insertRsvp: async (r) => fix(await one('insert into invitation_rsvps (invitation_id, guest_name, status, plus, note, guest_id) values ($1, $2, $3, $4, $5, $6) returning *', [r.invitation_id, r.guest_name, r.status, r.plus, r.note, r.guest_id ?? null])),
+    insertRsvp: async (r) => fix(await one('insert into invitation_rsvps (invitation_id, guest_name, status, plus, note, guest_id, answers) values ($1, $2, $3, $4, $5, $6, $7::jsonb) returning *', [r.invitation_id, r.guest_name, r.status, r.plus, r.note, r.guest_id ?? null, r.answers ? JSON.stringify(r.answers) : null])),
+    updateInvitationSettings: (id, settings) => update('invitations', id, { settings }),
     getInvitationGuest: async (invitationId, token) => fix(await one('select id, display_name from invitation_guests where invitation_id = $1 and token = $2', [invitationId, token])),
     // what scripts/import-guests.js writes through Supabase
     addInvitationGuest: async (g) => fix(await one('insert into invitation_guests (invitation_id, token, display_name, name_key, phone, note) values ($1, $2, $3, $4, $5, $6) returning *', [g.invitation_id, g.token, g.display_name, g.name_key, g.phone ?? null, g.note ?? null])),
-    listRsvps: async (invitationId) => (await many('select guest_name, status, plus, note, created_at from invitation_rsvps where invitation_id = $1 order by id desc', [invitationId])).map(fix),
+    listRsvps: async (invitationId) => (await many('select guest_name, status, plus, note, created_at, answers from invitation_rsvps where invitation_id = $1 order by id desc', [invitationId])).map(fix),
     rsvps: async (invitationId) => many('select guest_name, status, plus, note, guest_id from invitation_rsvps where invitation_id = $1 order by id', [invitationId]),
 
     async getUser(token) {

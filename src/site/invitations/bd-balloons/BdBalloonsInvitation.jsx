@@ -13,6 +13,7 @@ import tigger from './assets/tigger.webp'
 import SiloonaCredit from '../shared/SiloonaCredit'
 import AddToCalendar from '../shared/AddToCalendar'
 import { LiveStep, useLiveSchedule } from '../shared/LiveSchedule'
+import RsvpExtra from '../shared/RsvpExtra'
 
 // Each section reveals its `.r` children (staggered by --i) once in view.
 function Sec({ className = '', children, label }) {
@@ -221,6 +222,7 @@ function Rsvp() {
               <select name="g">{rsvp.guestOptions.map((o) => <option key={o}>{o}</option>)}</select>
             </label>
           )}
+          <RsvpExtra />
           <button className="btn send" type="submit"><Editable path="rsvp.button" /></button>
         </form>
       )}

@@ -15,6 +15,7 @@ import SiloonaCredit from '../shared/SiloonaCredit'
 import { caps, formatEventDate } from '../wd-noir/lib/date'
 import AddToCalendar from '../shared/AddToCalendar'
 import { LiveStep, useLiveSchedule } from '../shared/LiveSchedule'
+import RsvpExtra from '../shared/RsvpExtra'
 
 // Great Vibes for the handwritten Latin line, Cormorant Garamond for the
 // wide word and the figures, Noto Serif Armenian for every Armenian letter.
@@ -252,6 +253,7 @@ function Rsvp() {
             />
             {err && <span id="csp-err" className="err">{rsvp.nameError}</span>}
           </label>
+          <RsvpExtra />
           <button className="btn-gold" type="submit"><Editable path="rsvp.button" /></button>
         </form>
       )}

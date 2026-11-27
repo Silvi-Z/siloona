@@ -340,7 +340,11 @@ function OrderDrawer({ orderId, onChanged }) {
             <div className="lines" style={{ marginTop: 12 }}>
               {rsvps.map(r => (
                 <div key={r.id}>
-                  <span>{r.guest_name}{r.plus ? ` +${r.plus}` : ''}{r.note && <span className="muted small"> · {r.note}</span>}</span>
+                  <span>{r.guest_name}{r.plus ? ` +${r.plus}` : ''}{r.note && <span className="muted small"> · {r.note}</span>}
+                    {(invitation?.settings?.rsvpQuestions || []).filter(q => r.answers?.[q.id]).map(q => (
+                      <span key={q.id} className="muted small"> · {q.text}՝ {q.type === 'yesno' ? (r.answers[q.id] === 'yes' ? 'Այո' : 'Ոչ') : r.answers[q.id]}</span>
+                    ))}
+                  </span>
                   <span className="nowrap"><Badge map={RSVP_ST} value={r.status} /> <span className="muted small">{dt(r.created_at)}</span></span>
                 </div>
               ))}

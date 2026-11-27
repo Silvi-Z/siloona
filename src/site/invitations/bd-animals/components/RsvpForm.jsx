@@ -5,6 +5,7 @@ import { useInvitationContent } from '../../shared/EditableContext'
 import AnimalFigure from './AnimalFigure'
 import { burst } from '../lib/confetti'
 import monkey from '../assets/monkey.webp'
+import RsvpExtra from '../../shared/RsvpExtra'
 
 // Local-only RSVP (no backend submission) — same as the source demo and
 // the same scope decision as wd-beige/components/RsvpForm.jsx: the
@@ -59,6 +60,7 @@ export default function RsvpForm({ rootRef }) {
                 <label><input type="radio" name="att" value="yes" defaultChecked />Անպայման կգանք</label>
                 <label><input type="radio" name="att" value="no" />Ցավոք, չենք կարող գալ</label>
               </div>
+              <RsvpExtra />
               <button className="send" type="submit">Ուղարկել</button>
             </form>
           ) : (

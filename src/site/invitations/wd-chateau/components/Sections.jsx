@@ -11,6 +11,7 @@ import floralsArt from '../assets/florals.webp'
 import AddToCalendar from '../../shared/AddToCalendar'
 import { SeatDialog, SeatForm, useSeatFinder } from '../../shared/Seating'
 import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
+import RsvpExtra from '../../shared/RsvpExtra'
 
 // The design's own fixed words, in the invitation's language.
 const WORDS = {
@@ -418,6 +419,7 @@ export function Rsvp() {
             <span className="lbl"><Editable path="rsvp.wishLabel" /></span>
             <textarea name="w" rows="3" />
           </label>
+          <RsvpExtra />
           <button className="btn solid send" type="submit"><Editable path="rsvp.button" /></button>
         </form>
       )}

@@ -9,6 +9,7 @@ import { formatEventDate } from '../lib/date'
 import { Art, Flourish, MaskHeading, Rv } from './parts'
 import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
 import AddToCalendar from '../../shared/AddToCalendar'
+import RsvpExtra from '../../shared/RsvpExtra'
 
 const DAYS = ['Երկ', 'Երք', 'Չրք', 'Հնգ', 'Ուր', 'Շբթ', 'Կիր']
 
@@ -171,6 +172,7 @@ export function Details() {
               <label><input type="radio" name="a" value="yes" defaultChecked />Սիրով կմասնակցեմ</label>
               <label><input type="radio" name="a" value="no" />Ցավոք՝ չեմ կարողանա գալ</label>
             </fieldset>
+            <RsvpExtra />
             <button className="btn" type="submit">Ուղարկել</button>
             <p className="note" role="status">{note}</p>
           </form>

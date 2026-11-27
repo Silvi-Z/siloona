@@ -9,6 +9,7 @@ import { formatEventDate } from '../lib/date'
 import { Bells, DiscoBall, Gifts, MiniRainbow, Sparkle } from './Art'
 import AddToCalendar from '../../shared/AddToCalendar'
 import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
+import RsvpExtra from '../../shared/RsvpExtra'
 
 // The design's own fixed words, in the invitation's language.
 const WORDS = {
@@ -260,6 +261,7 @@ export function Rsvp() {
             <span className="lbl"><Editable path="rsvp.noteLabel" /></span>
             <textarea name="w" rows="2" />
           </label>
+          <RsvpExtra />
           <button className="btn solid send" type="submit"><Editable path="rsvp.button" /></button>
         </form>
       )}

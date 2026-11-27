@@ -1061,3 +1061,56 @@ test('live schedule: the ?now= test mode never runs on the live site', async () 
   assert.equal(allowed('invitations-git-x.vercel.app'), true)
   assert.match(src, /host\.endsWith\('\.vercel\.app'\)/, 'the same rule as in the component')
 })
+
+test('RSVP questions: cleaned questions and answers', async () => {
+  const Q = await import(pathToFileURL(path.join(ROOT, 'src/site/rsvpQuestions.js')).href)
+  const qs = Q.cleanQuestions([
+    { type: 'text', text: '  Ո՞ր <b>երգը</b>  ' },
+    { type: 'choice', text: 'Ուտեստ', options: ['Միս', 'Ձուկ', 'Միս', ''] },
+    { type: 'yesno', text: 'Տրանսպորտ պե՞տք է', required: true },
+  ])
+  assert.equal(qs[0].text, 'Ո՞ր երգը', 'no HTML, single spaces')
+  assert.deepEqual(qs[1].options, ['Միս', 'Ձուկ'])
+  assert.equal(new Set(qs.map((q) => q.id)).size, 3)
+  assert.throws(() => Q.cleanQuestions([1, 2, 3, 4].map(() => ({ text: 'Հարց' }))), /3/)
+  assert.throws(() => Q.cleanQuestions([{ type: 'choice', text: 'Ուտեստ', options: ['Միս'] }]), /2/)
+  assert.throws(() => Q.cleanQuestions([{ text: ' ' }]), /հարց/i)
+  const a = Q.cleanAnswers(qs, { [qs[0].id]: '<script>x</script>Hallelujah'.padEnd(400, '!'), [qs[1].id]: 'Խոզ', [qs[2].id]: 'yes', zzz: 'other' })
+  assert.equal(a.answers[qs[0].id].length, 300)
+  assert.ok(!a.answers[qs[0].id].includes('<'))
+  assert.equal(a.answers[qs[1].id], undefined, 'not one of the options')
+  assert.equal(a.answers.zzz, undefined)
+  assert.deepEqual(Q.cleanAnswers(qs, {}).missing, ['Տրանսպորտ պե՞տք է'])
+})
+
+test('RSVP questions: the couple sets them on the order page, guests answer, answers come back', async () => {
+  const paid = async (addons) => {
+    const o = await newOrder({ designId: 'wd-noir', addons })
+    await call('POST', '/api/admin/orders', { token: USERS.admin.token, body: { orderId: o.orderId, action: 'manual_payment', method: 'cash', reference: `Q-${o.orderNumber}` } })
+    return { o, code: (await status(o)).json.invitationCode }
+  }
+  const save = (o, questions) => call('POST', '/api/orders/status', { body: { action: 'rsvp_questions', id: o.orderId, t: o.token, questions } })
+  const { o, code } = await paid(['extra_rsvp_question'])
+  assert.deepEqual((await status(o)).json.rsvpQuestions, [], 'the add-on: an empty list to fill')
+  // as before: no questions → the RSVP is the same
+  assert.equal((await call('POST', '/api/invitations', { body: { code, name: 'Առաջին', status: 'confirmed' } })).status, 201)
+  assert.equal((await save({ ...o, token: 'wrong' }, [{ text: 'x y' }])).status, 404)
+  const set = await save(o, [{ type: 'choice', text: 'Ուտեստ', options: ['Միս', 'Ձուկ', 'Բուսական'] }, { type: 'yesno', text: 'Տրանսպորտ', required: true }, { type: 'text', text: 'Երգ' }])
+  assert.equal(set.status, 200, JSON.stringify(set.json))
+  const [food, bus, song] = set.json.rsvpQuestions
+  const page = await call('GET', `/api/invitations?code=${code}`)
+  assert.equal(page.json.rsvpQuestions.length, 3)
+  const missing = await call('POST', '/api/invitations', { body: { code, name: 'Գոհար', status: 'confirmed', answers: { [food.id]: 'Ձուկ' } } })
+  assert.equal(missing.status, 422, 'a required question')
+  assert.equal((await call('POST', '/api/invitations', { body: { code, name: 'Գոհար', status: 'confirmed', answers: { [food.id]: 'Ձուկ', [bus.id]: 'no', [song.id]: 'Սիրուն աղջիկ <i>' } } })).status, 201)
+  const answers = (await status(o)).json.rsvps
+  const g = answers.find((r) => r.name === 'Գոհար')
+  assert.deepEqual(g.answers, { [food.id]: 'Ձուկ', [bus.id]: 'no', [song.id]: 'Սիրուն աղջիկ' })
+  assert.equal(answers.find((r) => r.name === 'Առաջին').answers, null)
+
+  // without the add-on: nothing to set, nothing shown, answers ignored
+  const plain = await paid([])
+  assert.equal((await status(plain.o)).json.rsvpQuestions, null)
+  assert.equal((await save(plain.o, [{ text: 'Հարց' }])).status, 403)
+  assert.equal((await call('GET', `/api/invitations?code=${plain.code}`)).json.rsvpQuestions, undefined)
+})

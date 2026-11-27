@@ -9,6 +9,7 @@ import { calendarWeeks, formatEventDate } from '../lib/date'
 import AddToCalendar from '../../shared/AddToCalendar'
 import { SeatDialog, SeatForm, useSeatFinder } from '../../shared/Seating'
 import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
+import RsvpExtra from '../../shared/RsvpExtra'
 
 // One part of the page. Gets `.in` once it scrolls into view; its `.r`
 // children fade up from that (staggered by --i), lines draw themselves.
@@ -364,6 +365,7 @@ export function Rsvp() {
               <select name="g">{rsvp.guestOptions.map((o) => <option key={o}>{o}</option>)}</select>
             </label>
           )}
+          <RsvpExtra />
           <button className="btn-wine" type="submit"><Editable path="rsvp.button" /></button>
         </form>
       )}

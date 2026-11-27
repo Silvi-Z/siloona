@@ -90,12 +90,18 @@ const PERSONAL = [
 // The same in every web design (for checking): /i/e000000000NN/DemoGuestTokenNNNNNNNNNN
 const { DESIGN_PRICES } = await import('../../src/site/prices.js')
 const WEB_DESIGNS = Object.keys(DESIGN_PRICES).filter((id) => !id.startsWith('card-'))
+const DEMO_QUESTIONS = [
+  { id: 'qfood', type: 'choice', text: 'Սննդային նախընտրություններ', options: ['Միս', 'Ձուկ', 'Բուսական'] },
+  { id: 'qbus', type: 'yesno', text: 'Տրանսպորտ պե՞տք է', required: true },
+  { id: 'qsong', type: 'text', text: 'Ո՞ր երգը կուզեիք լսել պարահրապարակում' },
+]
 for (const [i, id] of WEB_DESIGNS.entries()) {
   const code = `e000000000${i.toString(16).padStart(2, '0')}`
   const { rows: [o] } = await store.db.query(
     `insert into orders (access_token, customer_name, customer_phone, design_id, design_option, customization, amount, payment_status, addons)
-     values ('demo', 'Demo', '+37499000000', $1, 'diy', '{"names":"Լիանա & Դավիթ","eventDate":"2027-06-12","eventTime":"16:00","venue":"Երևան"}'::jsonb, 18000, 'paid', '[{"id":"personal_greeting","price":3000}]'::jsonb) returning id`, [id])
-  const { rows: [inv] } = await store.db.query('insert into invitations (code, order_id, design_id) values ($1, $2, $3) returning id', [code, o.id, id])
+     values ('demo', 'Demo', '+37499000000', $1, 'diy', '{"names":"Լիանա & Դավիթ","eventDate":"2027-06-12","eventTime":"16:00","venue":"Երևան"}'::jsonb, 19000, 'paid', '[{"id":"personal_greeting","price":3000},{"id":"extra_rsvp_question","price":1000}]'::jsonb) returning id`, [id])
+  // with the couple's own RSVP questions too (supabase/rsvp-questions.sql)
+  const { rows: [inv] } = await store.db.query('insert into invitations (code, order_id, design_id, settings) values ($1, $2, $3, $4::jsonb) returning id', [code, o.id, id, JSON.stringify({ rsvpQuestions: DEMO_QUESTIONS })])
   await store.addInvitationGuest({ invitation_id: inv.id, token: `DemoGuestToken${String(i).padStart(10, '0')}`, display_name: 'Արամ և Անի', name_key: `aram-ani-${i}` })
 }
 

@@ -8,6 +8,7 @@ import { formatEventDate } from '../lib/date'
 import storkImg from '../assets/stork.webp'
 import AddToCalendar from '../../shared/AddToCalendar'
 import { LiveStep, useLiveSchedule } from '../../shared/LiveSchedule'
+import RsvpExtra from '../../shared/RsvpExtra'
 
 // A page section that gets `.in` once it scrolls into view; its `.r`
 // children reveal from that, staggered by --i.
@@ -247,6 +248,7 @@ export function Rsvp() {
             <span className="lbl"><Editable path="rsvp.wishLabel" /></span>
             <textarea name="w" rows="2" />
           </label>
+          <RsvpExtra />
           <button className="send" type="submit"><Editable path="rsvp.button" /></button>
         </form>
       )}

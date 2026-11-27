@@ -1,0 +1,22 @@
+/* The couple's own RSVP questions (RsvpExtra.jsx) inside a design's form:
+   its typeface and colour (currentColor), quiet lines, round choices. */
+.rx{display:grid; gap:18px; width:100%; margin:14px 0 4px; text-align:left}
+.rx-q{display:grid; gap:8px; margin:0; padding:0; border:0; min-width:0}
+.rx-t{display:block; padding:0; font:inherit; font-size:.95em; line-height:1.45}
+.rx-opt-note{opacity:.6; font-size:.82em}
+.rx-in{
+  width:100%; min-height:44px; padding:8px 2px; border:0; border-bottom:1px solid color-mix(in srgb, currentColor 45%, transparent);
+  border-radius:0; background:transparent; color:inherit; font:inherit; font-size:16px; -webkit-appearance:none; appearance:none;
+}
+.rx-in:focus{outline:none; border-bottom-color:currentColor}
+.rx-in[aria-invalid=true],.rx-q[aria-invalid=true] .rx-opt span{border-color:#b3403a}
+.rx-opts{display:flex; flex-wrap:wrap; gap:8px}
+.rx-opt{position:relative; cursor:pointer}
+.rx-opt input{position:absolute; opacity:0; pointer-events:none}
+.rx-opt span{
+  display:inline-flex; align-items:center; min-height:40px; padding:6px 16px; border:1px solid color-mix(in srgb, currentColor 45%, transparent);
+  border-radius:999px; font-size:.92em; transition:background .2s ease, border-color .2s ease;
+}
+.rx-opt input:checked + span{border-color:currentColor; background:color-mix(in srgb, currentColor 12%, transparent); font-weight:600}
+.rx-opt input:focus-visible + span{outline:2px solid currentColor; outline-offset:2px}
+.rx-err{font-size:.85em; color:#b3403a}

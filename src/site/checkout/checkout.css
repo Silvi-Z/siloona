@@ -416,3 +416,16 @@
 /* Add-ons in step 1: the option cards, with a square box (several can be chosen) */
 .siloona-site .co-opt.co-check::before{border-radius:4px}
 .siloona-site .co-opt.co-check.on::before{box-shadow:inset 0 0 0 3px #fff, inset 0 0 0 8px var(--violet)}
+
+/* «Լրացուցիչ հարցեր» on the order page (RsvpQuestions.jsx) */
+.siloona-site .co-rq{text-align:left}
+.siloona-site .co-rq .eyebrow,.siloona-site .co-rq h2,.siloona-site .co-rq > .co-share-note{text-align:center}
+.siloona-site .co-rq-none{font-size:14px; color:var(--muted); text-align:center; margin:12px 0}
+.siloona-site .co-rq-item{position:relative; display:grid; gap:12px; margin:16px 0 0; padding:18px 16px 12px; border:1px solid var(--line-2); border-radius:8px; background:var(--co-paper)}
+.siloona-site .co-rq-n{padding:0 6px; font-family:var(--serif); color:var(--violet)}
+.siloona-site .co-rq-row{display:flex; flex-wrap:wrap; align-items:flex-end; gap:12px 18px}
+.siloona-site .co-rq-req{margin:0 0 10px}
+.siloona-site .co-rq-item .co-edit{justify-self:end}
+.siloona-site .co-rq-add{display:grid; gap:8px; margin-top:18px}
+.siloona-site .co-rq-add .co-via-opt{font:inherit; font-size:14px; text-align:left}
+.siloona-site .co-ans-list .who small + small{margin-top:2px}

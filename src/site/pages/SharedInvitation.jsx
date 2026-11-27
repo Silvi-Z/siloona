@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { INVITATION_PREVIEWS } from '../invitationRegistry'
 import { InvitationContentProvider } from '../invitations/shared/EditableContext'
@@ -86,6 +86,8 @@ const INVITATION_WORD = { hy: 'Հրավեր', ru: 'Приглашение', en: 
 export default function SharedInvitation() {
   const { code, token } = useParams()
   const [state, setState] = useState({ status: 'loading' })
+  // the couple's own RSVP questions: the form writes the answers here
+  const rsvpAnswers = useRef({})
 
   useEffect(() => {
     let alive = true
@@ -150,10 +152,13 @@ export default function SharedInvitation() {
   // add-on features this invitation has (the server decides)
   const features = Array.isArray(data.features) ? data.features : []
   const onRsvp = rsvpOn
-    ? (answer) => { sendRsvp(isEvent ? { slug: code, t: data.personal ? undefined : token, ...answer } : { code, t: token, ...answer }) }
+    ? (answer) => {
+      const answers = data.rsvpQuestions?.length ? { answers: rsvpAnswers.current } : {}
+      sendRsvp(isEvent ? { slug: code, t: data.personal ? undefined : token, ...answer } : { code, t: token, ...answer, ...answers })
+    }
     : undefined
   return (
-    <InvitationContentProvider defaultData={content} editing={false} setEditing={noop} guestName={guestName} onRsvp={onRsvp} seating={seating} features={features}>
+    <InvitationContentProvider defaultData={content} editing={false} setEditing={noop} guestName={guestName} onRsvp={onRsvp} seating={seating} features={features} rsvpQuestions={data.rsvpQuestions || null} rsvpAnswers={rsvpAnswers}>
       <Invitation />
     </InvitationContentProvider>
   )
