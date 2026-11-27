@@ -34,7 +34,10 @@ export function orderText(order, siteUrl) {
   const custom = order.customization?.request === 'custom'
   const lines = [
     custom ? `✳️ Նոր հայտ՝ անհատական դիզայն · № ${order.order_number}` : `🆕 Նոր պատվեր № ${order.order_number}`,
-    `${order.customer_name} · ${order.customer_phone}${order.customer_contact ? ` · ${order.customer_contact}` : ''}`,
+    `👤 ${order.customer_name}`,
+    `📞 ${order.customer_phone}`,
+    order.customer_contact ? `💬 Կապ՝ ${order.customer_contact}` : '',
+    order.customer_email ? `✉️ ${order.customer_email}` : '',
     custom ? `Միջոցառում՝ ${order.customization.eventType || '—'}` : `Դիզայն՝ ${order.design_id} · ${order.design_option}`,
     order.customization?.names ? `Անուններ՝ ${order.customization.names}` : '',
     order.customization?.eventDate ? `Ամսաթիվ՝ ${order.customization.eventDate}` : '',

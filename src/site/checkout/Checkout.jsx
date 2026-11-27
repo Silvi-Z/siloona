@@ -15,8 +15,12 @@ import {
 } from './checkoutApi'
 import './checkout.css'
 
-const EMPTY = { name: '', phone: '', email: '', contact: '', names: '', eventDate: '', eventTime: '', venue: '', notes: '', website: '' }
-const CONTACT_FIELDS = ['name', 'phone', 'email', 'contact', 'names', 'eventDate']
+const EMPTY = { name: '', phone: '', email: '', contactVia: '', tg: '', names: '', eventDate: '', eventTime: '', venue: '', notes: '', website: '' }
+const CONTACT_FIELDS = ['name', 'phone', 'email', 'contact', 'contactVia', 'tg', 'names', 'eventDate']
+
+// How the customer wants to be contacted — one choice. The order stores it
+// as plain text in customer.contact (e.g. «Telegram · @anna»).
+const CONTACT_VIA = ['telegram', 'viber', 'whatsapp', 'call']
 
 const TEXT = {
   hy: {
@@ -30,7 +34,7 @@ const TEXT = {
     attach: 'Կցել իմ խմբագրած տարբերակը պատվերին',
     edited: 'Դուք խմբագրել եք այս հրավերը կայքում․ Ձեր փոփոխությունները կերևան պատրաստի հրավերում։',
     continueEdit: 'Շարունակել խմբագրումը →', editOnSite: 'Խմբագրել հրավերը կայքում →', viewDemo: 'Դիտել դեմոն', continue: 'Շարունակել',
-    step2: 'Ձեր տվյալները', fName: 'Անուն, ազգանուն', fPhone: 'Հեռախոս', fEmail: 'Էլ. փոստ', fContact: 'Telegram կամ Instagram', fContactHint: 'Եթե նախընտրում եք կապ այնտեղ',
+    step2: 'Ձեր տվյալները', fName: 'Անուն, ազգանուն', fPhone: 'Հեռախոս', fEmail: 'Էլ. փոստ', fContactVia: 'Ինչպես կապվել Ձեզ հետ', via: { telegram: 'Telegram', viber: 'Viber', whatsapp: 'WhatsApp', call: 'Զանգ' }, fTg: 'Telegram username', tgHint: 'Ոչ պարտադիր, օրինակ՝ @anna', errContactVia: 'Ընտրեք, թե ինչպես կապվենք Ձեզ հետ։', errTg: 'Telegram username-ը սխալ է (տառեր, թվեր և _)։', contactLabel: 'Կապ',
     details: 'Հրավերի մանրամասներ', detailsNote: 'սրանք կերևան Ձեր հրավերում', fromEdit: 'Վերցված է Ձեր խմբագրած հրավերից',
     changeInInvitation: 'Փոխել հրավերում →', fNotes: 'Ցանկություններ',
     notesHint1: 'Ոչ պարտադիր․ այն, ինչ ցանկանում եք մեզ հայտնել հրավերի մասին',
@@ -41,7 +45,7 @@ const TEXT = {
     loading: 'Բեռնվում է…',
     ordersOff: (code, opt) => `Առցանց պատվերը դեռ միացված չէ։ Գրեք մեզ Instagram կամ Telegram-ում (տես՝ կայքի ստորին մասում)՝ նշելով «${code}» և «${opt}» տարբերակը։`,
     noPrice: 'Այս դիզայնի գինը դեռ ճշտվում է։ Ուղարկեք հայտը, և մենք կկապվենք Ձեզ հետ՝ գինն ու մանրամասները հաստատելու համար։ Վճարումը կկատարվի դրանից հետո։',
-    noMethods: 'Առցանց վճարումը շուտով հասանելի կլինի։ Ուղարկեք պատվերը, և մենք կկապվենք Ձեզ հետ վճարման մանրամասների համար։',
+    noMethods: 'Ուղարկեք պատվերը, և մենք կկապվենք Ձեզ հետ նույն օրը՝ կճշտենք վճարումը և կուղարկենք հրավերի հղումը։',
     // [before, link to /privacy, after]
     consent: ['Համաձայն եմ, որ Siloona-ն օգտագործի իմ տվյալները՝ այս պատվերը կատարելու և ինձ հետ կապվելու համար՝ համաձայն ', 'Գաղտնիության քաղաքականության', '։'],
     redirecting: 'Ուղղորդում ենք վճարման էջ…', sending: 'Ուղարկում ենք…',
@@ -59,7 +63,7 @@ const TEXT = {
     attach: 'Приложить мою отредактированную версию к заказу',
     edited: 'Вы отредактировали это приглашение на сайте — Ваши изменения будут в готовом приглашении.',
     continueEdit: 'Продолжить редактирование →', editOnSite: 'Отредактировать приглашение на сайте →', viewDemo: 'Смотреть демо', continue: 'Продолжить',
-    step2: 'Ваши данные', fName: 'Имя и фамилия', fPhone: 'Телефон', fEmail: 'Эл. почта', fContact: 'Telegram или Instagram', fContactHint: 'Если Вам удобнее связь там',
+    step2: 'Ваши данные', fName: 'Имя и фамилия', fPhone: 'Телефон', fEmail: 'Эл. почта', fContactVia: 'Как с Вами связаться', via: { telegram: 'Telegram', viber: 'Viber', whatsapp: 'WhatsApp', call: 'Звонок' }, fTg: 'Telegram username', tgHint: 'Необязательно, например @anna', errContactVia: 'Выберите, как с Вами связаться.', errTg: 'Неверный Telegram username (буквы, цифры и _).', contactLabel: 'Связь',
     details: 'Детали приглашения', detailsNote: 'они будут в Вашем приглашении', fromEdit: 'Взято из Вашего отредактированного приглашения',
     changeInInvitation: 'Изменить в приглашении →', fNotes: 'Пожелания',
     notesHint1: 'Необязательно: всё, что Вы хотите сообщить нам о приглашении',
@@ -70,7 +74,7 @@ const TEXT = {
     loading: 'Загрузка…',
     ordersOff: (code, opt) => `Онлайн-заказ пока не подключён. Напишите нам в Instagram или Telegram (ссылки внизу сайта) и укажите дизайн «${code}» и вариант «${opt}».`,
     noPrice: 'Цена этого дизайна ещё уточняется. Отправьте заявку, и мы свяжемся с Вами, чтобы согласовать цену и детали. Оплата — после этого.',
-    noMethods: 'Онлайн-оплата скоро будет доступна. Отправьте заказ, и мы свяжемся с Вами, чтобы обсудить детали оплаты.',
+    noMethods: 'Отправьте заказ — мы свяжемся с Вами в тот же день, уточним оплату и пришлём ссылку на приглашение.',
     consent: ['Я согласен(на), чтобы Siloona использовала мои данные для выполнения этого заказа и связи со мной в соответствии с ', 'Политикой конфиденциальности', '.'],
     redirecting: 'Переходим на страницу оплаты…', sending: 'Отправляем…',
     invLang: 'Язык приглашения', invOnlyHy: 'Этот дизайн пока доступен только на армянском.',
@@ -87,7 +91,7 @@ const TEXT = {
     attach: 'Attach my edited version to the order',
     edited: 'You’ve edited this invitation on the site — your changes will appear in the finished invitation.',
     continueEdit: 'Continue editing →', editOnSite: 'Edit the invitation on the site →', viewDemo: 'View the demo', continue: 'Continue',
-    step2: 'Your details', fName: 'Full name', fPhone: 'Phone', fEmail: 'Email', fContact: 'Telegram or Instagram', fContactHint: 'If you prefer to talk there',
+    step2: 'Your details', fName: 'Full name', fPhone: 'Phone', fEmail: 'Email', fContactVia: 'How should we contact you', via: { telegram: 'Telegram', viber: 'Viber', whatsapp: 'WhatsApp', call: 'Phone call' }, fTg: 'Telegram username', tgHint: 'Optional, e.g. @anna', errContactVia: 'Choose how we should contact you.', errTg: 'That Telegram username isn’t valid (letters, digits and _).', contactLabel: 'Contact',
     details: 'Invitation details', detailsNote: 'these will appear on your invitation', fromEdit: 'Taken from the invitation you edited',
     changeInInvitation: 'Change in the invitation →', fNotes: 'Wishes',
     notesHint1: 'Optional: anything you’d like to tell us about the invitation',
@@ -98,7 +102,7 @@ const TEXT = {
     loading: 'Loading…',
     ordersOff: (code, opt) => `Online ordering isn’t switched on yet. Write to us on Instagram or Telegram (links at the bottom of the site), mentioning design “${code}” and the “${opt}” option.`,
     noPrice: 'The price of this design is still being confirmed. Send the request and we’ll be in touch to agree the price and details. You pay after that.',
-    noMethods: 'Online payment is coming soon. Send the order and we’ll be in touch about the payment details.',
+    noMethods: 'Send the order and we’ll get in touch the same day to arrange payment and send you the invitation link.',
     consent: ['I agree that Siloona may use my details to fulfil this order and to contact me, in line with the ', 'Privacy Policy', '.'],
     redirecting: 'Taking you to the payment page…', sending: 'Sending…',
     invLang: 'Invitation language', invOnlyHy: 'This design is available in Armenian only for now.',
@@ -109,6 +113,15 @@ const TEXT = {
 const uuid = () => (crypto.randomUUID ? crypto.randomUUID()
   : '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, (c) => (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)))
 
+// The contact choice as one readable line for the order and the Telegram
+// notice: «Viber», «Telegram · @anna».
+function contactText(f, t) {
+  if (!f.contactVia) return ''
+  const via = t.via[f.contactVia] || f.contactVia
+  const tg = f.contactVia === 'telegram' ? f.tg.trim() : ''
+  return tg ? `${via} · ${tg.startsWith('@') ? tg : `@${tg}`}` : via
+}
+
 // Same rules the server applies (api/_lib/orders.js) — checked here first
 // only so the customer gets instant feedback.
 function validateContact(f, hasDetails, t) {
@@ -116,6 +129,8 @@ function validateContact(f, hasDetails, t) {
   if (f.name.trim().length < 2) e.name = t.errName
   if (!/^\+?\d{8,15}$/.test(f.phone.replace(/[\s()-]/g, ''))) e.phone = t.errPhone
   if (f.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email.trim())) e.email = t.errEmail
+  if (!CONTACT_VIA.includes(f.contactVia)) e.contactVia = t.errContactVia
+  else if (f.contactVia === 'telegram' && f.tg.trim() && !/^@?[A-Za-z0-9_]{4,32}$/.test(f.tg.trim())) e.tg = t.errTg
   if (hasDetails) return e // the design's own fields are checked instead
   if (f.names.trim().length < 2) e.names = t.errNames
   if (!f.eventDate) e.eventDate = t.errDate
@@ -273,7 +288,8 @@ export default function Checkout() {
       option,
       consent: true,
       website: form.website,
-      customer: { name: form.name, phone: form.phone, email: form.email, contact: form.contact },
+      // the server writes the contact line itself from these two
+      customer: { name: form.name, phone: form.phone, email: form.email, contactVia: form.contactVia, tg: form.contactVia === 'telegram' ? form.tg.trim() : '' },
       customization: spec ? {
         names: spec.m.namesFromDetails(det), eventDate: det.eventDate || '', eventTime: det.eventTime || '',
         venue: spec.m.venueFromDetails(det), notes: form.notes,
@@ -340,6 +356,25 @@ export default function Checkout() {
       )}
       {errors[k] ? <span className="co-err" id={`co-${k}-err`}>{errors[k]}</span> : hint && <span className="co-hint">{hint}</span>}
     </label>
+  )
+
+  // «Ինչպես կապվել Ձեզ հետ» — one choice, same look as the option cards.
+  const contactViaField = () => (
+    <fieldset className="co-field wide co-via" id="co-contactVia" tabIndex={-1} aria-invalid={!!errors.contactVia} aria-describedby={errors.contactVia ? 'co-contactVia-err' : undefined}>
+      <legend className="co-label">{t.fContactVia}<i aria-hidden="true"> *</i></legend>
+      <div className="co-via-row">
+        {CONTACT_VIA.map((v) => (
+          <label key={v} className={`co-via-opt ${form.contactVia === v ? 'on' : ''}`}>
+            <input
+              type="radio" name="contactVia" value={v} checked={form.contactVia === v}
+              onChange={() => { setForm((f) => ({ ...f, contactVia: v })); setErrors((x) => ({ ...x, contactVia: undefined })) }}
+            />
+            {t.via[v]}
+          </label>
+        ))}
+      </div>
+      {errors.contactVia && <span className="co-err" id="co-contactVia-err">{errors.contactVia}</span>}
+    </fieldset>
   )
 
   const detField = (f) => {
@@ -482,7 +517,8 @@ export default function Checkout() {
                   {field('name', t.fName, { required: true, autoComplete: 'name', maxLength: 120 })}
                   {field('phone', t.fPhone, { required: true, type: 'tel', autoComplete: 'tel', inputMode: 'tel', placeholder: '+374 __ ______', maxLength: 32 })}
                   {field('email', t.fEmail, { type: 'email', autoComplete: 'email', inputMode: 'email', maxLength: 200 })}
-                  {field('contact', t.fContact, { placeholder: '@', maxLength: 120 }, t.fContactHint)}
+                  {contactViaField()}
+                  {form.contactVia === 'telegram' && field('tg', t.fTg, { placeholder: '@', maxLength: 60, autoComplete: 'off' }, t.tgHint)}
                 </div>
 
                 <h3 className="co-sub">{t.details} <span>{t.detailsNote}</span></h3>
@@ -536,6 +572,7 @@ export default function Checkout() {
                   <div><dt>{t.customer}</dt><dd>{form.name}</dd></div>
                   <div><dt>{t.fPhone}</dt><dd>{form.phone}</dd></div>
                   {form.email && <div><dt>{t.fEmail}</dt><dd>{form.email}</dd></div>}
+                  {form.contactVia && <div><dt>{t.contactLabel}</dt><dd>{contactText(form, t)}</dd></div>}
                   {(() => {
                     const names = spec ? spec.m.namesFromDetails(det) : form.names
                     const date = spec ? det.eventDate : form.eventDate

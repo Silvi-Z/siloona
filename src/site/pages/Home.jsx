@@ -102,8 +102,8 @@ export const TEXT = {
       { title: 'Հրավիրեք', text: 'Ստացեք ձեր հրավիրատոմսի հղումը և կիսվեք այն հյուրերի հետ։' },
     ],
     timing: (custom) => (custom
-      ? `Պատրաստի ձևանմուշը՝ վճարումից անմիջապես հետո, անհատական դիզայնը՝ ${custom}։`
-      : 'Պատրաստի ձևանմուշը՝ վճարումից անմիջապես հետո։ Անհատական դիզայնի ժամկետը համաձայնեցնում ենք պատվերի ժամանակ։'),
+      ? `Հայտից հետո կկապվենք Ձեզ հետ նույն օրը, կճշտենք վճարումը և կուղարկենք հրավերի հղումը։ Անհատական դիզայնը՝ ${custom}։`
+      : 'Հայտից հետո կկապվենք Ձեզ հետ նույն օրը, կճշտենք վճարումը և կուղարկենք հրավերի հղումը։ Անհատական դիզայնի ժամկետը համաձայնեցնում ենք պատվերի ժամանակ։'),
     choose: 'Ընտրել հրավիրատոմս',
 
     prEyebrow: 'Գներ',
@@ -114,7 +114,7 @@ export const TEXT = {
     tiers: [
       {
         name: 'Պատրաստի ձևանմուշ',
-        items: ['Ընտրում եք դիզայնը հավաքածուից', 'Անունները, ամսաթիվը, վայրը և տեքստը լրացնում եք ինքներդ՝ կայքում', 'Հղումը ստանում եք վճարումից անմիջապես հետո'],
+        items: ['Ընտրում եք դիզայնը հավաքածուից', 'Անունները, ամսաթիվը, վայրը և տեքստը լրացնում եք ինքներդ՝ կայքում', 'Հղումը ստանում եք վճարումից հետո՝ նույն օրը'],
         cta: 'Ընտրել ձևանմուշ',
       },
       {
@@ -161,7 +161,7 @@ export const TEXT = {
     faqH: 'Հաճախակի տրվող հարցեր',
     faq: [
       { q: 'Որքա՞ն արժե հրավիրատոմսը', a: `Պատրաստի ձևանմուշը՝ սկսած ${amt(DIY_FROM)}․ այն լրացնում եք ինքներդ։ Եթե ուզում եք, որ մենք պատրաստենք հրավերը ձեր տվյալներով՝ սկսած ${amt(ASSISTED_FROM)}։ Անհատական դիզայնի գինը կախված է գաղափարից, և այն համաձայնեցնում ենք հայտից հետո։` },
-      { q: 'Ինչպե՞ս վճարել', a: 'Վճարումը կատարվում է կայքում՝ բանկային քարտով (ArCa, Visa, Mastercard) կամ Idram-ով։ Անհատական դիզայնի դեպքում վճարման մանրամասները համաձայնեցնում ենք ձեզ հետ։' },
+      { q: 'Ինչպե՞ս վճարել', a: 'Պատվերը ուղարկելուց հետո մենք կկապվենք ձեզ հետ նույն օրը և կճշտենք վճարման եղանակը։ Վճարումից հետո կուղարկենք հրավերի հղումը։' },
       { q: 'Կարո՞ղ եմ փոփոխել հրավերը ուղարկելուց հետո', a: 'Այո։ Գրեք մեզ, և մենք կթարմացնենք հրավերը։ Հղումը կմնա նույնը, ուստի հյուրերին նորից ուղարկել պետք չէ։' },
       { q: 'Որքա՞ն ժամանակ է հղումն ակտիվ', a: 'Հղումը ժամկետային սահմանափակում չունի․ այն գործում է թե՛ միջոցառումից առաջ, թե՛ դրանից հետո։' },
       { q: 'Կարո՞ղ եմ ավելացնել երաժշտություն, լուսանկարներ, քարտեզ', a: 'Քարտեզի հղումը կա բոլոր հրավերներում՝ հյուրը մեկ սեղմումով բացում է ճանապարհը։ Լուսանկարներ կարելի է ավելացնել այն դիզայններում, որոնք դրանք նախատեսում են։ Որոշ դիզայններ ունեն երաժշտություն, որը հյուրը միացնում է մեկ սեղմումով, իսկ մյուսներում այն կարող ենք քննարկել անհատական դիզայնի դեպքում։' },
@@ -210,8 +210,8 @@ export const TEXT = {
       { title: 'Пригласите', text: 'Получите ссылку на приглашение и отправьте её гостям.' },
     ],
     timing: (custom) => (custom
-      ? `Готовый шаблон — сразу после оплаты, индивидуальный дизайн — ${custom}.`
-      : 'Готовый шаблон — сразу после оплаты. Срок индивидуального дизайна согласуем при заказе.'),
+      ? `После заявки мы свяжемся с Вами в тот же день, уточним оплату и пришлём ссылку на приглашение. Индивидуальный дизайн — ${custom}.`
+      : 'После заявки мы свяжемся с Вами в тот же день, уточним оплату и пришлём ссылку на приглашение. Срок индивидуального дизайна согласуем при заказе.'),
     choose: 'Выбрать приглашение',
 
     prEyebrow: 'Цены',
@@ -222,7 +222,7 @@ export const TEXT = {
     tiers: [
       {
         name: 'Готовый шаблон',
-        items: ['Выбираете дизайн из коллекции', 'Имена, дату, место и текст заполняете сами — прямо на сайте', 'Ссылку получаете сразу после оплаты'],
+        items: ['Выбираете дизайн из коллекции', 'Имена, дату, место и текст заполняете сами — прямо на сайте', 'Ссылку получаете после оплаты — в тот же день'],
         cta: 'Выбрать шаблон',
       },
       {
@@ -269,7 +269,7 @@ export const TEXT = {
     faqH: 'Частые вопросы',
     faq: [
       { q: 'Сколько стоит приглашение?', a: `Готовый шаблон — от ${amt(DIY_FROM)}, его вы заполняете сами. Если хотите, чтобы мы подготовили приглашение по вашим данным, — от ${amt(ASSISTED_FROM)}. Цена индивидуального дизайна зависит от идеи, её мы согласуем после заявки.` },
-      { q: 'Как оплатить?', a: 'Оплата проходит на сайте — банковской картой (ArCa, Visa, Mastercard) или через Idram. Для индивидуального дизайна детали оплаты согласуем с вами.' },
+      { q: 'Как оплатить?', a: 'После заказа мы свяжемся с вами в тот же день и уточним способ оплаты. После оплаты пришлём ссылку на приглашение.' },
       { q: 'Можно ли изменить приглашение после отправки?', a: 'Да. Напишите нам, и мы обновим приглашение. Ссылка останется прежней, поэтому отправлять её гостям заново не нужно.' },
       { q: 'Как долго действует ссылка?', a: 'У ссылки нет ограничения по сроку: она работает и до события, и после него.' },
       { q: 'Можно ли добавить музыку, фотографии, карту?', a: 'Ссылка на карту есть во всех приглашениях — гость открывает маршрут одним нажатием. Фотографии можно добавить в дизайнах, где они предусмотрены. В некоторых дизайнах есть музыка, которую гость включает одним нажатием, а для остальных её можно обсудить в индивидуальном дизайне.' },
@@ -316,8 +316,8 @@ export const TEXT = {
       { title: 'Invite', text: 'Get your invitation link and share it with your guests.' },
     ],
     timing: (custom) => (custom
-      ? `A ready-made template is yours right after payment; a custom design takes ${custom}.`
-      : 'A ready-made template is yours right after payment. For a custom design, we agree the timing when you order.'),
+      ? `After your request we’ll get in touch the same day to arrange payment and send you the invitation link. A custom design takes ${custom}.`
+      : 'After your request we’ll get in touch the same day to arrange payment and send you the invitation link. For a custom design, we agree the timing when you order.'),
     choose: 'Choose an invitation',
 
     prEyebrow: 'Prices',
@@ -328,7 +328,7 @@ export const TEXT = {
     tiers: [
       {
         name: 'Ready-made template',
-        items: ['Pick a design from the collection', 'Fill in the names, date, venue and text yourself, right on the site', 'Get your link right after payment'],
+        items: ['Pick a design from the collection', 'Fill in the names, date, venue and text yourself, right on the site', 'Get your link after payment — the same day'],
         cta: 'Choose a template',
       },
       {
@@ -375,7 +375,7 @@ export const TEXT = {
     faqH: 'Frequently asked questions',
     faq: [
       { q: 'How much does an invitation cost?', a: `A ready-made template starts at ${amt(DIY_FROM)}, and you fill it in yourself. If you’d like us to prepare the invitation with your details, it starts at ${amt(ASSISTED_FROM)}. The price of a custom design depends on the idea; we agree it after your request.` },
-      { q: 'How do I pay?', a: 'You pay on the site, by bank card (ArCa, Visa, Mastercard) or with Idram. For a custom design, we agree the payment details with you.' },
+      { q: 'How do I pay?', a: 'After you order, we’ll get in touch the same day to agree how you pay. Once paid, we send you the invitation link.' },
       { q: 'Can I change the invitation after sending it?', a: 'Yes. Write to us and we’ll update the invitation. The link stays the same, so there’s no need to send it to your guests again.' },
       { q: 'How long does the link stay active?', a: 'The link has no time limit: it works before the event and after it.' },
       { q: 'Can I add music, photos or a map?', a: 'Every invitation has a map link, so guests open directions with one tap. Photos can be added in the designs made for them. Some designs have music guests turn on with one tap; for the others, we can discuss it as a custom design.' },

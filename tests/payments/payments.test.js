@@ -55,7 +55,7 @@ const orderBody = (over = {}) => ({
   option: 'diy',
   consent: true,
   amount: 1, // must be ignored: the server prices the order itself
-  customer: { name: 'Աննա Պետրոսյան', phone: '+374 99 123456', email: 'anna@example.com' },
+  customer: { name: 'Աննա Պետրոսյան', phone: '+374 99 123456', email: 'anna@example.com', contactVia: 'viber' },
   customization: { names: 'Նարե', eventDate: '2027-03-14', eventTime: '17:00', venue: 'Երևան', notes: 'Վարդագույն' },
   ...over,
 })
@@ -116,7 +116,7 @@ test('order: server sets the price, validates input, and is idempotent', async (
 
   const bad = await call('POST', '/api/orders', { body: orderBody({ designId: 'nope', consent: false, customer: { name: 'A', phone: '12' } }) })
   assert.equal(bad.status, 422)
-  assert.deepEqual(Object.keys(bad.json.fields).sort(), ['consent', 'designId', 'name', 'phone'])
+  assert.deepEqual(Object.keys(bad.json.fields).sort(), ['consent', 'contactVia', 'designId', 'name', 'phone'])
   assert.match(bad.json.fields.phone, /հեռախոս/)
 
   const st = await status(a.json)
@@ -808,4 +808,22 @@ test('deleted cards can no longer be ordered', async () => {
     assert.equal(r.status, 422)
     assert.ok(r.json.fields.designId)
   }
+})
+
+test('checkout: how to contact the customer is required, and written by the server', async () => {
+  const cust = (c) => ({ name: 'Աննա Պետրոսյան', phone: '+374 99 123456', ...c })
+  const none = await call('POST', '/api/orders', { body: orderBody({ customer: cust({}) }) })
+  assert.equal(none.status, 422)
+  assert.deepEqual(Object.keys(none.json.fields), ['contactVia'])
+  const odd = await call('POST', '/api/orders', { body: orderBody({ customer: cust({ contactVia: 'pigeon' }) }) })
+  assert.equal(odd.status, 422)
+  const badTg = await call('POST', '/api/orders', { body: orderBody({ customer: cust({ contactVia: 'telegram', tg: '@a b<script>' }) }) })
+  assert.deepEqual(Object.keys(badTg.json.fields), ['tg'])
+
+  const tg = await newOrder({ customer: cust({ contactVia: 'telegram', tg: 'anna_p', contact: 'ignored' }) })
+  assert.equal((await store.getOrder(tg.orderId)).customer_contact, 'Telegram · @anna_p')
+  const call1 = await newOrder({ customer: cust({ contactVia: 'call', tg: '@ignored_here' }) })
+  assert.equal((await store.getOrder(call1.orderId)).customer_contact, 'Զանգ')
+  const plainTg = await newOrder({ customer: cust({ contactVia: 'telegram' }) })
+  assert.equal((await store.getOrder(plainTg.orderId)).customer_contact, 'Telegram')
 })

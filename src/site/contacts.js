@@ -14,7 +14,7 @@ export const CONTACTS = [
   { id: 'viber', name: 'Viber', href: null },
   { id: 'whatsapp', name: 'WhatsApp', href: null },
   { id: 'phone', name: '', href: null },
-  { id: 'email', name: '', href: null },
+  { id: 'email', name: 'siloona.am@gmail.com', href: 'mailto:siloona.am@gmail.com' },
 ].filter((c) => c.href)
 
 // tel:/mailto:/viber: open an app, not a page — no new tab for those.

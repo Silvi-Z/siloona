@@ -385,3 +385,13 @@
 .siloona-site .mo-add{margin-top:30px; padding-top:20px; border-top:1px dashed var(--line-2); display:grid; gap:8px; font-size:14px; color:var(--ink-2)}
 .siloona-site .mo-add-row{display:flex; gap:8px}
 .siloona-site .mo-add input{flex:1; min-width:0; font:inherit; font-size:16px; padding:10px 12px; border:1px solid var(--line-2); border-radius:6px; background:var(--co-paper)}
+
+/* «Ինչպես կապվել Ձեզ հետ» — contact choice */
+.siloona-site .co-via{border:0; padding:0; margin:0}
+.siloona-site .co-via legend{padding:0}
+.siloona-site .co-via-row{display:flex; flex-wrap:wrap; gap:8px}
+.siloona-site .co-via-opt{position:relative; display:inline-flex; align-items:center; min-height:44px; padding:10px 18px; border:1px solid var(--line, #E2D9CC); border-radius:999px; background:#fff; color:var(--ink); font-size:15px; cursor:pointer; transition:border-color .15s, background .15s}
+.siloona-site .co-via-opt input{position:absolute; opacity:0; pointer-events:none}
+.siloona-site .co-via-opt.on{border-color:var(--violet); background:#FFFBF6; color:var(--violet)}
+.siloona-site .co-via-opt:has(input:focus-visible){outline:2px solid var(--violet); outline-offset:2px}
+.siloona-site .co-via[aria-invalid=true] .co-via-opt{border-color:var(--co-err)}
