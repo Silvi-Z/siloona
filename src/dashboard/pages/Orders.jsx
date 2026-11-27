@@ -9,6 +9,7 @@ import { SearchField, SelectField, Tabs } from '../components/Controls';
 import Icon from '../utils/icons';
 import { findDesign } from '../../site/designCatalog';
 import { pricesFor } from '../../site/prices';
+import { addonName } from '../../site/addons';
 import { CUSTOM_DESIGN_ID, CUSTOM_DESIGN_LABEL, CUSTOM_EVENT_TYPES, CUSTOM_KINDS } from '../../site/customRequest';
 import TimeSelect from '../../site/invitations/shared/TimeSelect';
 import { detailGroups, detailValue, namesFromDetails, venueFromDetails } from '../../site/invitationDetails';
@@ -351,6 +352,7 @@ function OrderDrawer({ orderId, onChanged }) {
           <h4>Վճարում</h4>
           <dl className="kv">
             <dt>Գումար</dt><dd>{amd(o.amount)} {o.amount != null && 'AMD'}{catalogPrice == null && <span className="muted"> · կատալոգում գին չկա</span>}</dd>
+            <dt>Հավելումներ</dt><dd>{Array.isArray(o.addons) && o.addons.length ? o.addons.map(a => `${addonName(a.id)} (${amd(a.price)})`).join(', ') : '—'}</dd>
             <dt>Եղանակ</dt><dd>{PROVIDER[o.payment_provider] || '—'}</dd>
             <dt>Գործարքի համար</dt><dd style={{ wordBreak: 'break-all' }}>{o.transaction_id || '—'}</dd>
             <dt>Ստեղծված</dt><dd>{dt(o.created_at)}</dd>

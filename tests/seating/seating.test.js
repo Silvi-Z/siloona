@@ -155,7 +155,7 @@ describe('CSV', () => {
 // ---------------------------------------------------------------------------
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 let store, server, base
-const CODES = { off: 'aaaaaaaa0001', soon: 'aaaaaaaa0002', open: 'aaaaaaaa0003', none: 'aaaaaaaa0004' }
+const CODES = { off: 'aaaaaaaa0001', soon: 'aaaaaaaa0002', open: 'aaaaaaaa0003', none: 'aaaaaaaa0004', nofeature: 'aaaaaaaa0005', paid: 'aaaaaaaa0006' }
 
 async function paidInvitation(code) {
   const o = await store.db.query(
@@ -189,12 +189,19 @@ before(async () => {
   await store.importSeating({ invitation: ids.off, revealAt: new Date(Date.now() - hour).toISOString(), enabled: false, rows })
   await store.importSeating({ invitation: ids.soon, revealAt: new Date(Date.now() + 24 * hour).toISOString(), rows })
   await store.importSeating({ invitation: ids.open, revealAt: new Date(Date.now() - hour).toISOString(), rows })
+  // as scripts/import-seating.js does: an imported list turns the feature on
+  for (const k of ['off', 'soon', 'open']) await store.grantFeature(ids[k], 'seating')
+  // a list without the feature (neither paid for nor turned on)
+  await store.importSeating({ invitation: ids.nofeature, revealAt: new Date(Date.now() - hour).toISOString(), rows })
+  // the feature paid for at checkout (orders.addons), no hand-made switch
+  await store.db.query(`update orders set addons = '[{"id":"seating","price":4000}]'::jsonb where id = (select order_id from invitations where id = $1)`, [ids.paid])
+  await store.importSeating({ invitation: ids.paid, revealAt: new Date(Date.now() - hour).toISOString(), rows })
 })
 after(() => server?.close())
 
 describe('API', () => {
   test('no seating ordered / switched off: the page gets nothing, lookups refused', async () => {
-    for (const code of [CODES.none, CODES.off]) {
+    for (const code of [CODES.none, CODES.off, CODES.nofeature]) {
       const page = await call('GET', `/api/invitations?code=${code}`)
       assert.equal(page.status, 200)
       assert.equal(page.json.seating, null)
@@ -226,6 +233,15 @@ describe('API', () => {
     assert.deepEqual((await seat(CODES.open, '  ')).json, { status: 'empty' })
     assert.equal((await seat(CODES.open, 'x'.repeat(500))).status, 422)
     assert.equal((await seat(CODES.open, { name: 1 })).status, 422)
+  })
+
+  test('the seating add-on paid for at checkout shows the section by itself', async () => {
+    const page = await call('GET', `/api/invitations?code=${CODES.paid}`)
+    assert.equal(page.json.seating.open, true)
+    assert.ok(page.json.features.includes('seating'))
+    assert.deepEqual((await seat(CODES.paid, 'Կարեն Մուրադյան')).json, { status: 'found', table: '3' })
+    const none = await call('GET', `/api/invitations?code=${CODES.none}`)
+    assert.ok(!none.json.features.includes('seating'))
   })
 
   test('unknown links are refused', async () => {

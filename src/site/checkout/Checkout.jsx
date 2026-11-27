@@ -4,6 +4,7 @@ import { DesignThumb } from '../DesignCard'
 import { findDesign } from '../designCatalog'
 import { CATEGORY_LABELS_I18N, designTitle } from '../designI18n'
 import { formatPrice } from '../pricing'
+import { addonName, addonPrice, addonText, orderableAddons } from '../addons'
 import { legalTitle } from '../legal'
 import { LANG_NAMES_IN, stripLang, useLang, useText, withLang } from '../i18n'
 import PaymentMethods, { SecureNote } from './PaymentMethods'
@@ -30,7 +31,7 @@ const TEXT = {
     order: 'Պատվեր', notFound: 'Այս դիզայնը չի գտնվել', viewCollection: 'Դիտել հավաքածուն',
     change: 'Փոխել', schedWhat: 'Ինչ է տեղի ունենում', remove: 'Հեռացնել', addItem: '+ Ավելացնել կետ', checkMap: 'Ստուգել քարտեզում →',
     pay: (a) => `Վճարել ${a}`, sendRequest: 'Ուղարկել հայտը', sendOrder: 'Ուղարկել պատվերը',
-    crumbs: 'Ուղի', collection: 'Հավաքածու', title: 'Պատվերի ձևակերպում', step1: 'Ձեր ընտրությունը', option: 'Տարբերակ',
+    crumbs: 'Ուղի', collection: 'Հավաքածու', title: 'Պատվերի ձևակերպում', step1: 'Ձեր ընտրությունը', option: 'Տարբերակ', addons: 'Հավելումներ', addonsNote: 'ըստ ցանկության', addonsLabel: 'Հավելումներ',
     attach: 'Կցել իմ խմբագրած տարբերակը պատվերին',
     edited: 'Դուք խմբագրել եք այս հրավերը կայքում․ Ձեր փոփոխությունները կերևան պատրաստի հրավերում։',
     continueEdit: 'Շարունակել խմբագրումը →', editOnSite: 'Խմբագրել հրավերը կայքում →', viewDemo: 'Դիտել դեմոն', continue: 'Շարունակել',
@@ -59,7 +60,7 @@ const TEXT = {
     order: 'Заказ', notFound: 'Этот дизайн не найден', viewCollection: 'Смотреть коллекцию',
     change: 'Изменить', schedWhat: 'Что происходит', remove: 'Удалить', addItem: '+ Добавить пункт', checkMap: 'Проверить на карте →',
     pay: (a) => `Оплатить ${a}`, sendRequest: 'Отправить заявку', sendOrder: 'Отправить заказ',
-    crumbs: 'Навигация', collection: 'Коллекция', title: 'Оформление заказа', step1: 'Ваш выбор', option: 'Вариант',
+    crumbs: 'Навигация', collection: 'Коллекция', title: 'Оформление заказа', step1: 'Ваш выбор', option: 'Вариант', addons: 'Дополнения', addonsNote: 'по желанию', addonsLabel: 'Дополнения',
     attach: 'Приложить мою отредактированную версию к заказу',
     edited: 'Вы отредактировали это приглашение на сайте — Ваши изменения будут в готовом приглашении.',
     continueEdit: 'Продолжить редактирование →', editOnSite: 'Отредактировать приглашение на сайте →', viewDemo: 'Смотреть демо', continue: 'Продолжить',
@@ -87,7 +88,7 @@ const TEXT = {
     order: 'Order', notFound: 'This design wasn’t found', viewCollection: 'View the collection',
     change: 'Change', schedWhat: 'What happens', remove: 'Remove', addItem: '+ Add an item', checkMap: 'Check on the map →',
     pay: (a) => `Pay ${a}`, sendRequest: 'Send the request', sendOrder: 'Send the order',
-    crumbs: 'Breadcrumb', collection: 'Collection', title: 'Checkout', step1: 'Your choice', option: 'Option',
+    crumbs: 'Breadcrumb', collection: 'Collection', title: 'Checkout', step1: 'Your choice', option: 'Option', addons: 'Add-ons', addonsNote: 'optional', addonsLabel: 'Add-ons',
     attach: 'Attach my edited version to the order',
     edited: 'You’ve edited this invitation on the site — your changes will appear in the finished invitation.',
     continueEdit: 'Continue editing →', editOnSite: 'Edit the invitation on the site →', viewDemo: 'View the demo', continue: 'Continue',
@@ -148,6 +149,8 @@ export default function Checkout() {
   const design = findDesign(designId)
 
   const [option, setOption] = useState(params.get('option') === 'assisted' ? 'assisted' : 'diy')
+  // chosen add-on ids (src/site/addons.js); the server prices them again
+  const [addons, setAddons] = useState([])
   const [step, setStep] = useState(1)
   const [form, setForm] = useState(EMPTY)
   const [errors, setErrors] = useState({})
@@ -239,7 +242,14 @@ export default function Checkout() {
     )
   }
 
-  const price = design.pricing[option]
+  const basePrice = design.pricing[option]
+  // add-ons this design + option can have; a choice that no longer applies
+  // (e.g. after switching the option) simply drops out
+  const addonChoices = orderableAddons(design.id, option)
+  const chosen = addonChoices.filter((a) => addons.includes(a.id))
+  const addonsTotal = chosen.reduce((s, a) => s + addonPrice(a.id), 0)
+  const price = basePrice == null ? null : basePrice + addonsTotal
+  const toggleAddon = (id) => setAddons((xs) => (xs.includes(id) ? xs.filter((x) => x !== id) : [...xs, id]))
   const ordersEnabled = config?.ordersEnabled
   const methods = paymentChoices(config?.methods || [])
   const payable = price != null && methods.length > 0
@@ -288,6 +298,7 @@ export default function Checkout() {
       option,
       consent: true,
       website: form.website,
+      addons: chosen.map((a) => a.id),
       // the server writes the contact line itself from these two
       customer: { name: form.name, phone: form.phone, email: form.email, contactVia: form.contactVia, tg: form.contactVia === 'telegram' ? form.tg.trim() : '' },
       customization: spec ? {
@@ -471,7 +482,7 @@ export default function Checkout() {
 
           {/* 01 — the design and option */}
           <section className={`co-step ${step === 1 ? 'on' : 'done'}`} ref={(el) => { stepRefs.current[1] = el }}>
-            {stepHead(1, t.step1, `${design.code} · ${OPTION_INFO[option].label} · ${formatPrice(price, lang)}`)}
+            {stepHead(1, t.step1, [design.code, OPTION_INFO[option].label, ...chosen.map((a) => addonName(a, lang)), formatPrice(price, lang)].join(' · '))}
             {step === 1 && (
               <div className="co-step-b">
                 <div className="co-options" role="radiogroup" aria-label={t.option}>
@@ -486,6 +497,23 @@ export default function Checkout() {
                     </label>
                   ))}
                 </div>
+                {addonChoices.length > 0 && (
+                  <>
+                    <h3 className="co-sub">{t.addons} <span>{t.addonsNote}</span></h3>
+                    <div className="co-options co-addons" role="group" aria-label={t.addons}>
+                      {addonChoices.map((a) => (
+                        <label key={a.id} className={`co-opt co-check ${addons.includes(a.id) ? 'on' : ''}`}>
+                          <input type="checkbox" checked={addons.includes(a.id)} onChange={() => toggleAddon(a.id)} />
+                          <span className="co-opt-top">
+                            <span className="co-opt-name">{addonName(a, lang)}</span>
+                            <span className="co-opt-price">+{formatPrice(addonPrice(a.id), lang)}</span>
+                          </span>
+                          <span className="co-opt-text">{addonText(a, lang)}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </>
+                )}
                 {edits ? (
                   <div className="co-edits">
                     <label className="co-consent">
@@ -573,6 +601,7 @@ export default function Checkout() {
                   <div><dt>{t.fPhone}</dt><dd>{form.phone}</dd></div>
                   {form.email && <div><dt>{t.fEmail}</dt><dd>{form.email}</dd></div>}
                   {form.contactVia && <div><dt>{t.contactLabel}</dt><dd>{contactText(form, t)}</dd></div>}
+                  {chosen.length > 0 && <div><dt>{t.addonsLabel}</dt><dd>{chosen.map((a) => addonName(a, lang)).join(', ')}</dd></div>}
                   {(() => {
                     const names = spec ? spec.m.namesFromDetails(det) : form.names
                     const date = spec ? det.eventDate : form.eventDate
@@ -632,6 +661,9 @@ export default function Checkout() {
               <p className="eyebrow">{CATEGORY_LABELS_I18N[lang][design.category]} · {design.code}</p>
               <h3 className="co-sum-title">{title}</h3>
               <p className="co-sum-type">{design.kind === 'card' ? t.cardKind : t.webKind} · {OPTION_INFO[option].label}</p>
+              {chosen.length > 0 && (
+                <p className="co-sum-type">{t.addonsLabel}: {chosen.map((a) => `${addonName(a, lang)} +${formatPrice(addonPrice(a.id), lang)}`).join(', ')}</p>
+              )}
               <div className="co-sum-total">
                 <span>{t.total}</span>
                 <strong>{formatPrice(price, lang)}</strong>

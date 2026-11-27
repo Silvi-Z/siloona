@@ -144,11 +144,13 @@ export default function SharedInvitation() {
   const isEvent = data.kind === 'event'
   const guestName = isEvent && data.event.inv?.personalize !== false ? data.guest?.first || null : null
   const rsvpOn = !isEvent || data.event.inv?.rsvp !== false
+  // add-on features this invitation has (the server decides)
+  const features = Array.isArray(data.features) ? data.features : []
   const onRsvp = rsvpOn
     ? (answer) => { sendRsvp(isEvent ? { slug: code, t: token, ...answer } : { code, ...answer }) }
     : undefined
   return (
-    <InvitationContentProvider defaultData={content} editing={false} setEditing={noop} guestName={guestName} onRsvp={onRsvp} seating={seating}>
+    <InvitationContentProvider defaultData={content} editing={false} setEditing={noop} guestName={guestName} onRsvp={onRsvp} seating={seating} features={features}>
       <Invitation />
     </InvitationContentProvider>
   )

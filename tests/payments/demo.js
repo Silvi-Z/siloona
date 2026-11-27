@@ -65,7 +65,10 @@ for (const d of SEATING_DEMOS) {
     `insert into orders (access_token, customer_name, customer_phone, design_id, design_option, customization, amount, payment_status)
      values ('demo', 'Demo', '+37499000000', 'wd-portrait', 'diy', $1::jsonb, 15000, 'paid') returning id`, [JSON.stringify(customization)])
   const { rows: [inv] } = await store.db.query(`insert into invitations (code, order_id, design_id) values ($1, $2, 'wd-portrait') returning id`, [d.code, o.id])
-  if (d.revealAt) await store.importSeating({ invitation: inv.id, revealAt: new Date(d.revealAt).toISOString(), rows: SEATS })
+  if (d.revealAt) {
+    await store.importSeating({ invitation: inv.id, revealAt: new Date(d.revealAt).toISOString(), rows: SEATS })
+    await store.grantFeature(inv.id, 'seating') // as scripts/import-seating.js does
+  }
 }
 
 const vite = await createServer({ root: ROOT, configFile: path.join(ROOT, 'vite.config.js'), server: { port: PORT, strictPort: true } })

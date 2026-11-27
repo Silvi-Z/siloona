@@ -52,6 +52,15 @@
 .pr .pr-inc-list li{border-top:0; padding-right:12px}
 .pr-inc-n{display:block; margin-bottom:12px; font-family:var(--serif); font-style:italic; font-weight:300; font-size:clamp(34px,3vw,44px); line-height:1; color:var(--burgundy)}
 
+/* ---------- add-ons: a price list, two columns ---------- */
+.pr-add-list{list-style:none; margin:clamp(32px,4vw,56px) 0 0!important; padding:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); column-gap:clamp(32px,5vw,72px); border-top:1px solid var(--burgundy)}
+.pr-add{display:flex; justify-content:space-between; align-items:baseline; gap:20px; padding:22px 0 20px; border-bottom:1px solid var(--line)}
+.pr-add-t h3{font-family:var(--serif); font-weight:500; font-size:clamp(19px,1.6vw,22px); line-height:1.25; margin:0 0 6px; color:var(--ink)}
+.pr-add-t p{margin:0; font-size:14.5px; line-height:1.55; color:var(--ink-soft); max-width:30em}
+.pr-add-only{color:var(--burgundy)}
+.pr-add-p{margin:0; flex:none; font-family:var(--serif); font-size:clamp(19px,1.6vw,23px); color:var(--burgundy); white-space:nowrap}
+.pr-add-p em{font-style:italic; font-size:16px; color:var(--ink-soft)}
+
 /* ---------- print: a burgundy band ---------- */
 .pr-print{background:var(--burgundy); color:var(--ivory)}
 .pr-print-in{display:grid; grid-template-columns:minmax(0,5fr) minmax(0,7fr); gap:24px clamp(32px,6vw,96px); align-items:end}
@@ -79,6 +88,8 @@
   .pr .pr-inc-list{grid-template-columns:1fr}
   .pr .pr-inc-list li{padding:20px 0 22px; border-top:1px solid var(--line)}
   .pr .pr-inc-list li:first-child{border-top:0}
+  .pr-add-list{grid-template-columns:1fr}
+  .pr-add{padding:18px 0 16px}
   .pr-btn{padding-block:17px}
   .pr-end-in{flex-direction:column; align-items:stretch}
   .pr-end-in .pr-btn{width:100%}

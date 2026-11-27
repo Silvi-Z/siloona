@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useRef, useState } from 
 import { useSearchParams } from 'react-router-dom'
 import { getByPath, setByPath, deepMerge } from './pathUtils'
 import { loadOverride, saveOverride, clearOverride } from './storage'
+import { addonById } from '../../addons'
 
 const Ctx = createContext(null)
 
@@ -27,13 +28,17 @@ const Ctx = createContext(null)
 //                submits the design's RSVP form, if the host records RSVPs
 //   seating      «Ձեր սեղանը» on this copy — { revealAt, open, key, find(name) }
 //                from the published page only (see Seating.jsx); null elsewhere
+//   features     the add-on features (src/site/addons.js) this copy has —
+//                an array from the published page (the server decides);
+//                null = a demo / preview, which shows every feature that
+//                is switched on. Read it with useFeature(id).
 //   skipIntro    open straight to the content (no envelope/curtain)
 //   live         keep following `defaultData` when the host replaces it
 //                (the dashboard preview while settings change)
 //   transform(prev, next)  optional: adjusts content after each edit — the
 //                public preview uses it to carry a renamed person into the
 //                sentences built from their name (invitationDetails.js)
-export function InvitationContentProvider({ defaultData, saved, onSave, onReset, editing, setEditing, guestName = null, onRsvp, seating = null, skipIntro = false, live = false, transform, children }) {
+export function InvitationContentProvider({ defaultData, saved, onSave, onReset, editing, setEditing, guestName = null, onRsvp, seating = null, features = null, skipIntro = false, live = false, transform, children }) {
   const [data, setData] = useState(() => deepMerge(defaultData, saved))
   const [dirty, setDirty] = useState(() => saved != null)
   // Latest content, read synchronously so onSave (which may update the
@@ -74,9 +79,9 @@ export function InvitationContentProvider({ defaultData, saved, onSave, onReset,
   }
 
   const value = useMemo(
-    () => ({ data, editing, setEditing, setField, replaceData, reset, dirty, guestName, onRsvp, seating, skipIntro }),
+    () => ({ data, editing, setEditing, setField, replaceData, reset, dirty, guestName, onRsvp, seating, features, skipIntro }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [data, editing, dirty, guestName, onRsvp, seating, skipIntro],
+    [data, editing, dirty, guestName, onRsvp, seating, features, skipIntro],
   )
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>
@@ -112,6 +117,13 @@ export function InvitationEditProvider({ slug, lang, defaultData, transform, chi
       {children}
     </InvitationContentProvider>
   )
+}
+
+// Whether this copy shows an add-on feature (src/site/addons.js).
+export function useFeature(id) {
+  const { features } = useInvitationContent()
+  if (Array.isArray(features)) return features.includes(id)
+  return !!addonById(id)?.enabled
 }
 
 export function useInvitationContent() {

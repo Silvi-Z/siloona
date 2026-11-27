@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto'
 import { HttpError } from './http.js'
 import { seatingPlan, seatingView } from './seating.js'
 import { eventIdForInvitationCode, liveOrderForEvent } from './orderEvents.js'
+import { invitationFeatures } from '../../src/site/addons.js'
 
 // Guests' links to a dashboard event's invitation:
 //   siloona.am/i/<event slug>             the general link
@@ -71,13 +72,21 @@ export async function loadPublished(store, slug) {
   return { ...row, order }
 }
 
-// «Ձեր սեղանը» for an event: its own list, or the one imported for the
-// purchased invitation of its order.
-export async function seatingPlanForEvent(store, row) {
+// The features (src/site/addons.js) an event's page shows — those of
+// the paid order linked to it and of that order's invitation.
+export async function eventFeatures(store, row) {
+  const inv = row.order ? await store.getInvitationByOrder(row.order.id) : null
+  return { inv, features: invitationFeatures(row.order?.addons, inv?.features) }
+}
+
+// «Ձեր սեղանը» for an event (only with the seating feature): its own
+// list, or the one imported for the purchased invitation of its order.
+export async function seatingPlanForEvent(store, row, known) {
+  const { inv, features } = known || await eventFeatures(store, row)
+  if (!features.includes('seating')) return null
   const own = await seatingPlan(store, { event_id: row.id })
-  if (own || !row.order) return own
-  const inv = await store.getInvitationByOrder(row.order.id)
-  return inv ? seatingPlan(store, { invitation_id: inv.id }) : null
+  if (own || !inv) return own
+  return seatingPlan(store, { invitation_id: inv.id })
 }
 
 function findGuest(row, token) {
@@ -95,6 +104,7 @@ export async function publicEventInvitation(store, slug, token) {
   const d = row.data
   const inv = d.inv || {}
   const guest = findGuest(row, token)
+  const known = await eventFeatures(store, row)
   // Counted for the dashboard («բացել է»); never blocks the page.
   try { await store.insertReply({ event_id: row.id, guest_token: guest ? token : null, kind: 'open' }) } catch (e) { console.error('[invitations] open not logged:', e.message) }
   return {
@@ -118,7 +128,8 @@ export async function publicEventInvitation(store, slug, token) {
       inv: pick(inv, ['deadline', 'personalize', 'greeting', 'message', 'rsvp']),
     },
     guest: guest ? { first: guest.first || '', last: guest.last || '', companions: guest.companions || 0 } : null,
-    seating: seatingView(await seatingPlanForEvent(store, row)),
+    seating: seatingView(await seatingPlanForEvent(store, row, known)),
+    features: known.features,
   }
 }
 

@@ -29,6 +29,7 @@ export async function createPgStore() {
   await db.exec(fs.readFileSync(new URL('guest-links.sql', root), 'utf8'))
   await db.exec(fs.readFileSync(new URL('seating.sql', root), 'utf8'))
   await db.exec(fs.readFileSync(new URL('order-events.sql', root), 'utf8'))
+  await db.exec(fs.readFileSync(new URL('addons.sql', root), 'utf8'))
   for (const u of Object.values(USERS)) {
     await db.query(`insert into auth.users (id, email, raw_user_meta_data) values ($1, $2, '{"mode":"org"}')`, [u.id, u.email])
   }
@@ -37,7 +38,7 @@ export async function createPgStore() {
   const one = async (sql, params) => (await db.query(sql, params)).rows[0] || null
   const many = async (sql, params) => (await db.query(sql, params)).rows
   const fix = (r) => r && Object.fromEntries(Object.entries(r).map(([k, v]) => [k, v instanceof Date ? v.toISOString() : typeof v === 'bigint' ? Number(v) : v]))
-  const JSONB = new Set(['customization', 'raw', 'payload'])
+  const JSONB = new Set(['customization', 'raw', 'payload', 'addons', 'features'])
   const update = async (table, id, patch) => {
     const keys = Object.keys(patch)
     const sets = keys.map((k, i) => `${k} = $${i + 2}${JSONB.has(k) ? '::jsonb' : ''}`).join(', ')
@@ -114,6 +115,9 @@ export async function createPgStore() {
       return `/api/uploads?id=${id}`
     },
     getPhoto: async (id) => photos.get(id) || null,
+
+    // what scripts/import-seating.js does after an import: the invitation gets the seating feature
+    grantFeature: (invitationId, feature) => db.query('update invitations set features = features || $2::jsonb where id = $1 and not (features ? $3)', [invitationId, JSON.stringify([feature]), feature]),
 
     // test helpers
     events: async (orderId) => (await many('select source, kind from payment_events where order_id = $1 order by id', [orderId])),

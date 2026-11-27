@@ -1,6 +1,7 @@
 import { randomBytes, timingSafeEqual } from 'node:crypto'
 import { DESIGN_PRICES, PRICE_OPTIONS, pricesFor } from '../../src/site/prices.js'
 import { CUSTOM_DESIGN_ID, CUSTOM_EVENT_TYPES, CUSTOM_KINDS } from '../../src/site/customRequest.js'
+import { invitationFeatures, priceAddons } from '../../src/site/addons.js'
 import { HttpError, siteUrl } from './http.js'
 import { notify, orderText, paymentText } from './notify.js'
 import { availableMethods, getProvider } from './providers/index.js'
@@ -57,10 +58,20 @@ export function validateOrderInput(body) {
   if (body.consent !== true) fields.consent = 'Անհրաժեշտ է համաձայնել պայմաններին։'
 
   const customization = custom ? validateCustomRequest(body.customization, fields) : validateCustomization(body.customization, fields)
+
+  // Add-ons (src/site/addons.js): only ones this design + option can have.
+  let addons = { items: [], total: 0 }
+  if (!custom && !fields.designId && !fields.option) {
+    try {
+      addons = priceAddons(designId, option, Array.isArray(body.addons) ? body.addons.slice(0, 20) : [])
+    } catch {
+      fields.addons = 'Ընտրված հավելումներից մեկը հասանելի չէ այս դիզայնի համար։'
+    }
+  }
   if (Object.keys(fields).length) throw new HttpError(422, 'invalid', 'Խնդրում ենք ստուգել նշված դաշտերը։', fields)
 
   const clientRef = isUuid(body.clientRef) ? body.clientRef : null
-  return { designId, option: custom ? 'assisted' : option, name, phone, email: email || null, contact: contact || null, customization, clientRef }
+  return { designId, option: custom ? 'assisted' : option, name, phone, email: email || null, contact: contact || null, customization, clientRef, addons }
 }
 
 // The customer's own edits from the design's web editor: only the fields
@@ -146,7 +157,9 @@ export async function createOrder(store, body, user) {
     if (existing) return createdView(existing)
   }
 
-  const amount = pricesFor(v.designId)[v.option] // null = price on request
+  // The design's price plus the add-ons, both from prices.js; null = price on request.
+  const base = pricesFor(v.designId)[v.option]
+  const amount = base == null ? null : base + v.addons.total
   const row = {
     access_token: randomBytes(24).toString('hex'),
     client_ref: v.clientRef,
@@ -158,13 +171,14 @@ export async function createOrder(store, body, user) {
     design_id: v.designId,
     design_option: v.option,
     customization: v.customization,
+    addons: v.addons.items,
     amount,
     currency: 'AMD',
   }
   const r = await store.insertOrder(row)
   const order = r.conflict ? await store.getOrderByClientRef(v.clientRef) : r.order
   if (!r.conflict) {
-    await store.logEvent({ order_id: order.id, source: 'init', kind: 'order_created', payload: { amount, design_id: v.designId, option: v.option } })
+    await store.logEvent({ order_id: order.id, source: 'init', kind: 'order_created', payload: { amount, design_id: v.designId, option: v.option, addons: v.addons.items } })
     let site = ''
     try { site = siteUrl() } catch { /* not set */ }
     await notify(orderText(order, site))
@@ -200,6 +214,7 @@ export function customerView(order, txs, invitation = null) {
     option: order.design_option,
     amount: order.amount,
     currency: order.currency,
+    addons: Array.isArray(order.addons) ? order.addons : [],
     customerName: order.customer_name,
     paymentStatus: order.payment_status,
     orderStatus: order.order_status,
@@ -255,13 +270,23 @@ export async function loadInvitation(store, code) {
   return { inv, order }
 }
 
+// The features (src/site/addons.js) a purchased invitation shows: the
+// free ones, the ones its order paid for, and any turned on by hand.
+export const featuresOf = (order, inv) => invitationFeatures(order?.addons, inv?.features)
+
+// «Ձեր սեղանը» of a purchased invitation — only with the seating feature.
+export async function invitationSeatingPlan(store, inv, order) {
+  return featuresOf(order, inv).includes('seating') ? seatingPlan(store, { invitation_id: inv.id }) : null
+}
+
 // Only what the page renders — no customer contact details or notes.
 export async function publicInvitation(store, code) {
   const { inv, order } = await loadInvitation(store, code)
   const { names, eventDate, eventTime, venue, details, content } = order.customization || {}
+  const features = featuresOf(order, inv)
   // «Ձեր սեղանը»: only whether / from when — the table itself is asked separately
-  const seating = seatingView(await seatingPlan(store, { invitation_id: inv.id }))
-  return { designId: order.design_id, customization: { names, eventDate, eventTime, venue }, details: details || null, content: content || null, seating }
+  const seating = seatingView(await invitationSeatingPlan(store, inv, order))
+  return { designId: order.design_id, customization: { names, eventDate, eventTime, venue }, details: details || null, content: content || null, seating, features }
 }
 
 export async function submitRsvp(store, code, body) {

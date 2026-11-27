@@ -845,3 +845,58 @@ test('order page: a preview of the invitation before payment; guests only after 
   assert.equal(guest.status, 200)
   assert.equal(guest.json.customization.names, 'Լիանա & Դավիթ')
 })
+
+test('add-ons: priced on the server from prices.js, stored with the order, charged in full', async () => {
+  const { ADDON_PRICES } = await import(pathToFileURL(path.join(ROOT, 'src/site/prices.js')).href)
+  const { priceAddons, orderableAddons } = await import(pathToFileURL(path.join(ROOT, 'src/site/addons.js')).href)
+  const base = DESIGN_PRICES['wd-portrait'].assisted
+  const want = ['seating', 'extra_language', 'rush']
+  const extra = want.reduce((s, id) => s + ADDON_PRICES[id], 0)
+
+  // the config itself
+  assert.equal(priceAddons('wd-portrait', 'assisted', want).total, extra)
+  assert.ok(!orderableAddons('wd-portrait', 'diy').some((a) => a.id === 'rush'), 'rush only with «Հարմարեցված դիզայն»')
+  assert.ok(!orderableAddons('bd-animals', 'diy').some((a) => a.id === 'seating'), 'seating only in designs that have it')
+  assert.ok(!orderableAddons('wd-portrait', 'assisted').some((a) => a.id === 'calendar'), 'the free calendar is never a checkbox')
+
+  // an order with three add-ons: the amount browser says is ignored
+  const o = await newOrder({ designId: 'wd-portrait', option: 'assisted', addons: [...want, 'rush'], amount: 1 })
+  assert.equal(o.amount, base + extra)
+  const row = await store.getOrder(o.orderId)
+  assert.deepEqual(row.addons.map((a) => a.id).sort(), [...want].sort())
+  assert.equal(row.addons.find((a) => a.id === 'seating').price, ADDON_PRICES.seating, 'the price at the time of the order is kept')
+  const st = await status(o)
+  assert.equal(st.json.amount, base + extra)
+  assert.equal(st.json.addons.length, 3)
+  const pay = await start(o, 'arca')
+  assert.ok(pay.json.redirectUrl)
+  const tx = (await store.listTransactions(o.orderId)).at(-1)
+  assert.equal(tx.amount, base + extra, 'the bank is asked for the full amount')
+
+  // without add-ons: as before
+  const plain = await newOrder({ designId: 'wd-portrait', option: 'assisted' })
+  assert.equal(plain.amount, base)
+  assert.deepEqual((await store.getOrder(plain.orderId)).addons, [])
+
+  // forged or unavailable add-ons are refused, never priced
+  for (const addons of [['free_money'], ['rush'], ['wishes'], ['calendar']]) {
+    const bad = await call('POST', '/api/orders', { body: orderBody({ designId: 'wd-portrait', option: 'diy', addons }) })
+    assert.equal(bad.status, 422, JSON.stringify(addons))
+    assert.ok(bad.json.fields.addons)
+  }
+  // the seating add-on turns the feature on for the paid invitation
+  await call('POST', '/api/admin/orders', { token: USERS.admin.token, body: { orderId: o.orderId, action: 'manual_payment', method: 'cash', reference: 'R-90' } })
+  const page = await call('GET', `/api/invitations?code=${(await status(o)).json.invitationCode}`)
+  assert.ok(page.json.features.includes('seating') && page.json.features.includes('calendar'))
+  const plainPage = await call('GET', `/api/invitations?code=${(await status(plain)).json.invitationCode ?? 'none'}`)
+  assert.notEqual(plainPage.status, 200, 'unpaid: no page')
+})
+
+test('Telegram: the new-order notice lists the add-ons', async () => {
+  const { orderText } = await import(pathToFileURL(path.join(ROOT, 'api/_lib/notify.js')).href)
+  const text = orderText({ order_number: 1, customer_name: 'Ա', customer_phone: '+1', design_id: 'wd-portrait', design_option: 'assisted', customization: {}, amount: 29000, addons: [{ id: 'seating', price: 4000 }, { id: 'rush', price: 3000 }] }, '')
+  assert.match(text, /Հավելումներ/)
+  assert.match(text, /Ձեր սեղանը — 4\s000 ֏/)
+  assert.match(text, /Շտապ պատրաստում/)
+  assert.doesNotMatch(orderText({ order_number: 2, customer_name: 'Ա', customer_phone: '+1', design_id: 'x', design_option: 'diy', customization: {}, amount: 1, addons: [] }, ''), /Հավելումներ/)
+})

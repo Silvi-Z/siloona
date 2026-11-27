@@ -6,6 +6,7 @@ import '../prices.css'
 import { useLang, useText } from '../i18n'
 import { CONTACTS, opensTab } from '../contacts'
 import { ASSISTED_FROM, Arrow, CUSTOM_HASH, DIY_FROM, TEXT as HOME, amt } from './Home'
+import { addonName, addonPrice, addonText, offeredAddons } from '../addons'
 
 const CustomRequestDialog = lazy(() => import('../custom/CustomRequestDialog'))
 
@@ -14,7 +15,8 @@ const CustomRequestDialog = lazy(() => import('../custom/CustomRequestDialog'))
 // (pages/Home.jsx TEXT), the prices come from prices.js through the
 // catalog (the lowest per option — designs differ, so always «from»).
 // Built from the home page's classes (.hm …) so it looks like the site.
-// No add-ons section: there is no add-ons config yet (src/config/addons.js).
+// «Հավելումներ»: every add-on switched on in src/site/addons.js, with its
+// price from prices.js.
 const TEXT = {
   hy: {
     seoTitle: 'Գներ — Siloona',
@@ -25,6 +27,9 @@ const TEXT = {
     incEyebrow: 'Ներառված է',
     incH: 'Ինչ կա ամեն հրավերում',
     incNote: 'Հրավերի բաժինները կախված են ընտրած դիզայնից։',
+    addEyebrow: 'Հավելումներ', addH: 'Ավելացրեք Ձեր հրավերին',
+    addNote: 'Հավելումներն ընտրում եք պատվերի ժամանակ։ Որոշները հասանելի են միայն որոշ դիզայններում։',
+    included: 'Ներառված է', onlyFor: (x) => `միայն «${x}»-ի համար`,
     printEyebrow: 'Տպագրություն',
     printH: 'Տպագիր տարբերակ',
     printText: 'Նույն դիզայնով տպագիր հրավերներ և շնորհակալական քարտեր՝ ըստ պահանջի։ Գինը կախված է քանակից. գրեք մեզ։',
@@ -41,6 +46,9 @@ const TEXT = {
     incEyebrow: 'Включено',
     incH: 'Что есть в каждом приглашении',
     incNote: 'Разделы приглашения зависят от выбранного дизайна.',
+    addEyebrow: 'Дополнения', addH: 'Добавьте к приглашению',
+    addNote: 'Дополнения выбираются при заказе. Некоторые доступны только в отдельных дизайнах.',
+    included: 'Включено', onlyFor: (x) => `только для «${x}»`,
     printEyebrow: 'Печать',
     printH: 'Печатная версия',
     printText: 'Печатные приглашения и благодарственные открытки в том же дизайне — по запросу. Цена зависит от количества: напишите нам.',
@@ -57,6 +65,9 @@ const TEXT = {
     incEyebrow: 'Included',
     incH: 'What every invitation includes',
     incNote: 'The invitation’s sections depend on the design you choose.',
+    addEyebrow: 'Add-ons', addH: 'Add to your invitation',
+    addNote: 'You choose add-ons when you order. Some are available only in certain designs.',
+    included: 'Included', onlyFor: (x) => `only with “${x}”`,
     printEyebrow: 'Print',
     printH: 'Printed version',
     printText: 'Printed invitations and thank-you cards in the same design, on request. The price depends on the quantity — write to us.',
@@ -95,7 +106,7 @@ function ContactLinks() {
 export default function Prices() {
   const location = useLocation()
   const navigate = useNavigate()
-  const { to } = useLang()
+  const { lang, to } = useLang()
   const t = useText(TEXT)
   const h = useText(HOME)
   useSeo(t.seoTitle, t.seoDesc)
@@ -157,6 +168,32 @@ export default function Prices() {
             ))}
           </Reveal>
           <p className="pr-note">{t.incNote}</p>
+        </div>
+      </section>
+
+      <section className="hm-section pr-addons" aria-labelledby="pr-add-h">
+        <div className="hm-wrap">
+          <Reveal>
+            <p className="hm-eyebrow">{t.addEyebrow}</p>
+            <h2 className="hm-h2" id="pr-add-h">{t.addH}</h2>
+          </Reveal>
+          <Reveal as="ul" className="pr-add-list">
+            {offeredAddons().map((a) => {
+              const price = addonPrice(a.id)
+              // «Հարմարեցված դիզայն» is the assisted tier (home page tiers)
+              const only = a.options?.length === 1 && a.options[0] === 'assisted' ? t.onlyFor(h.tiers[1].name) : null
+              return (
+                <li key={a.id} className="pr-add">
+                  <div className="pr-add-t">
+                    <h3>{addonName(a, lang)}</h3>
+                    <p>{addonText(a, lang)}{only && <span className="pr-add-only"> · {only}</span>}</p>
+                  </div>
+                  <p className="pr-add-p">{price === 0 || a.included ? <em>{t.included}</em> : <>+{amt(price)}</>}</p>
+                </li>
+              )
+            })}
+          </Reveal>
+          <p className="pr-note">{t.addNote}</p>
         </div>
       </section>
 

@@ -1,8 +1,8 @@
 import { HttpError, allow, getQuery, handler, readBody, sendJson } from '../_lib/http.js'
 import { getStore } from '../_lib/store.js'
-import { loadInvitation, publicInvitation, submitRsvp } from '../_lib/orders.js'
+import { invitationSeatingPlan, loadInvitation, publicInvitation, submitRsvp } from '../_lib/orders.js'
 import { loadPublished, publicEventInvitation, rateLimit, seatingPlanForEvent, submitEventRsvp } from '../_lib/guestLinks.js'
-import { findSeat, seatingPlan } from '../_lib/seating.js'
+import { findSeat } from '../_lib/seating.js'
 
 // Public invitation pages, /i/…:
 //   /i/<12-hex code>            a purchased invitation (orders); once its
@@ -21,10 +21,11 @@ const ORDER_CODE = /^[0-9a-f]{12}$/
 // The seating plan behind a link, checked the same way as the page itself.
 async function planForLink(store, code) {
   if (ORDER_CODE.test(code)) {
-    const own = await seatingPlan(store, { invitation_id: (await loadInvitation(store, code)).inv.id })
+    const { inv, order } = await loadInvitation(store, code)
+    const own = await invitationSeatingPlan(store, inv, order)
     if (own) return own
     const linked = await loadPublished(store, code).catch(() => null)
-    return linked ? seatingPlan(store, { event_id: linked.id }) : null
+    return linked ? seatingPlanForEvent(store, linked) : null
   }
   return seatingPlanForEvent(store, await loadPublished(store, code))
 }

@@ -6,6 +6,7 @@ import { formatPrice } from '../pricing'
 import { useLang, useText } from '../i18n'
 import PaymentMethods, { SecureNote } from './PaymentMethods'
 import OrderPreview from './OrderPreview'
+import { addonName } from '../addons'
 import {
   getOrderStatus, goToProvider, isTestChoice, methodInfo, paymentChoices, optionInfo, orderLink, recallOrder, rememberOrder, startPayment,
 } from './checkoutApi'
@@ -41,7 +42,7 @@ const TEXT = {
     notFound: 'Պատվերը չի գտնվել։ Ստուգեք հղումը։', order: 'Պատվեր', retry: 'Փորձել կրկին', viewCollection: 'Դիտել հավաքածուն',
     loading: 'Բեռնվում է…', testNote: 'Թեստային վճարում · իրական գումար չի գանձվել', reason: 'Պատճառ՝',
     orderNumber: 'Պատվերի համար', design: 'Դիզայն', option: 'Տարբերակ', amount: 'Գումար', method: 'Վճարման եղանակ', card: 'Քարտ',
-    txId: 'Գործարքի համար', paidAt: 'Վճարման ամսաթիվ', orderStatus: 'Պատվերի կարգավիճակ', created: 'Ձևակերպված է',
+    txId: 'Գործարքի համար', paidAt: 'Վճարման ամսաթիվ', orderStatus: 'Պատվերի կարգավիճակ', created: 'Ձևակերպված է', addons: 'Հավելումներ',
     redirecting: 'Ուղղորդում ենք վճարման էջ…', pay: (a) => `Վճարել ${a}`,
     keepLink: 'Պահպանեք այս էջի հղումը՝ պատվերի կարգավիճակը ցանկացած պահի տեսնելու համար։',
     onlyYou: ' Այն միայն Ձեզ համար է․ հյուրերին ուղարկեք հրավերի հղումը։',
@@ -74,7 +75,7 @@ const TEXT = {
     notFound: 'Заказ не найден. Проверьте ссылку.', order: 'Заказ', retry: 'Попробовать ещё раз', viewCollection: 'Смотреть коллекцию',
     loading: 'Загрузка…', testNote: 'Тестовая оплата · реальные деньги не списаны', reason: 'Причина:',
     orderNumber: 'Номер заказа', design: 'Дизайн', option: 'Вариант', amount: 'Сумма', method: 'Способ оплаты', card: 'Карта',
-    txId: 'Номер транзакции', paidAt: 'Дата оплаты', orderStatus: 'Статус заказа', created: 'Оформлен',
+    txId: 'Номер транзакции', paidAt: 'Дата оплаты', orderStatus: 'Статус заказа', created: 'Оформлен', addons: 'Дополнения',
     redirecting: 'Переходим на страницу оплаты…', pay: (a) => `Оплатить ${a}`,
     keepLink: 'Сохраните ссылку на эту страницу, чтобы в любой момент видеть статус заказа.',
     onlyYou: ' Она только для Вас — гостям отправляйте ссылку на приглашение.',
@@ -107,7 +108,7 @@ const TEXT = {
     notFound: 'Order not found. Please check the link.', order: 'Order', retry: 'Try again', viewCollection: 'View the collection',
     loading: 'Loading…', testNote: 'Test payment · no real money was charged', reason: 'Reason:',
     orderNumber: 'Order number', design: 'Design', option: 'Option', amount: 'Amount', method: 'Payment method', card: 'Card',
-    txId: 'Transaction ID', paidAt: 'Payment date', orderStatus: 'Order status', created: 'Placed',
+    txId: 'Transaction ID', paidAt: 'Payment date', orderStatus: 'Order status', created: 'Placed', addons: 'Add-ons',
     redirecting: 'Taking you to the payment page…', pay: (a) => `Pay ${a}`,
     keepLink: 'Keep the link to this page to check your order status at any time.',
     onlyYou: ' It’s for you only — send your guests the invitation link.',
@@ -382,6 +383,7 @@ export default function CheckoutResult() {
             <div><dt>{t.orderNumber}</dt><dd>№ {data.orderNumber}</dd></div>
             <div><dt>{t.design}</dt><dd>{design ? design.code : data.designId === CUSTOM_DESIGN_ID ? (lang === 'hy' ? CUSTOM_DESIGN_LABEL : t.custom) : data.designId}</dd></div>
             <div><dt>{t.option}</dt><dd>{OPTION_INFO[data.option]?.label}</dd></div>
+            {data.addons?.length > 0 && <div><dt>{t.addons}</dt><dd>{data.addons.map((a) => addonName(a.id, lang)).join(', ')}</dd></div>}
             <div><dt>{t.amount}</dt><dd>{formatPrice(data.amount, lang)}</dd></div>
             {data.provider && data.paymentStatus !== 'unpaid' && <div><dt>{t.method}</dt><dd>{METHOD_INFO[data.provider]?.label || data.provider}</dd></div>}
             {data.cardMask && <div><dt>{t.card}</dt><dd>{data.cardMask}</dd></div>}

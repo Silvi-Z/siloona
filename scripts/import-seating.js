@@ -120,6 +120,27 @@ if (error) {
   fail(error.message)
 }
 
+// The section shows only on invitations with the seating feature
+// (src/site/addons.js): an order that paid for it has it; importing a list
+// also turns it on for this invitation (supabase/addons.sql →
+// invitations.features), so a list set up by hand works too.
+async function grantSeating() {
+  let invId = target.p_invitation
+  if (!invId) {
+    const { data: o } = await db.from('orders').select('id').eq('event_id', target.p_event).maybeSingle()
+    const { data: inv } = o ? await db.from('invitations').select('id').eq('order_id', o.id).maybeSingle() : { data: null }
+    invId = inv?.id
+  }
+  if (!invId) return console.log('  ! Միջոցառմանը վճարված պատվեր կապված չէ. բաժինը կերևա, երբ պատվերը կապվի և այն ունենա «Ձեր սեղանը» հավելումը։')
+  const { data: row, error: e1 } = await db.from('invitations').select('features').eq('id', invId).maybeSingle()
+  if (e1) return console.log(`  ! Չհաջողվեց միացնել «Ձեր սեղանը» հավելումը (գործարկե՞լ եք supabase/addons.sql-ը)՝ ${e1.message}`)
+  const features = Array.isArray(row?.features) ? row.features : []
+  if (features.includes('seating')) return
+  const { error: e2 } = await db.from('invitations').update({ features: [...features, 'seating'] }).eq('id', invId)
+  if (e2) console.log(`  ! Չհաջողվեց միացնել «Ձեր սեղանը» հավելումը՝ ${e2.message}`)
+}
+await grantSeating()
+
 const when = new Date(r.reveal_at).toLocaleString('en-GB', { timeZone: 'Asia/Yerevan', dateStyle: 'medium', timeStyle: 'short' })
 console.log('')
 if (prepared) console.log(`  Ներմուծված է՝ ${r.added} նոր, ${r.updated} թարմացված, ${r.deleted} հեռացված։ Ցուցակում հիմա՝ ${r.total} անուն։`)

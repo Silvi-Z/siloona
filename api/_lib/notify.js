@@ -1,3 +1,5 @@
+import { addonName } from '../../src/site/addons.js'
+
 // Tells Siloona about new orders, custom-design requests and payments in
 // Telegram — optional: set TELEGRAM_BOT_TOKEN (from @BotFather) and
 // TELEGRAM_CHAT_ID (your chat or group) to turn it on. Without them it
@@ -30,6 +32,12 @@ export async function notify(text) {
 
 const amd = (n) => (n == null ? 'գինը ճշտվում է' : `${Number(n).toLocaleString('ru-RU')} ֏`)
 
+// The add-ons chosen at checkout (orders.addons), one per line.
+function addonLines(addons) {
+  if (!Array.isArray(addons) || !addons.length) return []
+  return ['➕ Հավելումներ՝', ...addons.map((a) => `   · ${addonName(a.id)} — ${amd(a.price)}`)]
+}
+
 export function orderText(order, siteUrl) {
   const custom = order.customization?.request === 'custom'
   const lines = [
@@ -42,6 +50,7 @@ export function orderText(order, siteUrl) {
     order.customization?.names ? `Անուններ՝ ${order.customization.names}` : '',
     order.customization?.eventDate ? `Ամսաթիվ՝ ${order.customization.eventDate}` : '',
     custom && order.customization.notes ? `Գաղափարը՝ ${order.customization.notes.slice(0, 300)}` : '',
+    ...addonLines(order.addons),
     `Գումար՝ ${amd(order.amount)}`,
     siteUrl ? `${siteUrl}/dashboard#orders` : '',
   ]

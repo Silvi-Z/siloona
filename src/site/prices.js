@@ -50,6 +50,23 @@ export const DESIGN_PRICES = {
 
 export const PRICE_OPTIONS = ['diy', 'assisted']
 
+// Paid add-ons, in whole drams — the list itself (names, what each is,
+// where it applies, which are switched on) is src/site/addons.js. The
+// server adds these to the design's price (api/_lib/orders.js); the
+// browser's total is never trusted. 0 = included in every invitation.
+export const ADDON_PRICES = {
+  calendar: 0,
+  personal_greeting: 3000,
+  seating: 4000,
+  live_schedule: 3000,
+  extra_rsvp_question: 1000,
+  wishes: 3000,
+  thank_you_page: 2000,
+  extra_language: 2000,
+  rush: 3000,
+  print_adaptation: 5000,
+}
+
 const NO_PRICE = { diy: null, assisted: null }
 
 export function pricesFor(designId) {

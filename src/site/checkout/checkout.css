@@ -412,3 +412,7 @@
   .siloona-site .co-preview-screen{width:240px; height:480px}
   .siloona-site .co-preview-screen iframe{transform:scale(.61538)}
 }
+
+/* Add-ons in step 1: the option cards, with a square box (several can be chosen) */
+.siloona-site .co-opt.co-check::before{border-radius:4px}
+.siloona-site .co-opt.co-check.on::before{box-shadow:inset 0 0 0 3px #fff, inset 0 0 0 8px var(--violet)}
