@@ -18,6 +18,8 @@ export const wdChateauDefaultData = {
   // Groom first, as on the cover.
   couple: { first: 'Դավիթ', second: 'Մարիամ' },
   welcome: 'Բարի գալուստ մեր հարսանիք',
+  // On a guest's personal link a line under it addresses them ({name}).
+  greeting: { personal: 'Սիրելի {name}' },
   ceremonyTitle: 'Արարողություն',
   // The two families. `first` the groom's, `second` the bride's.
   parentsLabels: { first: 'Փեսայի ծնողները', second: 'Հարսի ծնողները' },

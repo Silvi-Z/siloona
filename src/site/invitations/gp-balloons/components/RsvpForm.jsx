@@ -8,7 +8,7 @@ const GUESS_LABEL = { boy: 'Տղա', girl: 'Աղջիկ' }
 // Guests confirm attendance and make their boy/girl guess. The guess and
 // wishes go to the host as the RSVP note, so organizers see every guess.
 export default function RsvpForm({ onConfirmed }) {
-  const { data, onRsvp } = useInvitationContent()
+  const { data, onRsvp, guestName } = useInvitationContent()
   const [nameError, setNameError] = useState(false)
   const [thanks, setThanks] = useState(null)
   const nameRef = useRef(null)
@@ -42,7 +42,7 @@ export default function RsvpForm({ onConfirmed }) {
           <Rv as="form" onSubmit={submit} noValidate>
             <label className={`f${nameError ? ' err' : ''}`}>
               ՁԵՐ ԱՆՈՒՆԸ
-              <input type="text" name="name" autoComplete="name" placeholder="Անուն, ազգանուն" ref={nameRef} aria-invalid={nameError} />
+              <input type="text" name="name" autoComplete="name" defaultValue={guestName || ''} placeholder="Անուն, ազգանուն" ref={nameRef} aria-invalid={nameError} />
               <span className="err-msg">Խնդրում ենք գրել ձեր անունը</span>
             </label>
             <div className="attend">

@@ -1,7 +1,7 @@
 import { HttpError, allow, getQuery, handler, readBody, sendJson, siteUrl } from '../_lib/http.js'
 import { icsText } from '../../src/site/invitations/shared/calendarEvent.js'
 import { getStore } from '../_lib/store.js'
-import { invitationSeatingPlan, loadInvitation, publicInvitation, submitRsvp } from '../_lib/orders.js'
+import { invitationSeatingPlan, loadInvitation, personalGreeting, publicInvitation, submitRsvp } from '../_lib/orders.js'
 import { loadPublished, publicEventInvitation, rateLimit, seatingPlanForEvent, submitEventRsvp } from '../_lib/guestLinks.js'
 import { findSeat } from '../_lib/seating.js'
 
@@ -12,7 +12,10 @@ import { findSeat } from '../_lib/seating.js'
 //   /i/<event slug>[/<token>]   a dashboard event, general or a guest's own
 //                               link (guestLinks.js)
 //   GET  ?code=…[&t=…]          what the page renders
-//   POST { code, name, status, plus, note }        RSVP to a purchased one
+//   /i/<code>/<token>           a guest's personal link to a purchased one
+//                               (personal-links.sql): { …, personal: { name } };
+//                               an unknown token opens the general page
+//   POST { code, t?, name, status, plus, note }    RSVP to a purchased one
 //   POST { slug, t?, name, status, plus, note }    RSVP to a dashboard event
 //   GET  ?ics=1&t=…&d=…&h=…     «Ավելացնել օրացույցում»: the event as an
 //                               .ics file (Apple / other calendars)
@@ -71,8 +74,19 @@ export default handler(async (req, res) => {
     await rateLimit(store, req, 'open')
     const q = getQuery(req)
     const code = String(q.code || '')
-    if (ORDER_CODE.test(code) && !q.t) {
-      return sendJson(res, 200, (await linkedEventPage(store, code)) || { kind: 'order', ...(await publicInvitation(store, code)) })
+    if (ORDER_CODE.test(code)) {
+      const t = q.t ? String(q.t) : null
+      // a guest's personal link to the purchased invitation (personal-links.sql)
+      const personal = t ? await personalGreeting(store, code, t) : null
+      if (t && !personal) {
+        // a guest's link from the linked dashboard event, as before
+        const ev = await publicEventInvitation(store, code, t)
+          .catch((e) => { if (e instanceof HttpError && [404, 410].includes(e.status)) return null; throw e })
+        if (ev) return sendJson(res, 200, ev)
+        // an unknown link: the general invitation, no error
+      }
+      const page = (await linkedEventPage(store, code)) || { kind: 'order', ...(await publicInvitation(store, code)) }
+      return sendJson(res, 200, personal ? { ...page, personal } : page)
     }
     return sendJson(res, 200, await publicEventInvitation(store, code, q.t ? String(q.t) : null))
   }

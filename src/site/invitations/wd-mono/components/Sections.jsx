@@ -218,7 +218,7 @@ export function Playlist() {
 // Name, yes / no, party size and a song wish (yes only). Guest count is
 // everyone coming (companions = index of the chosen option).
 export function Rsvp() {
-  const { data, editing, onRsvp } = useInvitationContent()
+  const { data, editing, onRsvp, guestName } = useInvitationContent()
   const { rsvp } = data
   const [yes, setYes] = useState(true)
   const [err, setErr] = useState(false)
@@ -251,7 +251,7 @@ export function Rsvp() {
           <label className="field">
             <span className="lbl">Անուն, ազգանուն</span>
             <input
-              ref={nameRef} type="text" name="n" autoComplete="name" required
+              ref={nameRef} type="text" name="n" autoComplete="name" defaultValue={guestName || ''} required
               aria-invalid={err || undefined} aria-describedby={err ? 'wmn-err' : undefined}
               onInput={() => err && setErr(false)}
             />

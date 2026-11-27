@@ -231,7 +231,7 @@ export function DressCode() {
 }
 
 export function Rsvp() {
-  const { data, editing, onRsvp } = useInvitationContent()
+  const { data, editing, onRsvp, guestName } = useInvitationContent()
   const { rsvp } = data
   const [yes, setYes] = useState(true)
   const [err, setErr] = useState(false)
@@ -265,7 +265,7 @@ export function Rsvp() {
             <label className="field">
               <span className="caps small"><Editable path="rsvp.nameLabel" /></span>
               <input
-                ref={nameRef} type="text" name="n" autoComplete="name" required
+                ref={nameRef} type="text" name="n" autoComplete="name" defaultValue={guestName || ''} required
                 aria-invalid={err || undefined} aria-describedby={err ? 'wvl-err' : undefined}
                 onInput={() => err && setErr(false)}
               />

@@ -95,7 +95,7 @@ export function Program() {
 // Name, drink, party size. There's no decline option in this design, so
 // every answer is an acceptance; drink and party size go in the note.
 export function Rsvp() {
-  const { data, editing, onRsvp } = useInvitationContent()
+  const { data, editing, onRsvp, guestName } = useInvitationContent()
   const { rsvp } = data
   const [note, setNote] = useState('')
   const [sent, setSent] = useState(false)
@@ -117,7 +117,7 @@ export function Rsvp() {
     <section className="sec" style={{ paddingTop: '2rem' }}>
       <MaskHeading path="rsvp.title" />
       <Rv as="form" className={`f rv${sent ? ' sent' : ''}`} noValidate onSubmit={submit}>
-        <input type="text" name="n" placeholder={rsvp.placeholder} aria-label="Ձեր անունը" autoComplete="name" required onInput={() => setNote('')} />
+        <input type="text" name="n" placeholder={rsvp.placeholder} aria-label="Ձեր անունը" autoComplete="name" defaultValue={guestName || ''} required onInput={() => setNote('')} />
         <fieldset><legend><Editable path="rsvp.drinkQuestion" /></legend>
           {rsvp.drinks.map((x, i) => (
             <label key={i}><input type="radio" name="d" value={x} defaultChecked={i === 0} /><Editable path={`rsvp.drinks.${i}`} /></label>

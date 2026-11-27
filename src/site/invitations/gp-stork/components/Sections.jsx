@@ -191,7 +191,7 @@ export function DressCode() {
 // RSVP with the boy/girl guess; the guess and the wish reach the hosts as
 // the RSVP note, so they see every guess.
 export function Rsvp() {
-  const { data, editing, onRsvp } = useInvitationContent()
+  const { data, editing, onRsvp, guestName } = useInvitationContent()
   const { rsvp } = data
   const [yes, setYes] = useState(true)
   const [guess, setGuess] = useState('')
@@ -223,7 +223,7 @@ export function Rsvp() {
           <label className="field">
             <span className="lbl"><Editable path="rsvp.nameLabel" /></span>
             <input
-              ref={nameRef} type="text" name="n" autoComplete="name" required
+              ref={nameRef} type="text" name="n" autoComplete="name" defaultValue={guestName || ''} required
               aria-invalid={err || undefined} aria-describedby={err ? 'gps-err' : undefined}
               onInput={() => err && setErr(false)}
             />

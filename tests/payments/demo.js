@@ -71,6 +71,34 @@ for (const d of SEATING_DEMOS) {
   }
 }
 
+// «Անհատական դիմում հյուրին»: a paid wd-noir invitation with the add-on and
+// two personal links (supabase/personal-links.sql), as import-guests.js makes them.
+const PERSONAL = [
+  { token: 'DemoAramAni000000000001', name: 'Արամ և Անի' },
+  { token: 'DemoPetrosyan0000000002', name: 'Պետրոսյանների ընտանիք' },
+]
+{
+  const customization = { names: 'Միլենա & Ալեն', eventDate: '2027-09-18', eventTime: '15:00', venue: 'Երևան' }
+  const { rows: [o] } = await store.db.query(
+    `insert into orders (access_token, customer_name, customer_phone, design_id, design_option, customization, amount, payment_status, addons)
+     values ('demo', 'Demo', '+37499000000', 'wd-noir', 'diy', $1::jsonb, 38000, 'paid', '[{"id":"personal_greeting","price":3000}]'::jsonb) returning id`, [JSON.stringify(customization)])
+  const { rows: [inv] } = await store.db.query(`insert into invitations (code, order_id, design_id) values ('d0000000000f', $1, 'wd-noir') returning id`, [o.id])
+  const { nameKey } = await import('../../api/_lib/seating.js')
+  for (const g of PERSONAL) await store.addInvitationGuest({ invitation_id: inv.id, token: g.token, display_name: g.name, name_key: nameKey(g.name) })
+}
+
+// The same in every web design (for checking): /i/e000000000NN/DemoGuestTokenNNNNNNNNNN
+const { DESIGN_PRICES } = await import('../../src/site/prices.js')
+const WEB_DESIGNS = Object.keys(DESIGN_PRICES).filter((id) => !id.startsWith('card-'))
+for (const [i, id] of WEB_DESIGNS.entries()) {
+  const code = `e000000000${i.toString(16).padStart(2, '0')}`
+  const { rows: [o] } = await store.db.query(
+    `insert into orders (access_token, customer_name, customer_phone, design_id, design_option, customization, amount, payment_status, addons)
+     values ('demo', 'Demo', '+37499000000', $1, 'diy', '{"names":"Լիանա & Դավիթ","eventDate":"2027-06-12","eventTime":"16:00","venue":"Երևան"}'::jsonb, 18000, 'paid', '[{"id":"personal_greeting","price":3000}]'::jsonb) returning id`, [id])
+  const { rows: [inv] } = await store.db.query('insert into invitations (code, order_id, design_id) values ($1, $2, $3) returning id', [code, o.id, id])
+  await store.addInvitationGuest({ invitation_id: inv.id, token: `DemoGuestToken${String(i).padStart(10, '0')}`, display_name: 'Արամ և Անի', name_key: `aram-ani-${i}` })
+}
+
 const vite = await createServer({ root: ROOT, configFile: path.join(ROOT, 'vite.config.js'), server: { port: PORT, strictPort: true } })
 await vite.listen()
 ;(await vite.ssrLoadModule('/api/_lib/store.js')).setStore(store)
@@ -82,4 +110,9 @@ console.log(`      http://localhost:${PORT}/i/demo-event               (general)
 for (const g of GUESTS) console.log(`      http://localhost:${PORT}/i/demo-event/${g.inviteToken}   (${g.first})`)
 console.log(`  → «Ձեր սեղանը» (wd-portrait; names from scripts/seating.example.csv):`)
 for (const d of SEATING_DEMOS) console.log(`      http://localhost:${PORT}/i/${d.code}   ${d.what}`)
+console.log(`  → «Անհատական դիմում հյուրին» (wd-noir):`)
+console.log(`      http://localhost:${PORT}/i/d0000000000f               (ընդհանուր)`)
+for (const g of PERSONAL) console.log(`      http://localhost:${PORT}/i/d0000000000f/${g.token}   (${g.name})`)
+console.log(`      http://localhost:${PORT}/i/d0000000000f/NoSuchGuestToken00000000   (գոյություն չունեցող)`)
+console.log(`      ամեն վեբ դիզայնում՝ /i/e000000000NN/DemoGuestTokenNNNNNNNNNN (NN = 00…${(WEB_DESIGNS.length - 1).toString(16)}, hex)`)
 console.log('')

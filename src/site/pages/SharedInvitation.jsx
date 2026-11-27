@@ -142,12 +142,15 @@ export default function SharedInvitation() {
 
   const Invitation = entry.component
   const isEvent = data.kind === 'event'
-  const guestName = isEvent && data.event.inv?.personalize !== false ? data.guest?.first || null : null
+  // A guest's own link: a purchased invitation's personal link (the server
+  // sends `personal` only when it has the personal_greeting add-on), or a
+  // dashboard event's guest.
+  const guestName = data.personal?.name || (isEvent && data.event.inv?.personalize !== false ? data.guest?.first || null : null)
   const rsvpOn = !isEvent || data.event.inv?.rsvp !== false
   // add-on features this invitation has (the server decides)
   const features = Array.isArray(data.features) ? data.features : []
   const onRsvp = rsvpOn
-    ? (answer) => { sendRsvp(isEvent ? { slug: code, t: token, ...answer } : { code, ...answer }) }
+    ? (answer) => { sendRsvp(isEvent ? { slug: code, t: data.personal ? undefined : token, ...answer } : { code, t: token, ...answer }) }
     : undefined
   return (
     <InvitationContentProvider defaultData={content} editing={false} setEditing={noop} guestName={guestName} onRsvp={onRsvp} seating={seating} features={features}>

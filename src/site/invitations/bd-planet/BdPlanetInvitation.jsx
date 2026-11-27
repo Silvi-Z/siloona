@@ -191,7 +191,7 @@ function Venue() {
 // Name, yes / no, party size (yes only). Guest count is everyone coming
 // (companions = index of the chosen option).
 function Rsvp() {
-  const { data, editing, onRsvp } = useInvitationContent()
+  const { data, editing, onRsvp, guestName } = useInvitationContent()
   const { rsvp } = data
   const [yes, setYes] = useState(true)
   const [err, setErr] = useState(false)
@@ -221,7 +221,7 @@ function Rsvp() {
           <label className="field">
             <span>Ձեր անունը</span>
             <input
-              ref={nameRef} type="text" name="n" autoComplete="name" required
+              ref={nameRef} type="text" name="n" autoComplete="name" defaultValue={guestName || ''} required
               aria-invalid={err || undefined} aria-describedby={err ? 'bpl-err' : undefined}
               onInput={() => err && setErr(false)}
             />

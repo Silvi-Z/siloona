@@ -28,7 +28,7 @@ export const ADDONS = [
     text: { hy: 'Հյուրը մեկ սեղմումով ավելացնում է միջոցառումը իր օրացույցում։', ru: 'Гость добавляет событие в свой календарь одним нажатием.', en: 'Guests add the event to their calendar in one tap.' },
   },
   {
-    id: 'personal_greeting', type: 'feature', enabled: false, designs: web,
+    id: 'personal_greeting', type: 'feature', enabled: true, designs: web,
     name: { hy: 'Անհատական դիմում հյուրին', ru: 'Персональное обращение к гостю', en: 'A personal greeting for each guest' },
     text: { hy: 'Յուրաքանչյուր հյուր ստանում է իր հղումը, և հրավերը դիմում է նրան անունով։', ru: 'Каждый гость получает свою ссылку, и приглашение обращается к нему по имени.', en: 'Each guest gets their own link, and the invitation greets them by name.' },
   },

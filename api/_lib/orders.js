@@ -289,15 +289,40 @@ export async function publicInvitation(store, code) {
   return { designId: order.design_id, customization: { names, eventDate, eventTime, venue }, details: details || null, content: content || null, seating, features }
 }
 
+// «Անհատական դիմում հյուրին» (supabase/personal-links.sql): the guest a
+// personal link /i/<code>/<token> is for — only on an invitation with the
+// personal_greeting feature. Anything else (no such token, the feature
+// off) is null: the general invitation opens, with no error.
+export const GUEST_TOKEN = /^[A-Za-z0-9]{20,40}$/
+export async function invitationGuest(store, inv, order, token) {
+  if (typeof token !== 'string' || !GUEST_TOKEN.test(token) || !store.getInvitationGuest) return null
+  if (!featuresOf(order, inv).includes('personal_greeting')) return null
+  try {
+    return await store.getInvitationGuest(inv.id, token)
+  } catch (e) {
+    console.error('[invitations] personal link not read:', e.message)
+    return null
+  }
+}
+
+// What the page gets for a personal link: only that guest's name.
+export async function personalGreeting(store, code, token) {
+  const { inv, order } = await loadInvitation(store, code)
+  const g = await invitationGuest(store, inv, order, token)
+  return g ? { name: g.display_name } : null
+}
+
 export async function submitRsvp(store, code, body) {
-  const { inv } = await loadInvitation(store, code)
+  const { inv, order } = await loadInvitation(store, code)
+  // from a personal link: remembered with the answer
+  const guest = await invitationGuest(store, inv, order, str(body.t, 40))
   const name = str(body.name, 120)
   const status = ['confirmed', 'declined'].includes(body.status) ? body.status : null
   const n = Number(body.plus)
   const plus = Number.isInteger(n) ? Math.min(20, Math.max(0, n)) : 0
   if (!name) throw new HttpError(422, 'invalid', 'Նշեք Ձեր անունը։')
   if (!status) throw new HttpError(422, 'invalid', 'Նշեք՝ կգա՞ք, թե՞ ոչ։')
-  await store.insertRsvp({ invitation_id: inv.id, guest_name: name, status, plus, note: str(body.note, 500) || null })
+  await store.insertRsvp({ invitation_id: inv.id, guest_name: name, status, plus, note: str(body.note, 500) || null, ...(guest ? { guest_id: guest.id } : {}) })
 }
 
 // Every payment status change goes through here: the SQL state machine

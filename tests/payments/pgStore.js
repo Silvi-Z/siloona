@@ -30,6 +30,7 @@ export async function createPgStore() {
   await db.exec(fs.readFileSync(new URL('seating.sql', root), 'utf8'))
   await db.exec(fs.readFileSync(new URL('order-events.sql', root), 'utf8'))
   await db.exec(fs.readFileSync(new URL('addons.sql', root), 'utf8'))
+  await db.exec(fs.readFileSync(new URL('personal-links.sql', root), 'utf8'))
   for (const u of Object.values(USERS)) {
     await db.query(`insert into auth.users (id, email, raw_user_meta_data) values ($1, $2, '{"mode":"org"}')`, [u.id, u.email])
   }
@@ -80,9 +81,12 @@ export async function createPgStore() {
       await db.query('insert into invitations (code, order_id, design_id) values ($1, $2, $3) on conflict do nothing', [row.code, row.order_id, row.design_id])
       return fix(await one('select * from invitations where order_id = $1', [row.order_id]))
     },
-    insertRsvp: async (r) => fix(await one('insert into invitation_rsvps (invitation_id, guest_name, status, plus, note) values ($1, $2, $3, $4, $5) returning *', [r.invitation_id, r.guest_name, r.status, r.plus, r.note])),
+    insertRsvp: async (r) => fix(await one('insert into invitation_rsvps (invitation_id, guest_name, status, plus, note, guest_id) values ($1, $2, $3, $4, $5, $6) returning *', [r.invitation_id, r.guest_name, r.status, r.plus, r.note, r.guest_id ?? null])),
+    getInvitationGuest: async (invitationId, token) => fix(await one('select id, display_name from invitation_guests where invitation_id = $1 and token = $2', [invitationId, token])),
+    // what scripts/import-guests.js writes through Supabase
+    addInvitationGuest: async (g) => fix(await one('insert into invitation_guests (invitation_id, token, display_name, name_key, phone, note) values ($1, $2, $3, $4, $5, $6) returning *', [g.invitation_id, g.token, g.display_name, g.name_key, g.phone ?? null, g.note ?? null])),
     listRsvps: async (invitationId) => (await many('select guest_name, status, plus, note, created_at from invitation_rsvps where invitation_id = $1 order by id desc', [invitationId])).map(fix),
-    rsvps: async (invitationId) => many('select guest_name, status, plus, note from invitation_rsvps where invitation_id = $1 order by id', [invitationId]),
+    rsvps: async (invitationId) => many('select guest_name, status, plus, note, guest_id from invitation_rsvps where invitation_id = $1 order by id', [invitationId]),
 
     async getUser(token) {
       const u = Object.values(USERS).find((x) => x.token === token)

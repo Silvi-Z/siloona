@@ -81,6 +81,9 @@ export function createSupabaseStore(db) {
       return must(await db.from('invitations').select('*').eq('order_id', row.order_id).maybeSingle())
     },
     insertRsvp: async (row) => must(await db.from('invitation_rsvps').insert(row).select().single()),
+    // a guest's personal link (supabase/personal-links.sql)
+    getInvitationGuest: async (invitationId, token) =>
+      must(await db.from('invitation_guests').select('id, display_name').eq('invitation_id', invitationId).eq('token', token).maybeSingle()),
     listRsvps: async (invitationId) => must(await db.from('invitation_rsvps').select('guest_name, status, plus, note, created_at').eq('invitation_id', invitationId).order('created_at', { ascending: false }).limit(1000)),
 
     // A dashboard event by its invitation link slug (the event id, or the

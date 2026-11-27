@@ -937,3 +937,57 @@ test('calendar: the .ics file from /api/invitations, only with links to this sit
   assert.equal((await fetch(base + q({ t: 'x', d: 'tomorrow' }))).status, 422)
   assert.equal((await fetch(base + q({ d: '2027-06-12' }))).status, 422)
 })
+
+test('personal links: the guest list CSV, long random tokens, the links file', async () => {
+  const g = await import(pathToFileURL(path.join(ROOT, 'scripts/guests-csv.js')).href)
+  const { rows, skipped } = g.prepareGuests('﻿display_name;phone;note\r\nԱրամ և Անի;+374 99 111111;\r\n;;\r\nAni Petrosyan;;\r\nԱնի Պետրոսյան;;կրկնություն\r\n"Կարեն, Մարիամ";;\r\n')
+  assert.deepEqual(rows.map((r) => r.name), ['Արամ և Անի', 'Ani Petrosyan', 'Կարեն, Մարիամ'])
+  assert.equal(rows[0].phone, '+374 99 111111')
+  assert.equal(skipped.length, 1, 'the same name in another script is a duplicate')
+  assert.throws(() => g.prepareGuests('guest,table\nԱնի,1'), /display_name/)
+  const tokens = new Set(Array.from({ length: 200 }, () => g.newGuestToken()))
+  assert.equal(tokens.size, 200)
+  for (const t of tokens) assert.match(t, /^[A-Za-z0-9]{24}$/)
+  assert.equal(g.linksCsv('https://siloona.am', 'abcdef123456', [{ display_name: 'Կարեն, Մարիամ', token: 'T'.repeat(24) }]),
+    `display_name,link\r\n"Կարեն, Մարիամ",https://siloona.am/i/abcdef123456/${'T'.repeat(24)}\r\n`)
+})
+
+test('personal links: the guest is greeted by name, nothing else leaks, unknown links open the general page', async () => {
+  const { nameKey } = await import(pathToFileURL(path.join(ROOT, 'api/_lib/seating.js')).href)
+  const paid = async (addons) => {
+    const o = await newOrder({ designId: 'wd-noir', addons })
+    await call('POST', '/api/admin/orders', { token: USERS.admin.token, body: { orderId: o.orderId, action: 'manual_payment', method: 'cash', reference: `P-${o.orderNumber}` } })
+    const code = (await status(o)).json.invitationCode
+    return { o, code, inv: await store.getInvitationByCode(code) }
+  }
+  const withIt = await paid(['personal_greeting'])
+  const aram = 'AramAniToken0000000000001'
+  const other = 'PetrosyanToken00000000002'
+  await store.addInvitationGuest({ invitation_id: withIt.inv.id, token: aram, display_name: 'Արամ և Անի', name_key: nameKey('Արամ և Անի') })
+  await store.addInvitationGuest({ invitation_id: withIt.inv.id, token: other, display_name: 'Պետրոսյանների ընտանիք', name_key: nameKey('Պետրոսյանների ընտանիք') })
+
+  const general = await call('GET', `/api/invitations?code=${withIt.code}`)
+  assert.equal(general.status, 200)
+  assert.equal(general.json.personal, undefined, 'the general link is as before')
+  const mine = await call('GET', `/api/invitations?code=${withIt.code}&t=${aram}`)
+  assert.deepEqual(mine.json.personal, { name: 'Արամ և Անի' })
+  assert.ok(!JSON.stringify(mine.json).includes('Պետրոսյան'), 'never another guest’s name')
+  for (const t of ['NoSuchGuestToken00000000', 'bad', 'x'.repeat(60)]) {
+    const unknown = await call('GET', `/api/invitations?code=${withIt.code}&t=${t}`)
+    assert.equal(unknown.status, 200, `unknown link ${t} opens the general invitation`)
+    assert.equal(unknown.json.personal, undefined)
+  }
+  // a token of one invitation doesn't work on another
+  const without = await paid([])
+  await store.addInvitationGuest({ invitation_id: without.inv.id, token: 'NoFeatureToken0000000003', display_name: 'Լիլիթ', name_key: nameKey('Լիլիթ') })
+  assert.equal((await call('GET', `/api/invitations?code=${without.code}&t=${aram}`)).json.personal, undefined)
+  assert.equal((await call('GET', `/api/invitations?code=${without.code}&t=NoFeatureToken0000000003`)).json.personal, undefined, 'without the add-on: no greeting')
+
+  // the RSVP from a personal link is remembered with that guest
+  assert.equal((await call('POST', '/api/invitations', { body: { code: withIt.code, t: aram, name: 'Արամ և Անի', status: 'confirmed', plus: 1 } })).status, 201)
+  assert.equal((await call('POST', '/api/invitations', { body: { code: withIt.code, name: 'Գոհար', status: 'declined' } })).status, 201)
+  const answers = await store.rsvps(withIt.inv.id)
+  const guest = await store.getInvitationGuest(withIt.inv.id, aram)
+  assert.equal(answers.find((r) => r.guest_name === 'Արամ և Անի').guest_id, guest.id)
+  assert.equal(answers.find((r) => r.guest_name === 'Գոհար').guest_id, null)
+})

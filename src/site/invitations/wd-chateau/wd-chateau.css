@@ -221,3 +221,5 @@
   .wdc .florals.flip.r{transform:scaleX(-1)}
   .wdc .hero .names.r{letter-spacing:.06em}
 }
+/* A guest's personal link: «Սիրելի Արամ և Անի» under the welcome line */
+.wdc .dear{margin:3.2cqw 0 0; font:italic 500 clamp(19px,5.4cqw,28px)/1.25 var(--serif); color:var(--navy); letter-spacing:.01em}

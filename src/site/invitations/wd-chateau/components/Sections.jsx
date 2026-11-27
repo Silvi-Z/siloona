@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import Editable from '../../shared/Editable'
 import EditablePhoto from '../../shared/EditablePhoto'
 import { RowAdd, RowRemove } from '../../shared/ListEdit'
-import { fillName } from '../../shared/GuestGreeting'
+import GuestGreeting, { fillName } from '../../shared/GuestGreeting'
 import { useInvitationContent } from '../../shared/EditableContext'
 import { pick, useInvLang } from '../../shared/invLang'
 import { formatEventDate } from '../lib/date'
@@ -71,6 +71,8 @@ export function Hero() {
     <Block className="hero in" label={w.invitation}>
       <Ornament />
       <p className="welcome r" style={{ '--i': 1 }}><Editable path="welcome" /></p>
+      {/* on a guest's personal link only: «Սիրելի Արամ և Անի» */}
+      <GuestGreeting personalPath="greeting.personal" as="p" className="dear r" style={{ '--i': 1 }}>{null}</GuestGreeting>
       <h1 className="names r" style={{ '--i': 2 }}>
         <Editable path="couple.first" />
         <i className="amp" aria-hidden="true">&amp;</i>

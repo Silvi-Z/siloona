@@ -5,7 +5,7 @@ import { useInvitationContent } from '../../shared/EditableContext'
 
 export default function RsvpForm({ data }) {
   const rsvp = data.rsvp
-  const { onRsvp } = useInvitationContent()
+  const { onRsvp, guestName } = useInvitationContent()
   const [open, setOpen] = useState(false)
   const [nameError, setNameError] = useState(false)
   const [thanks, setThanks] = useState(null)
@@ -60,7 +60,7 @@ export default function RsvpForm({ data }) {
             <form onSubmit={submit} noValidate>
               <label className={`f${nameError ? ' bad' : ''}`}>
                 Անուն և ազգանուն
-                <input type="text" name="name" autoComplete="name" ref={nameRef} />
+                <input type="text" name="name" autoComplete="name" defaultValue={guestName || ''} ref={nameRef} />
                 <span className="msgx">Խնդրում ենք գրել ձեր անունը</span>
               </label>
 

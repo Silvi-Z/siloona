@@ -10,7 +10,7 @@ import monkey from '../assets/monkey.webp'
 // the same scope decision as wd-beige/components/RsvpForm.jsx: the
 // guest-facing RSVP persistence path is a separate, not-yet-built piece.
 export default function RsvpForm({ rootRef }) {
-  const { data, onRsvp } = useInvitationContent()
+  const { data, onRsvp, guestName } = useInvitationContent()
   const rsvp = data.rsvp
   const [nameError, setNameError] = useState(false)
   const [thanks, setThanks] = useState(null)
@@ -52,7 +52,7 @@ export default function RsvpForm({ rootRef }) {
           {!thanks ? (
             <form onSubmit={submit} noValidate>
               <label className={nameError ? 'bad' : ''}>
-                <input type="text" name="name" autoComplete="name" ref={nameRef} placeholder="Ձեր անունը" />
+                <input type="text" name="name" autoComplete="name" defaultValue={guestName || ''} ref={nameRef} placeholder="Ձեր անունը" />
                 <span className="msgx">Խնդրում ենք գրել ձեր անունը</span>
               </label>
               <div className="opts">

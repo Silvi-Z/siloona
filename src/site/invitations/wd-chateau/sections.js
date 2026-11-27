@@ -5,6 +5,7 @@ export const wdChateauSections = [
     id: 'hero', title: 'Գլխավոր էկրան', hideable: false, fromEvent: true,
     fields: [
       { path: 'welcome', label: 'Վերին տող', type: 'text' },
+      { path: 'greeting.personal', label: 'Հյուրի անհատական հղումով', type: 'text', personal: true },
       { path: 'couple.first', label: 'Փեսացու', type: 'text' },
       { path: 'couple.second', label: 'Հարսնացու', type: 'text' },
     ],

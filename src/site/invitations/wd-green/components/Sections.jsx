@@ -128,7 +128,7 @@ export function DressCode() {
 // Details text + the button that opens the RSVP dialog. Guest count is
 // everyone coming (companions = count − 1).
 export function Details() {
-  const { data, onRsvp } = useInvitationContent()
+  const { data, onRsvp, guestName } = useInvitationContent()
   const { rsvp } = data
   const dlg = useRef(null)
   const [note, setNote] = useState('')
@@ -159,7 +159,7 @@ export function Details() {
             <h2 id="wgr-rsvp-t">{rsvp.title}</h2>
             <label>Ձեր անունը
               <input
-                type="text" name="n" required autoComplete="name"
+                type="text" name="n" required autoComplete="name" defaultValue={guestName || ''}
                 onInvalid={(e) => e.target.setCustomValidity('Խնդրում ենք նշել ձեր անունը։')}
                 onInput={(e) => e.target.setCustomValidity('')}
               />
